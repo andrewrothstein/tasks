@@ -28,7 +28,6 @@ tasks:
     deps:
       - mesh-up
     cmds:
-      - task: mesh-up
       - task: argocd:apply
       - task: argo:apply
       - task: argo-rollouts:apply
