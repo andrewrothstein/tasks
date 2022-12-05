@@ -2,6 +2,7 @@
 version: '3'
 includes:
   ansible: tasks/ansible.yml
+  terraform: tasks/terraform.yml
   k8s: tasks/kind.yml
 #  k8s: tasks/k3d.yml
   istio: tasks/istio.yml
