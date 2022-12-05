@@ -1,0 +1,47 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    internal: true
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  GITEA_CHART_REPO_NAME: gitea-charts
+  GITEA_CHART_REPO_URL: https://dl.gitea.io/charts/
+  GITEA_CHART: gitea
+  GITEA_CHART_VER: '{{ .GITEA_CHART_VER | default "6.0.3" }}'
+  GITEA_NS: '{{ .GITEA_NS | default "gitea" }}'
+  GITEA_NAME: '{{ .GITEA_NAME | default "gitea" }}'
+tasks:
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .GITEA_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .GITEA_CHART_REPO_URL }}'
+  install:
+    deps:
+      - helm-repo-add
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .GITEA_NS }}'
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .GITEA_NS }}'
+          NAME: '{{ .GITEA_NAME }}'
+          CHART_REPO_NAME: '{{ .GITEA_CHART_REPO_NAME }}'
+          CHART: '{{ .GITEA_CHART }}'
+          CHART_VER: '{{ .GITEA_CHART_VER }}'
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .GITEA_NS }}'
+          NAME: '{{ .GITEA_NAME }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .GITEA_NS }}'

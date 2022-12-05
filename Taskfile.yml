@@ -1,0 +1,58 @@
+---
+version: '3'
+includes:
+  ansible: tasks/ansible.yml
+  k8s: tasks/kind.yml
+#  k8s: tasks/k3d.yml
+  istio: tasks/istio.yml
+  argocd: tasks/argocd.yml
+  argo: tasks/argo.yml
+  argo-rollouts: tasks/argo-rollouts.yml
+  gitea: tasks/gitea.yml
+  hashicorp: tasks/hashicorp.yml
+  jetstack: tasks/jetstack.yml
+  gatekeeper: tasks/gatekeeper.yml
+tasks:
+  pre-mesh-up:
+    deps:
+      - k8s:up
+    cmds:
+      - task: gatekeeper:install
+      - task: jetstack:install
+  mesh-up:
+    deps:
+      - pre-mesh-up
+    cmds:
+      - task: istio:up
+  up:
+    deps:
+      - mesh-up
+    cmds:
+      - task: mesh-up
+      - task: argocd:apply
+      - task: argo:apply
+      - task: argo-rollouts:apply
+      - task: gitea:install
+      - task: hashicorp:vault-install
+  pre-mesh-delete:
+    deps:
+      - jetstack:delete
+      - gatekeeper:delete
+  mesh-delete:
+    deps:
+      - hashicorp:vault-delete
+      - gitea:delete
+      - argo-rollouts:delete
+      - argo:delete
+      - argocd:delete
+    cmds:
+      - task: istio:delete
+  delete:
+    deps:
+      - pre-mesh-delete
+      - mesh-delete
+    cmds:
+      - task: k8s:delete
+  default:
+    deps:
+      - up

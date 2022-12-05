@@ -1,0 +1,6 @@
+**~
+/.project
+/.vagrant
+.ansible-roles/
+.onetime
+.task/

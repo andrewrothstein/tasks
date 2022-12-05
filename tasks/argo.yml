@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  ARGO_WORKFLOWS_NS: argo
+  ARGO_WORKFLOWS_VER: 3.4.3
+tasks:
+  apply:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .ARGO_WORKFLOWS_NS }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .ARGO_WORKFLOWS_NS }}'
+          f: https://github.com/argoproj/argo-workflows/releases/download/v{{ .ARGO_WORKFLOWS_VER }}/install.yaml
+  delete:
+    cmds:
+      - task: kubectl:delete
+        vars:
+          n: '{{ .ARGO_WORKFLOWS_NS }}'
+          f: https://github.com/argoproj/argo-workflows/releases/download/v{{ .ARGO_WORKFLOWS_VER }}/install.yaml
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .ARGO_WORKFLOWS_NS }}'

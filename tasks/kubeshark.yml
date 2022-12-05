@@ -1,0 +1,8 @@
+---
+version: '3'
+tasks:
+  kubeshark-tap-all:
+    deps:
+      - istio-install
+    cmds:
+      - kubeshark tap -A --service-mesh

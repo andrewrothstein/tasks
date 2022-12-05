@@ -1,0 +1,47 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    internal: true
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  HASHICORP_CHART_REPO_NAME: hashicorp
+  HASHICORP_CHART_REPO_URL: https://helm.releases.hashicorp.com
+  HASHICORP_VAULT_CHART: vault
+  HASHICORP_VAULT_CHART_VER: 0.23.0
+  HASHICORP_VAULT_NS: '{{ .HASHICORP_VAULT_NS | default "vault" }}'
+  HASHICORP_VAULT_NAME: '{{ .HASHICORP_VAULT_NAME | default "vault" }}'
+tasks:
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .HASHICORP_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .HASHICORP_CHART_REPO_URL }}'
+  vault-install:
+    deps:
+      - helm-repo-add
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .HASHICORP_VAULT_NS }}'
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .HASHICORP_VAULT_NS }}'
+          NAME: '{{ .HASHICORP_VAULT_NAME }}'
+          CHART_REPO_NAME: '{{ .HASHICORP_CHART_REPO_NAME }}'
+          CHART: '{{ .HASHICORP_VAULT_CHART }}'
+          CHART_VER: '{{ .HASHICORP_VAULT_CHART_VER }}'
+  vault-delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .HASHICORP_VAULT_NS }}'
+          NAME: '{{ .HASHICORP_VAULT_NAME }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .HASHICORP_VAULT_NS }}'

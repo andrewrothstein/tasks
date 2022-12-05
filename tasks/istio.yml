@@ -1,0 +1,11 @@
+---
+version: '3'
+tasks:
+  up:
+    cmds:
+      - istioctl install -y
+    status:
+      - istioctl verify-install
+  delete:
+    cmds:
+      - istioctl uninstall --purge --force -y

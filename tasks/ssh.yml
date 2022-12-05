@@ -1,0 +1,13 @@
+---
+version: '3'
+tasks:
+#  ssh-agent:
+#    cmds:
+#      - eval $(ssh-agent)
+#    status:
+#      - ssh-add -l
+#  ssh-keygen-overwrite:
+#    cmds:
+#      - ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/bootstrap
+#    generates:
+#      - ~/.ssh/bootstrap.*

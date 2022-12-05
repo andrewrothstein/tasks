@@ -1,0 +1,22 @@
+---
+version: '3'
+vars:
+  LIMIT: '{{ .LIMIT | default "localhost" }}'
+tasks:
+  galaxy-install:
+    sources:
+      - requirements.yml
+    cmds:
+      - ansible-galaxy install -r requirements.yml
+    generates:
+      - .ansible-roles/**/*.yml
+  playbook:
+    deps:
+      - galaxy-install
+    cmds:
+      - ansible-playbook --limit "{{ .LIMIT }}" playbook.yml
+      - echo done >> .onetime
+    sources:
+      - playbook.yml
+    generates:
+      - .onetime

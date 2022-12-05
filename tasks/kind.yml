@@ -1,0 +1,13 @@
+---
+version: '3'
+vars:
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "bootstrap" }}'
+tasks:
+  up:
+    cmds:
+      - kind create cluster -n {{ .CLUSTER_NAME }}
+    status:
+      - kind get clusters | grep {{ .CLUSTER_NAME }}
+  delete:
+    cmds:
+      - kind delete clusters {{ .CLUSTER_NAME }}

@@ -1,0 +1,36 @@
+---
+version: '3'
+tasks:
+  ns-label:
+    vars:
+      labels: '{{ .labels | default "" }}'
+    cmds:
+      - kubectl label namespace {{ .n }} {{ .labels }} --overwrite
+  ns-create:
+    vars:
+      n: '{{ default "my-project" .n }}'
+    cmds:
+      - kubectl create namespace {{ .n }};
+    status:
+      - kubectl get namespace {{ .n }}
+  ns-delete:
+    vars:
+      n: '{{ default "my-project" .n }}'
+    preconditions:
+      - kubectl get namespace {{ .n }}
+    cmds:
+      - kubectl delete namespace {{ .n }}
+  apply:
+    vars:
+      n: '{{ default "my-project" .n }}'
+      f: '{{ default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
+    cmds:
+      - kubectl apply -n {{ .n }} -f {{ .f }}
+  delete:
+    vars:
+      n: '{{ default "my-project" .n }}'
+      f: '{{ default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
+    preconditions:
+      - kubectl get namespace {{ .n }}
+    cmds:
+      - kubectl delete -n {{ .n }} -f {{ .f }}

@@ -1,0 +1,53 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+  helm:
+    taskfile: helm.yml
+    internal: true
+vars:
+  JETSTACK_CHART_REPO_NAME: jetstack
+  JETSTACK_CHART_REPO_URL: https://charts.jetstack.io
+  JETSTACK_CERTMANAGER_CHART: cert-manager
+  JETSTACK_CERTMANAGER_VER: 1.10.1
+  JETSTACK_CERTMANAGER_NS: '{{ .JETSTACK_CERTMANAGER_NS | default "cert-manager" }}'
+  JETSTACK_CERTMANAGER_NAME: '{{ .JETSTACK_CERTMANAGER_NAME | default "cert-manager" }}'
+tasks:
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .JETSTACK_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .JETSTACK_CHART_REPO_URL }}'
+  install:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .JETSTACK_CERTMANAGER_NS }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .JETSTACK_CERTMANAGER_NS }}'
+          f: https://github.com/cert-manager/cert-manager/releases/download/v{{ .JETSTACK_CERTMANAGER_VER }}/cert-manager.crds.yaml
+#      - task: helm:install
+#        vars:
+#          NAMESPACE: '{{ .JETSTACK_CERTMANAGER_NS }}'
+#          NAME: '{{ .JETSTACK_CERTMANAGER_NAME }}'
+#          CHART_REPO_NAME: '{{ .JETSTACK_CHART_REPO_NAME }}'
+#          CHART: '{{ .JETSTACK_CERTMANAGER_CHART }}'
+#          CHART_VER: '{{ .JETSTACK_CERTMANAGER_VER }}'
+  delete:
+    cmds:
+#      - task: helm:delete
+#        vars:
+#          NAMESPACE: '{{ .JETSTACK_CERTMANAGER_NS }}'
+#          NAME: '{{ .JETSTACK_CERTMANAGER_NAME }}'
+      - task: kubectl:delete
+        vars:
+          n: '{{ .JETSTACK_CERTMANAGER_NS }}'
+          f: https://github.com/cert-manager/cert-manager/releases/download/v{{ .JETSTACK_CERTMANAGER_VER }}/cert-manager.crds.yaml
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .JETSTACK_CERTMANAGER_NS }}'

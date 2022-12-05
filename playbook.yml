@@ -1,0 +1,15 @@
+---
+- hosts: all
+  roles:
+    - andrewrothstein.k3d
+    - andrewrothstein.kind
+    - andrewrothstein.kubectl
+    - andrewrothstein.istio
+    - andrewrothstein.git
+    - andrewrothstein.jq
+    - andrewrothstein.task
+    - andrewrothstein.argocd
+    - andrewrothstein.argo
+    - andrewrothstein.kubeshark
+    - andrewrothstein.kubernetes-helm
+    - andrewrothstein.k9s

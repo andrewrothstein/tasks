@@ -1,0 +1,14 @@
+---
+roles:
+  - andrewrothstein.task
+  - andrewrothstein.git
+  - andrewrothstein.k3d
+  - andrewrothstein.kind
+  - andrewrothstein.kubectl
+  - andrewrothstein.jq
+  - andrewrothstein.istio
+  - andrewrothstein.argocd
+  - andrewrothstein.argo
+  - andrewrothstein.kubeshark
+  - andrewrothstein.kubernetes-helm
+  - andrewrothstein.k9s

@@ -1,0 +1,30 @@
+---
+version: '3'
+tasks:
+  repo-add:
+    vars:
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "my-charts" }}'
+      CHART_REPO_URL: '{{ .CHART_REPO_URL | default "https://my-chart-museum/charts/" }}'
+    cmds:
+      - helm repo add {{ .CHART_REPO_NAME }} {{ .CHART_REPO_URL }}
+    status:
+      - helm repo list -o json | jq -e '.[] | select(.name=={{ .CHART_REPO_NAME | quote }})'
+  install:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "helm-install-namespace" }}'
+      NAME: '{{ .NAME | default "helm-release-name" }}'
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "helm-chart-repo-name" }}'
+      CHART: '{{ .CHART | default "helm-chart" }}'
+      CHART_VER: '{{ .CHART_VER | default "helm-version-constraint" }}'
+    cmds:
+      - helm install -n {{ .NAMESPACE }} {{ .NAME }} {{ .CHART_REPO_NAME }}/{{ .CHART }} --version {{ .CHART_VER }}
+    status:
+      - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+  delete:
+    vars:
+      NAMESPACE: '{{ default "helm-install-namespace" .NAMESPACE }}'
+      NAME: '{{ default "helm-release-name" .NAME }}'
+    preconditions:
+      - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+    cmds:
+      - helm delete -n {{ .NAMESPACE }} {{ .NAME }}
