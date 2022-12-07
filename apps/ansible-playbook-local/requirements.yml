@@ -1,14 +1,17 @@
 ---
 roles:
-  - andrewrothstein.task
-  - andrewrothstein.git
   - andrewrothstein.k3d
   - andrewrothstein.kind
   - andrewrothstein.kubectl
-  - andrewrothstein.jq
   - andrewrothstein.istio
+  - andrewrothstein.git
+  - andrewrothstein.jq
+  - andrewrothstein.task
+  - andrewrothstein.pinniped
+  - andrewrothstein.carvel
   - andrewrothstein.argocd
   - andrewrothstein.argo
+  - andrewrothstein.kubefwd
   - andrewrothstein.kubeshark
   - andrewrothstein.kubernetes-helm
   - andrewrothstein.k9s

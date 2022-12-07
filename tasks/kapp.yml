@@ -1,0 +1,16 @@
+---
+version: '3'
+tasks:
+  deploy:
+    vars:
+      KAPP_EXE: '{{ .KAPP_EXE | default "kapp" }}'
+      APP: '{{ .APP | default "kapp-name" }}'
+      FILE: '{{ .FILE | default "https://path-to-deployment.yaml" }}'
+    cmds:
+      - kapp deploy --app {{ .APP }} --file {{ .FILE }} -y
+  delete:
+    vars:
+      KAPP_EXE: '{{ .KAPP_EXE | default "kapp" }}'
+      APP: '{{ .APP | default "kapp-name" }}'
+    cmds:
+      - kapp delete --app {{ .APP }} -y

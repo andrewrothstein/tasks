@@ -9,6 +9,7 @@ includes:
     dir: apps/tf-dex-aad
   k8s: tasks/kind.yml
 #  k8s: tasks/k3d.yml
+  pinniped: tasks/pinniped.yml
   istio: tasks/istio.yml
   argocd: tasks/argocd.yml
   argo: tasks/argo.yml
@@ -22,8 +23,9 @@ tasks:
     deps:
       - k8s:up
     cmds:
-      - task: gatekeeper:install
-      - task: jetstack:install
+      - task: pinniped:deploy-concierge
+#      - task: gatekeeper:install
+#      - task: jetstack:install
   mesh-up:
     deps:
       - pre-mesh-up

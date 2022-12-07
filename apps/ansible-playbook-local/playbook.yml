@@ -1,5 +1,9 @@
 ---
 - hosts: all
+  vars:
+    carvel_apps:
+      - name: kapp
+        version: 0.54.1
   roles:
     - andrewrothstein.k3d
     - andrewrothstein.kind
@@ -8,8 +12,11 @@
     - andrewrothstein.git
     - andrewrothstein.jq
     - andrewrothstein.task
+    - andrewrothstein.pinniped
+    - andrewrothstein.carvel
     - andrewrothstein.argocd
     - andrewrothstein.argo
+    - andrewrothstein.kubefwd
     - andrewrothstein.kubeshark
     - andrewrothstein.kubernetes-helm
     - andrewrothstein.k9s
