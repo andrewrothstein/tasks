@@ -1,5 +1,5 @@
 .terraform/
 tfplan
-*.tfstate
+terraform.tfstate.d/
 .terraform.lock.hcl
 tf-validate.json
