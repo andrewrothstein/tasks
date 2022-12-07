@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  terraform:
+    taskfile: ../../tasks/terraform.yml
+vars:
+  WORKSPACE_NAME: dex-aad
+tasks:
+  default:
+    cmds:
+      - task: terraform:workspace-new
+      - task: terraform:workspace-select
+      - task: terraform:init
+      - task: terraform:validate
+      - task: terraform:plan
+      - task: terraform:apply

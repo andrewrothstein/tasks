@@ -1,0 +1,8 @@
+---
+version: '3'
+includes:
+  ansible: ../../tasks/ansible.yml
+tasks:
+  default:
+    deps:
+      - ansible:playbook

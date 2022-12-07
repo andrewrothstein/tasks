@@ -1,8 +1,12 @@
 ---
 version: '3'
 includes:
-  ansible: tasks/ansible.yml
-  terraform: tasks/terraform.yml
+  ansible-playbook-local:
+    taskfile: apps/ansible-playbook-local/Taskfile.yml
+    dir: apps/ansible-playbook-local
+  tf-dex-aad:
+    taskfile: apps/tf-dex-aad/Taskfile.yml
+    dir: apps/tf-dex-aad
   k8s: tasks/kind.yml
 #  k8s: tasks/k3d.yml
   istio: tasks/istio.yml

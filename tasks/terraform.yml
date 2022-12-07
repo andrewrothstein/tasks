@@ -1,48 +1,64 @@
 ---
 version: '3'
-vars:
-  terraform: '{{ .TERRAFORM_EXE | default "terraform" }}'
-  workspacename: '{{ .workspacename | default "terraform-workspace" }}'
-  chdir: '{{ .chdir | default "." }}'
 tasks:
   workspace-list:
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
     cmds:
-      - '{{ .terraform }} workspace list'
+      - '{{ .TERRAFORM_EXE }} workspace list'
   workspace-select:
     vars:
-      name: '{{ .name | default .workspacename }}'
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
     cmds:
-      - '{{ .terraform }} workspace select {{ .name }}'
+      - '{{ .TERRAFORM_EXE }} workspace select {{ .WORKSPACE_NAME | quote }}'
     status:
-      - "{{ .terraform }} workspace list | grep '* {{ .name  }}'"
+      - '{{ .TERRAFORM_EXE }} workspace list | grep "* {{ .WORKSPACE_NAME }}"'
   workspace-new:
     vars:
-      name: '{{ .name | default .workspacename }}'
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
     cmds:
-      - '{{ .terraform }} workspace new {{ .name }}'
+      - '{{ .TERRAFORM_EXE }} workspace new {{ .WORKSPACE_NAME | quote }}'
     status:
-      - '{{ .terraform }} workspace list | grep {{ .name | quote }}'
+      - '{{ .TERRAFORM_EXE }} workspace list | grep {{ .WORKSPACE_NAME | quote }}'
   workspace-delete:
     vars:
-      name: '{{ .name | default .workspacename }}'
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
     cmds:
-      - '{{ .terraform }} workspace delete {{ .name }}'
+      - '{{ .TERRAFORM_EXE }} workspace delete {{ .WORKSPACE_NAME }}'
   init:
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default "." }}'
     cmds:
-      - '{{ .terraform }} -chdir={{ .chdir }} init -input=false'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} init -input=false'
   validate:
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default "." }}'
+      VALIDATE_JSON_OUTPUT: '{{ .VALIDATE_JSON_OUTPUT | default "tf-validate.json" }}'
     cmds:
-      - '{{ .terraform }} -chdir={{ .chdir }} validate -input=false'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} validate -json -no-color | tee {{ .VALIDATE_JSON_OUTPUT }}'
   plan:
     vars:
-      tfplan: '{{ .tfplan | default "tfplan" }}'
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default "." }}'
+      TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
-      - '{{ .terraform }} -chdir={{ .chdir }} plan -input=false -out={{ .tfplan }}'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} plan -input=false -out={{ .TFPLAN }}'
   apply:
     vars:
-      tfplan: '{{ .tfplan | default "tfplan" }}'
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default "." }}'
+      TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
-      - '{{ .terraform }} -chdir={{ .chdir }} apply -input=false {{ .tfplan }}'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -input=false {{ .TFPLAN }}'
   destroy:
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default "." }}'
     cmds:
-      - '{{ .terraform }} -chdir={{ .chdir }} apply -destroy -input=false'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -destroy -input=false'

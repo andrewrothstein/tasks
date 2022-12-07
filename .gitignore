@@ -1,10 +1,4 @@
 **~
 /.project
 /.vagrant
-.ansible-roles/
-.onetime
 .task/
-.terraform/
-tfplan
-*.tfstate
-.terraform.lock.hcl
