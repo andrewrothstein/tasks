@@ -55,10 +55,10 @@ tasks:
       CHDIR: '{{ .CHDIR | default "." }}'
       TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
-      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -input=false {{ .TFPLAN }}'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -auto-approve -input=false {{ .TFPLAN }}'
   destroy:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default "." }}'
     cmds:
-      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -destroy -input=false'
+      - '{{ .TERRAFORM_EXE }} -chdir={{ .CHDIR }} apply -auto-approve -destroy -input=false'

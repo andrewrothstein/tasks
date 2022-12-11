@@ -6,6 +6,9 @@ includes:
 vars:
   WORKSPACE_NAME: dex-aad
 tasks:
+  destroy:
+    cmds:
+      - task: terraform:destroy
   default:
     cmds:
       - task: terraform:workspace-new
