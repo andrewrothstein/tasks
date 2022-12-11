@@ -1,0 +1,29 @@
+---
+version: '3'
+vars:
+  ARGO_PROJ_NS: '{{ .ARGO_PROJ_NS | default "argo-proj" }}'
+  ARGO_PROJ_NAME: '{{ .ARGO_PROJ_NAME | default "events" }}'
+  ARGO_PROJ_VER: '{{ .ARGO_PROJ_VER | default "x.y.z" }}'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+tasks:
+  apply:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .ARGO_PROJ_NS }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .ARGO_PROJ_NS }}'
+          f: https://raw.githubusercontent.com/argoproj/argo-{{ .ARGO_PROJ_NAME }}/v{{ .ARGO_PROJ_VER }}/manifests/install.yaml
+  delete:
+    cmds:
+      - task: kubectl:delete
+        vars:
+          n: '{{ .ARGO_PROJ_NS }}'
+          f: https://raw.githubusercontent.com/argoproj/argo-{{ .ARGO_PROJ_NAME }}/v{{ .ARGO_PROJ_VER }}/manifests/install.yaml
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .ARGO_PROJ_NS }}'

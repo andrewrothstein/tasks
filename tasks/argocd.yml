@@ -1,28 +1,20 @@
 ---
 version: '3'
-includes:
-  kubectl:
-    taskfile: kubectl.yml
-    internal: true
 vars:
-  ARGO_CD_NS: '{{ .ARGO_CD_NS | default "argocd" }}'
-  ARGO_CD_VER: '{{ .ARGO_CD_VER | default "2.5.3" }}'
+  DEFAULT_ARGO_CD_NS: argo-cd
+  DEFAULT_ARGO_CD_VER: 2.5.4
+includes:
+  argo-proj:
+    taskfile: argo-proj.yml
+    vars:
+      ARGO_PROJ_NS: '{{ .ARGO_CD_NS | default .DEFAULT_ARGO_CD_NS }}'
+      ARGO_PROJ_NAME: cd
+      ARGO_PROJ_VER: '{{ .ARGO_CD_VER | default .DEFAULT_ARGO_CD_VER }}'
+    internal: true
 tasks:
   apply:
     cmds:
-      - task: kubectl:ns-create
-        vars:
-          n: '{{ .ARGO_CD_NS }}'
-      - task: kubectl:apply
-        vars:
-          n: '{{ .ARGO_CD_NS }}'
-          f: https://raw.githubusercontent.com/argoproj/argo-cd/v{{ .ARGO_CD_VER }}/manifests/install.yaml
+      - task: argo-proj:apply
   delete:
     cmds:
-      - task: kubectl:delete
-        vars:
-          n: '{{ .ARGO_CD_NS }}'
-          f: https://raw.githubusercontent.com/argoproj/argo-cd/v{{ .ARGO_CD_VER }}/manifests/install.yaml
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .ARGO_CD_NS }}'
+      - task: argo-proj:delete

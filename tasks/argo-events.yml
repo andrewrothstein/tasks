@@ -1,0 +1,20 @@
+---
+version: '3'
+vars:
+  DEFAULT_ARGO_EVENTS_NS: argo-events
+  DEFAULT_ARGO_EVENTS_VER: 1.7.3
+includes:
+  argo-proj:
+    taskfile: argo-proj.yml
+    vars:
+      ARGO_PROJ_NS: '{{ .ARGO_EVENTS_NS | default .DEFAULT_ARGO_EVENTS_NS }}'
+      ARGO_PROJ_NAME: events
+      ARGO_PROJ_VER: '{{ .ARGO_EVENTS_VER | default .DEFAULT_ARGO_EVENTS_VER }}'
+    internal: true
+tasks:
+  apply:
+    cmds:
+      - task: argo-proj:apply
+  delete:
+    cmds:
+      - task: argo-proj:delete

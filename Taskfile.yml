@@ -13,6 +13,7 @@ includes:
   istio: tasks/istio.yml
   argocd: tasks/argocd.yml
   argo: tasks/argo.yml
+  argo-events: tasks/argo-events.yml
   argo-rollouts: tasks/argo-rollouts.yml
   gitea: tasks/gitea.yml
   hashicorp: tasks/hashicorp.yml
