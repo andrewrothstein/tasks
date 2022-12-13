@@ -1,0 +1,21 @@
+---
+version: '3'
+vars:
+  DEFAULT_NAME: kind-registry
+includes:
+  docker-daemon:
+    taskfile: docker-daemon.yml
+    internal: true
+    vars:
+      NAME: '{{ .NAME | default .DEFAULT_NAME }}'
+      RESTART: always
+      HOST_PORT: 5000
+      CONTAINER_PORT: 5000
+      CONTAINER_IMAGE: registry:2
+tasks:
+  apply:
+    cmds:
+      - task: docker-daemon:apply
+  delete:
+    cmds:
+      - task: docker-daemon:delete
