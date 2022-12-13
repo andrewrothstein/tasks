@@ -8,6 +8,7 @@ tasks:
       HOST_PORT: '{{ .HOST_PORT | default 5000 }}'
       CONTAINER_PORT: '{{ .CONTAINER_PORT | default 5000 }}'
       CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default "docker.io/foo/bar:1.2.3" }}'
+      E: '{{ .E | default "foo=bar" }}'
     cmds:
       - |
         docker \
@@ -15,6 +16,7 @@ tasks:
           --name={{ .NAME | quote }} \
           --restart={{ .RESTART | quote }} \
           -p "127.0.0.1:{{ .HOST_PORT }}:{{ .CONTAINER_PORT }}" \
+          -e {{ .E | quote }} \
           {{ .CONTAINER_IMAGE | quote }}
     status:
       - |

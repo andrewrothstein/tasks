@@ -17,6 +17,7 @@ tasks:
           HOST_PORT: 5000
           CONTAINER_PORT: 5000
           CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default .DEFAULT_CONTAINER_IMAGE }}'
+          E: REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io
   delete:
     cmds:
       - task: docker-daemon:delete
