@@ -7,14 +7,15 @@ tasks:
       RESTART: '{{ .RESTART | default "always" }}'
       HOST_PORT: '{{ .HOST_PORT | default 5000 }}'
       CONTAINER_PORT: '{{ .CONTAINER_PORT | default 5000 }}'
-      CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default "docker.io/library/foo:1.2.3" }}'
+      CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default "docker.io/foo/bar:1.2.3" }}'
     cmds:
       - |
         docker \
           run -d \
           --name={{ .NAME | quote }} \
           --restart={{ .RESTART | quote }} \
-          -p "127.0.0.1:{{ .HOST_PORT }}:{{ .CONTAINER_PORT }}" {{ .CONTAINER_IMAGE }}
+          -p "127.0.0.1:{{ .HOST_PORT }}:{{ .CONTAINER_PORT }}" \
+          {{ .CONTAINER_IMAGE | quote }}
     status:
       - |
         docker ps \
@@ -24,9 +25,5 @@ tasks:
   delete:
     vars:
       NAME: '{{ .NAME | default "docker-daemon-name" }}'
-      RESTART: '{{ .RESTART | default "always" }}'
-      HOST_PORT: '{{ .HOST_PORT | default 5000 }}'
-      CONTAINER_PORT: '{{ .CONTAINER_PORT | default 5000 }}'
-      CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default "docker.io/library/foo:1.2.3" }}'
     cmds:
       - docker rm -f {{ .NAME }}
