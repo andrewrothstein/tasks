@@ -1,20 +1,18 @@
 ---
 version: '3'
-includes:
-  kapp: ./kapp.yml
 vars:
-  PINNIPED_VER: '{{ .PINNIPED_VER | default "0.20.0" }}'
-  PINNIPED_CONCIERGE_NAME: '{{ .PINNIPED_CONCIERGE_NAME | default "pinniped-concierge" }}'
+  DEFAULT_PINNIPED_VER: 0.20.0
+  DEFAULT_PINNIPED_CONCIERGE_NAME: pinniped-concierge
+includes:
+  kapp:
+    taskfile: ./kapp.yml
+    vars:
+      APP: '{{ .PINNIPED_CONCIERGE_NAME | default .DEFAULT_PINNIPED_CONCIERGE_NAME }}'
+      FILE: https://get.pinniped.dev/v{{ .PINNIPED_VER | default .DEFAULT_PINNIPED_VER }}/install-pinniped-concierge.yaml
 tasks:
   deploy-concierge:
     cmds:
       - task: kapp:deploy
-        vars:
-          APP: '{{ .PINNIPED_CONCIERGE_NAME }}'
-          FILE: https://get.pinniped.dev/v{{ .PINNIPED_VER }}/install-pinniped-concierge.yaml
   delete-concierge:
     cmds:
       - task: kapp:delete
-        vars:
-          APP: '{{ .PINNIPED_CONCIERGE_NAME }}'
-
