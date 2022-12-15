@@ -20,3 +20,4 @@
     - andrewrothstein.kubeshark
     - andrewrothstein.kubernetes-helm
     - andrewrothstein.k9s
+    - andrewrothstein.cluster_api

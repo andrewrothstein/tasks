@@ -19,6 +19,7 @@ includes:
   hashicorp: tasks/hashicorp.yml
   jetstack: tasks/jetstack.yml
   gatekeeper: tasks/gatekeeper.yml
+  cluster_api: tasks/cluster_api.yml
 tasks:
   pre-mesh-up:
     deps:
