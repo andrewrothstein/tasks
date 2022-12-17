@@ -1,0 +1,37 @@
+---
+version: '3'
+vars:
+  DEFAULT_NS: kubevirt-vms
+includes:
+  kubectl:
+    taskfile: ../../tasks/kubectl.yml
+tasks:
+  apply:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .DEFAULT_NS }}'
+      - task: kubectl:apply
+        sources:
+          - fedora-pvc.yml
+        vars:
+          n: '{{ .DEFAULT_NS }}'
+          f: fedora-pvc.yml
+      - task: kubectl:apply
+        sources:
+          - vm.yml
+        vars:
+          n: '{{ .DEFAULT_NS }}'
+          f: vm.yaml
+  start:
+    deps:
+      - apply
+    vars:
+      n: '{{ .DEFAULT_NS }}'
+    cmds:
+      - virtctl start --namespace "{{ .n }}" jumpstation
+  stop:
+    vars:
+      n: '{{ .DEFAULT_NS }}'
+    cmds:
+      - virtctl stop --namespace "{{ .n }}" jumpstation

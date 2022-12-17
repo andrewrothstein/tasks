@@ -1,0 +1,49 @@
+---
+version: '3'
+vars:
+  DEFAULT_KUBEVIRT_NS: kubevirt
+  DEFAULT_KUBEVIRT_VER: 0.58.0
+  DEFAULT_CDI_NS: cdi
+  DEFAULT_CDI_VER: 1.55.2
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+tasks:
+  apply-kubevirt-operator:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
+          f: https://github.com/kubevirt/kubevirt/releases/download/v{{ .DEFAULT_KUBEVIRT_VER }}/kubevirt-operator.yaml
+      - task: kubectl:apply
+        vars:
+          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
+          f: https://github.com/kubevirt/kubevirt/releases/download/v{{ .DEFAULT_KUBEVIRT_VER }}/kubevirt-cr.yaml
+      - |
+        # enable nested-virtualization
+        kubectl \
+          -n "{{ .DEFAULT_KUBEVIRT_NS }}" \
+          patch \
+          kubevirt \
+          kubevirt \
+          --type=merge --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+  apply-cdi-operator:
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .DEFAULT_CDI_NS }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .DEFAULT_CDI_NS }}'
+          f: https://github.com/kubevirt/containerized-data-importer/releases/download/v{{ .DEFAULT_CDI_VER }}/cdi-operator.yaml
+      - task: kubectl:apply
+        vars:
+          n: '{{ .DEFAULT_CDI_NS }}'
+          f: https://github.com/kubevirt/containerized-data-importer/releases/download/v{{ .DEFAULT_CDI_VER }}/cdi-cr.yaml
+  apply:
+    cmds:
+      - task: apply-kubevirt-operator
+      - task: apply-cdi-operator

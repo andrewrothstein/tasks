@@ -20,12 +20,17 @@ includes:
   jetstack: tasks/jetstack.yml
   gatekeeper: tasks/gatekeeper.yml
   cluster_api: tasks/cluster_api.yml
+  kubevirt: tasks/kubevirt.yml
+  kubevirt-vms:
+    dir: apps/kubevirt-vm
+    taskfile: apps/kubevirt-vm/Taskfile.yml
 tasks:
   pre-mesh-up:
     deps:
       - k8s:up
     cmds:
-      - task: pinniped:deploy-concierge
+      - task: kubevirt:apply
+#      - task: pinniped:deploy-concierge
 #      - task: gatekeeper:install
 #      - task: jetstack:install
   mesh-up:
