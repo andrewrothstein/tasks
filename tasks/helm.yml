@@ -16,8 +16,17 @@ tasks:
       CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "helm-chart-repo-name" }}'
       CHART: '{{ .CHART | default "helm-chart" }}'
       CHART_VER: '{{ .CHART_VER | default "helm-version-constraint" }}'
+      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     cmds:
-      - helm install -n {{ .NAMESPACE }} {{ .NAME }} {{ .CHART_REPO_NAME }}/{{ .CHART }} --version {{ .CHART_VER }}
+      - |
+        helm \
+          install \
+          -n "{{ .NAMESPACE }}" \
+          "{{ .NAME }}" \
+          "{{ .CHART_REPO_NAME }}/{{ .CHART }}" \
+          --version "{{ .CHART_VER }}" \
+          "{{ .HELM_ARGS }}"
+
     status:
       - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
   delete:
