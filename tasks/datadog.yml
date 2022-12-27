@@ -1,0 +1,48 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    internal: true
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  DATADOG_CHART_REPO_NAME: datadog
+  DATADOG_CHART_REPO_URL: https://helm.datadoghq.com
+  DATADOG_CHART: datadog
+  DATADOG_CHART_VER: '{{ .DATADOG_CHART_VER | default "3.6.4" }}'
+  DATADOG_NS: '{{ .DATADOG_NS | default "datadog" }}'
+  DATADOG_NAME: '{{ .DATADOG_NAME | default "datadog" }}'
+tasks:
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .DATADOG_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .DATADOG_CHART_REPO_URL }}'
+  install:
+    deps:
+      - helm-repo-add
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .DATADOG_NS }}'
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .DATADOG_NS }}'
+          NAME: '{{ .DATADOG_NAME }}'
+          CHART_REPO_NAME: '{{ .DATADOG_CHART_REPO_NAME }}'
+          CHART: '{{ .DATADOG_CHART }}'
+          CHART_VER: '{{ .DATADOG_CHART_VER }}'
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .DATADOG_NS }}'
+          NAME: '{{ .DATADOG_NAME }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .DATADOG_NS }}'
+
