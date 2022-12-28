@@ -25,7 +25,7 @@ tasks:
           "{{ .NAME }}" \
           "{{ .CHART_REPO_NAME }}/{{ .CHART }}" \
           --version "{{ .CHART_VER }}" \
-          "{{ .HELM_ARGS }}"
+          {{ .HELM_ARGS }}
 
     status:
       - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
