@@ -50,7 +50,7 @@ tasks:
           CHART: '{{ .CHART }}'
           CHART_VER: '{{ .CHART_VER }}'
           HELM_ARGS: >
-            --set auth.username={{ .ADMIN_USER }}
+            --set auth.username={{ .ADMIN_USERNAME }}
             --set auth.password={{ .ADMIN_PASSWORD }}
             --set auth.database={{ .ADMIN_DB }}
             --set persistence.size={{ .DB_SIZE }}
