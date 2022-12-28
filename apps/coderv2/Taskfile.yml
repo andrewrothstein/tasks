@@ -1,0 +1,90 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: ../../tasks/helm.yml
+    internal: true
+  kubectl:
+    taskfile: ../../tasks/kubectl.yml
+    internal: true
+  bitnami:
+    taskfile: ../../tasks/bitnami.yml
+    internal: true
+vars:
+  CODER_CHART_REPO_NAME:  coder-v2
+  CODER_CHART_REPO_URL: https://helm.coder.com/v2
+  CODER_CHART: coder
+  CODER_DEFAULT_CHART_VER: 0.13.6
+  CODER_DEFAULT_NS: coder
+  CODER_DEFAULT_NAME: coder
+  CODER_ADMIN_USERNAME: coder
+  CODER_ADMIN_PASSWORD: coder
+  CODER_ADMIN_DB: coder
+  CODER_DB_SIZE: 10Gi
+  CODER_DB_SECRET_NAME: coder-db-url
+tasks:
+  default:
+    deps:
+      - install
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .CODER_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .CODER_CHART_REPO_URL }}'
+  install:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .CODER_DEFAULT_NS }}'
+      NAME: '{{ .NAME | default .CODER_DEFAULT_NAME }}'
+      CHART_REPO_NAME: '{{ .CODER_CHART_REPO_NAME }}'
+      CHART: '{{ .CHART | default .CODER_CHART }}'
+      CHART_VER: '{{ .CHART_VER | default .CODER_DEFAULT_CHART_VER }}'
+      PG_CONN_STR: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql.svc.cluster.local:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
+    deps:
+      - helm-repo-add
+      - task: bitnami:postgres-install
+        vars:
+          ADMIN_USERNAME: '{{ .CODER_ADMIN_USERNAME }}'
+          ADMIN_PASSWORD: '{{ .CODER_ADMIN_PASSWORD }}'
+          ADMIN_DB: '{{ .CODER_ADMIN_DB }}'
+          DB_SIZE: '{{ .CODER_DB_SIZE }}'
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .NAMESPACE }}'
+      - |
+        kubectl \
+          create \
+          secret \
+          generic \
+          {{ .CODER_DB_SECRET_NAME | quote }} \
+          -n "{{ .NAMESPACE }}" \
+          --from-literal=url={{ .PG_CONN_STR | quote }}
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          HELM_ARGS: --values values.yaml
+  delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .CODER_DEFAULT_NS }}'
+      NAME: '{{ .NAME | default .CODER_DEFAULT_NAME }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+      - |
+        kubectl \
+          delete \
+          secret \
+          {{ .CODER_DB_SECRET_NAME | quote }} \
+          -n "{{ .NAMESPACE }}"
+      - task: bitnami:postgres-delete
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .NAMESPACE }}'
