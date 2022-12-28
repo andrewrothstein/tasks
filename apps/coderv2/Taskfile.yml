@@ -40,7 +40,7 @@ tasks:
       CHART_REPO_NAME: '{{ .CODER_CHART_REPO_NAME }}'
       CHART: '{{ .CHART | default .CODER_CHART }}'
       CHART_VER: '{{ .CHART_VER | default .CODER_DEFAULT_CHART_VER }}'
-      PG_CONN_STR: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql.svc.cluster.local:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
+      PG_CONN_STR: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql.postgresql.svc.cluster.local:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
     deps:
       - helm-repo-add
       - task: bitnami:postgres-install
