@@ -23,25 +23,35 @@ tasks:
           CHART_REPO_NAME: '{{ .HASHICORP_CHART_REPO_NAME }}'
           CHART_REPO_URL: '{{ .HASHICORP_CHART_REPO_URL }}'
   vault-install:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .HASHICORP_VAULT_NS }}'
+      NAME: '{{ .NAME | default .HASHICORP_VAULT_NAME }}'
+      DEVROOTTOKEN: '{{ .DEVROOTTOKEN | default "27dc762e-8795-11ed-a263-38d54714ef1a" }}'
     deps:
       - helm-repo-add
     cmds:
       - task: kubectl:ns-create
         vars:
-          n: '{{ .HASHICORP_VAULT_NS }}'
+          n: '{{ .NAMESPACE }}'
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .HASHICORP_VAULT_NS }}'
-          NAME: '{{ .HASHICORP_VAULT_NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
           CHART_REPO_NAME: '{{ .HASHICORP_CHART_REPO_NAME }}'
           CHART: '{{ .HASHICORP_VAULT_CHART }}'
           CHART_VER: '{{ .HASHICORP_VAULT_CHART_VER }}'
+          HELM_ARGS: >
+            --set server.dev.enabled=true
+            --set server.dev.devRootToken='{{ .DEVROOTTOKEN }}'
   vault-delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .HASHICORP_VAULT_NS }}'
+      NAME: '{{ .NAME | default .HASHICORP_VAULT_NAME }}'
     cmds:
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .HASHICORP_VAULT_NS }}'
-          NAME: '{{ .HASHICORP_VAULT_NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
       - task: kubectl:ns-delete
         vars:
-          n: '{{ .HASHICORP_VAULT_NS }}'
+          n: '{{ .NAMESPACE }}'

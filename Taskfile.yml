@@ -29,7 +29,7 @@ tasks:
     deps:
       - k8s:up
     cmds:
-      - task: kubevirt:apply
+      - task: hashicorp:vault-install
 #      - task: pinniped:deploy-concierge
 #      - task: gatekeeper:install
 #      - task: jetstack:install
