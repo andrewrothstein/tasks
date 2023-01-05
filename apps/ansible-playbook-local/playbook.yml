@@ -22,3 +22,4 @@
     - andrewrothstein.k9s
     - andrewrothstein.cluster_api
     - andrewrothstein.kubevirt
+    - andrewrothstein.flux

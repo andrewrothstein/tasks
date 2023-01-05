@@ -1,0 +1,10 @@
+---
+version: '3'
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - flux check --pre
+      - flux install
