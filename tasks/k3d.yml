@@ -2,15 +2,16 @@
 version: '3'
 vars:
   CLUSTER_NAME: bootstrap
-  K3S_ARGS: --disable=traefik@server:0
 tasks:
   up:
+    vars:
+      K3S_ARGS: --disable=traefik@server:0
     cmds:
-      - k3d cluster create bootstrap --k3s-arg "{{ .K3S_ARGS }}"
+      - k3d cluster create bootstrap --k3s-arg {{ .K3S_ARGS | quote }}
     status:
-      - k3d cluster list "{{ .CLUSTER_NAME }}"
+      - k3d cluster list {{ .CLUSTER_NAME | quote }}
   delete:
     cmds:
-      - k3d cluster delete "{{ .CLUSTER_NAME }}"
+      - k3d cluster delete {{ .CLUSTER_NAME | quote }}
     preconditions:
-      - k3d cluster list "{{ .CLUSTER_NAME }}"
+      - k3d cluster list {{ .CLUSTER_NAME | quote }}
