@@ -7,6 +7,7 @@ tasks:
       CHART_REPO_URL: '{{ .CHART_REPO_URL | default "https://my-chart-museum/charts/" }}'
     cmds:
       - helm repo add {{ .CHART_REPO_NAME }} {{ .CHART_REPO_URL }}
+      - helm repo update
     status:
       - helm repo list -o json | jq -e '.[] | select(.name=={{ .CHART_REPO_NAME | quote }})'
   install:

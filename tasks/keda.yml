@@ -1,0 +1,61 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    internal: true
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  KEDA_CHART_REPO_NAME: kedacore
+  KEDA_CHART_REPO_URL: https://kedacore.github.io/charts
+  KEDA_CHART: keda
+  KEDA_DEFAULT_CHART_VER: 2.9.3
+  KEDA_DEFAULT_NS: keda
+  KEDA_DEFAULT_NAME: keda
+tasks:
+  default:
+    deps:
+      - install
+  helm-repo-add:
+    internal: true
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .KEDA_CHART_REPO_NAME }}'
+          CHART_REPO_URL: '{{ .KEDA_CHART_REPO_URL }}'
+  install:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .KEDA_DEFAULT_NS }}'
+      NAME: '{{ .NAME | default .KEDA_DEFAULT_NAME }}'
+      CHART_REPO_NAME: '{{ .KEDA_CHART_REPO_NAME }}'
+      CHART: '{{ .KEDA_CHART }}'
+      CHART_VER: '{{ .CHART_VER | default .KEDA_DEFAULT_CHART_VER }}'
+      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
+    deps:
+      - helm-repo-add
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .NAMESPACE }}'
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
+  delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default .KEDA_DEFAULT_NS }}'
+      NAME: '{{ .NAME | default .KEDA_DEFAULT_NAME }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .NAMESPACE }}'
