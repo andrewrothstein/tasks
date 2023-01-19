@@ -19,7 +19,7 @@ tasks:
       - docker-registry:apply
     cmds:
       - |
-        kind create cluster -n {{ .CLUSTER_NAME }} --config=- <<HERE
+        kind create cluster -n {{ .CLUSTER_NAME | quote }} --config=- <<HERE
         ---
         kind: Cluster
         apiVersion: kind.x-k8s.io/v1alpha4
@@ -33,7 +33,7 @@ tasks:
           [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:{{ .REGISTRY_HOST_PORT }}"]
             endpoint = ["http://{{ .REGISTRY_NAME }}:{{ .REGISTRY_HOST_PORT }}"]
         HERE
-      - docker network connect kind {{ .REGISTRY_NAME }} || true
+      - docker network connect kind {{ .REGISTRY_NAME | quote }} || true
       - |
         cat <<EOF | kubectl apply -f -
         ---
@@ -48,10 +48,10 @@ tasks:
             help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
         EOF
     status:
-      - kind get clusters | grep {{ .CLUSTER_NAME }}
+      - kind get clusters | grep {{ .CLUSTER_NAME | quote }}
   delete:
     vars:
       CLUSTER_NAME: '{{ .CLUSTER_NAME | default .DEFAULT_CLUSTER_NAME }}'
     cmds:
-      - kind delete clusters {{ .CLUSTER_NAME }}
+      - kind delete clusters {{ .CLUSTER_NAME | quote }}
       - task: docker-registry:delete
