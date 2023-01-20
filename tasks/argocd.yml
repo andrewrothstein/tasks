@@ -4,17 +4,28 @@ vars:
   DEFAULT_ARGO_CD_NS: argo-cd
   DEFAULT_ARGO_CD_VER: 2.5.4
 includes:
-  argo-proj:
-    taskfile: argo-proj.yml
-    vars:
-      ARGO_PROJ_NS: '{{ .ARGO_CD_NS | default .DEFAULT_ARGO_CD_NS }}'
-      ARGO_PROJ_NAME: cd
-      ARGO_PROJ_VER: '{{ .ARGO_CD_VER | default .DEFAULT_ARGO_CD_VER }}'
+  argo-raw:
+    taskfile: argo-raw.yml
     internal: true
+    vars:
+      n: argo-cd
+      p: cd
+      v: 2.5.4
 tasks:
+  default:
+    deps:
+      - apply
   apply:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
     cmds:
-      - task: argo-proj:apply
+      - task: argo-raw:apply
   delete:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
     cmds:
-      - task: argo-proj:delete
+      - task: argo-raw:delete

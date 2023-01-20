@@ -1,0 +1,37 @@
+---
+version: '3'
+vars:
+  ARGO_MIRROR: '{{ .ARGO_MIRROR | default "https://raw.githubusercontent.com/argoproj" }}'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+tasks:
+  apply:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
+      y: '{{ .y | default "install.yaml" }}'
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .n }}'
+      - task: kubectl:apply
+        vars:
+          n: '{{ .n }}'
+          f: '{{ .ARGO_MIRROR }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
+  delete:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
+      y: '{{ .y | default "install.yaml" }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          n: '{{ .n }}'
+          f: '{{ .ARGO_MIRROR }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .n }}'

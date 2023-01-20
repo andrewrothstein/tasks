@@ -1,20 +1,28 @@
 ---
 version: '3'
-vars:
-  DEFAULT_ARGO_ROLLOUTS_NS: argo-rollouts
-  DEFAULT_ARGO_ROLLOUTS_VER: 1.3.0
 includes:
-  argo-proj:
-    taskfile: argo-proj.yml
-    vars:
-      ARGO_PROJ_NS: '{{ .ARGO_ROLLOUTS_NS | default .DEFAULT_ARGO_ROLLOUTS_NS }}'
-      ARGO_PROJ_NAME: rollouts
-      ARGO_PROJ_VER: '{{ .ARGO_ROLLOUTS_VER | default .DEFAULT_ARGO_ROLLOUTS_VER }}'
+  argo-raw:
+    taskfile: argo-raw.yml
     internal: true
+    vars:
+      n: argo-rollouts
+      p: rollouts
+      v: 1.3.0
 tasks:
+  default:
+    deps:
+      - apply
   apply:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
     cmds:
-      - task: argo-proj:apply
+      - task: argo-raw:apply
   delete:
+    vars:
+      n: '{{ .n }}'
+      p: '{{ .p }}'
+      v: '{{ .v }}'
     cmds:
-      - task: argo-proj:delete
+      - task: argo-raw:delete
