@@ -5,64 +5,118 @@ includes:
     taskfile: kubectl.yml
     internal: true
 vars:
-  KNATIVE_DEFAULT_VER: 1.8.2
+  KNATIVE_OPERATOR_DEFAULT_VER: 1.8.2
+  KNATIVE_SERVING_DEFAULT_VER: 1.8.3
+  KNATIVE_EVENTING_DEFAULT_VER: 1.8.5
+  KNATIVE_MIRROR: https://github.com/knative
 tasks:
   default:
     deps:
       - install
-  install-operator:
+  install-component:
     vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+      c: '{{ .c }}'
+      v: '{{ .v }}'
+      y: '{{ .y }}'
     cmds:
       - task: kubectl:apply
         vars:
-          f: https://github.com/knative/operator/releases/download/knative-v{{ .KNATIVE_VER }}/operator.yaml
-  delete-operator:
+          f: '{{ .KNATIVE_MIRROR }}/{{ .c }}/releases/download/knative-v{{ .v }}/{{ .y }}'
+  delete-component:
     vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+      c: '{{ .c }}'
+      v: '{{ .v }}'
+      y: '{{ .y }}'
     cmds:
       - task: kubectl:delete
         vars:
-          f: https://github.com/knative/operator/releases/download/knative-v{{ .KNATIVE_VER }}/operator.yaml
+          f: '{{ .KNATIVE_MIRROR }}/{{ .c }}/releases/download/knative-v{{ .v }}/{{ .y }}'
+  install-operator:
+    cmds:
+      - task: install-component
+        vars:
+          c: operator
+          v: '{{ .v | default .KNATIVE_OPERATOR_DEFAULT_VER }}'
+          y: operator.yaml
+  delete-operator:
+    cmds:
+      - task: delete-component
+        vars:
+          c: operator
+          v: '{{ .v | default .KNATIVE_OPERATOR_DEFAULT_VER }}'
+          y: operator.yaml
   install-serving-crds:
-    vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
     deps:
       - install-operator
     cmds:
-      - task: kubectl:apply
+      - task: install-component
         vars:
-          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-crds.yaml
+          c: serving
+          v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
+          y: serving-crds.yaml
   delete-serving-crds:
-    vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
     cmds:
-      - task: kubectl:delete
+      - task: delete-component
         vars:
-          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-crds.yaml
+          c: serving
+          v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
+          y: serving-crds.yaml
   install-serving-core:
-    vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
     deps:
       - install-serving-crds
     cmds:
-      - task: kubectl:apply
+      - task: install-component
         vars:
-          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-core.yaml
+          c: serving
+          v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
+          y: serving-core.yaml
   delete-serving-core:
-    vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
     cmds:
-      - task: kubectl:delete
+      - task: delete-component
         vars:
-          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-core.yaml
+          c: serving
+          v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
+          y: serving-core.yaml
+  install-eventing-crds:
+    deps:
+      - install-operator
+    cmds:
+      - task: install-component
+        vars:
+          c: eventing
+          v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
+          y: eventing-crds.yaml
+  delete-eventing-crds:
+    cmds:
+      - task: delete-component
+        vars:
+          c: eventing
+          v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
+          y: eventing-crds.yaml
+  install-eventing-core:
+    deps:
+      - install-eventing-crds
+    cmds:
+      - task: install-component
+        vars:
+          c: eventing
+          v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
+          y: eventing-core.yaml
+  delete-eventing-core:
+    cmds:
+      - task: delete-component
+        vars:
+          c: eventing
+          v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
+          y: eventing-core.yaml
   install:
     deps:
       - install-serving-core
+      - install-eventing-core
   delete:
-    vars:
-      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
     cmds:
       - task: delete-serving-core
       - task: delete-serving-crds
+      - task: delete-eventing-core
+      - task: delete-eventing-crds
       - task: delete-operator
