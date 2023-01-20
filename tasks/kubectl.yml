@@ -3,48 +3,47 @@ version: '3'
 tasks:
   ns-label:
     vars:
-      labels: '{{ .labels | default "" }}'
+      n: '{{ .n | default "default" }}'
+      labels: '{{ .labels | default "label1,label2,label3" }}'
     cmds:
-      - kubectl label namespace "{{ .n }}" "{{ .labels }}" --overwrite
+      - kubectl label namespace {{ .n | quote }} {{ .labels | quote }} --overwrite
   ns-create:
     vars:
-      n: '{{ default "my-project" .n }}'
+      n: '{{ .n | default "default" }}'
     cmds:
-      - kubectl create namespace "{{ .n }}"
+      - kubectl create namespace {{ .n | quote }}
     status:
-      - kubectl get namespace "{{ .n }}"
+      - kubectl get namespace {{ .n | quote }}
   ns-delete:
     vars:
-      n: '{{ default "my-project" .n }}'
+      n: '{{ .n | default "default" }}'
     preconditions:
-      - kubectl get namespace "{{ .n }}"
+      - kubectl get namespace {{ .n | quote }}
     cmds:
-      - kubectl delete namespace "{{ .n }}"
+      - kubectl delete namespace {{ .n | quote }}
   apply:
     vars:
-      n: '{{ default "my-project" .n }}'
-      f: '{{ default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
+      n: '{{ .n | default "" }}'
+      f: '{{ .f | default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" }}'
     cmds:
-      - kubectl apply -n "{{ .n }}" -f "{{ .f }}"
+      - kubectl apply{{ if .n }} -n {{ .n | quote }}{{ end }} -f {{ .f | quote }}
   delete:
     vars:
-      n: '{{ default "my-project" .n }}'
-      f: '{{ default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
-    preconditions:
-      - kubectl get namespace "{{ .n }}"
+      n: '{{ .n | default "" }}'
+      f: '{{ .f | default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
     cmds:
-      - kubectl delete -n "{{ .n }}" -f "{{ .f }}"
+      - kubectl delete{{ if .n }} -n {{ .n | quote }}{{ end }} -f {{ .f | quote }}
   kapply:
     vars:
-      n: '{{ default "my-project" .n }}'
-      k: '{{ default "kustomize.yaml" .k }}'
+      n: '{{ .n | default "" }}'
+      k: '{{ .k | default "kustomize.yaml" }}'
     cmds:
-      - kubectl apply -n "{{ .n }}" -k "{{ .f }}"
+      - kubectl apply{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}
   kdelete:
     vars:
-      n: '{{ default "my-project" .n }}'
-      k: '{{ default "kustomize.yaml" .k }}'
+      n: '{{ .n | default "" }}'
+      k: '{{ .k | default "kustomize.yaml" }}'
     preconditions:
-      - kubectl get namespace "{{ .n }}"
+      - kubectl get namespace {{ .n | quote }}
     cmds:
-      - kubectl delete -n "{{ .n }}" -k "{{ .k }}"
+      - kubectl delete{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}

@@ -1,0 +1,68 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+vars:
+  KNATIVE_DEFAULT_VER: 1.8.2
+tasks:
+  default:
+    deps:
+      - install
+  install-operator:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: https://github.com/knative/operator/releases/download/knative-v{{ .KNATIVE_VER }}/operator.yaml
+  delete-operator:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: https://github.com/knative/operator/releases/download/knative-v{{ .KNATIVE_VER }}/operator.yaml
+  install-serving-crds:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    deps:
+      - install-operator
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-crds.yaml
+  delete-serving-crds:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-crds.yaml
+  install-serving-core:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    deps:
+      - install-serving-crds
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-core.yaml
+  delete-serving-core:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: https://github.com/knative/serving/releases/download/knative-v{{ .KNATIVE_VER }}/serving-core.yaml
+  install:
+    deps:
+      - install-serving-core
+  delete:
+    vars:
+      KNATIVE_VER: '{{ .KNATIVE_VER | default .KNATIVE_DEFAULT_VER }}'
+    cmds:
+      - task: delete-serving-core
+      - task: delete-serving-crds
+      - task: delete-operator
