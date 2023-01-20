@@ -29,10 +29,16 @@ tasks:
     deps:
       - k8s:up
     cmds:
+#      - task: gatekeeper:install
       - task: hashicorp:vault-install
 #      - task: pinniped:deploy-concierge
-#      - task: gatekeeper:install
 #      - task: jetstack:install
+  pre-mesh-delete:
+    deps:
+#      - jetstack:delete
+#      - pinniped:delete-concierge
+      - hashicorp:vault-delete
+#      - gatekeeper:delete
   mesh-up:
     deps:
       - pre-mesh-up
@@ -43,20 +49,16 @@ tasks:
       - mesh-up
     cmds:
       - task: argocd:apply
+      - task: argo-events:apply
       - task: argo:apply
       - task: argo-rollouts:apply
-      - task: gitea:install
-      - task: hashicorp:vault-install
-  pre-mesh-delete:
-    deps:
-      - jetstack:delete
-      - gatekeeper:delete
+#      - task: gitea:install
   mesh-delete:
     deps:
-      - hashicorp:vault-delete
-      - gitea:delete
+#      - gitea:delete
       - argo-rollouts:delete
       - argo:delete
+      - argo-events:delete
       - argocd:delete
     cmds:
       - task: istio:delete
