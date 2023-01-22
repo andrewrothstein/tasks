@@ -8,7 +8,8 @@ vars:
   KNATIVE_OPERATOR_DEFAULT_VER: 1.8.2
   KNATIVE_SERVING_DEFAULT_VER: 1.8.3
   KNATIVE_EVENTING_DEFAULT_VER: 1.8.5
-  KNATIVE_MIRROR: https://github.com/knative
+  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.8.6
+  KNATIVE_MIRROR: https://github.com
 tasks:
   default:
     deps:
@@ -35,84 +36,114 @@ tasks:
     cmds:
       - task: install-component
         vars:
-          c: operator
+          c: knative/operator
           v: '{{ .v | default .KNATIVE_OPERATOR_DEFAULT_VER }}'
           y: operator.yaml
   delete-operator:
     cmds:
       - task: delete-component
         vars:
-          c: operator
+          c: knative/operator
           v: '{{ .v | default .KNATIVE_OPERATOR_DEFAULT_VER }}'
           y: operator.yaml
   install-serving-crds:
-    deps:
-      - install-operator
     cmds:
       - task: install-component
         vars:
-          c: serving
+          c: knative/serving
           v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
           y: serving-crds.yaml
   delete-serving-crds:
     cmds:
       - task: delete-component
         vars:
-          c: serving
+          c: knative/serving
           v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
           y: serving-crds.yaml
   install-serving-core:
-    deps:
-      - install-serving-crds
     cmds:
       - task: install-component
         vars:
-          c: serving
+          c: knative/serving
           v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
           y: serving-core.yaml
   delete-serving-core:
     cmds:
       - task: delete-component
         vars:
-          c: serving
+          c: knative/serving
           v: '{{ .v | default .KNATIVE_SERVING_DEFAULT_VER }}'
           y: serving-core.yaml
   install-eventing-crds:
-    deps:
-      - install-operator
     cmds:
       - task: install-component
         vars:
-          c: eventing
+          c: knative/eventing
           v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
           y: eventing-crds.yaml
   delete-eventing-crds:
     cmds:
       - task: delete-component
         vars:
-          c: eventing
+          c: knative/eventing
           v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
           y: eventing-crds.yaml
   install-eventing-core:
-    deps:
-      - install-eventing-crds
     cmds:
       - task: install-component
         vars:
-          c: eventing
+          c: knative/eventing
           v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
           y: eventing-core.yaml
   delete-eventing-core:
     cmds:
       - task: delete-component
         vars:
-          c: eventing
+          c: knative/eventing
           v: '{{ .v | default .KNATIVE_EVENTING_DEFAULT_VER }}'
           y: eventing-core.yaml
+  install-eventing-kafka-broker:
+    cmds:
+      - task: install-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-controller.yaml
+      - task: install-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-channel.yaml
+      - task: install-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-broker.yaml
+  delete-eventing-kafka-broker:
+    cmds:
+      - task: delete-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-broker.yaml
+      - task: delete-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-channel.yaml
+      - task: delete-component
+        vars:
+          c: knative-sandbox/eventing-kafka-broker
+          v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
+          y: eventing-kafka-controller.yaml
   install:
     deps:
+      - install-operator
+      - install-serving-crds
       - install-serving-core
+      - install-eventing-crds
       - install-eventing-core
+      - install-eventing-kafka-broker
   delete:
     cmds:
       - task: delete-serving-core

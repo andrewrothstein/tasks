@@ -26,6 +26,7 @@ includes:
   kubevirt-vms:
     dir: apps/kubevirt-vm
     taskfile: apps/kubevirt-vm/Taskfile.yml
+  knative: tasks/knative.yml
 tasks:
   pre-mesh-up:
     deps:
@@ -33,6 +34,7 @@ tasks:
     cmds:
 #      - task: gatekeeper:install
       - task: vault-dev:install
+      - task: knative:install
 #      - task: pinniped:deploy-concierge
 #      - task: jetstack:install
   pre-mesh-delete:
