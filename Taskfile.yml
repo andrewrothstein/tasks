@@ -16,7 +16,9 @@ includes:
   argo-events: tasks/argo-events.yml
   argo-rollouts: tasks/argo-rollouts.yml
   gitea: tasks/gitea.yml
-  hashicorp: tasks/hashicorp.yml
+  vault-dev:
+    dir: apps/vault-dev
+    taskfile: apps/vault-dev
   jetstack: tasks/jetstack.yml
   gatekeeper: tasks/gatekeeper.yml
   cluster_api: tasks/cluster_api.yml
@@ -30,7 +32,7 @@ tasks:
       - k8s:up
     cmds:
 #      - task: gatekeeper:install
-      - task: hashicorp:vault-install
+      - task: vault-dev:install
 #      - task: pinniped:deploy-concierge
 #      - task: jetstack:install
   pre-mesh-delete:

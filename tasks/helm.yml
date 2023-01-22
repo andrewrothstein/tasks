@@ -3,38 +3,38 @@ version: '3'
 tasks:
   repo-add:
     vars:
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "my-charts" }}'
-      CHART_REPO_URL: '{{ .CHART_REPO_URL | default "https://my-chart-museum/charts/" }}'
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+      CHART_REPO_URL: '{{ .CHART_REPO_URL }}'
     cmds:
-      - helm repo add {{ .CHART_REPO_NAME }} {{ .CHART_REPO_URL }}
+      - helm repo add {{ .CHART_REPO_NAME | quote }} {{ .CHART_REPO_URL | quote }}
       - helm repo update
     status:
       - helm repo list -o json | jq -e '.[] | select(.name=={{ .CHART_REPO_NAME | quote }})'
   install:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "helm-install-namespace" }}'
-      NAME: '{{ .NAME | default "helm-release-name" }}'
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "helm-chart-repo-name" }}'
-      CHART: '{{ .CHART | default "helm-chart" }}'
-      CHART_VER: '{{ .CHART_VER | default "helm-version-constraint" }}'
+      NAMESPACE: '{{ .NAMESPACE }}'
+      NAME: '{{ .NAME }}'
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+      CHART: '{{ .CHART }}'
+      CHART_VER: '{{ .CHART_VER }}'
       HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     cmds:
       - |
         helm \
           install \
-          -n "{{ .NAMESPACE }}" \
-          "{{ .NAME }}" \
+          -n {{ .NAMESPACE | quote }} \
+          {{ .NAME | quote }} \
           "{{ .CHART_REPO_NAME }}/{{ .CHART }}" \
-          --version "{{ .CHART_VER }}" \
+          --version {{ .CHART_VER | quote }} \
           {{ .HELM_ARGS }}
 
     status:
-      - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+      - helm list -n {{ .NAMESPACE | quote }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
   delete:
     vars:
-      NAMESPACE: '{{ default "helm-install-namespace" .NAMESPACE }}'
-      NAME: '{{ default "helm-release-name" .NAME }}'
+      NAMESPACE: '{{ .NAMESPACE }}'
+      NAME: '{{ .NAME }}'
     preconditions:
-      - helm list -n {{ .NAMESPACE }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+      - helm list -n {{ .NAMESPACE | quote }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
     cmds:
-      - helm delete -n {{ .NAMESPACE }} {{ .NAME }}
+      - helm delete -n {{ .NAMESPACE | quote }} {{ .NAME | quote }}
