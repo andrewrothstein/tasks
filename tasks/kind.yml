@@ -35,7 +35,7 @@ tasks:
         HERE
       - docker network connect kind {{ .REGISTRY_NAME | quote }} || true
       - |
-        cat <<EOF | kubectl apply -f -
+        kubectl apply -f - <<EOF
         ---
         apiVersion: v1
         kind: ConfigMap
