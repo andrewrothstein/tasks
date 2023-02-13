@@ -1,0 +1,50 @@
+---
+version: '3'
+includes:
+  ansible:
+    taskfile: ../../tasks/ansible.yml
+  dcb:
+    taskfile: ../../tasks/dcb.yml
+tasks:
+  default:
+    cmds:
+      - task: ansible:galaxy-deps
+        vars:
+          requirements: '{{ .USER_WORKING_DIR }}/meta/requirements.yml'
+      - task: ansible:galaxy-deps
+        vars:
+          requirements: '{{ .USER_WORKING_DIR }}/test-requirements.yml'
+      - task: ansible:playbook
+        vars:
+          c: local
+          i: localhost,
+          limit: localhost
+          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
+      - task: dcb:default
+  generate-checksum:
+    internal: true
+    vars:
+      append: '{{ .append | default false }}'
+      dl: '{{ .dl }}'
+      target: '{{ .target }}'
+    cmds:
+      - |
+        if [ -e {{ .dl | quote }} ];
+        then
+          '{{ .dl }}' {{ if .append }} >> {{ .t | quote }}{{ end }}
+        fi
+  generate-checksums:
+    vars:
+      append: '{{ .append | default false }}'
+      target: '{{ .USER_WORKING_DIR }}/defaults/main.yml'
+    cmds:
+      - task: generate-checksum
+        vars:
+          append: '{{ .append }}'
+          dl: '{{ .USER_WORKING_DIR }}/dl-checksum.sh'
+          target: '{{ .target }}'
+      - task: generate-checksum
+        vars:
+          append: '{{ .append }}'
+          dl: '{{ .USER_WORKING_DIR }}/dl-checksum.sh'
+          target: '{{ .target }}'

@@ -1,0 +1,28 @@
+---
+version: '3'
+tasks:
+  pip-install:
+    vars:
+      python_exe: '{{ .python_exe | default "python" }}'
+      upgrade: '{{ .upgrade | default false }}'
+      pkg: '{{ .pkg | default "" }}'
+    cmds:
+      - |
+        {{ .python_exe | quote }} \
+          -m pip \
+          install \
+          {{ if .upgrade }}--upgrade{{ end }} \
+          {{ if .pkg }}{{ .pkg | quote }}{{ end }}
+  pip-installr:
+    vars:
+      python_exe: '{{ .python_exe | default "python" }}'
+      requirements: '{{ .requirements | default "requirements.txt" }}'
+    cmds:
+      - |
+        if [ -f {{ .requirements | quote }} ]
+        then
+        {{ .python_exe | quote }} \
+          -m pip \
+          install \
+          -r {{ .requirements | quote }}
+        fi

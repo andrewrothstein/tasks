@@ -1,22 +1,25 @@
 ---
 version: '3'
-vars:
-  LIMIT: '{{ .LIMIT | default "localhost" }}'
 tasks:
-  galaxy-install:
-    sources:
-      - requirements.yml
+  galaxy-deps:
+    vars:
+      requirements: '{{ .requirements | default "requirements.yml" }}'
     cmds:
-      - ansible-galaxy install -r requirements.yml
-    generates:
-      - .ansible-roles/**/*.yml
+      - |
+        if [ -e {{ .requirements | quote }} ];
+        then
+          ansible-galaxy install -r {{ .requirements | quote }}
+        fi
   playbook:
-    deps:
-      - galaxy-install
+    vars:
+      limit: '{{ .limit | default "" }}'
+      i: '{{ .i | default "" }}'
+      c: '{{ .c | default "" }}'
+      playbook: '{{ .playbook | default "playbook.yml" }}'
     cmds:
-      - ansible-playbook --limit "{{ .LIMIT }}" playbook.yml
-      - echo done >> .onetime
-    sources:
-      - playbook.yml
-    generates:
-      - .onetime
+      - |
+        ansible-playbook \
+          {{ if .i }}-i {{ .i | quote }}{{ end }} \
+          {{ if .c }}-c {{ .c | quote }}{{ end }} \
+          {{ if .limit }}--limit {{ .limit | quote }}{{ end }} \
+          {{ .playbook | quote }}
