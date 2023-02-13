@@ -10,6 +10,9 @@ tasks:
     cmds:
       - task: ansible:galaxy-deps
         vars:
+          requirements: '{{ .USER_WORKING_DIR }}/requirements.yml'
+      - task: ansible:galaxy-deps
+        vars:
           requirements: '{{ .USER_WORKING_DIR }}/meta/requirements.yml'
       - task: ansible:galaxy-deps
         vars:
@@ -21,6 +24,8 @@ tasks:
           limit: localhost
           playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   default:
+    deps:
+      - dcb:setup-python
     cmds:
       - task: dcb:default
         vars:

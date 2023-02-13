@@ -4,9 +4,15 @@ includes:
   python:
     taskfile: python.yml
 tasks:
-  default:
+  setup-python:
     vars:
       dcbver: '{{ .dcbver | default "dcb == 0.1.2" }}'
+    cmds:
+      - task: python:pip-install
+        vars:
+          pkg: '{{ .dcbver }}'
+  default:
+    vars:
       dcb: '{{ .dcb | default "dcb" }}'
       upstreamregistry: '{{ .upstreamregistry | default "ghcr.io" }}'
       upstreamgroup: '{{ .upstreamgroup | default "andrewrothstein" }}'
@@ -14,9 +20,6 @@ tasks:
       targetregistry: '{{ .targetregistry | default .upstreamregsitry }}'
       alltags: '{{ .alltags | default "" }}'
     cmds:
-      - task: python:pip-install
-        vars:
-          pkg: '{{ .dcbver }}'
       - |
         cd {{ .USER_WORKING_DIR }};
         {{ .dcb | quote }} \
