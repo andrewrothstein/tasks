@@ -6,7 +6,7 @@ includes:
   dcb:
     taskfile: ../../tasks/dcb.yml
 tasks:
-  default:
+  local:
     cmds:
       - task: ansible:galaxy-deps
         vars:
@@ -20,7 +20,11 @@ tasks:
           i: localhost,
           limit: localhost
           playbook: '{{ .USER_WORKING_DIR }}/test.yml'
+  default:
+    cmds:
       - task: dcb:default
+        vars:
+          dcb: '{{ .dcb | default "dcb" }}'
   generate-checksum:
     internal: true
     vars:

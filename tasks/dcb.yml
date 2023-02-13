@@ -7,6 +7,7 @@ tasks:
   default:
     vars:
       dcbver: '{{ .dcbver | default "dcb == 0.1.2" }}'
+      dcb: '{{ .dcb | default "dcb" }}'
       upstreamregistry: '{{ .upstreamregistry | default "ghcr.io" }}'
       upstreamgroup: '{{ .upstreamgroup | default "andrewrothstein" }}'
       upstreamapp: '{{ .upstreamapp | default "docker-ansible" }}'
@@ -17,7 +18,8 @@ tasks:
         vars:
           pkg: '{{ .dcbver }}'
       - |
-        dcb \
+        cd {{ .USER_WORKING_DIR }};
+        {{ .dcb | quote }} \
           --upstreamregistry {{ .upstreamregistry | quote }} \
           --upstreamgroup {{ .upstreamgroup | quote }} \
           --upstreamapp {{ .upstreamapp | quote }} \
