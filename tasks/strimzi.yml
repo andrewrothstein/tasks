@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    internal: true
+tasks:
+  default:
+    deps:
+      - helm-repo-add
+  helm-repo-add:
+    cmds:
+      - task: helm:repo-add
+        vars:
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "strimzi" }}'
+          CHART_REPO_URL: '{{ .CHART_REPO_URL | default "https://strimzi.io/charts" }}'

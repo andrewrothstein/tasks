@@ -1,0 +1,42 @@
+---
+version: '3'
+includes:
+  strimzi:
+    taskfile: strimzi.yml
+    internal: true
+  helm:
+    taskfile: helm.yml
+    internal: true
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      HELM_ARGS: '{{ .HELM_ARGS }}'
+    deps:
+      - strimzi:helm-repo-add
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .NAMESPACE | default "strimzi" }}'
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
+          NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "strimzi" }}'
+          CHART: '{{ .CHART | default "strimzi-kafka-operator" }}'
+          CHART_VER: '{{ .CHART_VER | default "0.33.0" }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
+          NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .NAMESPACE |  default "strimzi" }}'
