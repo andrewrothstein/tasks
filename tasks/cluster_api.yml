@@ -1,6 +1,39 @@
 ---
 version: '3'
+vars:
+  clusterctl: 'C:\Users\andre\Downloads\clusterctl-windows-amd64.exe'
 tasks:
-  init:
+  config-repositories:
     cmds:
-      - clusterctl init
+      - '{{ .clusterctl | quote }} config repositories -o yaml'
+  help:
+    cmds:
+      - '{{ .clusterctl | quote }} init --help'
+  default:
+    deps:
+      - config-repositories
+  init:
+    vars:
+      b: '{{ .b | default "kubeadm:v1.3.3" }}'
+      c: '{{ .c | default "kubeadm:v1.3.3" }}'
+      i: '{{ .i | default "vcluster" }}'
+    cmds:
+      - |
+        {{ .clusterctl | quote }} \
+          init \
+          -b {{ .b | quote }} \
+          -c {{ .c | quote }} \
+          -i {{ .i | quote }}
+  generate:
+    vars:
+      n: '{{ .n | default "workload-0000000001" }}'
+      v: '{{ .v | default "v1.25.3" }}'
+    env:
+      HELM_VALUES: ''
+    cmds:
+      - |
+        {{ .clusterctl | quote }} \
+          generate \
+          cluster {{ .n | quote }} \
+          --kubernetes-version {{ .v | quote }} \
+          | kubectl apply -f -
