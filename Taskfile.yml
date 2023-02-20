@@ -8,7 +8,7 @@ includes:
     taskfile: apps/tf-dex-aad/Taskfile.yml
     dir: apps/tf-dex-aad
   k8s: tasks/kind.yml
-#  k8s: tasks/k3d.yml
+  k3d: tasks/k3d.yml
   pinniped: tasks/pinniped.yml
   istio: tasks/istio.yml
   argocd: tasks/argocd.yml
