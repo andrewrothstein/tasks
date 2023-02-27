@@ -2,9 +2,9 @@
 version: '3'
 includes:
   ansible:
-    taskfile: ../../tasks/ansible.yml
+    taskfile: ansible.yml
   dcb:
-    taskfile: ../../tasks/dcb.yml
+    taskfile: dcb.yml
 tasks:
   local:
     cmds:

@@ -5,7 +5,7 @@ vars:
   DEFAULT_PINNIPED_CONCIERGE_NAME: pinniped-concierge
 includes:
   kapp:
-    taskfile: ./kapp.yml
+    taskfile: kapp.yml
     vars:
       APP: '{{ .PINNIPED_CONCIERGE_NAME | default .DEFAULT_PINNIPED_CONCIERGE_NAME }}'
       FILE: https://get.pinniped.dev/v{{ .PINNIPED_VER | default .DEFAULT_PINNIPED_VER }}/install-pinniped-concierge.yaml

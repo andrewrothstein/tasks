@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  vault: ../../tasks/vault.yml
+  vault: vault.yml
 tasks:
   default:
     deps:
@@ -10,7 +10,7 @@ tasks:
     cmds:
       - task: vault:install
         vars:
-          HELM_ARGS: -f "{{ .TASKFILE_DIR }}/values.yml"
+          HELM_ARGS: -f vault-dev/values.yml
   delete:
     cmds:
       - task: vault:delete

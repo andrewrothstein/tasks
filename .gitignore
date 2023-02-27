@@ -2,3 +2,5 @@
 /.project
 /.vagrant
 .task/
+.ansible-roles/
+.onetime

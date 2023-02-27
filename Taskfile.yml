@@ -2,31 +2,32 @@
 version: '3'
 includes:
   ansible-playbook-local:
-    taskfile: apps/ansible-playbook-local/Taskfile.yml
-    dir: apps/ansible-playbook-local
+    dir: ansible-playbook-local
+    taskfile: ansible-playbook-local.yml
   tf-dex-aad:
-    taskfile: apps/tf-dex-aad/Taskfile.yml
-    dir: apps/tf-dex-aad
-  k8s: tasks/kind.yml
-  k3d: tasks/k3d.yml
-  pinniped: tasks/pinniped.yml
-  istio: tasks/istio.yml
-  argocd: tasks/argocd.yml
-  argo: tasks/argo.yml
-  argo-events: tasks/argo-events.yml
-  argo-rollouts: tasks/argo-rollouts.yml
-  gitea: tasks/gitea.yml
+    dir: tf-dex-aad
+    taskfile: tf-dex-aad.yml
+  k8s: kind.yml
+  k3d: k3d.yml
+  kind: kind.yml
+  pinniped: pinniped.yml
+  istio: istio.yml
+  argocd: argocd.yml
+  argo: argo.yml
+  argo-events: argo-events.yml
+  argo-rollouts: argo-rollouts.yml
+  gitea: gitea.yml
   vault-dev:
-    dir: apps/vault-dev
-    taskfile: apps/vault-dev
-  jetstack: tasks/jetstack.yml
-  gatekeeper: tasks/gatekeeper.yml
-  cluster_api: tasks/cluster_api.yml
-  kubevirt: tasks/kubevirt.yml
+    dir: vault-dev
+    taskfile: vault-dev.yml
+  jetstack: jetstack.yml
+  gatekeeper: gatekeeper.yml
+  cluster_api: cluster_api.yml
+  kubevirt: kubevirt.yml
   kubevirt-vms:
-    dir: apps/kubevirt-vm
-    taskfile: apps/kubevirt-vm/Taskfile.yml
-  knative: tasks/knative.yml
+    dir: kubevirt-vm
+    taskfile: kubevirt-vm.yml
+  knative: knative.yml
 tasks:
   pre-mesh-up:
     deps:

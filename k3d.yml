@@ -7,7 +7,10 @@ tasks:
     vars:
       K3S_ARGS: --disable=traefik@server:0
     cmds:
-      - k3d cluster create bootstrap --k3s-arg {{ .K3S_ARGS | quote }}
+      - |
+        k3d cluster \
+          create {{ .CLUSTER_NAME | quote }} \
+          --k3s-arg {{ .K3S_ARGS | quote }}
     status:
       - k3d cluster list {{ .CLUSTER_NAME | quote }}
   delete:
