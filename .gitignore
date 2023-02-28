@@ -4,3 +4,5 @@
 .task/
 .ansible-roles/
 .onetime
+.terraform/
+tf-validate.json
