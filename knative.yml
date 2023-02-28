@@ -137,13 +137,13 @@ tasks:
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-controller.yaml
   install:
-    deps:
-      - install-operator
-      - install-serving-crds
-      - install-serving-core
-      - install-eventing-crds
-      - install-eventing-core
-      - install-eventing-kafka-broker
+    cmds:
+      - task: install-operator
+      - task: install-serving-crds
+      - task: install-serving-core
+      - task: install-eventing-crds
+      - task: install-eventing-core
+      - task: install-eventing-kafka-broker
   delete:
     cmds:
       - task: delete-serving-core
