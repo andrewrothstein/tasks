@@ -4,7 +4,7 @@ vars:
   DEFAULT_NS: kubevirt-vms
 includes:
   kubectl:
-    taskfile: ../../tasks/kubectl.yml
+    taskfile: kubectl.yml
 tasks:
   apply:
     cmds:
