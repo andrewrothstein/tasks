@@ -24,6 +24,8 @@ tasks:
           CHART_REPO_NAME: '{{ .OPA_CHART_REPO_NAME }}'
           CHART_REPO_URL: '{{ .OPA_CHART_REPO_URL }}'
   install:
+    deps:
+      - helm-repo-add
     cmds:
       - task: kubectl:ns-create
         vars:
