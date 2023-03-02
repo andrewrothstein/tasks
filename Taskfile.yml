@@ -10,69 +10,19 @@ includes:
   k8s: kind.yml
   k3d: k3d.yml
   kind: kind.yml
-  pinniped: pinniped.yml
   istio: istio.yml
-  argocd: argocd.yml
-  argo: argo.yml
-  argo-events: argo-events.yml
-  argo-rollouts: argo-rollouts.yml
-  gitea: gitea.yml
-  vault-dev:
-    dir: vault-dev
-    taskfile: vault-dev.yml
-  jetstack: jetstack.yml
-  gatekeeper: gatekeeper.yml
-  cluster_api: cluster_api.yml
-  kubevirt: kubevirt.yml
-  kubevirt-vms:
-    dir: kubevirt-vm
-    taskfile: kubevirt-vm.yml
-  knative: knative.yml
+  pre-mesh: pre-mesh.yml
+  post-mesh: post-mesh.yml
 tasks:
-  pre-mesh-up:
-    deps:
-      - k8s:up
-    cmds:
-#      - task: gatekeeper:install
-      - task: vault-dev:install
-      - task: knative:install
-#      - task: pinniped:deploy-concierge
-#      - task: jetstack:install
-  pre-mesh-delete:
-    deps:
-#      - jetstack:delete
-#      - pinniped:delete-concierge
-      - hashicorp:vault-delete
-#      - gatekeeper:delete
-  mesh-up:
-    deps:
-      - pre-mesh-up
-    cmds:
-      - task: istio:up
   up:
-    deps:
-      - mesh-up
     cmds:
-      - task: argocd:apply
-      - task: argo-events:apply
-      - task: argo:apply
-      - task: argo-rollouts:apply
-#      - task: gitea:install
-  mesh-delete:
-    deps:
-#      - gitea:delete
-      - argo-rollouts:delete
-      - argo:delete
-      - argo-events:delete
-      - argocd:delete
-    cmds:
-      - task: istio:delete
+      - task: k8s:up
+      - task: pre-mesh:up
+#      - task: istio:up
+#      - task: post-mesh:up
   delete:
-    deps:
-      - pre-mesh-delete
-      - mesh-delete
     cmds:
+#      - task: post-mesh:delete
+#      - task: istio:delete
+      - task: pre-mesh:delete
       - task: k8s:delete
-  default:
-    deps:
-      - up
