@@ -2,48 +2,63 @@
 version: '3'
 vars:
   DEFAULT_KUBEVIRT_NS: kubevirt
-  DEFAULT_KUBEVIRT_VER: 0.58.0
+  DEFAULT_KUBEVIRT_VER: 
   DEFAULT_CDI_NS: cdi
   DEFAULT_CDI_VER: 1.55.2
+  MIRROR: https://github.com/kubevirt/kubevirt/releases/download
+  MIRROR_CDI: https://github.com/kubevirt/containerized-data-importer/releases/download
 includes:
   kubectl:
     taskfile: kubectl.yml
 tasks:
-  apply-kubevirt-operator:
+  ns-create:
     cmds:
       - task: kubectl:ns-create
         vars:
-          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
+          n: '{{ .n | default "kube.DEFAULT_KUBEVIRT_NS }}'
+
+  apply-kubevirt-operator:
+    vars:
+      n: '{{ .n | default "kubevirt" }}'
+      v: '{{ .v | default "0.58.0" }}'
+    cmds:
       - task: kubectl:apply
         vars:
-          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
-          f: https://github.com/kubevirt/kubevirt/releases/download/v{{ .DEFAULT_KUBEVIRT_VER }}/kubevirt-operator.yaml
+          n: '{{ .n }}'
+          f: '{{ .MIRROR }}/v{{ .v }}/kubevirt-operator.yaml'
       - task: kubectl:apply
         vars:
-          n: '{{ .DEFAULT_KUBEVIRT_NS }}'
-          f: https://github.com/kubevirt/kubevirt/releases/download/v{{ .DEFAULT_KUBEVIRT_VER }}/kubevirt-cr.yaml
+          n: '{{ .n }}'
+          f: '{{ .MIRROR }}/v{{ .v }}/kubevirt-cr.yaml'
       - |
         # enable nested-virtualization
         kubectl \
-          -n "{{ .DEFAULT_KUBEVIRT_NS }}" \
+          -n {{ .n | quote }} \
           patch \
           kubevirt \
           kubevirt \
-          --type=merge --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+          --type=merge \
+          --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
   apply-cdi-operator:
+    vars:
+      n: '{{ .n | default "cdi" }}'
+      v: '{{ .v | default "1.55.2" }}'
     cmds:
       - task: kubectl:ns-create
         vars:
-          n: '{{ .DEFAULT_CDI_NS }}'
+          n: '{{ .n }}'
       - task: kubectl:apply
         vars:
-          n: '{{ .DEFAULT_CDI_NS }}'
-          f: https://github.com/kubevirt/containerized-data-importer/releases/download/v{{ .DEFAULT_CDI_VER }}/cdi-operator.yaml
+          n: '{{ .n }}'
+          f: '{{ .MIRROR_CDI }}/v{{ .v }}/cdi-operator.yaml'
       - task: kubectl:apply
         vars:
-          n: '{{ .DEFAULT_CDI_NS }}'
-          f: https://github.com/kubevirt/containerized-data-importer/releases/download/v{{ .DEFAULT_CDI_VER }}/cdi-cr.yaml
+          n: '{{ .n }}'
+          f: '{{ .MIRROR_CDI }}/v{{ .v }}/cdi-cr.yaml'
   apply:
     cmds:
       - task: apply-kubevirt-operator
       - task: apply-cdi-operator
+  default:
+    cmds:
+      - task: apply
