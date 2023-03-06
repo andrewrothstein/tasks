@@ -1,0 +1,34 @@
+---
+version: '3'
+vars:
+  kubevirt_cdi_ns: cdi
+  kubevirt_cdi_ver: 1.55.2
+  kubevirt_cdi_mirror: https://github.com/kubevirt/containerized-data-importer/releases/download
+includes:
+  kubectl:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: '{{ .kubevirt_cdi_ns }}'
+tasks:
+  apply:
+    deps:
+      - task: kubectl:ns-create
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: '{{ .kubevirt_cdi_mirror }}/v{{ .kubevirt_cdi_ver }}/cdi-operator.yaml'
+      - task: kubectl:apply
+        vars:
+          f: '{{ .kubevirt_cdi_mirror }}/v{{ .kubevirt_cdi_ver }}/cdi-cr.yaml'
+  default:
+    deps:
+      - apply
+  delete:
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: '{{ .kubevirt_cdi_mirror }}/v{{ .kubevirt_cdi_ver }}/cdi-cr.yaml'
+      - task: kubectl:delete
+        vars:
+          f: '{{ .kubevirt_cdi_mirror }}/v{{ .kubevirt_cdi_ver }}/cdi-operator.yaml'

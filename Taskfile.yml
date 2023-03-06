@@ -26,3 +26,6 @@ tasks:
 #      - task: istio:delete
       - task: pre-mesh:delete
       - task: k8s:delete
+  default:
+    deps:
+      - up

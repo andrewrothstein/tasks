@@ -48,7 +48,7 @@ tasks:
             help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
         EOF
     status:
-      - kind get kubeconfig {{ .CLUSTER_NAME | quote }}
+      - kind get kubeconfig -n {{ .CLUSTER_NAME | quote }}
   delete:
     vars:
       CLUSTER_NAME: '{{ .CLUSTER_NAME | default .DEFAULT_CLUSTER_NAME }}'

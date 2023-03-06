@@ -3,47 +3,57 @@ version: '3'
 tasks:
   ns-label:
     vars:
-      n: '{{ .n | default "default" }}'
-      labels: '{{ .labels | default "label1,label2,label3" }}'
+      n: '{{ .n }}'
+      labels: '{{ .labels }}'
     cmds:
       - kubectl label namespace {{ .n | quote }} {{ .labels | quote }} --overwrite
   ns-create:
     vars:
-      n: '{{ .n | default "default" }}'
+      n: '{{ .n }}'
     cmds:
       - kubectl create namespace {{ .n | quote }}
     status:
       - kubectl get namespace {{ .n | quote }}
   ns-delete:
     vars:
-      n: '{{ .n | default "default" }}'
-    preconditions:
-      - kubectl get namespace {{ .n | quote }}
+      n: '{{ .n }}'
     cmds:
       - kubectl delete namespace {{ .n | quote }}
   apply:
     vars:
-      n: '{{ .n | default "" }}'
-      f: '{{ .f | default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" }}'
+      n: '{{ .n }}'
+      f: '{{ .f }}'
     cmds:
-      - kubectl apply{{ if .n }} -n {{ .n | quote }}{{ end }} -f {{ .f | quote }}
+      - |
+        kubectl \
+        apply \
+        {{ if .n }} -n {{ .n | quote }}{{ end }} \
+        -f {{ .f | quote }}
   delete:
     vars:
-      n: '{{ .n | default "" }}'
-      f: '{{ .f | default "https://github.com/me/myproject/releases/download/v1.0.0/install.yaml" .f }}'
+      n: '{{ .n }}'
+      f: '{{ .f }}'
     cmds:
-      - kubectl delete{{ if .n }} -n {{ .n | quote }}{{ end }} -f {{ .f | quote }}
+      - |
+        kubectl \
+        delete \
+        {{ if .n }} -n {{ .n | quote }}{{ end }} \
+        -f {{ .f | quote }}
   kapply:
     vars:
-      n: '{{ .n | default "" }}'
-      k: '{{ .k | default "kustomize.yaml" }}'
+      n: '{{ .n }}'
+      k: '{{ .k }}'
     cmds:
       - kubectl apply{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}
   kdelete:
     vars:
-      n: '{{ .n | default "" }}'
-      k: '{{ .k | default "kustomize.yaml" }}'
+      n: '{{ .n }}'
+      k: '{{ .k }}'
     preconditions:
       - kubectl get namespace {{ .n | quote }}
     cmds:
       - kubectl delete{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}
+  patch:
+    vars:
+      n: '{{ .n }}'
+

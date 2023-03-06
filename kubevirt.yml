@@ -1,70 +1,45 @@
 ---
 version: '3'
+vars:
+  kubevirt_ns: kubevirt
+  kubevirt_v: 0.58.0
+  kubevirt_mirror: https://github.com/kubevirt/kubevirt/releases/download
+  kubevirt_typeofthing: kubevirt
+  kubevirt_thingname: kubevirt
 includes:
   kubectl:
     internal: true
     taskfile: kubectl.yml
+    vars:
+      n: '{{ .kubevirt_ns }}'
 tasks:
-  ns-create:
+  apply:
     cmds:
       - task: kubectl:ns-create
-        vars:
-          n: '{{ .n | default "kubevirt" }}'
-  apply-kubevirt-operator:
-    vars:
-      n: '{{ .n | default "kubevirt" }}'
-      v: '{{ .v | default "0.58.0" }}'
-      mirror: '{{ .mirror | default "https://github.com/kubevirt/kubevirt/releases/download" }}'
-    deps:
-      - ns-create
-    cmds:
       - task: kubectl:apply
         vars:
-          n: '{{ .n }}'
-          f: '{{ .mirror }}/v{{ .v }}/kubevirt-operator.yaml'
+          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
       - task: kubectl:apply
         vars:
-          n: '{{ .n }}'
-          f: '{{ .MIRROR }}/v{{ .v }}/kubevirt-cr.yaml'
-  enable-nested-virtualization:
-    vars:
-      n: '{{ .n | default "kubevirt" }}'
-      typeofthing: '{{ .t | default "kubevirt" }}'
-      thingname: '{{  .thingname | default "kubevirt" }}'
-    deps:
-      - ns-create
-    cmds:
+          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
       - |
         # enable nested-virtualization
         kubectl \
-          -n {{ .n | quote }} \
+          -n {{ .kubevirt_ns | quote }} \
           patch \
-          {{ .typeofthing | quote }} \
-          {{ .thingname | quote }} \
+          {{ .kubevirt_typeofthing | quote }} \
+          {{ .kubevirt_thingname | quote }} \
           --type=merge \
           --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
-  apply-cdi-operator:
-    vars:
-      n: '{{ .n | default "cdi" }}'
-      v: '{{ .v | default "1.55.2" }}'
-      mirror: '{{ .mirror | default "https://github.com/kubevirt/containerized-data-importer/releases/download" }}'
+  delete:
     cmds:
-      - task: kubectl:ns-create
+      - task: kubectl:delete
         vars:
-          n: '{{ .n }}'
-      - task: kubectl:apply
+          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
+      - task: kubectl:delete
         vars:
-          n: '{{ .n }}'
-          f: '{{ .MIRROR_CDI }}/v{{ .v }}/cdi-operator.yaml'
-      - task: kubectl:apply
-        vars:
-          n: '{{ .n }}'
-          f: '{{ .MIRROR_CDI }}/v{{ .v }}/cdi-cr.yaml'
-  apply:
-    deps:
-      - apply-kubevirt-operator
-      - apply-cdi-operator
-      - enable-nested-virtualization
+          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
+      - task: kubectl:ns-delete
   default:
-    cmds:
-      - task: apply
+    deps:
+      - apply
