@@ -13,32 +13,35 @@ includes:
     vars:
       n: '{{ .kubevirt_ns }}'
 tasks:
-  apply:
+  enable_nested_virtualization:
     cmds:
+      - task: kubectl:patch
+        vars:
+          typeofthing: '{{.kubevirt_typeofthing }}'
+          thingname: '{{ .kubevirt_thingname }}'
+          ty: merge
+          patch: '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+  apply_operator:
+    deps:
       - task: kubectl:ns-create
+    cmds:
       - task: kubectl:apply
         vars:
           f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
+  apply_crds:
+    deps:
+      - task: apply_operator
+    cmds:
       - task: kubectl:apply
         vars:
           f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
-      - |
-        # enable nested-virtualization
-        kubectl \
-          -n {{ .kubevirt_ns | quote }} \
-          patch \
-          {{ .kubevirt_typeofthing | quote }} \
-          {{ .kubevirt_thingname | quote }} \
-          --type=merge \
-          --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+  apply:
+    deps:
+      - apply_crds
+    cmds:
+      - task: enable_nested_virtualization
   delete:
     cmds:
-      - task: kubectl:delete
-        vars:
-          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
-      - task: kubectl:delete
-        vars:
-          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
       - task: kubectl:ns-delete
   default:
     deps:

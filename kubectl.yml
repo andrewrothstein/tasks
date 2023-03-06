@@ -26,9 +26,9 @@ tasks:
     cmds:
       - |
         kubectl \
-        apply \
-        {{ if .n }} -n {{ .n | quote }}{{ end }} \
-        -f {{ .f | quote }}
+          apply \
+          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+          -f {{ .f | quote }}
   delete:
     vars:
       n: '{{ .n }}'
@@ -36,15 +36,19 @@ tasks:
     cmds:
       - |
         kubectl \
-        delete \
-        {{ if .n }} -n {{ .n | quote }}{{ end }} \
-        -f {{ .f | quote }}
+          delete \
+          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+          -f {{ .f | quote }}
   kapply:
     vars:
       n: '{{ .n }}'
       k: '{{ .k }}'
     cmds:
-      - kubectl apply{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}
+      - |
+        kubectl \
+          apply \
+          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+          -k {{ .k | quote }}
   kdelete:
     vars:
       n: '{{ .n }}'
@@ -52,8 +56,24 @@ tasks:
     preconditions:
       - kubectl get namespace {{ .n | quote }}
     cmds:
-      - kubectl delete{{ if .n }} -n {{ .n | quote }}{{ end }} -k {{ .k | quote }}
+      - |
+        kubectl \
+          delete \
+          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+          -k {{ .k | quote }}
   patch:
     vars:
       n: '{{ .n }}'
-
+      typeofthing: '{{ .typeofthing }}'
+      thingname: '{{ .thingname }}'
+      ty: '{{ .ty }}'
+      patch: '{{ .patch }}'
+    cmds:
+      - |
+        kubectl \
+          -n {{ .n | quote }} \
+          patch \
+          {{ .typeofthing | quote }} \
+          {{ .thingname | quote }} \
+          "--type={{ .ty }}" \
+          --patch {{ .patch | quote }}
