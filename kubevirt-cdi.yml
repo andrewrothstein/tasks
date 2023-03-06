@@ -2,7 +2,7 @@
 version: '3'
 vars:
   kubevirt_cdi_ns: cdi
-  kubevirt_cdi_ver: 1.55.2
+  kubevirt_cdi_ver: 1.56.0
   kubevirt_cdi_mirror: https://github.com/kubevirt/containerized-data-importer/releases/download
 includes:
   kubectl:
