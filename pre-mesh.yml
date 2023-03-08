@@ -2,10 +2,10 @@
 version: '3'
 includes:
 #  knative: knative.yml
-#  cluster_api: cluster_api.yml
-  kubevirt: kubevirt.yml
-  kubevirt-cdi: kubevirt-cdi.yml
-  kubevirt-vms: kubevirt-vm.yml
+  cluster_api: cluster_api.yml
+#  kubevirt: kubevirt.yml
+#  kubevirt-cdi: kubevirt-cdi.yml
+#  kubevirt-vms: kubevirt-vm.yml
 tasks:
   default:
     deps:
@@ -13,14 +13,14 @@ tasks:
   up:
     cmds:
 #      - task: knative:install
-#      - task: cluster_api
-      - task: kubevirt:apply
-      - task: kubevirt-cdi:apply
-      - task: kubevirt-vms:apply
+      - task: cluster_api:apply
+#      - task: kubevirt:apply
+#      - task: kubevirt-cdi:apply
+#      - task: kubevirt-vms:apply
   delete:
     cmds:
-      - task: kubevirt-vms:delete
-      - task: kubevirt-cdi:delete
-      - task: kubevirt:delete
-#      - task: cluster_api:delete
+#      - task: kubevirt-vms:delete
+#      - task: kubevirt-cdi:delete
+#      - task: kubevirt:delete
+      - task: cluster_api:delete
 #      - task: knative:delete
