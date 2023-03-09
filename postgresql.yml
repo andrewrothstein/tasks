@@ -1,0 +1,43 @@
+---
+version: '3'
+includes:
+  bitnami: bitnami.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAME: postgresql
+      CHART_REPO_NAME: bitnami
+      CHART: postgresql
+      CHART_VER: 12.1.6
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      ADMIN_USERNAME: '{{ .ADMIN_USERNAME | default "coder" }}'
+      ADMIN_PASSWORD: '{{ .ADMIN_PASSWORD | default "coder" }}'
+      ADMIN_DB: '{{ .ADMIN_DB | default "coder" }}'
+      DB_SIZE: '{{ .DB_SIZE | default "10Gi" }}'
+    deps:
+      - task: bitnami
+    cmds:
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "coder" }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+          NAME: postgresql
+          CHART_REPO_NAME: bitnami
+          CHART: postgresql
+          CHART_VER: 12.1.6
+          HELM_ARGS: >
+            --set auth.username={{ .ADMIN_USERNAME }}
+            --set auth.password={{ .ADMIN_PASSWORD }}
+            --set auth.database={{ .ADMIN_DB }}
+            --set persistence.size={{ .DB_SIZE }}
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "coder" }}'

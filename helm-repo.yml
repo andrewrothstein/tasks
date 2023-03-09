@@ -1,0 +1,17 @@
+---
+version: '3'
+tasks:
+  add:
+    vars:
+      n: '{{ .n }}'
+      url: '{{ .url }}'
+    cmds:
+      - helm repo add {{ .n | quote }} {{ .url | quote }}
+      - helm repo update
+    status:
+      - |
+        helm \
+          repo \
+          list \
+          -o json \
+          | jq -e '.[] | select(.name=={{ .n | quote }})'

@@ -2,10 +2,12 @@
 version: '3'
 includes:
 #  knative: knative.yml
-  cluster_api: cluster_api.yml
+#  cluster_api: cluster_api.yml
 #  kubevirt: kubevirt.yml
 #  kubevirt-cdi: kubevirt-cdi.yml
 #  kubevirt-vms: kubevirt-vm.yml
+#  postgresql: postgresql.yml
+  coderv2: coderv2.yml
 tasks:
   default:
     deps:
@@ -13,14 +15,18 @@ tasks:
   up:
     cmds:
 #      - task: knative:install
-      - task: cluster_api:apply
+#      - task: cluster_api:apply
 #      - task: kubevirt:apply
 #      - task: kubevirt-cdi:apply
 #      - task: kubevirt-vms:apply
+#      - task: postgresql:install
+      - task: coderv2:install
   delete:
     cmds:
+      - task: coderv2:delete
+#      - task: postgresql:delete
 #      - task: kubevirt-vms:delete
 #      - task: kubevirt-cdi:delete
 #      - task: kubevirt:delete
-      - task: cluster_api:delete
+#      - task: cluster_api:delete
 #      - task: knative:delete

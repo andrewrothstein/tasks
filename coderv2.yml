@@ -1,90 +1,58 @@
 ---
 version: '3'
 includes:
-  helm:
-    taskfile: ../../tasks/helm.yml
+  postgresql:
+    taskfile: postgresql.yml
     internal: true
-  kubectl:
-    taskfile: ../../tasks/kubectl.yml
+    vars:
+      NAMESPACE: coder
+  coderv2-helm-repo:
+    taskfile: helm-repo.yml
     internal: true
-  bitnami:
-    taskfile: ../../tasks/bitnami.yml
+    vars:
+      n: coder-v2
+      url: https://helm.coder.com/v2
+  coderv2-secret:
+    taskfile: k8s-literal-secret.yml
     internal: true
-vars:
-  CODER_CHART_REPO_NAME:  coder-v2
-  CODER_CHART_REPO_URL: https://helm.coder.com/v2
-  CODER_CHART: coder
-  CODER_DEFAULT_CHART_VER: 0.13.6
-  CODER_DEFAULT_NS: coder
-  CODER_DEFAULT_NAME: coder
-  CODER_ADMIN_USERNAME: coder
-  CODER_ADMIN_PASSWORD: coder
-  CODER_ADMIN_DB: coder
-  CODER_DB_SIZE: 10Gi
-  CODER_DB_SECRET_NAME: coder-db-url
+    vars:
+      n: coder
+      s: coder-db-url
+  coderv2:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: coder
+      CREATE_NAMESPACE: false
+      NAME: coder
+      CHART_REPO_NAME: coder-v2
+      CHART: coder
+      CHART_VER: 0.13.6
 tasks:
-  default:
-    deps:
-      - install
-  helm-repo-add:
-    internal: true
-    cmds:
-      - task: helm:repo-add
-        vars:
-          CHART_REPO_NAME: '{{ .CODER_CHART_REPO_NAME }}'
-          CHART_REPO_URL: '{{ .CODER_CHART_REPO_URL }}'
   install:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default .CODER_DEFAULT_NS }}'
-      NAME: '{{ .NAME | default .CODER_DEFAULT_NAME }}'
-      CHART_REPO_NAME: '{{ .CODER_CHART_REPO_NAME }}'
-      CHART: '{{ .CHART | default .CODER_CHART }}'
-      CHART_VER: '{{ .CHART_VER | default .CODER_DEFAULT_CHART_VER }}'
-      PG_CONN_STR: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql.postgresql.svc.cluster.local:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
-    deps:
-      - helm-repo-add
-      - task: bitnami:postgres-install
+      CODER_ADMIN_USER: '{{ .CODER_ADMIN_USER | default "coder" }}'
+      CODER_ADMIN_PASSWORD: '{{ .CODER_ADMIN_PASSWORD | default "e7c32e46-bd6f-11ed-9c8d-38d54714ef1a" }}'
+      CODER_ADMIN_DB: '{{ .CODER_ADMIN_DB | default "coder" }}'
+      CODER_DB_SIZE: '{{ .CODER_DB_SIZE | default "10Gi" }}'
+    cmds:
+      - task: postgresql:install
         vars:
-          ADMIN_USERNAME: '{{ .CODER_ADMIN_USERNAME }}'
+          ADMIN_USERNAME: '{{ .CODER_ADMIN_USER }}'
           ADMIN_PASSWORD: '{{ .CODER_ADMIN_PASSWORD }}'
           ADMIN_DB: '{{ .CODER_ADMIN_DB }}'
           DB_SIZE: '{{ .CODER_DB_SIZE }}'
-    cmds:
-      - task: kubectl:ns-create
+      - task: coderv2-helm-repo:add
+      - task: coderv2-secret:apply
         vars:
-          n: '{{ .NAMESPACE }}'
-      - |
-        kubectl \
-          create \
-          secret \
-          generic \
-          {{ .CODER_DB_SECRET_NAME | quote }} \
-          -n "{{ .NAMESPACE }}" \
-          --from-literal=url={{ .PG_CONN_STR | quote }}
-      - task: helm:install
+          k: url
+          v: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
+      - task: coderv2:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          HELM_ARGS: --values values.yaml
+          HELM_ARGS: >
+            --values coderv2/values.yml
   delete:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default .CODER_DEFAULT_NS }}'
-      NAME: '{{ .NAME | default .CODER_DEFAULT_NAME }}'
     cmds:
-      - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
-      - |
-        kubectl \
-          delete \
-          secret \
-          {{ .CODER_DB_SECRET_NAME | quote }} \
-          -n "{{ .NAMESPACE }}"
-      - task: bitnami:postgres-delete
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .NAMESPACE }}'
+      - task: coderv2:delete
+      - task: coderv2-secret:delete
+      - task: postgresql:delete

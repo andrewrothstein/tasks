@@ -1,18 +1,10 @@
 ---
 version: '3'
 tasks:
-  repo-add:
-    vars:
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-      CHART_REPO_URL: '{{ .CHART_REPO_URL }}'
-    cmds:
-      - helm repo add {{ .CHART_REPO_NAME | quote }} {{ .CHART_REPO_URL | quote }}
-      - helm repo update
-    status:
-      - helm repo list -o json | jq -e '.[] | select(.name=={{ .CHART_REPO_NAME | quote }})'
   install:
     vars:
       NAMESPACE: '{{ .NAMESPACE }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default false }}'
       NAME: '{{ .NAME }}'
       CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
       CHART: '{{ .CHART }}'
@@ -23,18 +15,32 @@ tasks:
         helm \
           install \
           -n {{ .NAMESPACE | quote }} \
+          {{ if .CREATE_NAMESPACE }}--create-namespace{{ end }} \
           {{ .NAME | quote }} \
-          "{{ .CHART_REPO_NAME }}/{{ .CHART }}" \
+          '{{ .CHART_REPO_NAME }}/{{ .CHART }}' \
           --version {{ .CHART_VER | quote }} \
           {{ .HELM_ARGS }}
-
     status:
-      - helm list -n {{ .NAMESPACE | quote }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+      - |
+        helm \
+          list \
+          -n {{ .NAMESPACE | quote }} \
+          -o json \
+          | jq -e '.[] | select(.name=={{ .NAME | quote }})'
   delete:
     vars:
       NAMESPACE: '{{ .NAMESPACE }}'
       NAME: '{{ .NAME }}'
     preconditions:
-      - helm list -n {{ .NAMESPACE | quote }} -o json | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+      - |
+        helm \
+          list \
+          -n {{ .NAMESPACE | quote }} \
+          -o json \
+          | jq -e '.[] | select(.name=={{ .NAME | quote }})'
     cmds:
-      - helm delete -n {{ .NAMESPACE | quote }} {{ .NAME | quote }}
+      - |
+        helm \
+          delete \
+          -n {{ .NAMESPACE | quote }} \
+          {{ .NAME | quote }}
