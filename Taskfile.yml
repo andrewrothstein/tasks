@@ -4,9 +4,6 @@ includes:
   ansible-playbook-local:
     dir: ansible-playbook-local
     taskfile: ansible-playbook-local.yml
-  tf-dex-aad:
-    dir: tf-dex-aad
-    taskfile: tf-dex-aad.yml
   k8s: kind.yml
   k3d: k3d.yml
   kind: kind.yml

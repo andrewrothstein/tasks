@@ -1,34 +1,12 @@
 ---
 version: '3'
 tasks:
-  workspace-list:
+  version:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
     cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list'
-  workspace-select:
-    vars:
-      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
-    cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace select {{ .WORKSPACE_NAME | quote }}'
-    status:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list | grep "* {{ .WORKSPACE_NAME }}"'
-  workspace-new:
-    vars:
-      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
-    cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace new {{ .WORKSPACE_NAME | quote }}'
-    status:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list | grep {{ .WORKSPACE_NAME | quote }}'
-  workspace-delete:
-    vars:
-      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "terraform-workspace" }}'
-    cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace delete {{ .WORKSPACE_NAME | quote }}'
+      - |
+        {{ .TERRAFORM_EXE | quote }} --version
   init:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
