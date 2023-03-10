@@ -1,13 +1,19 @@
 ---
 version: '3'
 tasks:
+  list:
+    cmds:
+      - helm repo list
+  update:
+    cmds:
+      - helm repo update
   add:
     vars:
       n: '{{ .n }}'
       url: '{{ .url }}'
     cmds:
       - helm repo add {{ .n | quote }} {{ .url | quote }}
-      - helm repo update
+      - task: update
     status:
       - |
         helm \
