@@ -1,0 +1,37 @@
+---
+version: '3'
+includes:
+  jetstack: jetstack.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAME: cert-manager
+      CHART_REPO_NAME: jetstack
+      CHART: cert-manager
+      CHART_VER: 1.11.0
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      INSTALL_CRDS: '{{ .INSTALL_CRDS | default true }}'
+    deps:
+      - task: jetstack
+    cmds:
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "cert-manager" }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+          NAME: cert-manager
+          CHART_REPO_NAME: jetstack
+          CHART: cert-manager
+          CHART_VER: 1.11.0
+          HELM_ARGS: >
+            --set installCRDs={{ .INSTALL_CRDS }}
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "cert-manager" }}'
