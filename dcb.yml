@@ -23,8 +23,6 @@ tasks:
       buildall: '{{ .buildall | default true }}'
       pushall: '{{ .pushall | default false }}'
       alltags: '{{ .alltags | default "" }}'
-    deps:
-      - install
     cmds:
       - |
         cd {{ .USER_WORKING_DIR }};
