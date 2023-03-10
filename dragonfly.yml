@@ -1,61 +1,36 @@
 ---
 version: '3'
 includes:
+  dragonfly-repo:
+    taskfile: dragonfly-repo.yml
+    internal: true
   helm:
     taskfile: helm.yml
-    internal: true
-  kubectl:
-    taskfile: kubectl.yml
-    internal: true
-vars:
-  DRAGONFLY_CHART_REPO_NAME: dragonfly
-  DRAGONFLY_CHART_REPO_URL: https://dragonflyoss.github.io/helm-charts/
-  DRAGONFLY_CHART: dragonfly
-  DRAGONFLY_DEFAULT_CHART_VER: 0.10.0
-  DRAGONFLY_DEFAULT_NS: dragonfly-system
-  DRAGONFLY_DEFAULT_NAME: dragonfly
+    vars:
+      NAME: dragonfly
+      CHART_REPO_NAME: dragonfly
+      CHART: dragonfly
+      CHART_VER: 0.10.0
 tasks:
   default:
     deps:
       - install
-  helm-repo-add:
-    internal: true
-    cmds:
-      - task: helm:repo-add
-        vars:
-          CHART_REPO_NAME: '{{ .DRAGONFLY_CHART_REPO_NAME }}'
-          CHART_REPO_URL: '{{ .DRAGONFLY_CHART_REPO_URL }}'
   install:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default .DRAGONFLY_DEFAULT_NS }}'
-      NAME: '{{ .NAME | default .DRAGONFLY_DEFAULT_NAME }}'
-      CHART_REPO_NAME: '{{ .DRAGONFLY_CHART_REPO_NAME }}'
-      CHART: '{{ .DRAGONFLY_CHART }}'
-      CHART_VER: '{{ .CHART_VER | default .DRAGONFLY_DEFAULT_CHART_VER }}'
-      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     deps:
-      - helm-repo-add
+      - dragonfly-repo
     cmds:
-      - task: kubectl:ns-create
-        vars:
-          n: '{{ .NAMESPACE }}'
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          HELM_ARGS: '{{ .HELM_ARGS }}'
+          NAMESPACE: '{{ .NAMESPACE | default "dragonfly-system" }}'
+          NAME: '{{ .NAME | default "dragonfly" }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "dragonfly" }}'
+          CHART: '{{ .CHART | default "dragonfly" }}'
+          CHART_VER: '{{ .CHART_VER | default "0.10.0" }}'
+          HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
   delete:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default .DRAGONFLY_DEFAULT_NS }}'
-      NAME: '{{ .NAME | default .DRAGONFLY_DEFAULT_NAME }}'
     cmds:
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .NAMESPACE }}'
+          NAMESPACE: '{{ .NAMESPACE | default "dragonfly-system" }}'
+          NAME: '{{ .NAME | default "dragonfly" }}'
