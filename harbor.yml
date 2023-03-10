@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  harbor-repo: harbor-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAME: harbor
+      CHART_REPO_NAME: harbor
+      CHART: harbor
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: harbor-repo
+    cmds:
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "harbor" }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+          NAME: harbor
+          CHART_REPO_NAME: harbor
+          CHART: harbor
+          HELM_ARGS: ""
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "harbor" }}'
