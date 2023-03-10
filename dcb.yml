@@ -16,7 +16,7 @@ tasks:
       upstreamregistry: '{{ .upstreamregistry | default "ghcr.io" }}'
       upstreamgroup: '{{ .upstreamgroup | default "andrewrothstein" }}'
       upstreamapp: '{{ .upstreamapp | default "docker-ansible" }}'
-      targetregistry: '{{ .targetregistry | default .upstreamregsitry }}'
+      targetregistry: '{{ .targetregistry | default "andrewrothstein" }}'
       alltags: '{{ .alltags | default "" }}'
     deps:
       - install

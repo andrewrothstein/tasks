@@ -24,7 +24,7 @@ tasks:
           playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   default:
     deps:
-      - dcb:setup-python
+      - dcb:install
     cmds:
       - task: dcb:default
         vars:
