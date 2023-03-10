@@ -1,27 +1,28 @@
 ---
 version: '3'
 includes:
-  ansible-playbook-local:
-    dir: ansible-playbook-local
-    taskfile: ansible-playbook-local.yml
-  k8s: kind.yml
   k3d: k3d.yml
   kind: kind.yml
-  istio: istio.yml
+  k8s: kind.yml
+  cni: cilium.yml
+#  istio: istio.yml
   pre-mesh: pre-mesh.yml
   post-mesh: post-mesh.yml
 tasks:
   up:
     cmds:
       - task: k8s:up
-      - task: pre-mesh:up
+      - task: cni:install
+#      - task: pre-mesh:up
 #      - task: istio:up
 #      - task: post-mesh:up
   delete:
     cmds:
 #      - task: post-mesh:delete
 #      - task: istio:delete
-      - task: pre-mesh:delete
+#      - task: cilium:delete
+#      - task: pre-mesh:delete
+      - task: cni:delete
       - task: k8s:delete
   default:
     deps:

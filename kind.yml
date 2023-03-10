@@ -15,6 +15,8 @@ tasks:
       REGISTRY_NAME: '{{ .REGISTRY_NAME | default .DEFAULT_REGISTRY_NAME }}'
       REGISTRY_HOST_PORT: '{{ .REGISTRY_HOST_PORT | default .DEFAULT_REGISTRY_HOST_PORT }}'
       CLUSTER_NAME: '{{ .CLUSTER_NAME | default .DEFAULT_CLUSTER_NAME }}'
+      POD_SUBNET: '{{ .PODSUBNET | default "10.10.0.0/16" }}'
+      SERVICE_SUBNET: '{{ .SERVICE_SUBNET | default "10.11.0.0/16" }}'
     deps:
       - docker-registry:apply
     cmds:
@@ -23,6 +25,10 @@ tasks:
         ---
         kind: Cluster
         apiVersion: kind.x-k8s.io/v1alpha4
+        networking:
+          disableDefaultCNI: true
+          podSubnet: {{ .POD_SUBNET | quote }}
+          serviceSubnet: {{ .SERVICE_SUBNET | quote }}
         nodes:
         - role: control-plane
           extraMounts:
