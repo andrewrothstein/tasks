@@ -1,0 +1,16 @@
+---
+version: '3'
+tasks:
+  install:
+    vars:
+      requirements: '{{ .requirements | default "requirements.yml" }}'
+      force: '{{ .force | default false }}'
+    cmds:
+      - |
+        if [ -e {{ .requirements | quote }} ];
+        then
+          ansible-galaxy \
+            install \
+            {{ if .force }}-f{{ end }} \
+            -r {{ .requirements | quote }}
+        fi

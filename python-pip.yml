@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  py:
+    internal: true
+    taskfile: python.yml
+tasks:
+  install:
+    vars:
+      upgrade: '{{ .upgrade | default false }}'
+      pkg: '{{ .pkg | default "" }}'
+    cmds:
+      - task: py
+        vars:
+          m: pip
+          python_args: >-
+            install
+            {{ if .upgrade }}--upgrade{{ end }}
+            {{ if .pkg }}{{ .pkg | quote }}{{ end }}
+  installr:
+    vars:
+      requirements: '{{ .requirements | default "requirements.txt" }}'
+    cmds:
+      - task: py
+        vars:
+          m: pip
+          if: -f {{ .requirements | quote }}
+          python_args: install -r {{ .requirements | quote }}

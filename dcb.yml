@@ -1,16 +1,15 @@
 ---
 version: '3'
 includes:
-  python:
-    taskfile: python.yml
+  pip:
+    internal: true
+    taskfile: python-pip.yml
 tasks:
-  setup-python:
-    vars:
-      dcbver: '{{ .dcbver | default "dcb == 0.1.2" }}'
+  install:
     cmds:
-      - task: python:pip-install
+      - task: pip:install
         vars:
-          pkg: '{{ .dcbver }}'
+          pkg: 'dcb=={{ .dcbver | default "0.1.2" }}'
   default:
     vars:
       dcb: '{{ .dcb | default "dcb" }}'
@@ -19,6 +18,8 @@ tasks:
       upstreamapp: '{{ .upstreamapp | default "docker-ansible" }}'
       targetregistry: '{{ .targetregistry | default .upstreamregsitry }}'
       alltags: '{{ .alltags | default "" }}'
+    deps:
+      - install
     cmds:
       - |
         cd {{ .USER_WORKING_DIR }};

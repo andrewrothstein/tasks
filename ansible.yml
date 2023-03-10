@@ -1,20 +1,46 @@
 ---
 version: '3'
+include:
+  pip:
+    taskfile: python-pip.yml
 tasks:
-  galaxy-deps:
+  install:
+    cmds:
+      - task: pip:install
+        vars:
+          pkg: ansible
+  version:
+    cmds:
+      - ansible --version
+  default:
+    internal: true
     vars:
-      requirements: '{{ .requirements | default "requirements.yml" }}'
+      i: '{{ .i }}'
+      c: '{{ .c }}'
+      limit: '{{ .limit }}'
+      list_hosts: '{{ .list_hosts | default false }}'
+      m: '{{ .m | default "" }}'
+      target: '{{ .target | default "localhost" }}'
     cmds:
       - |
-        if [ -e {{ .requirements | quote }} ];
-        then
-          ansible-galaxy install -r {{ .requirements | quote }}
-        fi
+        ansible \
+          {{ if .i }}-i {{ .i | quote }}{{ end }} \
+          {{ if .c }}-c {{ .c | quote }}{{ end }} \
+          {{ if .limit }}--limit {{ .limit | quote }}{{ end }} \
+          {{ if .list_hosts }}--list-hosts{{ end }} \
+          {{ if .m }}-m {{ .m | quote }}{{ end }} \
+          {{ .target | quote }}
+  ping:
+    deps:
+      - task: default
+        vars:
+          m: ping
+          list_hosts: true
   playbook:
     vars:
-      limit: '{{ .limit | default "" }}'
-      i: '{{ .i | default "" }}'
-      c: '{{ .c | default "" }}'
+      limit: '{{ .limit }}'
+      i: '{{ .i }}'
+      c: '{{ .c }}'
       playbook: '{{ .playbook | default "playbook.yml" }}'
     cmds:
       - |

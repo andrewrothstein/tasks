@@ -1,27 +1,26 @@
 ---
 version: '3'
 includes:
-  ansible:
-    taskfile: ansible.yml
+  galaxy:
+    taskfile: ansible-galaxy.yml
+  local:
+    taskfile: ansible-local.yml
   dcb:
     taskfile: dcb.yml
 tasks:
   local:
     cmds:
-      - task: ansible:galaxy-deps
+      - task: ansible-galaxy:install
         vars:
           requirements: '{{ .USER_WORKING_DIR }}/requirements.yml'
-      - task: ansible:galaxy-deps
+      - task: ansible-galaxy:install
         vars:
           requirements: '{{ .USER_WORKING_DIR }}/meta/requirements.yml'
-      - task: ansible:galaxy-deps
+      - task: ansible-galaxy:install
         vars:
           requirements: '{{ .USER_WORKING_DIR }}/test-requirements.yml'
-      - task: ansible:playbook
+      - task: local:playbook
         vars:
-          c: local
-          i: localhost,
-          limit: localhost
           playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   default:
     deps:
@@ -55,5 +54,5 @@ tasks:
       - task: generate-checksum
         vars:
           append: '{{ .append }}'
-          dl: '{{ .USER_WORKING_DIR }}/dl-checksum.sh'
+          dl: '{{ .USER_WORKING_DIR }}/dl-checksums.sh'
           target: '{{ .target }}'
