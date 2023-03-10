@@ -17,6 +17,8 @@ tasks:
       upstreamgroup: '{{ .upstreamgroup | default "andrewrothstein" }}'
       upstreamapp: '{{ .upstreamapp | default "docker-ansible" }}'
       targetregistry: '{{ .targetregistry | default "andrewrothstein" }}'
+      targetuser: '{{ .targetuser }}'
+      targetpwd: '{{ .targetpwd }}'
       snippets: '{{ .snippets | default "from.j2 ansible-test-role.j2" }}'
       pullall: '{{ .pullall | default true }}'
       writeall: '{{ .writeall | default true }}'
@@ -31,6 +33,8 @@ tasks:
           --upstreamgroup {{ .upstreamgroup | quote }} \
           --upstreamapp {{ .upstreamapp | quote }} \
           --targetregistry {{ .targetregistry | quote }} \
+          {{ if .targetuser }}--targetuser {{ .targetuser | quote }}{{ end }} \
+          {{ if .targetpwd }}--targetpwd {{ .targetpwd | quote }}{{ end }} \
           --snippet {{ .snippets }} \
           {{ if .pullall }}--pullall{{ end }} \
           {{ if .writeall }}--writeall{{ end }} \

@@ -7,8 +7,6 @@ includes:
     taskfile: ansible-local.yml
   dcb:
     taskfile: dcb.yml
-    vars:
-      pushall: true
 tasks:
   local:
     cmds:
@@ -30,7 +28,7 @@ tasks:
     cmds:
       - task: dcb:default
         vars:
-          dcb: '{{ .dcb | default "dcb" }}'
+          pushall: '{{ .pushall | default true }}'
   generate-checksum:
     internal: true
     vars:
