@@ -7,6 +7,11 @@ tasks:
   update:
     cmds:
       - helm repo update
+  search:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - helm search repo {{ .n | quote }}
   add:
     vars:
       n: '{{ .n }}'
