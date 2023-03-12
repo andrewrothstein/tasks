@@ -3,29 +3,28 @@ version: '3'
 tasks:
   apply:
     vars:
-      NAME: '{{ .NAME | default "docker-daemon-name" }}'
+      NAME: '{{ .NAME }}'
       RESTART: '{{ .RESTART | default "always" }}'
-      HOST_PORT: '{{ .HOST_PORT | default 5000 }}'
-      CONTAINER_PORT: '{{ .CONTAINER_PORT | default 5000 }}'
-      CONTAINER_IMAGE: '{{ .CONTAINER_IMAGE | default "docker.io/foo/bar:1.2.3" }}'
-      E: '{{ .E | default "foo=bar" }}'
+      P: '{{ .P }}'
+      E: '{{ .E }}'
+      IMAGE: '{{ .IMAGE }}'
     cmds:
       - |
         docker \
           run -d \
           --name={{ .NAME | quote }} \
           --restart={{ .RESTART | quote }} \
-          -p "127.0.0.1:{{ .HOST_PORT }}:{{ .CONTAINER_PORT }}" \
-          -e {{ .E | quote }} \
-          {{ .CONTAINER_IMAGE | quote }}
+          {{ if .p }}-p {{ .p | quote }}{{ end }} \
+          {{ if .e }}-e {{ .E | quote }}{{ end }} \
+          {{ .IMAGE | quote }}
     status:
       - |
         docker ps \
-          --filter name={{ .NAME }} \
+          --filter "name={{ .NAME }}" \
           --format '{"Names":{{ "{{ .Names }}" | quote }} }' \
           | jq -e -s '.[] | select(.Names=={{ .NAME | quote}})'
   delete:
     vars:
-      NAME: '{{ .NAME | default "docker-daemon-name" }}'
+      NAME: '{{ .NAME }}'
     cmds:
-      - docker rm -f {{ .NAME }}
+      - docker rm -f {{ .NAME | quote }}
