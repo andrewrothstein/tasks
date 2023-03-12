@@ -2,8 +2,8 @@
 version: '3'
 includes:
   k3d: k3d.yml
-  kind: kind.yml
-  k8s: kind.yml
+  kind: kind+cilium+registry.yml
+  k8s: kind+cilium+registry.yml
   cni: cilium.yml
 #  istio: istio.yml
   pre-mesh: pre-mesh.yml

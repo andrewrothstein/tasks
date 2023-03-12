@@ -1,0 +1,17 @@
+# default values for chart-kind
+controlPlaneNodeCount: 1
+workloadNodeCount: 0
+
+#ipFamily: ipv6
+#apiServerAddress: 127.0.0.1
+#apiServerPort: 6443
+disableDefaultCNI: false
+#podSubnet: '10.10.0.0/16'
+#serviceSubnet: '10.11.0.0/16'
+#kubeProxyMode: ipvs
+#extraMounts:
+#  - hostPath: /var/run/docker.sock
+#    containerPath: /var/run/docker.sock
+#registryMirrors:
+#  - src: '*'
+#    dest: http://kind-registry:5000

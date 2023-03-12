@@ -1,0 +1,40 @@
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+{{ range $i := until (int $.Values.controlPlaneNodeCount) -}}
+- role: control-plane
+{{- include "kind.node" $.Values | nindent 2 }}
+{{ end -}}
+{{- range $j := until (int $.Values.workloadNodeCount) -}}
+- role: workload
+{{- include "kind.node" $.Values | nindent 2 }}
+{{ end -}}
+networking:
+{{- if $.Values.ipFamily }}
+  ipFamily: {{ $.Values.ipFamily | quote }}
+{{- end }}
+{{- if $.Values.apiServerAddress }}
+  apiServerAddress: {{ $.Values.apiServerAddress | quote }}
+{{- end }}
+{{- if $.Values.apiServerPort }}
+  apiServerPort: {{ $.Values.apiServerPort }}
+{{- end }}
+  disableDefaultCNI: {{ $.Values.disableDefaultCNI }}
+{{- if $.Values.podSubnet }}
+  podSubnet: {{ $.Values.podSubnet | quote }}
+{{- end }}
+{{- if $.Values.serviceSubnet }}
+  serviceSubnet: {{ $.Values.serviceSubnet | quote }}
+{{- end }}
+{{- if $.Values.kubeProxyMode }}
+  kubeProxyMode: {{ $.Values.kubeProxyMode | quote }}
+{{- end }}
+{{ if $.Values.registryMirrors -}}
+containerdConfigPatches:
+{{- range $i := $.Values.registryMirrors }}
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors.{{ .src | quote }}]
+    endpoint = [{{ .dest | quote }}]
+{{ end -}}
+{{- end }}

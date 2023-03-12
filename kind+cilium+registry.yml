@@ -1,0 +1,34 @@
+---
+version: '3'
+includes:
+  docker-registry:
+    taskfile: docker-registry.yml
+  kind:
+    taskfile: kind.yml
+tasks:
+  up:
+    deps:
+      - task: docker-registry:apply
+    cmds:
+      - task: kind:up
+        vars:
+          f: chart-kind/registry-values.yaml
+          set: disableDefaultCNI=true
+      - docker network connect kind kind-registry || true
+      - |
+        kubectl apply -f - <<EOF
+        ---
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: local-registry-hosting
+          namespace: kube-public
+        data:
+          localRegistryHosting.v1: |
+            host: "localhost:5000"
+            help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
+        EOF
+  delete:
+    cmds:
+      - task: kind:delete
+      - task: docker-registry:delete
