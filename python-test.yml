@@ -10,9 +10,6 @@ includes:
   build:
     taskfile: python-build.yml
 tasks:
-  build:
-    cmds:
-      - task: build
   test:
     cmds:
       - task: pip:upgrade-self
