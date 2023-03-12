@@ -33,11 +33,17 @@ tasks:
           --upstreamgroup {{ .upstreamgroup | quote }} \
           --upstreamapp {{ .upstreamapp | quote }} \
           --targetregistry {{ .targetregistry | quote }} \
-          {{ if .targetuser }}--targetuser {{ .targetuser | quote }}{{ end }} \
-          {{ if .targetpwd }}--targetpwd {{ .targetpwd | quote }}{{ end }} \
+          {{ if .targetuser }}--targetuser {{ .targetuser | quote }} \
+          {{ end -}}
+          {{ if .targetpwd }}--targetpwd {{ .targetpwd | quote }} \
+          {{ end -}}
           --snippet {{ .snippets }} \
-          {{ if .pullall }}--pullall{{ end }} \
-          {{ if .writeall }}--writeall{{ end }} \
-          {{ if .buildall }}--buildall{{ end }} \
-          {{ if .pushall }}--pushall{{ end }} \
+          {{ if .pullall }}--pullall \
+          {{ end -}}
+          {{ if .writeall }}--writeall \
+          {{ end -}}
+          {{ if .buildall }}--buildall \
+          {{ end -}}
+          {{ if .pushall }}--pushall \
+          {{ end -}}
           {{ if .alltags }}--alltags {{ .alltags | quote }}{{ end }}
