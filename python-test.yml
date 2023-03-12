@@ -20,3 +20,8 @@ tasks:
         vars:
           e: '{{ .USER_WORKING_DIR }}'
       - task: unittest
+  default:
+    deps:
+      - build
+    cmds:
+      - task: test
