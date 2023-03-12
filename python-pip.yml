@@ -5,10 +5,17 @@ includes:
     internal: true
     taskfile: python.yml
 tasks:
+  upgrade-self:
+    cmds:
+      - task: py
+        vars:
+          m: pip
+          python_args: install --upgrade pip
   install:
     vars:
       upgrade: '{{ .upgrade | default false }}'
-      pkg: '{{ .pkg | default "" }}'
+      pkg: '{{ .pkg }}'
+      e: '{{ .e }}'
     cmds:
       - task: py
         vars:
@@ -16,7 +23,8 @@ tasks:
           python_args: >-
             install
             {{ if .upgrade }}--upgrade{{ end }}
-            {{ if .pkg }}{{ .pkg | quote }}{{ end }}
+            {{ if .e }}-e {{.e }}{{ end }}
+            {{ if .pkg }}{{ .pkg }}{{ end }}
   installr:
     vars:
       requirements: '{{ .requirements | default "requirements.txt" }}'
