@@ -9,7 +9,7 @@ tasks:
     cmds:
       - task: pip:install
         vars:
-          pkg: 'dcb=={{ .dcbver | default "0.1.2" }}'
+          pkg: 'dcb~=0.1'
   default:
     vars:
       dcb: '{{ .dcb | default "dcb" }}'
