@@ -5,26 +5,18 @@ includes:
     taskfile: python-pip.yml
   python:
     taskfile: python.yml
+  unittest:
+    taskfile: python-unittest.yml
+  build:
+    taskfile: python-build.yml
 tasks:
-  default:
+  build:
+    cmds:
+      - task: build
+  test:
     cmds:
       - task: pip:upgrade-self
       - task: pip:install
         vars:
           e: '{{ .USER_WORKING_DIR }}'
-      - task: python
-        vars:
-          m: unittest
-          python_args: >
-            discover -s {{ .USER_WORKING_DIR | quote }}
-      - task: pip:install
-        vars:
-          pkg: build wheel
-      - task: python
-        vars:
-          m: build
-          python_args: >
-            --sdist
-            --wheel
-            --outdir {{ .USER_WORKING_DIR }}/dist/
-            {{ .USER_WORKING_DIR | quote }}
+      - task: unittest

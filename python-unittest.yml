@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  python:
+    taskfile: python.yml
+tasks:
+  default:
+    cmds:
+      - task: python
+        vars:
+          m: unittest
+          python_args: >
+            discover -s {{ .USER_WORKING_DIR | quote }}
