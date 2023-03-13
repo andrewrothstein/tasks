@@ -1,0 +1,36 @@
+---
+version: '3'
+includes:
+  crossplane-repo: crossplane-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAME: crossplane
+      CHART_REPO_NAME: crossplane-stable
+      CHART: crossplane
+      CHART_VER: 1.11.2
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      DOMAIN: '{{ .DOMAIN | default "drewfus.org" }}'
+    deps:
+      - task: crossplane-repo
+    cmds:
+      - task: helm:install
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+          NAME: crossplane
+          CHART_REPO_NAME: crossplane-stable
+          CHART: crossplane
+          CHART_VER: 1.11.2
+          HELM_ARGS: ''
+  delete:
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'
