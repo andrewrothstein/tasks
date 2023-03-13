@@ -7,7 +7,8 @@ includes:
 #  kubevirt-cdi: kubevirt-cdi.yml
 #  kubevirt-vms: kubevirt-vm.yml
 #  postgresql: postgresql.yml
-  coderv2: coderv2.yml
+#  coderv2: coderv2.yml
+  crossplane: crossplane.yml
 tasks:
   default:
     deps:
@@ -20,10 +21,12 @@ tasks:
 #      - task: kubevirt-cdi:apply
 #      - task: kubevirt-vms:apply
 #      - task: postgresql:install
-      - task: coderv2:install
+#      - task: coderv2:install
+      - task: crossplane:install
   delete:
     cmds:
-      - task: coderv2:delete
+      - task: crossplane:delete
+#      - task: coderv2:delete
 #      - task: postgresql:delete
 #      - task: kubevirt-vms:delete
 #      - task: kubevirt-cdi:delete

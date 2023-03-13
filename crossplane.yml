@@ -2,7 +2,7 @@
 version: '3'
 includes:
   crossplane-repo: crossplane-repo.yml
-  helm:
+  crossplane-helm:
     taskfile: helm.yml
     internal: true
     vars:
@@ -10,6 +10,9 @@ includes:
       CHART_REPO_NAME: crossplane-stable
       CHART: crossplane
       CHART_VER: 1.11.2
+  crossplane-providers:
+    taskfile: kubectl.yml
+    internal: true
 tasks:
   default:
     deps:
@@ -20,7 +23,7 @@ tasks:
     deps:
       - task: crossplane-repo
     cmds:
-      - task: helm:install
+      - task: crossplane-helm:install
         vars:
           NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'
           CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
@@ -29,8 +32,12 @@ tasks:
           CHART: crossplane
           CHART_VER: 1.11.2
           HELM_ARGS: ''
+      - task: crossplane-providers:apply
+        vars:
+          n: crossplane-stable
+          f: crossplane/azure-provider.yml
   delete:
     cmds:
-      - task: helm:delete
+      - task: crossplane-helm:delete
         vars:
           NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'
