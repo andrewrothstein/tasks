@@ -13,16 +13,8 @@ tasks:
     deps:
       - apply
   apply:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-release:apply
   delete:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-release:delete

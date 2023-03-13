@@ -1,8 +1,5 @@
 ---
 version: '3'
-vars:
-  DEFAULT_ARGO_CD_NS: argo-cd
-  DEFAULT_ARGO_CD_VER: 2.5.4
 includes:
   argo-raw:
     taskfile: argo-raw.yml
@@ -10,22 +7,14 @@ includes:
     vars:
       n: argo-cd
       p: cd
-      v: 2.5.4
+      v: 2.6.3
 tasks:
   default:
     deps:
       - apply
   apply:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-raw:apply
   delete:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-raw:delete

@@ -1,7 +1,5 @@
 ---
 version: '3'
-vars:
-  ARGO_MIRROR: '{{ .ARGO_MIRROR | default "https://raw.githubusercontent.com/argoproj" }}'
 includes:
   kubectl:
     taskfile: kubectl.yml
@@ -9,6 +7,7 @@ includes:
 tasks:
   apply:
     vars:
+      m: '{{ .m | default "https://raw.githubusercontent.com/argoproj" }}'
       n: '{{ .n }}'
       p: '{{ .p }}'
       v: '{{ .v }}'
@@ -20,9 +19,10 @@ tasks:
       - task: kubectl:apply
         vars:
           n: '{{ .n }}'
-          f: '{{ .ARGO_MIRROR }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
+          f: '{{ .m }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
   delete:
     vars:
+      m: '{{ .m | default "https://raw.githubusercontent.com/argoproj" }}'
       n: '{{ .n }}'
       p: '{{ .p }}'
       v: '{{ .v }}'
@@ -31,7 +31,7 @@ tasks:
       - task: kubectl:delete
         vars:
           n: '{{ .n }}'
-          f: '{{ .ARGO_MIRROR }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
+          f: '{{ .m }}/argo-{{ .p }}/v{{ .v }}/manifests/{{ .y }}'
       - task: kubectl:ns-delete
         vars:
           n: '{{ .n }}'

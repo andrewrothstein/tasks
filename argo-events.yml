@@ -6,23 +6,15 @@ includes:
     internal: true
     vars:
       n: argo-events
-      v: 1.7.3
+      v: 1.7.6
       p: events
 tasks:
   default:
     deps:
       - apply
   apply:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-raw:apply
   delete:
-    vars:
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
     cmds:
       - task: argo-raw:delete

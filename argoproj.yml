@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  argo: argo.yml
+  argocd: argocd.yml
+  argo-events: argo-events.yml
+  argo-rollouts: argo-rollouts.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - task: argo:apply
+      - task: argocd:apply
+      - task: argo-events:apply
+      - task: argo-rollouts:apply
+  delete:
+    deps:
+      - task: argo-rollouts:delete
+      - task: argo-events:delete
+      - task: argocd:delete
+      - task: argo:delete

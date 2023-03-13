@@ -7,30 +7,24 @@ includes:
     dir: vault-dev
     taskfile: vault-dev.yml
   jetstack: jetstack.yml
-  argo: argo.yml
-  argocd: argocd.yml
-  argo-events: argo-events.yml
-  argo-rollouts: argo-rollouts.yml
   gitea: gitea.yml
+  argoproj: argoproj.yml
 tasks:
+  default:
+    deps:
+      - up
   up:
     cmds:
 #      - task: gatekeeper:install
 #      - task: vault-dev:install
 #      - task: pinniped:deploy-concierge
 #      - task: jetstack:install
-#      - task: argo:apply
-#      - task: argocd:apply
-#      - task: argo-events:apply
-#      - task: argo-rollouts:apply
+      - task: argoproj:install
 #      - task: gitea:install
   delete:
     cmds:
 #      - task: gitea:delete
-#      - task: argo-rollouts:delete
-#      - task: argo-events:delete
-#      - task: argocd:delete
-#      - task: argo:delete
+      - task: argoproj:delete
 #      - task: jetstack:delete
 #      - task: pinniped:delete-concierge
 #      - task: knative:delete
