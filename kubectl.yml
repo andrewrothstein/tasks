@@ -27,7 +27,7 @@ tasks:
       - |
         kubectl \
           apply \
-          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+          {{ if .n }}-n {{ .n | quote }}{{ end }} \
           -f {{ .f | quote }}
   delete:
     vars:
