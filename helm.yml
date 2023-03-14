@@ -18,8 +18,9 @@ tasks:
           {{ if .CREATE_NAMESPACE }}--create-namespace{{ end }} \
           {{ .NAME | quote }} \
           '{{ .CHART_REPO_NAME }}/{{ .CHART }}' \
-          --version {{ .CHART_VER | quote }} \
-          {{ .HELM_ARGS }}
+          --version {{ .CHART_VER | quote }}
+          {{- if .HELM_ARGS }} \
+          {{ .HELM_ARGS }}{{ end }}
     status:
       - |
         helm \
