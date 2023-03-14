@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    vars:
+      n: default
+tasks:
+  default:
+    deps:
+      - apply
+  apply:
+    vars:
+      ver: '{{ .ver | default "v1.0.15" }}'
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: https://raw.githubusercontent.com/stakater/Reloader/{{ .ver }}/deployments/kubernetes/reloader.yaml
+  delete:
+    vars:
+      ver: '{{ .ver | default "v1.0.15" }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: https://raw.githubusercontent.com/stakater/Reloader/{{ .ver }}/deployments/kubernetes/reloader.yaml
