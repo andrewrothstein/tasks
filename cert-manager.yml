@@ -65,20 +65,21 @@ tasks:
     vars:
       NAMESPACE: '{{ .NAMESPACE | default "cert-manager" }}'
       CERTMANAGER_NAME: '{{ .CERTMANAGER_NAME | default "cert-manager" }}'
+      CERTMANAGER_APPROVERPOLICY_NAME: '{{ .CERTMANAGER_APPROVERPOLICY_NAME | default "cert-manager-approver-policy" }}'
       CERTMANAGER_CSIDRIVER_NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME | default "cert-manager-csi-driver" }}'
     cmds:
       - task: helm:delete
         vars:
           NAMESPACE: '{{ .NAMESPACE }}'
           NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME }}'
-      - task: kubectl:apply
+      - task: kubectl:delete
         vars:
           n: '{{ .NAMESPACE }}'
           f: cert-manager-selfsigned-cluster-issuer.yml
       - task: helm:delete
         vars:
           NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME }}'
+          NAME: '{{ .CERTMANAGER_APPROVERPOLICY_NAME }}'
       - task: helm:delete
         vars:
           NAMESPACE: '{{ .NAMESPACE }}'
