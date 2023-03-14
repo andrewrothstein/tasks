@@ -4,7 +4,7 @@ tasks:
   install:
     vars:
       NAMESPACE: '{{ .NAMESPACE }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default false }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
       NAME: '{{ .NAME }}'
       CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
       CHART: '{{ .CHART }}'
