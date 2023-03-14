@@ -6,6 +6,7 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      NAMESPACE: gitlab
       NAME: gitlab
       CHART_REPO_NAME: gitlab
       CHART: gitlab
@@ -22,17 +23,10 @@ tasks:
     cmds:
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "gitlab" }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-          NAME: gitlab
-          CHART_REPO_NAME: gitlab
-          CHART: gitlab
-          CHART_VER: 6.9.3
+          CREATE_NAMESPACE: true
           HELM_ARGS: >
             --timeout 600s
             --set global.hosts.domain={{ .DOMAIN }}
   delete:
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE | default "gitlab" }}'
