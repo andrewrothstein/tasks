@@ -7,10 +7,10 @@ includes:
 tasks:
   upgrade-self:
     cmds:
-      - task: py
+      - task: install
         vars:
-          m: pip
-          python_args: install --upgrade pip
+          upgrade: true
+          pkg: pip
   install:
     vars:
       upgrade: '{{ .upgrade | default false }}'
