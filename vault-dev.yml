@@ -2,15 +2,19 @@
 version: '3'
 includes:
   vault: vault.yml
+  ss-csi: secrets-store-csi-driver.yml
 tasks:
   default:
     deps:
       - install
   install:
+    deps:
+      - task: ss-csi:install
     cmds:
       - task: vault:install
         vars:
           HELM_ARGS: -f vault-dev/values.yml
   delete:
     cmds:
+#      - task: ss-csi:delete
       - task: vault:delete

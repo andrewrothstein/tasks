@@ -7,33 +7,32 @@ includes:
   helm:
     taskfile: helm.yml
     internal: true
-  kubectl:
-    taskfile: kubectl.yml
-    internal: true
+    vars:
+      CHART_REPO_NAME: hashicorp
 tasks:
   install:
     vars:
+      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
+      NAME: '{{ .NAME | default "vault" }}'
+      CHART_VER: '{{ .CHART_VER | default "0.23.0" }}'
       HELM_ARGS: '{{ .HELM_ARGS }}'
     deps:
-      - hashicorp:helm-repo-add
+      - task: hashicorp
     cmds:
-      - task: kubectl:ns-create
-        vars:
-          n: '{{ .NAMESPACE | default "vault" }}'
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-          NAME: '{{ .NAME | default "vault" }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "hashicorp" }}'
-          CHART: '{{ .CHART | default "vault" }}'
-          CHART_VER: '{{ .CHART_VER | default "0.23.0" }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: true
+          NAME: '{{ .NAME }}'
+          CHART: vault
+          CHART_VER: '{{ .CHART_VER }}'
           HELM_ARGS: '{{ .HELM_ARGS }}'
   delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
+      NAME: '{{ .NAME | default "vault" }}'
     cmds:
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-          NAME: '{{ .NAME | default "vault" }}'
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .NAMESPACE |  default "vault" }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
