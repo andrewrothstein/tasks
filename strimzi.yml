@@ -8,34 +8,25 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      NAMESPACE: strimzi
       CHART_REPO_NAME: strimzi
       CHART: strimzi-kafka-operator
+      NAME: strimzi-kafka-operator
+      CHART_VER: 0.33.2
 tasks:
   default:
     deps:
       - install
   install:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
-      NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
-      CHART_VER: '{{ .CHART_VER | default "0.33.2" }}'
       HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     deps:
       - task: strimzi-repo
     cmds:
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           CREATE_NAMESPACE: true
-          NAME: '{{ .NAME }}'
-          CHART_VER: '{{ .CHART_VER }}'
           HELM_ARGS: '{{ .HELM_ARGS }}'
   delete:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
-      NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
