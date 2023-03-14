@@ -7,30 +7,22 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
+      NAMESPACE: dragonfly-system
       NAME: dragonfly
       CHART_REPO_NAME: dragonfly
       CHART: dragonfly
-      CHART_VER: 0.10.0
+      CHART_VER: 0.10.7
 tasks:
   default:
     deps:
       - install
   install:
     deps:
-      - dragonfly-repo
+      - task: dragonfly-repo
     cmds:
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "dragonfly-system" }}'
-          NAME: '{{ .NAME | default "dragonfly" }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "dragonfly" }}'
-          CHART: '{{ .CHART | default "dragonfly" }}'
-          CHART_VER: '{{ .CHART_VER | default "0.10.0" }}'
-          HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
+          CREATE_NAMESPACE: true
   delete:
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE | default "dragonfly-system" }}'
-          NAME: '{{ .NAME | default "dragonfly" }}'
