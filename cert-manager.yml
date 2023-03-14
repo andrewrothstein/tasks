@@ -5,9 +5,14 @@ includes:
   helm:
     taskfile: helm.yml
     internal: true
+    vars:
+      NAMESPACE: cert-manager
+      CHART_REPO_NAME: jetstack
   kubectl:
     taskfile: kubectl.yml
     internal: true
+    vars:
+      n: cert-manager
 tasks:
   default:
     deps:
@@ -15,8 +20,6 @@ tasks:
   install:
     vars:
       INSTALL_CRDS: '{{ .INSTALL_CRDS | default true }}'
-      NAMESPACE: '{{ .NAMESPACE | default "cert-manager" }}'
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "jetstack" }}'
 
       CERTMANAGER_NAME: '{{ .CERTMANAGER_NAME | default "cert-manager" }}'
       CERTMANAGER_CHART_VER: '{{ .CERTMANAGER_CHART_VER | default "1.11.0" }}'
@@ -31,56 +34,44 @@ tasks:
     cmds:
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           CREATE_NAMESPACE: true
           NAME: '{{ .CERTMANAGER_NAME }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
           CHART: cert-manager
           CHART_VER: '{{ .CERTMANAGER_CHART_VER }}'
           HELM_ARGS: >
             --set installCRDs={{ .INSTALL_CRDS }}
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           CREATE_NAMESPACE: false
           NAME: '{{ .CERTMANAGER_APPROVERPOLICY_NAME }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
           CHART: cert-manager-approver-policy
           CHART_VER: '{{ .CERTMANAGER_APPROVERPOLICY_CHART_VER }}'
           HELM_ARGS: ''
       - task: kubectl:apply
         vars:
-          n: '{{ .NAMESPACE }}'
           f: cert-manager-selfsigned-cluster-issuer.yml
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           CREATE_NAMESPACE: false
           NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME }}'
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
           CHART: cert-manager-csi-driver
           CHART_VER: '{{ .CERTMANAGER_CSIDRIVER_CHART_VER }}'
           HELM_ARGS: ''
   delete:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "cert-manager" }}'
       CERTMANAGER_NAME: '{{ .CERTMANAGER_NAME | default "cert-manager" }}'
       CERTMANAGER_APPROVERPOLICY_NAME: '{{ .CERTMANAGER_APPROVERPOLICY_NAME | default "cert-manager-approver-policy" }}'
       CERTMANAGER_CSIDRIVER_NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME | default "cert-manager-csi-driver" }}'
     cmds:
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           NAME: '{{ .CERTMANAGER_CSIDRIVER_NAME }}'
       - task: kubectl:delete
         vars:
-          n: '{{ .NAMESPACE }}'
           f: cert-manager-selfsigned-cluster-issuer.yml
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           NAME: '{{ .CERTMANAGER_APPROVERPOLICY_NAME }}'
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
           NAME: '{{ .CERTMANAGER_NAME }}'
