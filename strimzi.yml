@@ -1,16 +1,41 @@
 ---
 version: '3'
 includes:
+  strimzi-repo:
+    taskfile: strimzi-repo.yml
+    internal: true
   helm:
     taskfile: helm.yml
     internal: true
+    vars:
+      CHART_REPO_NAME: strimzi
+      CHART: strimzi-kafka-operator
 tasks:
   default:
     deps:
-      - helm-repo-add
-  helm-repo-add:
+      - install
+  install:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
+      NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
+      CHART_VER: '{{ .CHART_VER | default "0.33.2" }}'
+      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
+    deps:
+      - task: strimzi-repo
     cmds:
-      - task: helm:repo-add
+      - task: helm:install
         vars:
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "strimzi" }}'
-          CHART_REPO_URL: '{{ .CHART_REPO_URL | default "https://strimzi.io/charts" }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: true
+          NAME: '{{ .NAME }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
+  delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "strimzi" }}'
+      NAME: '{{ .NAME | default "strimzi-kafka-operator" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
