@@ -1,0 +1,173 @@
+---
+version: '3'
+tasks:
+  tg_run_all:
+    internal: true
+    vars:
+      tg_exe: '{{ .tg_exe | default "terragrunt" }}'
+      cmd: '{{ .cmd | default "init" }}'
+      terragrunt_tfpath: '{{ .terragrunt_tfpath | default "" }}'
+      terragrunt_no_auto_init: '{{ .terragrunt_no_auto_init | default "" }}'
+      terragrunt_no_auto_retry: '{{ .terragrunt_no_auto_retry | default "" }}'
+      terragrunt_non_interactive: '{{ .terragrunt_non_interactive | default "" }}'
+      terragrunt_working_dir: '{{ .terragrunt_working_dir | default .USER_WORKING_DIR }}'
+      terragrunt_download_dir: '{{ .terragrunt_download_dir | default "" }}'
+      terragrunt_source: '{{ .terragrunt_source | default "" }}'
+      terragrunt_source_update: '{{ .terragrunt_source_update | default "" }}'
+      terragrunt_iam_role: '{{ .terragrunt_iam_role | default "" }}'
+      terragrunt_iam_assume_role_duration: '{{ .terragrunt_iam_assume_role_duration | default "" }}'
+      terragrunt_iam_assume_role_session_name: '{{ .terragrunt_iam_assume_role_session_name | default "" }}'
+      terragrunt_ignore_dependency_errors: '{{ .terragrunt_ignore_dependency_errors | default "" }}'
+      terragrunt_ignore_dependency_order: '{{ .terragrunt_ignore_dependency_order | default "" }}'
+      terragrunt_ignore_external_dependencies: '{{ .terragrunt_ignore_external_dependencies | default "" }}'
+      terragrunt_include_external_dependencies: '{{ .terragrunt_include_external_dependencies | default "" }}'
+      terragrunt_parallelism: '{{ .terragrunt_parallelism | default "" }}'
+      terragrunt_exclude_dir: '{{ .terragrunt_exclude_dir | default "" }}'
+      terragrunt_include_dir: '{{ .terragrunt_include_dir | default "" }}'
+      terragrunt_check: '{{ .terragrunt_check | default "" }}'
+      terragrunt_hclfmt_file: '{{ .terragrunt_hclfmt_file | default "" }}'
+      terragrunt_override_attr: '{{ .terragrunt_override_attr | default "" }}'
+      terragrunt_debug: '{{ .terragrunt_debug | default "" }}'
+      terragrunt_log_level: '{{ .terragrunt_log_level | default "" }}'
+      terragrunt_strict_validate: '{{ .terragrunt_strict_validate | default "" }}'
+      terragrunt_json_out: '{{ .terragrunt_json_out | default "" }}'
+      terragrunt_use_partial_parse_config_cache: '{{ .terragrunt_use_partial_parse_config_cache | default "" }}'
+      addlopts: '{{ .addlopts | default "" }}'
+    cmds:
+      - |
+        {{ .tg_exe | quote }} \
+          run-all \
+          {{ .cmd | quote }} \
+          {{ if .terragrunt_tfpath -}}
+          --terragrunt-tfpath={{ .terragrunt_tfpath | quote }}
+          {{- end }} \
+          {{ if .terragrunt_no_auto_init -}}
+          --terragrunt-no-auto-init=
+          {{- .terragrunt_no_auto_init | quote }}
+          {{- end }} \
+          {{ if .terragrunt_no_auto_retry -}}
+          --terragrunt-no-auto-retry=
+          {{- .terragrunt_no_auto_retry | quote }}
+          {{- end }} \
+          {{ if .terragrunt_non_interactive -}}
+          --terragrunt-non-interactive=
+          {{- .terragrunt_non_interactive | quote }}
+          {{- end }} \
+          {{ if .terragrunt_working_dir -}}
+          --terragrunt-working-dir=
+          {{- .terragrunt_working_dir | quote }}
+          {{- end }} \
+          {{ if .terragrunt_download_dir -}}
+          --terragrunt-download-dir=
+          {{- .terragrunt_download_dir | quote }}
+          {{- end }} \
+          {{ if .terragrunt_source -}}
+          --terragrunt-source=
+          {{- .terragrunt_source | quote }}
+          {{- end }} \
+          {{ if .terragrunt_source_update -}}
+          --terragrunt-source-update=
+          {{- .terragrunt_source_update | quote }}
+          {{- end }} \
+          {{ if .terragrunt_iam_role -}}
+          --terragrunt-iam-role=
+          {{- .terragrunt_iam_role | quote }}
+          {{- end }} \
+          {{ if .terragrunt_iam_assume_role_duration -}}
+          --terragrunt-iam-assume-role-duration=
+          {{- .terragrunt_iam_assume_role_duration | quote }}
+          {{- end }} \
+          {{ if .terragrunt_iam_assume_role_session_name -}}
+          --terragrunt-iam-assume-role-session-name=
+          {{- .terragrunt_iam_assume_role_session_name | quote }}
+          {{- end }} \
+          {{ if .terragrunt_ignore_dependency_errors -}}
+          --terragrunt-ignore-dependency-errors=
+          {{- .terragrunt_ignore_dependency_errors | quote }}
+          {{- end }} \
+          {{ if .terragrunt_ignore_dependency_order -}}
+          --terragrunt-ignore-dependency-order=
+          {{- .terragrunt_ignore_dependency_order | quote }}
+          {{- end }} \
+          {{ if .terragrunt_ignore_external_dependencies -}}
+          --terragrunt-ignore-external-dependencies=
+          {{- .terragrunt_ignore_external_dependencies | quote }}
+          {{- end }} \
+          {{ if .terragrunt_include_external_dependencies -}}
+          --terragrunt-include-external-dependencies=
+          {{- .terragrunt_include_external_dependencies | quote }}
+          {{- end }} \
+          {{ if .terragrunt_parallelism -}}
+          --terragrunt-parallelism=
+          {{- .terragrunt_parallelism | quote }}
+          {{- end }} \
+          {{ if .terragrunt_exclude_dir -}}
+          --terragrunt-exclude-dir=
+          {{- .terragrunt_exclude_dir | quote }}
+          {{- end }} \
+          {{ if .terragrunt_include_dir -}}
+          --terragrunt-include-dir=
+          {{- .terragrunt_include_dir | quote }}
+          {{- end }} \
+          {{ if .terragrunt_check -}}
+          --terragrunt-check=
+          {{- .terragrunt_check | quote }}
+          {{- end }} \
+          {{ if .terragrunt_hclfmt_file -}}
+          --terragrunt-hclfmt-file=
+          {{- .terragrunt_hclfmt_file | quote }}
+          {{- end }} \
+          {{ if .terragrunt_override_attr -}}
+          --terragrunt-override-attr=
+          {{- .terragrunt_override_attr | quote }}
+          {{- end }} \
+          {{ if .terragrunt_debug -}}
+          --terragrunt-debug=
+          {{- .terragrunt_debug | quote }}
+          {{- end }} \
+          {{ if .terragrunt_log_level -}}
+          --terragrunt-log-level=
+          {{- .terragrunt_log_level | quote }}
+          {{- end }} \
+          {{ if .terragrunt_strict_validate -}}
+          --terragrunt-strict-validate=
+          {{- .terragrunt_strict_validate | quote }}
+          {{- end }} \
+          {{ if .terragrunt_json_out -}}
+          --terragrunt-json-out=
+          {{- .terragrunt_json_out | quote }}
+          {{- end }} \
+          {{ if .terragrunt_use_partial_parse_config_cache -}}
+          --terragrunt-use-partial-parse-config-cache=
+          {{- .terragrunt_use_partial_parse_config_cache | quote }}
+          {{- end }} \
+          {{ if .addlopts }}{{ .addlopts }}{{ end }}
+  init_all:
+    cmds:
+      - task: tg_run_all
+        vars:
+          action: init
+  validate_all:
+    deps:
+      - task: init_all
+    cmds:
+      - task: tg_run_all
+        vars:
+          action: validate
+  plan_all:
+    deps:
+      - task: validate_all
+    cmds:
+      - task: tg_run_all
+        vars:
+          action: plan
+  apply_all:
+    deps:
+      - task: plan_all
+    cmds:
+      - task: tf_run_all
+        vars:
+          action: apply
+  default:
+    deps:
+      - plan_all
