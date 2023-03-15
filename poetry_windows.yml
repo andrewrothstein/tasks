@@ -1,0 +1,7 @@
+---
+version: '3'
+tasks:
+  install:
+    cmds:
+      - |
+        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
