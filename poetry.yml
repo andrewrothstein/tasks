@@ -3,6 +3,14 @@ version: '3'
 includes:
   poetry: poetry_{{ OS }}.yml
 tasks:
-  default:
+  install:
     deps:
       - task: poetry:install
+  version:
+    cmds:
+      - poetry --version
+  default:
+    deps:
+      - task: install
+    cmds:
+      - task: version
