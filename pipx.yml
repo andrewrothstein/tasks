@@ -1,0 +1,36 @@
+---
+version: '3'
+includes:
+  pip:
+    internal: true
+    taskfile: python-pip.yml
+tasks:
+  pipx:
+    internal: true
+    vars:
+      args: '{{ .args }}'
+    cmds:
+      - pipx {{ .args }}
+  install:
+    vars:
+      pkg: '{{ .pkg }}'
+      e: '{{ .e | default "" }}'
+    cmds:
+      - task: pipx
+        vars:
+          args: |
+            install \
+            {{ if .e }}-e {{ .e }}{{ end }} \
+            {{ .pkg }}
+  ensurepath:
+    deps:
+      - task: pipx
+        vars:
+          args: ensurepath
+  self-install:
+    deps:
+      - task: pip:install
+        vars:
+          pkg: pipx
+    cmds:
+      - task: ensurepath
