@@ -4,27 +4,60 @@ tasks:
   list:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
     cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          list
   select:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "default" }}'
     cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace select {{ .WORKSPACE_NAME | quote }}'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          select \
+          {{ .WORKSPACE_NAME | quote }}
     status:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list | grep "* {{ .WORKSPACE_NAME }}"'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          list \
+          | grep '* {{ .WORKSPACE_NAME }}'
   new:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "default" }}'
     cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace new {{ .WORKSPACE_NAME | quote }}'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          new \
+          {{ .WORKSPACE_NAME | quote }}
     status:
-      - '{{ .TERRAFORM_EXE | quote }} workspace list | grep {{ .WORKSPACE_NAME | quote }}'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          list \
+          | grep {{ .WORKSPACE_NAME | quote }}
   delete:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       WORKSPACE_NAME: '{{ .WORKSPACE_NAME | default "default" }}'
     cmds:
-      - '{{ .TERRAFORM_EXE | quote }} workspace delete {{ .WORKSPACE_NAME | quote }}'
+      - |
+        {{ .TERRAFORM_EXE | quote }} \
+          -chdir={{ .CHDIR | quote }} \
+          workspace \
+          delete \
+          {{ .WORKSPACE_NAME | quote }}

@@ -1,30 +1,21 @@
 ---
 version: '3'
 includes:
-  terraform-workspace:
-    taskfile: terraform-workspace.yml
+  cicd:
+    taskfile: terraform-cicd.yml
     vars:
       WORKSPACE_NAME: dex-aad
-  terraform:
-    taskfile: terraform.yml
-    vars:
       CHDIR: tf-dex-aad
 tasks:
   destroy:
-    cmds:
-      - task: terraform:destroy
+    deps:
+      - task: cicd:destroy
   plan:
-    cmds:
-      - task: terraform-workspace:new
-      - task: terraform-workspace:select
-      - task: terraform:init
-      - task: terraform:validate
-      - task: terraform:plan
+    deps:
+      - task: cicd:plan
   apply:
     deps:
-      - task: terraform:plan
-    cmds:
-      - task: terraform:apply
+      - task: cicd:apply
   default:
     deps:
-      - plan
+      - task: plan

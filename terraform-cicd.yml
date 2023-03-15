@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  terraform-workspace:
+    taskfile: terraform-workspace.yml
+  terraform:
+    taskfile: terraform.yml
+tasks:
+  destroy:
+    cmds:
+      - task: terraform:destroy
+  plan:
+    cmds:
+      - task: terraform:version
+      - task: terraform-workspace:new
+      - task: terraform-workspace:select
+      - task: terraform:init
+      - task: terraform:validate
+      - task: terraform:plan
+  apply:
+    deps:
+      - task: terraform:plan
+    cmds:
+      - task: terraform:apply
+  default:
+    deps:
+      - plan

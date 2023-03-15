@@ -10,7 +10,7 @@ tasks:
   init:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      CHDIR: '{{ .CHDIR | default "." }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
     cmds:
       - |
         {{ .TERRAFORM_EXE | quote }} \
@@ -20,7 +20,7 @@ tasks:
   validate:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      CHDIR: '{{ .CHDIR | default "." }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       VALIDATE_JSON_OUTPUT: '{{ .VALIDATE_JSON_OUTPUT | default "tf-validate.json" }}'
     cmds:
       - |
@@ -33,7 +33,7 @@ tasks:
   plan:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      CHDIR: '{{ .CHDIR | default "." }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
       - |
@@ -45,7 +45,7 @@ tasks:
   apply:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      CHDIR: '{{ .CHDIR | default "." }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
       - |
@@ -58,7 +58,7 @@ tasks:
   destroy:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
-      CHDIR: '{{ .CHDIR | default "." }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
     cmds:
       - |
         {{ .TERRAFORM_EXE | quote }} \
