@@ -8,6 +8,11 @@ includes:
   dcb:
     taskfile: dcb.yml
 tasks:
+  test-local:
+    cmds:
+      - task: local:playbook
+        vars:
+          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   local:
     cmds:
       - task: ansible-galaxy:install
@@ -19,9 +24,7 @@ tasks:
       - task: ansible-galaxy:install
         vars:
           requirements: '{{ .USER_WORKING_DIR }}/test-requirements.yml'
-      - task: local:playbook
-        vars:
-          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
+      - task: test-local
   default:
     deps:
       - task: dcb:install
