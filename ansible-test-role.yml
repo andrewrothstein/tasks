@@ -4,7 +4,12 @@ includes:
   galaxy:
     taskfile: ansible-galaxy.yml
   local:
-    taskfile: ansible-local.yml
+    taskfile: ansible.yml
+    vars:
+      i: 'localhost,'
+      c: local
+      target: localhost
+      limit: localhost
   dcb:
     taskfile: dcb.yml
 tasks:
