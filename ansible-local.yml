@@ -16,3 +16,12 @@ tasks:
   playbook:
     deps:
       - ansible:playbook
+  test:
+    deps:
+      - task: ansible:playbook
+        vars:
+          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
+  default:
+    deps:
+      - test
+
