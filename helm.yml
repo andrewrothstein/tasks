@@ -14,11 +14,15 @@ tasks:
       - |
         helm \
           install \
-          -n {{ .NAMESPACE | quote }} \
-          {{ if .CREATE_NAMESPACE }}--create-namespace{{ end }} \
+          -n {{ .NAMESPACE | quote }}
+          {{- if .CREATE_NAMESPACE }}  \
+          --create-namespace
+          {{- end }} \
           {{ .NAME | quote }} \
-          '{{ .CHART_REPO_NAME }}/{{ .CHART }}' \
+          '{{ .CHART_REPO_NAME }}/{{ .CHART }}'
+          {{- if .CHART_VER }} \
           --version {{ .CHART_VER | quote }}
+          {{- end }}
           {{- if .HELM_ARGS }} \
           {{ .HELM_ARGS }}{{ end }}
     status:
