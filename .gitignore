@@ -6,4 +6,4 @@
 .onetime
 .terraform/
 tf-validate.json
-.*secrets.yml
+*.*secrets.yml
