@@ -1,0 +1,33 @@
+---
+version: '3'
+tasks:
+  exe:
+    internal: true
+    vars:
+      args: '{{ .args }}'
+    cmds:
+      - kubectl krew {{ .args }}
+  list:
+    cmds:
+      - task: exe
+        vars:
+          args: list
+  default:
+    deps:
+      - list
+  install:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - task: exe
+        vars:
+          args: install {{ .n | quote }}
+    status:
+      - kubectl krew list | grep {{ .n | quote }}
+  uninstall:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - task: exe
+        vars:
+          args: uninstall {{ .n | quote }}

@@ -1,0 +1,18 @@
+---
+version: '3'
+includes:
+  krew:
+    taskfile: krew.yml
+    vars:
+      n: minio
+tasks:
+  install:
+    deps:
+      - task: krew:install
+    cmds:
+      - kubectl minio init
+  proxy:
+    deps:
+      - task: krew:install
+    cmds:
+      - kubectl minio proxy -n minio-operator
