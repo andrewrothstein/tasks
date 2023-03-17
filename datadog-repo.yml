@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: datadog
+      url: https://helm.datadoghq.com
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

@@ -1,0 +1,4 @@
+---
+clusterAgent:
+  replicas: 2
+  createPodDisruptionBudget: true
