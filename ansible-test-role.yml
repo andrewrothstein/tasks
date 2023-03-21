@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  galaxy:
+  ansible-galaxy:
     taskfile: ansible-galaxy.yml
   local:
     taskfile: ansible.yml
@@ -13,11 +13,6 @@ includes:
   dcb:
     taskfile: dcb.yml
 tasks:
-  test-local:
-    cmds:
-      - task: local:playbook
-        vars:
-          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   local:
     cmds:
       - task: ansible-galaxy:install
@@ -29,7 +24,9 @@ tasks:
       - task: ansible-galaxy:install
         vars:
           requirements: '{{ .USER_WORKING_DIR }}/test-requirements.yml'
-      - task: test-local
+      - task: local:playbook
+        vars:
+          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
   default:
     deps:
       - task: dcb:install
@@ -40,27 +37,27 @@ tasks:
   generate-checksum:
     internal: true
     vars:
-      append: '{{ .append | default false }}'
+      append: '{{ .append }}'
       dl: '{{ .dl }}'
       target: '{{ .target }}'
     cmds:
       - |
         if [ -e {{ .dl | quote }} ];
         then
-          '{{ .dl }}' {{ if .append }} >> {{ .t | quote }}{{ end }}
+          {{ .dl | quote }}{{ if eq .append "true" }} >> {{ .target | quote }}{{ end }}
         fi
   generate-checksums:
     vars:
-      append: '{{ .append | default false }}'
       target: '{{ .USER_WORKING_DIR }}/defaults/main.yml'
+      append: '{{ .append | default false }}'
     cmds:
       - task: generate-checksum
         vars:
-          append: '{{ .append }}'
           dl: '{{ .USER_WORKING_DIR }}/dl-checksum.sh'
+          append: '{{ .append }}'
           target: '{{ .target }}'
       - task: generate-checksum
         vars:
-          append: '{{ .append }}'
           dl: '{{ .USER_WORKING_DIR }}/dl-checksums.sh'
+          append: '{{ .append }}'
           target: '{{ .target }}'
