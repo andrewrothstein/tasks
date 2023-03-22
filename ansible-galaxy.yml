@@ -13,4 +13,6 @@ tasks:
             install \
             {{ if .force }}-f{{ end }} \
             -r {{ .requirements | quote }}
+        else
+          echo {{ .requirements | quote }} not found, skipping...
         fi

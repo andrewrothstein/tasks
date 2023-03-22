@@ -45,6 +45,8 @@ tasks:
         if [ -e {{ .dl | quote }} ];
         then
           {{ .dl | quote }}{{ if eq .append "true" }} >> {{ .target | quote }}{{ end }}
+        else
+          echo {{ .dl | quote }} not found. skipping...
         fi
   generate-checksums:
     vars:
