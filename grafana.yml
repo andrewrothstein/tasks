@@ -1,0 +1,17 @@
+---
+version: '3'
+includes:
+  agent_operator: grafana-agent-operator.yml
+  agent: grafana-agent.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - task: agent_operator:install
+      - task: agent:install
+  delete:
+    cmds:
+      - task: agent:delete
+      - task: agent_operator:delete

@@ -1,0 +1,24 @@
+---
+version: '3'
+includes:
+  repo: grafana-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: grafana-agent
+      CREATE_NAMESPACE: true
+      NAME: grafana-agent
+      CHART: chart-grafana-agent
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
