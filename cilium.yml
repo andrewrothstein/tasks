@@ -9,7 +9,7 @@ includes:
       NAME: cilium
       CHART_REPO_NAME: cilium
       CHART: cilium
-      CHART_VER: 1.13.0
+      CHART_VER: 1.13.1
 tasks:
   default:
     deps:
