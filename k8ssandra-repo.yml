@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: k8ssandra
+      url: https://helm.k8ssandra.io/stable
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

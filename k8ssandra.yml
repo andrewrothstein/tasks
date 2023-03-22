@@ -1,0 +1,38 @@
+---
+version: '3'
+includes:
+  cm: cert-manager.yml
+  repo: k8ssandra-repo.yml
+  operator:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: k8ssandra-operator
+      NAME: k8ssandra-operator
+      CHART_REPO_NAME: k8ssandra
+      CHART: k8ssandra-operator
+      CHART_VER: 1.6.0
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+    vars:
+      n: k8ssandra-operator
+      f: k8ssandra-kind.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+      - task: cm:install
+    cmds:
+      - task: operator:install
+        vars:
+          CREATE_NAMESPACE: true
+      - task: kubectl:apply
+  delete:
+    cmds:
+      - task: kubectl:delete
+      - task: operator:delete
+      - task: cm:delete
