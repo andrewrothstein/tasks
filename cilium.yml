@@ -6,6 +6,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      NAMESPACE: kube-system
+      CREATE_NAMESPACE: false
       NAME: cilium
       CHART_REPO_NAME: cilium
       CHART: cilium
@@ -20,16 +22,8 @@ tasks:
     cmds:
       - task: helm:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "kube-system" }}'
-          CREATE_NAMESPACE: false
-          NAME: cilium
-          CHART_REPO_NAME: cilium
-          CHART: cilium
-          CHART_VER: 1.13.0
           HELM_ARGS: >-
             --values=cilium-values.yml
   delete:
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE | default "kube-system" }}'
