@@ -7,7 +7,7 @@ nodes:
 {{- include "kind.node" $.Values | nindent 2 }}
 {{ end -}}
 {{- range $j := until (int $.Values.workloadNodeCount) -}}
-- role: workload
+- role: worker
 {{- include "kind.node" $.Values | nindent 2 }}
 {{ end -}}
 networking:
