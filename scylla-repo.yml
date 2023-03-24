@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: scylla
+      url: https://scylla-operator-charts.storage.googleapis.com/stable
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

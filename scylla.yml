@@ -1,0 +1,37 @@
+---
+version: '3'
+includes:
+  cm: cert-manager.yml
+  repo: scylla-repo.yml
+  operator:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: scylla-operator
+      CREATE_NAMESPACE: true
+      NAME: scylla-operator
+      CHART_REPO_NAME: scylla
+      CHART: scylla-operator
+      CHART_VER: 1.8.0
+#  kubectl:
+#    taskfile: kubectl.yml
+#    internal: true
+#    vars:
+#      n: k8ssandra-operator
+#      f: k8ssandra-kind.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+      - task: cm:install
+    cmds:
+      - task: operator:install
+#      - task: kubectl:apply
+  delete:
+    cmds:
+#      - task: kubectl:delete
+      - task: operator:delete
+      - task: cm:delete
