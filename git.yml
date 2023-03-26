@@ -1,0 +1,42 @@
+---
+version: '3'
+tasks:
+  config:
+    vars:
+      global: '{{ .global }}'
+      system: '{{ .system }}'
+      local: '{{ .local }}'
+      l: '{{ .l }}'
+    cmds:
+      - |
+        git config
+        {{- if .global }} --global{{ end }}
+        {{- if .system }} --system{{ end }}
+        {{- if .local }} --local{{ end -}}
+        {{- if .l }} -l
+        {{- end }} {{ .CLI_ARGS }}
+  clone:
+    vars:
+      'template': '{{ .template }}'
+      l: '{{ .l }}'
+      s: '{{ .s }}'
+      no_hard_links: '{{ .no_hard_links }}'
+      q: '{{ .q }}'
+      n: '{{ .n }}'
+      bare: '{{ .bare }}'
+      mirror: '{{ .mirror }}'
+      repository: '{{ .repository }}'
+      directory: '{{ .directory }}'
+    cmds:
+      - |
+        git clone
+          {{- if .template }} --template={{ .template | quote }}{{ end }}
+          {{- if .l }} -l{{ end }}
+          {{- if .s }} -s{{ end }}
+          {{- if .no_hard_links }} --no-hard-links{{ end }}
+          {{- if .q }} -q{{ end }}
+          {{- if .n }} -n{{ end }}
+          {{- if .bare }} --bare{{ end }}
+          {{- if .mirror -}} --mirror
+          {{- end }} {{ .repository | quote }}
+          {{- if .directory }} {{ .directory | quote }}{{ end }}
