@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  cert-manager: cert-manager.yml
 #  knative: knative.yml
 #  cluster_api: cluster_api.yml
 #  kubevirt: kubevirt.yml
@@ -8,13 +9,15 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
 #  postgresql: postgresql.yml
 #  coderv2: coderv2.yml
-  crossplane: crossplane.yml
+#  crossplane: crossplane.yml
+#  k8ssandra: k8ssandra.yml
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: cert-manager:install
 #      - task: knative:install
 #      - task: cluster_api:apply
 #      - task: kubevirt:apply
@@ -22,10 +25,13 @@ tasks:
 #      - task: kubevirt-vms:apply
 #      - task: postgresql:install
 #      - task: coderv2:install
-      - task: crossplane:install
+#      - task: crossplane:install
+#      - task: k8ssandra:install
   delete:
     cmds:
-      - task: crossplane:delete
+      - task: cert-manager:delete
+#      - task: k8ssandra:delete
+#      - task: crossplane:delete
 #      - task: coderv2:delete
 #      - task: postgresql:delete
 #      - task: kubevirt-vms:delete

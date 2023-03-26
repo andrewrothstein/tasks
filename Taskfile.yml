@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  k8s: kind+cilium.yml
+  k8s: kind+registry.yml
   # mesh: istio.yml
   pre-mesh: pre-mesh.yml
   post-mesh: post-mesh.yml
