@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  kind: kind+registry.yml
+  calico: calico.yml
+tasks:
+  up:
+    cmds:
+      - task: kind:up
+        vars:
+          disableDefaultCNI: true
+      - task: calico:install
+  delete:
+    cmds:
+      - task: calico:delete
+      - task: kind:delete

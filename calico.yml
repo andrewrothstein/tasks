@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  calico-repo: calico-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: tigera-operator
+      CREATE_NAMESPACE: true
+      NAME: calico
+      CHART_REPO_NAME: projectcalico
+      CHART: tigera-operator
+      CHART_VER: 3.25.0
+#      HELM_ARGS: >-
+#        --values=calico-values.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: calico-repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

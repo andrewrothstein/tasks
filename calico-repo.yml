@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: projectcalico
+      url: https://docs.tigera.io/calico/charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
