@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  eck: eck.yml
+  kubectl: kubectl.yml
+tasks:
+  default:
+    deps:
+      - apply
+  install:
+    deps:
+      - task: eck:install
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: elasticsearch.yml
+      - task: kubectl:apply
+        vars:
+          f: kibana.yml
+  delete:
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: elasticsearch.yml
+      - task: kubectl:delete
+        vars:
+          f: kibana.yml
+      - task: eck:delete

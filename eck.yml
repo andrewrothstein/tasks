@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  helm-repo: elastic-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      CREATE_NAMESPACE: true
+      NAMESPACE: elastic-system
+      NAME: elastic-operator
+      CHART_REPO_NAME: elastic
+      CHART: eck-operator
+      CHART_VER: 2.6.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: helm-repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
