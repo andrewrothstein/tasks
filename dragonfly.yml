@@ -11,7 +11,7 @@ includes:
       NAME: dragonfly
       CHART_REPO_NAME: dragonfly
       CHART: dragonfly
-      CHART_VER: 0.10.7
+      CHART_VER: 1.0.1
 tasks:
   default:
     deps:
