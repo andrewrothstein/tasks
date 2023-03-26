@@ -1,6 +1,6 @@
 # default values for chart-kind
 controlPlaneNodeCount: 1
-workloadNodeCount: 3
+workloadNodeCount: 1
 
 #ipFamily: ipv6
 #apiServerAddress: 127.0.0.1

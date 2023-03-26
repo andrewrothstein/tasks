@@ -7,13 +7,15 @@ includes:
     taskfile: kind.yml
 tasks:
   up:
+    vars:
+      disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
     deps:
       - task: docker-registry:apply
     cmds:
       - task: kind:up
         vars:
           f: chart-kind/registry-values.yaml
-          set: disableDefaultCNI=true
+          disableDefaultCNI: '{{ .disableDefaultCNI }}'
       - docker network connect kind kind-registry || true
       - |
         kubectl apply -f - <<EOF

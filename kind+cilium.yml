@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  kind: kind+registry.yml
+  cilium: cilium.yml
+tasks:
+  up:
+    cmds:
+      - task: kind:up
+        vars:
+          disableDefaultCNI: true
+      - task: cilium:install
+  delete:
+    cmds:
+      - task: cilium:delete
+      - task: kind:delete

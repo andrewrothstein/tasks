@@ -1,8 +1,7 @@
 ---
 version: '3'
 includes:
-  k8s: kind+cilium+registry.yml
-  cni: cilium.yml
+  k8s: kind+cilium.yml
   # mesh: istio.yml
   pre-mesh: pre-mesh.yml
   post-mesh: post-mesh.yml
@@ -10,7 +9,6 @@ tasks:
   up:
     cmds:
       - task: k8s:up
-      - task: cni:install
       - task: pre-mesh:up
 #      - task: mesh:up
 #      - task: post-mesh:up
@@ -19,7 +17,6 @@ tasks:
 #      - task: post-mesh:delete
 #      - task: mesh:delete
       - task: pre-mesh:delete
-      - task: cni:delete
       - task: k8s:delete
   default:
     deps:

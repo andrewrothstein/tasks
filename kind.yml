@@ -5,20 +5,16 @@ tasks:
     vars:
       n: '{{ .n | default "kind" }}'
       f: '{{ .f | default "" }}'
-      set: '{{ .set | default "" }}'
-      templateOnly: '{{ .templateOnly | default false }}'
+      disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
     cmds:
       - |
         helm template chart-kind \
           {{ if .f }}-f {{ .f | quote }} \
           {{ end -}}
-          {{ if .set }}--set {{ .set | quote }} \
-          {{ end -}}
-          {{ if .templateOnly -}}
+          --set disableDefaultCNI={{ .disableDefaultCNI | quote }} \
           | kind create cluster \
              -n {{ .n | quote }} \
              --config=-
-          {{- end }}
     status:
       - kind get kubeconfig -n {{ .n | quote }}
   delete:

@@ -4,7 +4,6 @@ includes:
   cilium-repo: cilium-repo.yml
   helm:
     taskfile: helm.yml
-    internal: true
     vars:
       NAMESPACE: kube-system
       CREATE_NAMESPACE: false
@@ -12,6 +11,8 @@ includes:
       CHART_REPO_NAME: cilium
       CHART: cilium
       CHART_VER: 1.13.1
+      HELM_ARGS: >-
+        --values=cilium-values.yml
 tasks:
   default:
     deps:
@@ -21,9 +22,6 @@ tasks:
       - task: cilium-repo
     cmds:
       - task: helm:install
-        vars:
-          HELM_ARGS: >-
-            --values=cilium-values.yml
   delete:
     cmds:
       - task: helm:delete
