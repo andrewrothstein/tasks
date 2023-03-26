@@ -9,6 +9,8 @@ tasks:
       CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
       CHART: '{{ .CHART }}'
       CHART_VER: '{{ .CHART_VER }}'
+      WAIT: '{{ .WAIT | default true }}'
+      TIMEOUT: '{{ .TIMEOUT | default "10m" }}'
       HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     cmds:
       - |
@@ -23,6 +25,7 @@ tasks:
           {{- .CHART -}}
           {{- if .CHART_VER }} \
           --version {{ .CHART_VER | quote }}
+          {{- if .WAIT }} --wait --timeout {{ .TIMEOUT | quote }}{{ end }}
           {{- end }}
           {{- if .HELM_ARGS }} \
           {{ .HELM_ARGS }}{{ end }}
