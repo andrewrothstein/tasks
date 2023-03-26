@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  kind: kind+registry.yml
+  antrea: antrea.yml
+tasks:
+  up:
+    cmds:
+      - task: kind:up
+        vars:
+          disableDefaultCNI: true
+      - task: antrea:apply
+  delete:
+    cmds:
+      - task: antrea:delete
+      - task: kind:delete
