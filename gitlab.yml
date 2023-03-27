@@ -1,32 +1,27 @@
 ---
 version: '3'
 includes:
-  gitlab-repo: gitlab-repo.yml
+  helm-repo: gitlab-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       NAMESPACE: gitlab
+      CREATE_NAMESPACE: true
       NAME: gitlab
       CHART_REPO_NAME: gitlab
       CHART: gitlab
-      CHART_VER: 6.9.3
+      CHART_VER: 6.10.0
+      HELM_ARGS: -f gitlab-values.yml
 tasks:
   default:
     deps:
       - install
   install:
-    vars:
-      DOMAIN: '{{ .DOMAIN | default "drewfus.org" }}'
     deps:
-      - task: gitlab-repo
+      - task: helm-repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
-          HELM_ARGS: >
-            --timeout 600s
-            --set global.hosts.domain={{ .DOMAIN }}
   delete:
     cmds:
       - task: helm:delete

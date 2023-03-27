@@ -1,0 +1,38 @@
+---
+global:
+  hosts:
+    domain: drewfus.org
+  ingress:
+    configureCertmanager: false
+    annotations:
+      'kubernetes.io/tls-acme': 'true'
+      'cert-manager.io/cluster-issuer': selfsigned-cluster-issuer
+#  pages:
+#    enabled: true
+gitlab:
+#  gitlab-grafana:
+#    ingress:
+#      tls:
+#        secretName: gitlab-grafana-tls
+#  gitlab-pages:
+#    ingress:
+#      tls:
+#        secretName: gitlab-pages-tls
+  kas:
+    ingress:
+      tls:
+        secretName: gitlab-kas-tls
+  webservice:
+    ingress:
+      tls:
+        secretName: gitlab-gitlab-tls
+registry:
+  ingress:
+    tls:
+      secretName: gitlab-registry-tls
+minio:
+  ingres:
+    tls:
+      secretName: gitlab-minio-tls
+certmanager:
+  install: false
