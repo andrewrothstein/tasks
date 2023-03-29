@@ -1,0 +1,42 @@
+---
+version: '3'
+includes:
+  docker_network:
+    taskfile: docker-network.yml
+    vars:
+      name: llbnet
+      aux_address: host=172.30.1.193
+      d: macvlan
+      gateway: 172.30.1.254
+      subnet: 172.30.1.0/24
+      addl_args: >-
+        -o parent=eth0
+  loxilb:
+    taskfile: docker-daemon.yml
+    vars:
+      NAME: loxilb
+      RESTART: unless-stopped
+      ARGS: >-
+        -u root
+        --cap-add SYS_ADMIN
+        --privileged
+        -v /dev/log:/dev/log
+        --net=llbnet
+        --ip=172.30.1.195
+      IMAGE: ghcr.io/loxilb-io/loxilb:latest
+  kube-loxilb:
+    taskfile: kubectl.yml
+    vars:
+      n: kube-system
+      f: https://raw.githubusercontent.com/loxilb-io/kube-loxilb/v0.8.3/manifest/kube-loxilb.yaml
+tasks:
+  default:
+    deps:
+      - task: docker_network:create
+    cmds:
+      - task: loxilb:apply
+      - task: docker_network:connect
+        vars:
+          net: bridge
+          container: loxilb
+      - task: kube-loxilb:apply

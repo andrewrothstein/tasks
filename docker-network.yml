@@ -1,0 +1,59 @@
+---
+version: '3'
+tasks:
+  rm:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - docker network rm {{ .name | quote }}
+  create:
+    vars:
+      attachable: '{{ .attachable }}'
+      aux_address: '{{ .aux_address }}'
+      d: '{{ .d | default "bridge" }}'
+      gateway: '{{ .gateway }}'
+      ingress: '{{ .ingress }}'
+      internal: '{{ .internal }}'
+      ip_range: '{{ .ip_range }}'
+      ipam_driver: '{{ .ipam_driver | default "default" }}'
+      ipv6: '{{ .ipv6 }}'
+      scope: '{{ .scope }}'
+      subnet: '{{ .subnet }}'
+      addl_args: '{{ .addl_args }}'
+      name: '{{ .name }}'
+    cmds:
+      - |
+        docker network create
+          {{- if .attachable }} --attachable \
+          {{ end }}
+          {{- if .aux_address }} --aux-address {{ .aux_address | quote }} \
+          {{ end }}
+          {{- if .d }} -d {{ .d | quote }} \
+          {{ end }}
+          {{- if .gateway }} --gateway {{ .gateway | quote }} \
+          {{ end }}
+          {{- if .internal }} --internal \
+          {{ end }}
+          {{- if .ip_range }}--ip-range {{ .ip_range | quote }} \
+          {{ end }}
+          {{- if .ipv6 }} --ipv6 \
+          {{ end }}
+          {{- if .subnet }} --subnet {{ .subnet | quote }} \
+          {{ end }}
+          {{- if .addl_args }}{{ .addl_args }}{{ end }} \
+          {{ .name | quote }}
+    status:
+      - docker network inspect {{ .name | quote }}
+  connect:
+    vars:
+      net: '{{ .net }}'
+      container: '{{ .container }}'
+      ip: '{{ .ip }}'
+      ip6: '{{ .ip6 }}'
+    cmds:
+      - |
+        docker network connect
+        {{- if .ip }} --ip {{ .ip | quote }}
+        {{- end }}
+        {{- if .ip6 }} --ip6 {{ .ip6 | quote }}
+        {{- end }} {{ .net | quote }} {{ .container | quote }} || true

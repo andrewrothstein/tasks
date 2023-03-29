@@ -1,10 +1,9 @@
 ---
 version: '3'
 includes:
-  docker-registry:
-    taskfile: docker-registry.yml
-  kind:
-    taskfile: kind.yml
+  docker-registry: docker-registry.yml
+  kind: kind.yml
+  docker-network: docker-network.yml
 tasks:
   up:
     vars:
@@ -16,7 +15,10 @@ tasks:
         vars:
           f: chart-kind/registry-values.yaml
           disableDefaultCNI: '{{ .disableDefaultCNI }}'
-      - docker network connect kind kind-registry || true
+      - task: docker-network:connect
+        vars:
+          net: kind
+          container: kind-registry
       - |
         kubectl apply -f - <<EOF
         ---

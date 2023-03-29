@@ -5,17 +5,16 @@ tasks:
     vars:
       NAME: '{{ .NAME }}'
       RESTART: '{{ .RESTART | default "always" }}'
-      P: '{{ .P }}'
-      E: '{{ .E }}'
+      ARGS: '{{ .ARGS }}'
       IMAGE: '{{ .IMAGE }}'
     cmds:
       - |
         docker \
           run -d \
           --name={{ .NAME | quote }} \
-          --restart={{ .RESTART | quote }} \
-          {{ if .p }}-p {{ .p | quote }}{{ end }} \
-          {{ if .e }}-e {{ .E | quote }}{{ end }} \
+          --restart={{ .RESTART | quote }}
+          {{- if .ARGS }} \
+          {{ .ARGS }}{{ end }} \
           {{ .IMAGE | quote }}
     status:
       - |
