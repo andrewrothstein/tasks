@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  repo: metallb-repo.yml
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+    vars:
+      n: metallb-system
+  metallb:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: metallb-system
+      NAME: metallb
+      CHART_REPO_NAME: metallb
+      CHART_VER: 0.13.9
+      CHART: metallb
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: kubectl:ns-create
+      - task: metallb:install
+  delete:
+    cmds:
+      - task: metallb:delete
+      - task: kubectl:ns-delete
