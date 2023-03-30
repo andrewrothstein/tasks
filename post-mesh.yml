@@ -1,14 +1,12 @@
 ---
 version: '3'
 includes:
-  gatekeeper: gatekeeper.yml
-  pinniped: pinniped.yml
-  vault-dev:
-    dir: vault-dev
-    taskfile: vault-dev.yml
-  jetstack: jetstack.yml
-  gitea: gitea.yml
-  argoproj: argoproj.yml
+#  gatekeeper: gatekeeper.yml
+#  pinniped: pinniped.yml
+  vault-dev: vault-dev.yml
+#  jetstack: jetstack.yml
+#  gitea: gitea.yml
+#  argoproj: argoproj.yml
 tasks:
   default:
     deps:
@@ -16,17 +14,17 @@ tasks:
   up:
     cmds:
 #      - task: gatekeeper:install
-#      - task: vault-dev:install
+      - task: vault-dev:install
 #      - task: pinniped:deploy-concierge
 #      - task: jetstack:install
-      - task: argoproj:install
+#      - task: argoproj:install
 #      - task: gitea:install
   delete:
     cmds:
 #      - task: gitea:delete
-      - task: argoproj:delete
+#      - task: argoproj:delete
 #      - task: jetstack:delete
 #      - task: pinniped:delete-concierge
 #      - task: knative:delete
-#      - task: vault-dev:delete
+      - task: vault-dev:delete
 #      - task: gatekeeper:delete
