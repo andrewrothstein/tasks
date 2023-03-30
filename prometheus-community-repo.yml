@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: prometheus-community
+      url: https://prometheus-community.github.io/helm-charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

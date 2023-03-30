@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: prometheus-community-repo.yml
+    internal: true
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: kube-prometheus-stack
+      CREATE_NAMESPACE: true
+      NAME: kube-prometheus-stack
+      CHART_REPO_NAME: prometheus-community
+      CHART: kube-prometheus-stack
+      CHART_VER: 45.8.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
