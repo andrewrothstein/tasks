@@ -1,7 +1,11 @@
 ---
 version: '3'
 includes:
-  cert-manager: cert-manager.yml
+#  cert-manager: cert-manager.yml
+#  kube-prometheus-stack: kube-prometheus-stack.yml
+#  minio: minio.yml
+  tekton: tekton.yml
+#  dragonfly: dragonfly.yml
 #  knative: knative.yml
 #  cluster_api: cluster_api.yml
 #  kubevirt: kubevirt.yml
@@ -17,7 +21,11 @@ tasks:
       - up
   up:
     cmds:
-      - task: cert-manager:install
+#      - task: cert-manager:install
+#      - task: kube-prometheus-stack:install
+#      - task: minio:install
+      - task: tekton:apply
+#      - task: dragonfly:install
 #      - task: knative:install
 #      - task: cluster_api:apply
 #      - task: kubevirt:apply
@@ -29,7 +37,6 @@ tasks:
 #      - task: k8ssandra:install
   delete:
     cmds:
-      - task: cert-manager:delete
 #      - task: k8ssandra:delete
 #      - task: crossplane:delete
 #      - task: coderv2:delete
@@ -39,3 +46,8 @@ tasks:
 #      - task: kubevirt:delete
 #      - task: cluster_api:delete
 #      - task: knative:delete
+#      - task: dragonfly:delete
+      - task: tekton:delete
+#      - task: minio:delete
+#      - task: kube-prometheus-stack:delete
+#      - task: cert-manager:delete

@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  kind: kind.yml
   k8s: kind+registry.yml
   # mesh: istio.yml
   pre-mesh: pre-mesh.yml
