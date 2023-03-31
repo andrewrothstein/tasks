@@ -1,0 +1,42 @@
+---
+version: '3'
+dotenv:
+  - minio-local.env
+  - .minio-local-secrets.env
+includes:
+  mc:
+    taskfile: mc.yml
+    vars:
+      alias: local-minio
+tasks:
+  start:
+    vars:
+      address: '{{ .address }}'
+      console_address: '{{ .console_address }}'
+      certs_dir: '{{ .certs_dir }}'
+      dirs: '{{ .dirs }}'
+    cmds:
+      - |
+        minio server \
+          {{ if .address }}--address {{ .address | quote }}{{- end }}
+          {{- if .console_address }} --console-address {{ .console_address | quote }}{{- end }}
+          {{- if .certs_dir }} --certs-dir {{ .certs_dir | quote }}{{ end }} \
+          {{ if .dirs }}
+          {{- .dirs -}}
+          {{- else -}}
+          "{{ .HOME }}/.minio-data"
+          {{- end }}
+  mc-login:
+    deps:
+      - task: mc:alias-set
+  mc-ls:
+    deps:
+      - task: mc:ls
+  mc-mb:
+    vars:
+      bucket: '{{ .bucket }}'
+    deps:
+      - task: mc:mb
+        vars:
+          bucket: '{{ .bucket }}'
+  

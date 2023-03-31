@@ -7,3 +7,4 @@
 .terraform/
 tf-validate.json
 *.*secrets.yml
+*.*secrets.env

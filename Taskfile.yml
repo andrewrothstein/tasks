@@ -3,7 +3,7 @@ version: '3'
 includes:
   kind: kind.yml
   k8s: kind+registry.yml
-  # mesh: istio.yml
+#  mesh: istio.yml
   pre-mesh: pre-mesh.yml
   post-mesh: post-mesh.yml
 tasks:
@@ -12,13 +12,13 @@ tasks:
       - task: k8s:up
       - task: pre-mesh:up
 #      - task: mesh:up
-#      - task: post-mesh:up
+      - task: post-mesh:up
   delete:
     cmds:
-#      - task: post-mesh:delete
+      - task: post-mesh:delete
 #      - task: mesh:delete
       - task: pre-mesh:delete
-      - task: k8s:delete
+      - task: kind:delete
   default:
     deps:
       - up

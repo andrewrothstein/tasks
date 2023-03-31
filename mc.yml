@@ -1,0 +1,39 @@
+---
+version: '3'
+tasks:
+  alias-set:
+    vars:
+      alias: '{{ .alias }}'
+      url: '{{ .url | default "${MINIO_SCHEME}://${MINIO_ADDRESS}" }}'
+      user: '{{ .user | default "${MINIO_ROOT_USER}" }}'
+      password: '{{ .password | default "${MINIO_ROOT_PASSWORD}" }}'
+    cmds:
+      - |
+        mc alias set \
+          {{ .alias | quote }} \
+          {{ .url | quote }} \
+          {{ .user | quote }} \
+          {{ .password | quote }}
+  ls:
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+      target: '{{ .alias }}{{ if .bucket }}/{{ .bucket }}{{ end }}'
+    cmds:
+      - mc ls {{ .target | quote }}
+  mb:
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+      target: '{{ .alias }}/{{ .bucket }}'
+    cmds:
+      - mc mb {{ .target | quote }}
+    status:
+      - mc ls {{ .target | quote }}
+  rb:
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+      target: '{{ .alias }}/{{ .bucket }}'
+    cmds:
+      - mc rb {{ .target | quote }}
