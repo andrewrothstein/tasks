@@ -2,8 +2,9 @@
 version: '3'
 includes:
   cert-manager: cert-manager.yml
+#  rook: rook.yml
 #  kube-prometheus-stack: kube-prometheus-stack.yml
-  minio: minio.yml
+#  minio: minio.yml
 #  tekton-pipelines: tekton-pipelines.yml
 #  tekton-triggers: tekton-triggers.yml
 #  dragonfly: dragonfly.yml
@@ -23,8 +24,9 @@ tasks:
   up:
     cmds:
       - task: cert-manager:install
+#      - task: rook:install
 #      - task: kube-prometheus-stack:install
-      - task: minio:install
+#      - task: minio:install
 #      - task: tekton-pipelines:apply
 #      - task: tekton-triggers:apply
 #      - task: dragonfly:install
@@ -51,6 +53,7 @@ tasks:
 #      - task: dragonfly:delete
 #      - task: tekton-triggers:delete
 #      - task: tekton-pipelines:delete
-      - task: minio:delete
+#      - task: minio:delete
 #      - task: kube-prometheus-stack:delete
+#      - task: rook:delete
       - task: cert-manager:delete
