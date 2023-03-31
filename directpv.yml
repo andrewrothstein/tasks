@@ -14,3 +14,7 @@ tasks:
       - task: krew:install
     cmds:
       - kubectl directpv install
+  delete:
+    cmds:
+      - kubectl directpv uninstall
+
