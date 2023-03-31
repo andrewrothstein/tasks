@@ -6,7 +6,13 @@ includes:
     vars:
       n: minio
 tasks:
+  default:
+    deps:
+      - install
   install:
+    deps:
+      - task: init
+  init:
     deps:
       - task: krew:install
     cmds:

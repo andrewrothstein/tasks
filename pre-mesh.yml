@@ -3,9 +3,9 @@ version: '3'
 includes:
 #  cert-manager: cert-manager.yml
 #  kube-prometheus-stack: kube-prometheus-stack.yml
-#  minio: minio.yml
-  tekton-pipelines: tekton-pipelines.yml
-  tekton-triggers: tekton-triggers.yml
+  minio: minio.yml
+#  tekton-pipelines: tekton-pipelines.yml
+#  tekton-triggers: tekton-triggers.yml
 #  dragonfly: dragonfly.yml
 #  knative: knative.yml
 #  cluster_api: cluster_api.yml
@@ -25,8 +25,8 @@ tasks:
 #      - task: cert-manager:install
 #      - task: kube-prometheus-stack:install
 #      - task: minio:install
-      - task: tekton-pipelines:apply
-      - task: tekton-triggers:apply
+#      - task: tekton-pipelines:apply
+#      - task: tekton-triggers:apply
 #      - task: dragonfly:install
 #      - task: knative:install
 #      - task: cluster_api:apply
@@ -49,8 +49,8 @@ tasks:
 #      - task: cluster_api:delete
 #      - task: knative:delete
 #      - task: dragonfly:delete
-      - task: tekton-triggers:delete
-      - task: tekton-pipelines:delete
+#      - task: tekton-triggers:delete
+#      - task: tekton-pipelines:delete
 #      - task: minio:delete
 #      - task: kube-prometheus-stack:delete
 #      - task: cert-manager:delete

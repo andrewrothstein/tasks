@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  krew:
+    taskfile: krew.yml
+    vars:
+      n: directpv
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: krew:install
+    cmds:
+      - kubectl directpv install
