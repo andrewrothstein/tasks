@@ -1,0 +1,40 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: rook-repo.yml
+    internal: true
+  operator:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: rook-ceph
+      CREATE_NAMESPACE: true
+      NAME: rook-ceph
+      CHART_REPO_NAME: rook-release
+      CHART: rook-ceph
+      CHART_VER: 1.11.2
+  cluster:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: rook-ceph-cluster
+      CREATE_NAMESPACE: true
+      NAME: rook-ceph-cluster
+      CHART_REPO_NAME: rook-release
+      CHART: rook-ceph-cluster
+      CHART_VER: 1.11.2
+      HELM_ARGS: >-
+        --set operatorNamespace=rook-ceph
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: operator:install
+      - task: cluster:install
+  delete:
+    cmds:
+      - task: cluster:delete
+      - task: operator:delete

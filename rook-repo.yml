@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: rook-release
+      url: https://charts.rook.io/release
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
