@@ -1,0 +1,29 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: openebs-repo.yml
+    internal: true
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: openebs
+      CREATE_NAMESPACE: true
+      NAME: openebs
+      CHART_REPO_NAME: openebs
+      CHART: openebs
+      CHART_VER: 3.5.0
+      HELM_ARGS: >-
+        --set zfs-localpv.enabled=true
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
