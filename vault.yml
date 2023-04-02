@@ -1,38 +1,27 @@
 ---
 version: '3'
 includes:
-  hashicorp:
+  repo:
     taskfile: hashicorp.yml
     internal: true
   helm:
     taskfile: helm.yml
-    internal: true
     vars:
+      NAMESPACE: vault
+      CREATE_NAMESPACE: true
+      NAME: vault
       CHART_REPO_NAME: hashicorp
+      CHART: vault
+      CHART_VER: 0.23.0
 tasks:
-  install:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      NAME: '{{ .NAME | default "vault" }}'
-      CHART_VER: '{{ .CHART_VER | default "0.23.0" }}'
-      HELM_ARGS: '{{ .HELM_ARGS }}'
+  default:
     deps:
-      - task: hashicorp
+      - install
+  install:
+    deps:
+      - task: repo
     cmds:
       - task: helm:install
-        vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          CREATE_NAMESPACE: true
-          NAME: '{{ .NAME }}'
-          CHART: vault
-          CHART_VER: '{{ .CHART_VER }}'
-          HELM_ARGS: '{{ .HELM_ARGS }}'
   delete:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      NAME: '{{ .NAME | default "vault" }}'
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
