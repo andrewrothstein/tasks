@@ -7,6 +7,7 @@ includes:
     internal: true
     vars:
       n: metallb-system
+      f: metallb-kind.yml
   metallb:
     taskfile: helm.yml
     internal: true
@@ -26,7 +27,9 @@ tasks:
     cmds:
       - task: kubectl:ns-create
       - task: metallb:install
+      - task: kubectl:apply
   delete:
     cmds:
+      - task: kubectl:delete
       - task: metallb:delete
       - task: kubectl:ns-delete
