@@ -7,7 +7,7 @@ includes:
     internal: true
     vars:
       n: gitlab
-      f: gitlab-runner-secret
+      f: gitlab-runner-secret.yml
   helm:
     taskfile: helm.yml
     internal: true

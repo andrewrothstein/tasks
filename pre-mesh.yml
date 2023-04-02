@@ -2,6 +2,7 @@
 version: '3'
 includes:
   cert-manager: cert-manager.yml
+  metallb: metallb.yml
 #  rook: rook.yml
 #  kube-prometheus-stack: kube-prometheus-stack.yml
 #  minio: minio.yml
@@ -24,6 +25,7 @@ tasks:
   up:
     cmds:
       - task: cert-manager:install
+      - task: metallb:install
 #      - task: rook:install
 #      - task: kube-prometheus-stack:install
 #      - task: minio:install
@@ -56,4 +58,5 @@ tasks:
 #      - task: minio:delete
 #      - task: kube-prometheus-stack:delete
 #      - task: rook:delete
+      - task: metallb:install
       - task: cert-manager:delete
