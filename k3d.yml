@@ -1,20 +1,98 @@
 ---
 version: '3'
-vars:
-  CLUSTER_NAME: bootstrap
 tasks:
   up:
     vars:
-      K3S_ARGS: --disable=traefik@server:0
+      name: '{{ .name | default "k3s-default" }}'
+      agents: '{{ .agents }}'
+      agents_memory: '{{ .agents_memory }}'
+      api_port: '{{ .api_port }}'
+      config: '{{ .config }}'
+      host_alias: '{{ .host_alias }}'
+      host_pid_mode: '{{ .host_pid_mode }}'
+      image: '{{ .image }}'
+      k3s_arg: '{{ .k3s_arg | default "--no-deploy=traefik@server:*" }}'
+      k3s_node_label: '{{ .k3s_node_label }}'
+      kubeconfig_switch_context: '{{ .kubeconfig_switch_context }}'
+      kubeconfig_update_default: '{{ .kubeconfig_update_default }}'
+      lb_config_override: '{{ .lb_config_override }}'
+      network: '{{ .network }}'
+      no_image_volume: '{{ .no_image_volume }}'
+      no_lb: '{{ .no_lb }}'
+      no_rollback: '{{ .no_rollback }}'
+      p: '{{ .p }}'
+      registry_config: '{{ .registry_config }}'
+      registry_create: '{{ .registry_create }}'
+      registry_use: '{{ .registry_use }}'
+      runtime_label: '{{ .runtime_label }}'
+      servers: '{{ .servers }}'
+      servers_memory: '{{ .servers_memory }}'
+      subnet: '{{ .subnet }}'
+      timeout: '{{ .timeout }}'
+      token: '{{ .token }}'
+      v: '{{ .v }}'
+      wait: '{{ .wait }}'
+      timestamps: '{{ .timestamps }}'
+      trace: '{{ .trace }}'
+      verbose: '{{ .verbose }}'
     cmds:
       - |
-        k3d cluster \
-          create {{ .CLUSTER_NAME | quote }} \
-          --k3s-arg {{ .K3S_ARGS | quote }}
+        k3d cluster create {{ .name | quote }} \
+          {{ if .agents }}--agents {{ .agents }} \
+          {{ end }}
+          {{- if .agents_memory }} --agents-memory {{ .agents_memory | quote }} \
+          {{ end }}
+          {{- if .api_port }} --api-port {{ .api_port | quote }} \
+          {{ end }}
+          {{- if .config }} --config {{ .config | quote }} \
+          {{ end }}
+          {{- if .env }} --env {{ .env | quote }} \
+          {{ end }}
+          {{- if .host_alias }} --host-alias {{ .host_alias | quote }} \
+          {{ end }}
+          {{- if .host_pid_mode }} --host-pid-mode \
+          {{ end }}
+          {{- if .image }} --image {{ .image }} \
+          {{ end }}
+          {{- if .k3s_arg }} --k3s-arg {{ .k3s_arg | quote }} \
+          {{ end }}
+          {{- if .k3s_node_label }} --k3s-node-label {{ .k3s_node_label | quote }} \
+          {{ end }}
+          {{- if .kubeconfig_switch_context }} --kubeconfig-switch-context \
+          {{ end }}
+          {{- if .kubeconfig_update_default }} --kubeconfig-update-default \
+          {{ end }}
+          {{- if .lb_config_override }} --lb-config-override {{.lb_config_override }} \
+          {{ end }}
+          {{- if .no_rollback }} --no-rollback \
+          {{ end }}
+          {{- if .p }} -p {{ .p | quote }} \
+          {{ end }}
+          {{- if .registry_config }} --registry-config {{ .registry_config | quote }} \
+          {{ end }}
+          {{- if .registry_create }} --registry-create {{ .registry_create | quote }} \
+          {{ end }}
+          {{- if .registry_use }} --registry-use {{ .registry_use | quote }} \
+          {{ end }}
+          {{- if .runtime_label }} --runtime-label {{ .runtime_label | quote }} \
+          {{ end }}
+          {{- if .servers }} --servers {{ .servers }} \
+          {{ end }}
+          {{- if .servers_memory }} --servers-memory {{ .servers_memory | quote }} \
+          {{ end }}
+          {{- if .subnet }} --subnet {{ .subnet | quote }} \
+          {{ end }}
+          {{- if .timeout }} --timeout {{ .timeout }} \
+          {{ end }}
+          {{- if .token }} --token {{ .token }} \
+          {{ end }}
+          {{- if .v }} -v {{ .v | quote }} \
+          {{ end }}
+          {{- if .wait }} --wait \
+          {{ end }}
     status:
-      - k3d cluster list {{ .CLUSTER_NAME | quote }}
+      - k3d cluster list {{ .name | quote }}
   delete:
     cmds:
-      - k3d cluster delete {{ .CLUSTER_NAME | quote }}
-    preconditions:
-      - k3d cluster list {{ .CLUSTER_NAME | quote }}
+      - k3d cluster delete {{ .name | quote }}
+
