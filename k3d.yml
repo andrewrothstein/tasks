@@ -11,7 +11,7 @@ tasks:
       host_alias: '{{ .host_alias }}'
       host_pid_mode: '{{ .host_pid_mode }}'
       image: '{{ .image }}'
-      k3s_arg: '{{ .k3s_arg | default "--no-deploy=traefik@server:*" }}'
+      k3s_arg: '{{ .k3s_arg | default "--disable=traefik@server:*" }}'
       k3s_node_label: '{{ .k3s_node_label }}'
       kubeconfig_switch_context: '{{ .kubeconfig_switch_context }}'
       kubeconfig_update_default: '{{ .kubeconfig_update_default }}'
