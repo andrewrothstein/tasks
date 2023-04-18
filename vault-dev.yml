@@ -2,18 +2,32 @@
 version: '3'
 includes:
   ss-csi: secrets-store-csi-driver.yml
-  vault: vault.yml
+  hashicorp: hashicorp.yml
+  vault:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: vault
+      CREATE_NAMESPACE: true
+      NAME: vault
+      CHART_REPO_NAME: hashicorp
+      CHART: vault
+      CHART_VER: 0.23.0
+      HELM_ARGS: -f vault-dev-values.yml
 tasks:
   default:
     deps:
       - install
-  install:
+  vault-install:
+    internal: true
     deps:
-      - task: ss-csi:install
+      - task: hashicorp
     cmds:
       - task: vault:install
-        vars:
-          HELM_ARGS: -f vault-dev-values.yml
+  install:
+    cmds:
+      - task: ss-csi:install
+      - task: vault-install
   delete:
     cmds:
       - task: ss-csi:delete

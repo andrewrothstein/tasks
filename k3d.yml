@@ -1,5 +1,11 @@
 ---
 version: '3'
+includes:
+  kubectl:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: kube-system
 tasks:
   up:
     vars:
@@ -90,9 +96,14 @@ tasks:
           {{ end }}
           {{- if .wait }} --wait \
           {{ end }}
+      - task: kubectl:wait-for-pod-ready
+        vars:
+          k8s_app: kube-dns
+      - task: kubectl:wait-for-pod-ready
+        vars:
+          k8s_app: metrics-server
     status:
       - k3d cluster list {{ .name | quote }}
   delete:
     cmds:
       - k3d cluster delete {{ .name | quote }}
-

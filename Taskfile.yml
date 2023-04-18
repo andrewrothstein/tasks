@@ -1,8 +1,10 @@
 ---
 version: '3'
 includes:
+  k3d: k3d.yml
   kind: kind.yml
-  k8s: kind+registry.yml
+#  k8s: kind+registry.yml
+  k8s: k3d.yml
 #  mesh: istio.yml
   pre-mesh: pre-mesh.yml
   post-mesh: post-mesh.yml
@@ -15,10 +17,10 @@ tasks:
       - task: post-mesh:up
   delete:
     cmds:
-      - task: post-mesh:delete
+#      - task: post-mesh:delete
 #      - task: mesh:delete
-      - task: pre-mesh:delete
-      - task: kind:delete
+#      - task: pre-mesh:delete
+      - task: k3d:delete
   default:
     deps:
       - up

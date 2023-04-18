@@ -3,10 +3,10 @@ version: '3'
 includes:
 #  gatekeeper: gatekeeper.yml
 #  pinniped: pinniped.yml
-#  vault-dev: vault-dev.yml
+  vault-dev: vault-dev.yml
 #  jetstack: jetstack.yml
 #  gitea: gitea.yml
-  gitlab: gitlab.yml
+#  gitlab: gitlab.yml
 #  argoproj: argoproj.yml
 tasks:
   default:
@@ -15,12 +15,12 @@ tasks:
   up:
     cmds:
 #      - task: gatekeeper:install
-#      - task: vault-dev:install
+      - task: vault-dev:install
 #      - task: pinniped:deploy-concierge
 #      - task: jetstack:install
 #      - task: argoproj:install
 #      - task: gitea:install
-      - task: gitlab:install
+#      - task: gitlab:install
   delete:
     cmds:
 #      - task: gitea:delete
@@ -28,6 +28,6 @@ tasks:
 #      - task: jetstack:delete
 #      - task: pinniped:delete-concierge
 #      - task: knative:delete
-#      - task: vault-dev:delete
+      - task: vault-dev:delete
 #      - task: gatekeeper:delete
-      - task: gitlab:delete
+#      - task: gitlab:delete
