@@ -11,16 +11,16 @@ includes:
 tasks:
   up:
     cmds:
-      - task: k8s:up
+#      - task: k8s:up
       - task: pre-mesh:up
 #      - task: mesh:up
       - task: post-mesh:up
   delete:
     cmds:
-#      - task: post-mesh:delete
+      - task: post-mesh:delete
 #      - task: mesh:delete
-#      - task: pre-mesh:delete
-      - task: k3d:delete
+      - task: pre-mesh:delete
+#      - task: k3d:delete
   default:
     deps:
       - up

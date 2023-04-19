@@ -1,0 +1,15 @@
+---
+version: '3'
+tasks:
+  bucket_add:
+    vars:
+      n: '{{ .n }}'
+      url: '{{ .url }}'
+    cmds:
+      - scoop add {{ .n  quote }} {{ .url | quote }}
+  kubescoop_add:
+    cmds:
+      - task: bucket_add
+        vars:
+          n: kubescoop
+          url: 'https://github.com/4x0v7/kube-scoop'

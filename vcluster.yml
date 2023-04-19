@@ -1,0 +1,9 @@
+---
+version: '3'
+tasks:
+  list:
+    cmds:
+      - vcluster list
+  connect:
+    cmds:
+      - vcluster connect workload-01 -n default

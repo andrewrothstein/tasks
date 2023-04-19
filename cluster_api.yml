@@ -1,28 +1,26 @@
 ---
 version: '3'
-vars:
-  clusterctl: clusterctl
 tasks:
   config-repositories:
     cmds:
-      - '{{ .clusterctl | quote }} config repositories -o yaml'
+      - clusterctl config repositories -o yaml
   help:
     cmds:
-      - '{{ .clusterctl | quote }} init --help'
+      - clusterctl init --help
   default:
     deps:
       - config-repositories
   init:
     vars:
       # bootstrap provider, e.g. kubeadm:v1.3.3
-      b: '{{ .b | default "" }}'
+      b: '{{ .b }}'
       # control plane provider, e.g. kubeadm:v1.3.3
-      c: '{{ .c | default "" }}'
+      c: '{{ .c }}'
       # infrastructure provider, e.g. vcluster:v0.1.3
-      i: '{{ .i | default "" }}'
+      i: '{{ .i }}'
     cmds:
       - |
-        {{ .clusterctl | quote }} \
+        clusterctl \
           init \
           {{ if .b }}-b {{ .b | quote }}{{ end }} \
           {{ if .c }}-c {{ .c | quote }}{{ end }} \
@@ -36,41 +34,45 @@ tasks:
       # workload cluster name
       n: '{{ .n | default "workload-01" }}'
       # workload cluster k8s version
-      v: '{{ .v | default "v1.25.3" }}'
+      v: '{{ .v | default "v1.26.3" }}'
       ## cluster size / machine counts
-      control_plane_machine_count: '{{ .control_plane_machine_count | default 1 }}'
-      worker_machine_count: '{{ .worker_machine_count | default 1 }}'
+      control_plane_machine_count: '{{ .control_plane_machine_count }}'
+      worker_machine_count: '{{ .worker_machine_count }}'
+      target_namespace: '{{ .target_namespace }}'
     env:
       HELM_VALUES: ''
     cmds:
       - |
-        {{ .clusterctl | quote }} \
+        clusterctl \
           generate \
           cluster {{ .n | quote }} \
-          {{ if .f }}-f {{ .f | quote }}{{ end }} \
+          {{ if .f -}}
+          -f {{ .f | quote }} \
+          {{ end -}}
+          {{- if .v -}}
           --kubernetes-version {{ .v | quote }} \
+          {{ end -}}
+          {{- if .control_plane_machine_count -}}
           --control-plane-machine-count {{ .control_plane_machine_count }} \
+          {{ end -}}
+          {{- if .worker_machine_count -}}
           --worker-machine-count {{ .worker_machine_count }} \
+          {{ end -}}
           | kubectl {{ .kk | quote }} -f -
   workload_clusters:
     vars:
       # workload cluster k8s version
-      v: '{{ .v | default "v1.25.3" }}'
+      v: '{{ .v | default "v1.26.3" }}'
     deps:
       - task: workload
         vars:
           kk: apply
           n: workload-01
           v: '{{ .v }}'
-      - task: workload
-        vars:
-          kk: apply
-          n: workload-02
-          v: '{{ .v }}'
   apply:
     vars:
       # workload cluster k8s version
-      v: '{{ .v | default "v1.25.3" }}'
+      v: '{{ .v | default "v1.26.3" }}'
     deps:
       - task: init
         vars:
