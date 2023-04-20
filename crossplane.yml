@@ -6,6 +6,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      NAMESPACE: crossplane-system
+      CREATE_NAMESPACE: true
       NAME: crossplane
       CHART_REPO_NAME: crossplane-stable
       CHART: crossplane
@@ -13,31 +15,32 @@ includes:
   crossplane-providers:
     taskfile: kubectl.yml
     internal: true
+    vars:
+      n: crossplane-stable
 tasks:
   default:
     deps:
       - install
   install:
-    vars:
-      DOMAIN: '{{ .DOMAIN | default "drewfus.org" }}'
     deps:
       - task: crossplane-repo
     cmds:
       - task: crossplane-helm:install
-        vars:
-          NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-          NAME: crossplane
-          CHART_REPO_NAME: crossplane-stable
-          CHART: crossplane
-          CHART_VER: 1.11.2
-          HELM_ARGS: ''
       - task: crossplane-providers:apply
         vars:
-          n: crossplane-stable
+          f: crossplane/aws-provider.yml
+      - task: crossplane-providers:apply
+        vars:
           f: crossplane/azure-provider.yml
+      - task: crossplane-providers:apply
+        vars:
+          f: crossplane/azuread-provider.yml
+      - task: crossplane-providers:apply
+        vars:
+          f: crossplane/gcp-provider.yml
+      - task: crossplane-providers:apply
+        vars:
+          f: crossplane/terraform-provider.yml
   delete:
     cmds:
       - task: crossplane-helm:delete
-        vars:
-          NAMESPACE: '{{ .NAMESPACE | default "crossplane-system" }}'

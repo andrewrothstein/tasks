@@ -16,7 +16,7 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
 #  postgresql: postgresql.yml
 #  coderv2: coderv2.yml
-#  crossplane: crossplane.yml
+  crossplane: crossplane.yml
 #  k8ssandra: k8ssandra.yml
 tasks:
   default:
@@ -24,7 +24,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: cert-manager:install
+#      - task: cert-manager:install
 #      - task: metallb:install
 #      - task: rook:install
 #      - task: kube-prometheus-stack:install
@@ -39,12 +39,12 @@ tasks:
 #      - task: kubevirt-vms:apply
 #      - task: postgresql:install
 #      - task: coderv2:install
-#      - task: crossplane:install
+      - task: crossplane:install
 #      - task: k8ssandra:install
   delete:
     cmds:
 #      - task: k8ssandra:delete
-#      - task: crossplane:delete
+      - task: crossplane:delete
 #      - task: coderv2:delete
 #      - task: postgresql:delete
 #      - task: kubevirt-vms:delete
@@ -59,4 +59,4 @@ tasks:
 #      - task: kube-prometheus-stack:delete
 #      - task: rook:delete
 #      - task: metallb:install
-      - task: cert-manager:delete
+#      - task: cert-manager:delete
