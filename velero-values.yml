@@ -1,0 +1,5 @@
+---
+configuration:
+  provider: pd.csi.storage.gke.io
+
+    

@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  helm-repo: velero-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: velero
+      CREATE_NAMESPACE: true
+      NAME: velero
+      CHART_REPO_NAME: vmware-tanzu
+      CHART: velero
+      CHART_VER: 3.1.6
+      HELM_ARGS: -f verleo-values.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: helm-repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
