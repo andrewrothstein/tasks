@@ -1,33 +1,47 @@
 ---
 version: '3'
 includes:
-#  gatekeeper: gatekeeper.yml
-#  pinniped: pinniped.yml
+  gatekeeper: gatekeeper.yml
+#  gatekeeper: pet.yml
+
+  pinniped: pinniped.yml
+#  pinniped: pet.yml
+
   vault-dev: vault-dev.yml
-#  jetstack: jetstack.yml
-#  gitea: gitea.yml
-#  gitlab: gitlab.yml
-#  argoproj: argoproj.yml
+#  vault-dev: pet.yml
+
+  jetstack: jetstack.yml
+#  jetstack: pet.yml
+
+  gitea: gitea.yml
+#  gitea: pet.yml
+
+  gitlab: gitlab.yml
+#  gitlab: pet.yml
+
+  argoproj: argoproj.yml
+#  argoproj: pet.yml
+
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
-#      - task: gatekeeper:install
+      - task: gatekeeper:install
       - task: vault-dev:install
-#      - task: pinniped:deploy-concierge
-#      - task: jetstack:install
-#      - task: argoproj:install
-#      - task: gitea:install
-#      - task: gitlab:install
+      - task: pinniped:deploy-concierge
+      - task: jetstack:install
+      - task: argoproj:install
+      - task: gitea:install
+      - task: gitlab:install
   delete:
     cmds:
-#      - task: gitea:delete
-#      - task: argoproj:delete
-#      - task: jetstack:delete
-#      - task: pinniped:delete-concierge
-#      - task: knative:delete
+      - task: gitea:delete
+      - task: argoproj:delete
+      - task: jetstack:delete
+      - task: pinniped:delete-concierge
+      - task: knative:delete
       - task: vault-dev:delete
-#      - task: gatekeeper:delete
-#      - task: gitlab:delete
+      - task: gatekeeper:delete
+      - task: gitlab:delete

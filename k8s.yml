@@ -3,16 +3,16 @@ version: '3'
 includes:
   k3d: k3d.yml
   kind: kind.yml
-#  k8s: kind+registry.yml
-  k8s: k3d.yml
+  k8s: kind+registry.yml
+#  k8s: k3d.yml
 tasks:
   up:
     cmds:
       - task: k8s:up
   delete:
     cmds:
-#      - task: kind:delete
-      - task: k3d:delete
+      - task: kind:delete
+#      - task: k3d:delete
   default:
     deps:
       - up

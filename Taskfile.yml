@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-#  k8s: k8s.yml
-  k8s: pet.yml
+  k8s: k8s.yml
+#  k8s: pet.yml
 #  mesh: istio.yml
   pre-mesh: pre-mesh.yml
 #  post-mesh: post-mesh.yml
@@ -12,12 +12,12 @@ tasks:
     cmds:
       - task: k8s:up
       - task: pre-mesh:up
-#      - task: mesh:up
+      - task: mesh:up
       - task: post-mesh:up
   delete:
     cmds:
       - task: post-mesh:delete
-#      - task: mesh:delete
+      - task: mesh:delete
       - task: pre-mesh:delete
       - task: k8s:delete
   default:

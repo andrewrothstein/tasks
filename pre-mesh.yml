@@ -1,24 +1,59 @@
 ---
 version: '3'
 includes:
-#  cert-manager: cert-manager.yml
+  cert-manager: cert-manager.yml
+#  cert-manager: pet.yml
+
 #  metallb: metallb.yml
+  metallb: pet.yml
+
 #  rook: rook.yml
+  rook: pet.yml
+
 #  kube-prometheus-stack: kube-prometheus-stack.yml
+  kube-prometheus-stack: pet.yml
+
 #  minio: minio.yml
+  minio: pet.yml
+
 #  tekton-pipelines: tekton-pipelines.yml
+  tekton-pipelines: pet.yml
+
 #  tekton-triggers: tekton-triggers.yml
+  tekton-triggers: pet.yml
+
 #  dragonfly: dragonfly.yml
+  dragonfly: pet.yml
+
 #  knative: knative.yml
+  knative: pet.yml
+
   cluster_api: cluster_api.yml
+#  cluster_api: pet.yml
+
 #  kubevirt: kubevirt.yml
+  kubevirt: pet.yml
+
 #  kubevirt-cdi: kubevirt-cdi.yml
+  kubevirt-cdi: pet.yml
+
 #  kubevirt-vms: kubevirt-vm.yml
+  kubevirt-vms: pet.yml
+
 #  postgresql: postgresql.yml
+  postgresql: pet.yml
+
 #  coderv2: coderv2.yml
+  coderv2: pet.yml
+
 #  crossplane: crossplane.yml
+  crossplane: pet.yml
+
 #  k8ssandra: k8ssandra.yml
-  velero: velero.yml
+  k8ssandra: pet.yml
+
+#  velero: velero.yml
+  velero: pet.yml
 tasks:
   default:
     deps:
@@ -26,40 +61,40 @@ tasks:
   up:
     cmds:
       - task: cert-manager:install
-#      - task: metallb:install
-#      - task: rook:install
-#      - task: kube-prometheus-stack:install
-#      - task: minio:install
-#      - task: tekton-pipelines:apply
-#      - task: tekton-triggers:apply
-#      - task: dragonfly:install
-#      - task: knative:install
+      - task: metallb:install
+      - task: rook:install
+      - task: kube-prometheus-stack:install
+      - task: minio:install
+      - task: tekton-pipelines:apply
+      - task: tekton-triggers:apply
+      - task: dragonfly:install
+      - task: knative:install
       - task: cluster_api:apply
-#      - task: kubevirt:apply
-#      - task: kubevirt-cdi:apply
-#      - task: kubevirt-vms:apply
-#      - task: postgresql:install
-#      - task: coderv2:install
-#      - task: crossplane:install
-#      - task: k8ssandra:install
+      - task: kubevirt:apply
+      - task: kubevirt-cdi:apply
+      - task: kubevirt-vms:apply
+      - task: postgresql:install
+      - task: coderv2:install
+      - task: crossplane:install
+      - task: k8ssandra:install
       - task: velero:install
   delete:
     cmds:
       - task: velero:delete
-#      - task: k8ssandra:delete
-#      - task: crossplane:delete
-#      - task: coderv2:delete
-#      - task: postgresql:delete
-#      - task: kubevirt-vms:delete
-#      - task: kubevirt-cdi:delete
-#      - task: kubevirt:delete
+      - task: k8ssandra:delete
+      - task: crossplane:delete
+      - task: coderv2:delete
+      - task: postgresql:delete
+      - task: kubevirt-vms:delete
+      - task: kubevirt-cdi:delete
+      - task: kubevirt:delete
       - task: cluster_api:delete
-#      - task: knative:delete
-#      - task: dragonfly:delete
-#      - task: tekton-triggers:delete
-#      - task: tekton-pipelines:delete
-#      - task: minio:delete
-#      - task: kube-prometheus-stack:delete
-#      - task: rook:delete
-#      - task: metallb:install
+      - task: knative:delete
+      - task: dragonfly:delete
+      - task: tekton-triggers:delete
+      - task: tekton-pipelines:delete
+      - task: minio:delete
+      - task: kube-prometheus-stack:delete
+      - task: rook:delete
+      - task: metallb:install
       - task: cert-manager:delete
