@@ -1,5 +1,7 @@
 ---
 version: '3'
+vars:
+  k8s_ver: 1.26.3
 tasks:
   config-repositories:
     cmds:
@@ -25,16 +27,16 @@ tasks:
           {{ if .b }}-b {{ .b | quote }}{{ end }} \
           {{ if .c }}-c {{ .c | quote }}{{ end }} \
           {{ if .i }}-i {{ .i | quote }}{{ end }}
-  workload:
+  create_workload_cluster:
     vars:
       # kubectl command, i.e. apply or delete
       kk: '{{ .kk | default "apply" }}'
       # workload cluster template variant/flavor
       f: '{{ .f }}'
       # workload cluster name
-      n: '{{ .n | default "workload-01" }}'
+      n: '{{ .n }}'
       # workload cluster k8s version
-      v: '{{ .v | default "v1.26.3" }}'
+      v: '{{ .v | default .k8s_ver }}'
       ## cluster size / machine counts
       control_plane_machine_count: '{{ .control_plane_machine_count }}'
       worker_machine_count: '{{ .worker_machine_count }}'
@@ -59,40 +61,38 @@ tasks:
           --worker-machine-count {{ .worker_machine_count }} \
           {{ end -}}
           | kubectl {{ .kk | quote }} -f -
-  workload_clusters:
-    vars:
-      # workload cluster k8s version
-      v: '{{ .v | default "v1.26.3" }}'
-    deps:
-      - task: workload
-        vars:
-          kk: apply
-          n: workload-01
-          v: '{{ .v }}'
   apply:
     vars:
       # workload cluster k8s version
-      v: '{{ .v | default "v1.26.3" }}'
+      v: '{{ .v | default .k8s_ver }}'
+      i: '{{ .i | default "vcluster" }}'
     deps:
       - task: init
         vars:
-          i: vcluster
+          i: '{{ .i }}'
     cmds:
-      - task: workload_clusters
+      - task: create_workload_cluster
         vars:
+          kk: apply
+          n: dev
+          v: '{{ .v }}'
+      - task: create_workload_cluster
+        vars:
+          kk: apply
+          n: tst
           v: '{{ .v }}'
   delete:
     vars:
       # workload cluster k8s version
-      v: '{{ .v | default "v1.25.3" }}'
+      v: '{{ .v | default .k8s_ver }}'
     deps:
       - task: workload
         vars:
           kk: delete
-          n: workload-01
+          n: tst
           v: '{{ .v }}'
       - task: workload
         vars:
           kk: delete
-          n: workload-02
+          n: dev
           v: '{{ .v }}'

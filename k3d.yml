@@ -7,6 +7,14 @@ includes:
     vars:
       n: kube-system
 tasks:
+  wait_for_ready:
+    cmds:
+      - task: kubectl:wait-for-pod-ready
+        vars:
+          k8s_app: kube-dns
+      - task: kubectl:wait-for-pod-ready
+        vars:
+          k8s_app: metrics-server
   up:
     vars:
       name: '{{ .name | default "k3s-default" }}'
@@ -96,12 +104,7 @@ tasks:
           {{ end }}
           {{- if .wait }} --wait \
           {{ end }}
-      - task: kubectl:wait-for-pod-ready
-        vars:
-          k8s_app: kube-dns
-      - task: kubectl:wait-for-pod-ready
-        vars:
-          k8s_app: metrics-server
+      - task: wait_for_ready
     status:
       - k3d cluster list {{ .name | quote }}
   delete:

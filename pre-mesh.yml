@@ -10,7 +10,7 @@ includes:
 #  tekton-triggers: tekton-triggers.yml
 #  dragonfly: dragonfly.yml
 #  knative: knative.yml
-#  cluster_api: cluster_api.yml
+  cluster_api: cluster_api.yml
 #  kubevirt: kubevirt.yml
 #  kubevirt-cdi: kubevirt-cdi.yml
 #  kubevirt-vms: kubevirt-vm.yml
@@ -25,7 +25,7 @@ tasks:
       - up
   up:
     cmds:
-#      - task: cert-manager:install
+      - task: cert-manager:install
 #      - task: metallb:install
 #      - task: rook:install
 #      - task: kube-prometheus-stack:install
@@ -34,7 +34,7 @@ tasks:
 #      - task: tekton-triggers:apply
 #      - task: dragonfly:install
 #      - task: knative:install
-#      - task: cluster_api:apply
+      - task: cluster_api:apply
 #      - task: kubevirt:apply
 #      - task: kubevirt-cdi:apply
 #      - task: kubevirt-vms:apply
@@ -53,7 +53,7 @@ tasks:
 #      - task: kubevirt-vms:delete
 #      - task: kubevirt-cdi:delete
 #      - task: kubevirt:delete
-#      - task: cluster_api:delete
+      - task: cluster_api:delete
 #      - task: knative:delete
 #      - task: dragonfly:delete
 #      - task: tekton-triggers:delete
@@ -62,4 +62,4 @@ tasks:
 #      - task: kube-prometheus-stack:delete
 #      - task: rook:delete
 #      - task: metallb:install
-#      - task: cert-manager:delete
+      - task: cert-manager:delete
