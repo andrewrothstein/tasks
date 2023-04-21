@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  cert-manager: cert-manager.yml
+#  cert-manager: cert-manager.yml
 #  metallb: metallb.yml
 #  rook: rook.yml
 #  kube-prometheus-stack: kube-prometheus-stack.yml
@@ -16,8 +16,9 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
 #  postgresql: postgresql.yml
 #  coderv2: coderv2.yml
-  crossplane: crossplane.yml
+#  crossplane: crossplane.yml
 #  k8ssandra: k8ssandra.yml
+  velero: velero.yml
 tasks:
   default:
     deps:
@@ -39,12 +40,14 @@ tasks:
 #      - task: kubevirt-vms:apply
 #      - task: postgresql:install
 #      - task: coderv2:install
-      - task: crossplane:install
+#      - task: crossplane:install
 #      - task: k8ssandra:install
+      - task: velero:install
   delete:
     cmds:
+      - task: velero:delete
 #      - task: k8ssandra:delete
-      - task: crossplane:delete
+#      - task: crossplane:delete
 #      - task: coderv2:delete
 #      - task: postgresql:delete
 #      - task: kubevirt-vms:delete
