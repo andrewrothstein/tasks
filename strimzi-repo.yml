@@ -2,8 +2,8 @@
 version: '3'
 includes:
   helm-repo:
-    taskfile: helm-repo.yml
     internal: true
+    taskfile: helm-repo.yml
     vars:
       n: strimzi
       url: https://strimzi.io/charts

@@ -1,32 +1,26 @@
 ---
 version: '3'
 includes:
-  strimzi-repo:
-    taskfile: strimzi-repo.yml
-    internal: true
+  repo: strimzi-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       NAMESPACE: strimzi
+      CREATE_NAMESPACE: true
       CHART_REPO_NAME: strimzi
       CHART: strimzi-kafka-operator
       NAME: strimzi-kafka-operator
-      CHART_VER: 0.33.2
+      CHART_VER: 0.34.0
 tasks:
   default:
     deps:
       - install
   install:
-    vars:
-      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
     deps:
-      - task: strimzi-repo
+      - task: repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
-          HELM_ARGS: '{{ .HELM_ARGS }}'
   delete:
     cmds:
       - task: helm:delete

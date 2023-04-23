@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: strimzi
+      NAME: strimzi-kafka
+      CHART: chart-strimzi-kafka
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
