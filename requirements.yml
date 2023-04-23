@@ -18,3 +18,4 @@ roles:
   - andrewrothstein.cluster_api
   - andrewrothstein.kubevirt
   - andrewrothstein.flux
+  - andrewrothstein.cilium
