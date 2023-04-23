@@ -12,6 +12,7 @@ tasks:
   start:
     vars:
       address: '{{ .address }}'
+      anonymous: '{{ .anonymous | default true }}'
       console_address: '{{ .console_address }}'
       certs_dir: '{{ .certs_dir }}'
       dirs: '{{ .dirs }}'
@@ -19,6 +20,7 @@ tasks:
       - |
         minio server \
           {{ if .address }}--address {{ .address | quote }}{{- end }}
+          {{- if .anonymous }}--anonymous {{ end }}
           {{- if .console_address }} --console-address {{ .console_address | quote }}{{- end }}
           {{- if .certs_dir }} --certs-dir {{ .certs_dir | quote }}{{ end }} \
           {{ if .dirs }}
