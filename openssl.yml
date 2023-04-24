@@ -1,0 +1,41 @@
+---
+version: '3'
+tasks:
+  private-key:
+    vars:
+      key_id: '{{ .key_id }}'
+      bits: '{{ .bits }}'
+    cmds:
+      - openssl genrsa -out 'rsa-{{ .key_id }}.key' {{ .bits }}
+    status:
+      - test -f 'rsa-{{ .key_id }}.key'
+  key-pair:
+    vars:
+      key_id: '{{ .key_id }}'
+      bits: '{{ .bits }}'
+    deps:
+      - task: private-key
+        vars:
+          key_id: '{{ .key_id }}'
+          bits: '{{ .bits }}'
+    cmds:
+      - openssl rsa -in 'rsa-{{ .key_id }}.key' -out 'rsa-{{ .key_id }}.pub'
+    status:
+      - test -f 'rsa-{{ .key_id }}.pub'
+  test-private-key:
+    deps:
+      - task: private-key
+        vars:
+          key_id: sa
+          bits: 2048
+  test-key-pair:
+    deps:
+      - task: key-pair
+        vars:
+          key_id: sa
+          bits: 2048
+
+  default:
+    deps:
+      - test-private-key
+
