@@ -29,6 +29,10 @@ tasks:
         {{- if .public_access }} \
           --public-access {{ .public_access | quote }}
         {{- end }}
+    status:
+      - |
+        az storage container list --account-name {{ .account_name | quote }} \
+          | jq -e '.[] | select(.name=={{ .name | quote }})'
   create-discovery-document:
     vars:
       AZURE_STORAGE_ACCOUNT: '{{ .AZURE_STORAGE_ACCOUNT }}'
