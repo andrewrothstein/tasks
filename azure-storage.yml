@@ -13,6 +13,10 @@ tasks:
         az storage account create \
           --resource-group {{ .resource_group | quote }} \
           --name {{ .name | quote }}
+    status:
+      - |
+        az storage account list \
+          | jq -e '.[] | select(.name=={{ .name | quote }})'
   container-create:
     vars:
       account_name: '{{ .account_name | default .AZURE_STORAGE_ACCOUNT }}'
