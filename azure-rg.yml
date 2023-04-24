@@ -1,0 +1,22 @@
+---
+version: '3'
+tasks:
+  create:
+    vars:
+      name: '{{ .name }}'
+      location: '{{ .location }}'
+    cmds:
+      - |
+        az group \
+          create \
+          --name {{ .name | quote }} \
+          --location {{ .location | quote }}
+  test:
+    cmds:
+      - task: create
+        vars:
+          name: oidc-issuer
+          location: eastus2
+  default:
+    deps:
+      - test

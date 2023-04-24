@@ -1,0 +1,28 @@
+---
+version: '3'
+vars:
+  PREAMBLE: az account management-group
+tasks:
+  check-name-availability:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - |
+        {{ .PREAMBLE }} check-name-availability --name {{ .name | quote }}
+  create:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - |
+        {{ .PREAMBLE }} create --name {{ .name | quote }}
+  delete:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - |
+        {{ .PREAMBLE }} delete --name {{ .name | quote }}
+  test:
+    cmds:
+      - task: check-name-availability
+        vars:
+          name: drewfus.org

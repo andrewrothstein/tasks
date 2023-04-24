@@ -1,0 +1,24 @@
+---
+version: '3'
+dotfiles:
+  - azure-tenant.env
+tasks:
+  login:
+    vars:
+      allow_no_subscriptions: '{{ .allow_no_subscriptions | default true }}'
+      tenant_id: '{{ .tenant_id | default .AZURE_TENANT }}'
+      subscription_id: '{{ .subscription_id | default .AZURE_SUBSCRIPTION_ID }}'
+    cmds:
+      - |
+        az login {{ if .tenant }}\
+          --tenant {{ .tenant_id | default .AZURE_TENANT | quote }}
+        {{- end -}}
+        {{ if .allow_no_subscriptions }} \
+          --allow-no-subscriptions
+        {{- end }}
+        {{ if .subscription_id -}}
+        az account set --subscription {{ .subscription_id | quote }}
+        {{- end }}
+  default:
+    deps:
+      - task: login

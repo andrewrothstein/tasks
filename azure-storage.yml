@@ -1,0 +1,75 @@
+---
+version: '3'
+env:
+  AZURE_STORAGE_ACCOUNT: oidcissuerdf433286
+  AZURE_STORAGE_CONTAINER: oidc-test
+tasks:
+  account-create:
+    vars:
+      name: '{{ .name | default .AZURE_STORAGE_ACCOUNT }}'
+      resource_group: '{{ .resource_group }}'
+    cmds:
+      - |
+        az storage account create \
+          --resource-group {{ .resource_group | quote }} \
+          --name {{ .name | quote }}
+  container-create:
+    vars:
+      account_name: '{{ .account_name | default .AZURE_STORAGE_ACCOUNT }}'
+      name: '{{ .name | default .AZURE_STORAGE_CONTAINER }}'
+      public_access: '{{ .public_access }}'
+    cmds:
+      - |
+        az storage container create \
+          --name {{ .name | quote }}
+        {{- if .public_access }} \
+          --public-access {{ .public_access | quote }}
+        {{- end }}
+  create-discovery-document:
+    vars:
+      AZURE_STORAGE_ACCOUNT: '{{ .AZURE_STORAGE_ACCOUNT }}'
+    cmds:
+      - |
+        jq . -r -<<HERE >openid-configuration.json
+        {
+          "issuer": "https://{{ .AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/{{ .AZURE_STORAGE_CONTAINER }}/",
+          "jwks_uri": "https://{{ .AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/{{ .AZURE_STORAGE_CONTAINER }}/openid/v1/jwks",
+          "response_types_supported": [
+            "id_token"
+          ],
+          "subject_types_supported": [
+            "public"
+          ],
+          "id_token_signing_alg_values_supported": [
+            "RS256"
+          ]
+        }
+        HERE
+  upload-discovery-document:
+    vars:
+      AZURE_STORAGE_CONTAINER: '{{ .AZURE_STORAGE_CONTAINER }}'
+    deps:
+      - task: create-discovery-document
+    cmds:
+      - |
+        az storage blob upload \
+          --container-name {{ .AZURE_STORAGE_CONTAINER | quote }} \
+          --file openid-configuration.json \
+          --name .well-known/openid-configuration
+  test-account-create:
+    deps:
+      - task: account-create
+        vars:
+          resource_group: oidc-issuer
+  test-container-create:
+    deps:
+      - task: container-create
+        vars:
+          public_access: container
+  test-upload-discovery-document:
+    deps:
+      - task: upload-discovery-document
+  test-discovery-public-access:
+    cmds:
+      - |
+        curl -s "https://{{ .AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/{{ .AZURE_STORAGE_CONTAINER }}/.well-known/openid-configuration"

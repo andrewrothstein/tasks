@@ -8,3 +8,4 @@
 tf-validate.json
 *.*secrets.yml
 *.*secrets.env
+openid-configuration.json
