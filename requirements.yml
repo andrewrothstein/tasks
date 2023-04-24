@@ -22,3 +22,4 @@ roles:
   - andrewrothstein.minio
   - andrewrothstein.vault
   - andrewrothstein.velero
+  - andrewrothstein.jq
