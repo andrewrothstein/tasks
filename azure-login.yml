@@ -1,6 +1,6 @@
 ---
 version: '3'
-dotfiles:
+dotenv:
   - azure-tenant.env
 tasks:
   login:
