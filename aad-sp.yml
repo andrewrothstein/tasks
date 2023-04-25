@@ -1,0 +1,40 @@
+---
+version: '3'
+dotenv:
+  - azure-subscription.env
+tasks:
+  create-for-rbac:
+    vars:
+      display_name: '{{ .display_name }}'
+      role: '{{ .role }}'
+      scopes: '{{ .scopes }}'
+    cmds:
+      - |
+        az ad sp create-for-rbac \
+          --display-name {{ .display_name | quote }} \
+          --role {{ .role | quote }} \
+          --scopes '{{ .scopes }}' > aad-secret-{{ .display_name }}.json
+    status:
+      - |
+        az ad sp list --display-name {{ .display_name | quote }} \
+          | jq -e '.[] | select(.appDisplayName={{ .display_name | quote }})'
+  delete:
+    vars:
+      display_name: '{{ .display_name }}'
+      appId:
+        sh: jq -r .appId < aad-secret-{{ .display_name }}.json
+    cmds:
+      - az ad sp delete --id {{ .appId | quote }}
+      - rm aad-secret-{{ .display_name }}.json
+  test-create-for-rbac:
+    deps:
+      - task: create-for-rbac
+        vars:
+          display_name: crossplane-az-provider
+          role: Owner
+          scopes: /subscriptions/{{ .AZURE_SUBSCRIPTION_ID }}
+  test-delete:
+    deps:
+      - task: delete
+        vars:
+          display_name: crossplane-az-provider
