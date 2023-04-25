@@ -11,3 +11,4 @@ tf-validate.json
 openid-configuration.json
 rsa-*.key
 rsa-*.pub
+aad-secret-*.json
