@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  repo: trident-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: trident-operator
+      CREATE_NAMESPACE: true
+      CHART_REPO_NAME: netapp-trident
+      CHART: trident-operator
+      NAME: trident-operator
+      CHART_VER: 23.01.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

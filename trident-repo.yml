@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    internal: true
+    taskfile: helm-repo.yml
+    vars:
+      n: netapp-trident
+      url: https://netapp.github.io/trident-helm-chart
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

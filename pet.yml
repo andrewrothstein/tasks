@@ -3,6 +3,10 @@ version: '3'
 tasks:
   up:
     cmds: []
+  install:
+    cmds: []
+  apply:
+    cmds: []
   delete:
     cmds: []
   default:
