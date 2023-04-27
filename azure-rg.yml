@@ -1,6 +1,11 @@
 ---
 version: '3'
 tasks:
+  show:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - az group show --resource-group {{ .name | quote }}
   create:
     vars:
       name: '{{ .name }}'
@@ -11,12 +16,33 @@ tasks:
           create \
           --name {{ .name | quote }} \
           --location {{ .location | quote }}
-  test:
+    status:
+      - az group show --resource-group {{ .name | quote }}
+  delete:
+    vars:
+      name: '{{ .name }}'
+    cmds:
+      - |
+        az group \
+          delete \
+          --name {{ .name | quote }} \
+          -y
+  test-create:
     cmds:
       - task: create
         vars:
           name: oidc-issuer
           location: eastus2
+  test-delete:
+    cmds:
+      - task: delete
+        vars:
+          name: oidc-issuer
+  test-show:
+    cmds:
+      - task: show
+        vars:
+          name: oidc-issuer
   default:
     deps:
-      - test
+      - test-show
