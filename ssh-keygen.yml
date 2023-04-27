@@ -1,0 +1,25 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      id: '{{ .id | default "pet-w2mxg" }}'
+      ty: '{{ .ty }}'
+      bits: '{{ .bits }}'
+      N: '{{ .N }}'
+      ssh_keys_dir: '{{ .ssh_keys_dir | default ".ssh" }}'
+    cmds:
+      - |
+        ssh-keygen \
+          -t {{ .ty | default "rsa" | quote }} \
+          -b {{ .bits | default 4096 }} \
+          -N {{ .N | default "" | quote }} \
+          -f '{{ .ssh_keys_dir }}/{{ .id }}'
+    status:
+      - test -f '{{ .ssh_keys_dir }}/{{ .id }}'
+      - test -f '{{ .ssh_keys_dir }}/{{ .id }}.pub'
+  destroy-all:
+    vars:
+      ssh_keys_dir: '{{ .ssh_keys_dir | default ".ssh" }}'
+    cmds:
+      - rm -f {{ .ssh_keys_dir }}/*

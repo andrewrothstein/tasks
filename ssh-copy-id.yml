@@ -1,0 +1,18 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      id: '{{ .id | default "pet-w2mxg" }}'
+      ssh_keys_dir: '{{ .ssh_keys_dir | default ".ssh" }}'
+      hostname: '{{ .hostname }}'
+    cmds:
+      - |
+        ssh-copy-id \
+          -i '{{ .ssh_keys_dir }}/{{ .id }}.pub' \
+          {{ .hostname }}
+  test:
+    cmds:
+      - task: main
+        vars:
+          hostname: localhost
