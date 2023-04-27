@@ -33,8 +33,9 @@ tasks:
       - |
         az storage container list --account-name {{ .account_name | quote }} \
           | jq -e '.[] | select(.name=={{ .name | quote }})'
-  create-discovery-document:
+  upload-discovery-document:
     vars:
+      AZURE_STORAGE_CONTAINER: '{{ .AZURE_STORAGE_CONTAINER }}'
       AZURE_STORAGE_ACCOUNT: '{{ .AZURE_STORAGE_ACCOUNT }}'
     cmds:
       - |
@@ -53,14 +54,8 @@ tasks:
           ]
         }
         HERE
-  upload-discovery-document:
-    vars:
-      AZURE_STORAGE_CONTAINER: '{{ .AZURE_STORAGE_CONTAINER }}'
-    deps:
-      - task: create-discovery-document
-    cmds:
-      - |
         az storage blob upload \
+          --overwrite \
           --container-name {{ .AZURE_STORAGE_CONTAINER | quote }} \
           --file openid-configuration.json \
           --name .well-known/openid-configuration
@@ -81,3 +76,9 @@ tasks:
     cmds:
       - |
         curl -s "https://{{ .AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/{{ .AZURE_STORAGE_CONTAINER }}/.well-known/openid-configuration"
+  test:
+    cmds:
+      - task: test-account-create
+      - task: test-container-create
+      - task: test-upload-discovery-document
+      - task: test-discovery-public-access
