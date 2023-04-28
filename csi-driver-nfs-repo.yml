@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    internal: true
+    taskfile: helm-repo.yml
+    vars:
+      n: csi-driver-nfs
+      url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

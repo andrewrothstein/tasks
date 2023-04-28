@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  repo: csi-driver-nfs-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      NAMESPACE: kube-system
+      CREATE_NAMESPACE: false
+      CHART_REPO_NAME: csi-driver-nfs
+      CHART: csi-driver-nfs
+      NAME: csi-driver-nfs
+      CHART_VER: v4.2.0
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
