@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+  csi-driver-nfs: csi-driver-nfs.yml
+#  csi-driver-nfs: pet.yml
+
 #  cert-manager: cert-manager.yml
   cert-manager: pet.yml
 
@@ -55,14 +58,16 @@ includes:
 #  velero: velero.yml
   velero: pet.yml
 
-  trident: trident.yml
-#  trident: pet.yml
+#  trident: trident.yml
+  trident: pet.yml
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: csi-driver-nfs:install
+      - task: trident:install
       - task: cert-manager:install
       - task: metallb:install
       - task: rook:install
@@ -81,10 +86,8 @@ tasks:
       - task: crossplane:install
       - task: k8ssandra:install
       - task: velero:install
-      - task: trident:install
   delete:
     cmds:
-      - task: trident:delete
       - task: velero:delete
       - task: k8ssandra:delete
       - task: crossplane:delete
@@ -103,3 +106,5 @@ tasks:
       - task: rook:delete
       - task: metallb:install
       - task: cert-manager:delete
+      - task: trident:delete
+      - task: csi-driver-nfs:delete
