@@ -77,13 +77,26 @@ tasks:
           {{ .thingname | quote }} \
           "--type={{ .ty }}" \
           --patch {{ .patch | quote }}
+  wait-for-pod:
+    vars:
+      for: '{{ .for }}'
+      n: '{{ .n }}'
+      k: '{{ .k }}'
+      v: '{{ .v }}'
+    cmds:
+      - |
+          kubectl \
+            wait --for={{ .for }} \
+            -n {{ .n | quote }} pod \
+            -l '{{ .k }}={{ .v }}'
   wait-for-pod-ready:
     vars:
       n: '{{ .n }}'
       k8s_app: '{{ .k8s_app }}'
-    cmds:
-      - |
-          kubectl \
-            wait --for=condition=ready \
-            -n {{ .n | quote }} pod \
-            -l k8s-app={{ .k8s_app | quote }}
+    deps:
+      - task: wait-for-pod
+        vars:
+          for: condition=ready
+          n: '{{ .n }}'
+          k: k8s-app
+          v: '{{ .k8s_app }}'
