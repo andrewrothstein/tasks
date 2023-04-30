@@ -6,16 +6,22 @@ includes:
   terraform:
     taskfile: terraform.yml
 tasks:
+  pre:
+    cmds:
+      - task: terraform:version
+      - task: terraform:init
+      - task: terraform-workspace:new
+      - task: terraform-workspace:select
+      - task: terraform:validate
   destroy:
+    deps:
+      - task: pre
     cmds:
       - task: terraform:destroy
   plan:
+    deps:
+      - task: pre
     cmds:
-      - task: terraform:version
-      - task: terraform-workspace:new
-      - task: terraform-workspace:select
-      - task: terraform:init
-      - task: terraform:validate
       - task: terraform:plan
   apply:
     deps:

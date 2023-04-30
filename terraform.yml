@@ -11,12 +11,16 @@ tasks:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
+      BACKEND_CONFIG_ARGS: '{{ .BACKEND_CONFIG_ARGS }}'
     cmds:
       - |
         {{ .TERRAFORM_EXE | quote }} \
           -chdir={{ .CHDIR | quote }} \
           init \
           -input=false
+          {{- if .BACKEND_CONFIG_ARGS }} \
+          {{ .BACKEND_CONFIG_ARGS }}
+          {{- end }}
   validate:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'

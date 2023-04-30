@@ -1,0 +1,15 @@
+---
+version: '3'
+tasks:
+  add:
+    vars:
+      alias: '{{ .alias }}'
+      policy_name: '{{ .policy_name }}'
+      policy_json: '{{ .policy_json }}'
+    cmds:
+      - |
+        mc admin \
+          policy add \
+          {{ .alias | quote }} \
+          {{ .policy_name | quote }} \
+          {{ .policy_json | quote }}

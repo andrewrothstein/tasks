@@ -1,11 +1,18 @@
 ---
 version: '3'
+dotenv:
+  - .minio-local-secrets.env
+  - minio-local.env
 includes:
   cicd:
     taskfile: terraform-cicd.yml
     vars:
       WORKSPACE_NAME: dex-aad
       CHDIR: tf-dex-aad
+      BACKEND_CONFIG_ARGS: |
+        --backend-config="{{ .USER_WORKING_DIR }}/tf-dex-aad-backend.hcl" \
+        --backend-config="access_key=${MINIO_ROOT_USER}" \
+        --backend-config="secret_key=${MINIO_ROOT_PASSWORD}"
 tasks:
   destroy:
     deps:

@@ -1,6 +1,5 @@
 resource "azuread_application" "dex-dev" {
   display_name = "dex-dev"
-
 }
 
 resource "time_rotating" "dex-dev-pwd-ttl" {

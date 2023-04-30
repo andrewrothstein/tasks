@@ -1,0 +1,44 @@
+---
+version: '3'
+vars:
+  alias: local-minio
+  bucket: terraform
+  policy_name: terraform-s3-policy
+  policy_json: terraform-s3-policy.json
+includes:
+  mc: mc.yml
+  mc-admin-policy: mc-admin-policy.yml
+tasks:
+  gen-policy:
+    cmds:
+      - |
+        jq . <<HERE >{{ .policy_json }}
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:ListBucket",
+              "Resource": "arn:aws:s3:::{{ .bucket }}"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": "arn:aws:s3:::{{ .bucket }}/*"
+            }
+          ]
+        }
+        HERE
+  add-policy:
+    deps:
+      - task: gen-policy
+    cmds:
+      - task: mc-admin-policy:add
+  default:
+    cmds:
+      - task: mc:mb
+      - task: add-policy

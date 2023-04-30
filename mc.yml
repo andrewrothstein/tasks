@@ -1,6 +1,9 @@
 ---
 version: '3'
 tasks:
+  alias-ls:
+    cmds:
+      - mc alias ls
   alias-set:
     vars:
       alias: '{{ .alias }}'

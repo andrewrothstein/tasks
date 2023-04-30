@@ -9,6 +9,9 @@ includes:
     vars:
       alias: local-minio
 tasks:
+  default:
+    deps:
+      - task: start
   start:
     vars:
       address: '{{ .address }}'
@@ -41,4 +44,3 @@ tasks:
       - task: mc:mb
         vars:
           bucket: '{{ .bucket }}'
-  
