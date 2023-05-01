@@ -12,4 +12,4 @@ openid-configuration.json
 rsa-*.key
 rsa-*.pub
 aad-secret-*.json
-terraform-s3-policy.json
+*-s3-policy.json

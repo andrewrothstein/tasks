@@ -8,4 +8,4 @@ tasks:
       - task: s3-backend-bucket
         vars:
           alias: local-minio
-          bucket: terraform
+          bucket: restic

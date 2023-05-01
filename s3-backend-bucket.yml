@@ -1,0 +1,65 @@
+---
+version: '3'
+includes:
+  mc: mc.yml
+  mc-admin-policy: mc-admin-policy.yml
+tasks:
+  gen-policy:
+    internal: true
+    vars:
+      bucket: '{{ .bucket }}'
+      policy_json: '{{ .policy_json }}'
+    cmds:
+      - |
+        jq . <<HERE >{{ .policy_json }}
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:ListBucket",
+              "Resource": "arn:aws:s3:::{{ .bucket }}"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": "arn:aws:s3:::{{ .bucket }}/*"
+            }
+          ]
+        }
+        HERE
+  add-policy:
+    internal: true
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+      policy_json: '{{ .bucket }}-s3-policy.json'
+      policy_name: '{{ .bucket }}-policy'
+    deps:
+      - task: gen-policy
+        vars:
+          bucket: '{{ .bucket }}'
+          policy_json: '{{ .policy_json }}'
+    cmds:
+      - task: mc-admin-policy:create
+        vars:
+          alias: '{{ .alias }}'
+          policy_json: '{{ .policy_json }}'
+          policy_name: '{{ .policy_name }}'
+  default:
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+    cmds:
+      - task: mc:mb
+        vars:
+          alias: '{{ .alias }}'
+          bucket: '{{ .bucket }}'
+      - task: add-policy
+        vars:
+          alias: '{{ .alias }}'
+          bucket: '{{ .bucket }}'

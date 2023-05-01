@@ -1,7 +1,7 @@
 ---
 version: '3'
 tasks:
-  add:
+  create:
     vars:
       alias: '{{ .alias }}'
       policy_name: '{{ .policy_name }}'
@@ -9,7 +9,7 @@ tasks:
     cmds:
       - |
         mc admin \
-          policy add \
+          policy create \
           {{ .alias | quote }} \
           {{ .policy_name | quote }} \
           {{ .policy_json | quote }}
