@@ -4,7 +4,18 @@ tasks:
   default:
     deps:
       - install
-  install:
+  version:
+    cmds:
+      - flux --version
+  preflight-check:
     cmds:
       - flux check --pre
+  install:
+    deps:
+      - task: version
+    cmds:
+      - task: preflight-check
       - flux install
+  delete:
+    cmds:
+      - flux uninstall -s
