@@ -1,0 +1,45 @@
+---
+version: '3'
+tasks:
+  init:
+    vars:
+      RESTIC_REPSITORY: '{{ .RESTIC_REPOSITORY }}'
+    deps:
+      - restic init
+  local:
+    vars:
+      dir: '{{ .dir }}'
+    deps:
+      - task: init
+        vars:
+          RESTIC_REPOSITORY: '{{ .dir | quote }}'
+  sftp:
+    vars:
+      sftp_user: '{{ .sftp_user }}'
+      sftp_hostname: '{{ .sftp_hostname }}'
+      sftp_path: '{{ .sftp_path }}'
+    deps:
+      - task: init
+        vars:
+          RESTIC_REPOSITORY: 'sftp:{{ .sftp_user }}@{{ .sftp_hostname }}/{{ .sftp_path }}'
+  s3:
+    vars:
+      AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
+      AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
+      endpoint: '{{ .endpoint | default "s3.amazonaws.com" }}'
+      bucket: '{{ .bucket | default "restic" }}'
+    cmds:
+      - restic -r 's3:{{ .endpoint }}/{{ .bucket }}' init
+  minio:
+    vars:
+      AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID | default .MINIO_ROOT_USER }}'
+      AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY | default .MINIO_ROOT_PASSWORD }}'
+      endpoint: '{{ .endpoint | default "{{ .MINIO_SCHEME }}://{{ .MINIO_ADDRESS }}" }}'
+      bucket: '{{ .bucket | default "restic" }}'
+    cmds:
+      - task: s3
+        vars:
+          AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
+          AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
+          endpoint: '{{ .endpoint }}'
+          bucket: '{{ .bucket }}'

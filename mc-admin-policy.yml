@@ -13,3 +13,13 @@ tasks:
           {{ .alias | quote }} \
           {{ .policy_name | quote }} \
           {{ .policy_json | quote }}
+  remove:
+    vars:
+      alias: '{{ .alias }}'
+      policy_name: '{{ .policy_name }}'
+    cmds:
+      - |
+        mc admin \
+          policy remove \
+          {{ .alias | quote }} \
+          {{ .policy_name | quote }} \

@@ -50,7 +50,18 @@ tasks:
           alias: '{{ .alias }}'
           policy_json: '{{ .policy_json }}'
           policy_name: '{{ .policy_name }}'
-  default:
+  remove-policy:
+    internal: true
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+      policy_name: '{{ .bucket }}-policy'
+    cmds:
+      - task: mc-admin-policy:remove
+        vars:
+          alias: '{{ .alias }}'
+          policy_name: '{{ .policy_name }}'
+  create:
     vars:
       alias: '{{ .alias }}'
       bucket: '{{ .bucket }}'
@@ -60,6 +71,19 @@ tasks:
           alias: '{{ .alias }}'
           bucket: '{{ .bucket }}'
       - task: add-policy
+        vars:
+          alias: '{{ .alias }}'
+          bucket: '{{ .bucket }}'
+  remove:
+    vars:
+      alias: '{{ .alias }}'
+      bucket: '{{ .bucket }}'
+    cmds:
+      - task: remove-policy
+        vars:
+          alias: '{{ .alias }}'
+          bucket: '{{ .bucket }}'
+      - task: mc:rb
         vars:
           alias: '{{ .alias }}'
           bucket: '{{ .bucket }}'

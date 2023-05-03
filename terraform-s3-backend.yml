@@ -1,11 +1,15 @@
 ---
 version: '3'
 includes:
-  s3-backend-bucket: s3-backend-bucket.yml
+  s3-backend-bucket:
+    taskfile: s3-backend-bucket.yml
+    vars:
+      alias: local-minio
+      bucket: terraform
 tasks:
-  default:
+  create:
     deps:
-      - task: s3-backend-bucket
-        vars:
-          alias: local-minio
-          bucket: terraform
+      - task: s3-backend-bucket:create
+  remove:
+    deps:
+      - task: s3-backend-bucket:remove

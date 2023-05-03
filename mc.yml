@@ -38,5 +38,10 @@ tasks:
       alias: '{{ .alias }}'
       bucket: '{{ .bucket }}'
       target: '{{ .alias }}/{{ .bucket }}'
+      force: '{{ .force | default true }}'
+      dangerous: '{{ .dangerous | default false }}'
     cmds:
-      - mc rb {{ .target | quote }}
+      - |
+        mc rb {{ .target | quote }}
+        {{- if .force }} --force{{ end }}
+        {{- if .dangerous }} --dangerous{{ end }}

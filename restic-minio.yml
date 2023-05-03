@@ -1,0 +1,12 @@
+---
+version: '3'
+dotenv:
+  - .minio-local-secrets.env
+  - .restic-minio-secrets.env
+  - minio-local.env
+includes:
+  restic-init: restic-init.yml
+tasks:
+  default:
+    cmds:
+      - task: restic-init:minio
