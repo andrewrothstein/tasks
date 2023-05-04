@@ -13,6 +13,19 @@ includes:
   dcb:
     taskfile: dcb.yml
 tasks:
+  clone:
+    vars:
+      git_org: '{{ .git_org | default "https://github.com/andrewrothstein" }}'
+      roles_dir: '{{ .roles_dir | default "${HOME}/git/github.com/andrewrothstein" }}'
+      name: '{{ .name }}'
+      infix: '{{ .infix | default "-" }}'
+    cmds:
+      - |
+        git clone \
+          "{{ .git_org }}/ansible{{ .infix }}{{ .name }}" \
+          "{{ .roles_dir }}/ansible{{ .infix }}{{ .name }}"
+    status:
+      - test -d "{{ .roles_dir }}/ansible{{ .infix }}{{ .name }}"
   local:
     cmds:
       - task: ansible-galaxy:install
