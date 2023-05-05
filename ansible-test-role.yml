@@ -13,19 +13,34 @@ includes:
   dcb:
     taskfile: dcb.yml
 tasks:
+  sauce:
+    internal: true
+    vars:
+      dir: '{{ .dir }}'
+    cmds:
+      - |
+        cd {{ .dir | quote }};
+        gengithubactions;
+        if [ -e "requirements.txt" ];
+        then
+          git rm -f requirements.txt
+        fi;
   clone:
     vars:
       git_org: '{{ .git_org | default "https://github.com/andrewrothstein" }}'
       roles_dir: '{{ .roles_dir | default "${HOME}/git/github.com/andrewrothstein" }}'
       name: '{{ .name }}'
       infix: '{{ .infix | default "-" }}'
+      role_name: ansible{{ .infix }}{{ .name }}
+      git_repo: '{{ .git_org }}/{{ .role_name }}'
+      dir: '{{ .roles_dir }}/{{ .role_name }}'
     cmds:
-      - |
-        git clone \
-          "{{ .git_org }}/ansible{{ .infix }}{{ .name }}" \
-          "{{ .roles_dir }}/ansible{{ .infix }}{{ .name }}"
+      - git clone {{ .git_repo | quote }} {{ .dir | quote }}
+      - task: sauce
+        vars:
+          dir: '{{ .dir }}'
     status:
-      - test -d "{{ .roles_dir }}/ansible{{ .infix }}{{ .name }}"
+      - test -d {{ .dir | quote }}
   local:
     cmds:
       - task: ansible-galaxy:install
