@@ -1,0 +1,10 @@
+---
+version: '3'
+tasks:
+  install:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - |
+        cd {{ .USER_WORKING_DIR }};
+        vagrant plugin install {{ .n | quote }};

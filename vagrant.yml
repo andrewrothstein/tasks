@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  VBoxManage: VBoxManage.yml
+tasks:
+  init-vbox-natnetwork:
+    deps:
+      - task: VBoxManage:natnetwork-add
+        vars:
+          enable: true
+          netname: vagrant.test
+          network: 192.168.33.0/24
+          dhcp: on
+          ipv6: on
+  up:
+    vars:
+      no_tty: '{{ .no_tty | default true }}'
+    cmds:
+      - |
+        cd {{ .USER_WORKING_DIR | quote }};
+        vagrant up \
+          {{ if .no_tty }} --no-tty{{ end }} \
+        ;
+  destroy:
+    vars:
+      no_tty: '{{ .no_tty | default true }}'
+    cmds:
+      - |
+        cd {{ .USER_WORKING_DIR | quote }};
+        vagrant destroy \
+          -f
+          {{- if .no_tty }} --no-tty{{ end }}

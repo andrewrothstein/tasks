@@ -1,0 +1,72 @@
+---
+version: '3'
+tasks:
+  list:
+    vars:
+      long: '{{ .long | default true }}'
+      sorted: '{{ .sorted | default true }}'
+      ty: '{{ .ty }}'
+    cmds:
+      - |
+        VBoxManage list
+        {{- if .long }} \
+          --long
+        {{- end }}
+        {{- if .sorted }} \
+          --sorted
+        {{- end }} \
+          {{ .ty | quote }}
+  list-hostonlyifs:
+    cmds:
+      - task: list
+        vars:
+          ty: hostonlyifs
+  list-dhcpservers:
+    cmds:
+      - task: list
+        vars:
+          ty: dhcpservers
+  natnetwork-list:
+    cmds:
+      - VBoxManage natnetwork list
+  natnetwork-remove:
+    cmds:
+      - VBoxManage natnetwork remove --netname={{ .netname | quote }}
+  natnetwork-add:
+    vars:
+      netname: '{{ .netname }}'
+      network: '{{ .network }}'
+      disable: '{{ .disable }}'
+      enable: '{{ .enable }}'
+      dhcp: '{{ .dhcp }}'
+      ipv6: '{{ .ipv6 }}'
+      lookback_4: '{{ .lookback_4 }}'
+      lookback_6: '{{ .lookback_6 }}'
+    cmds:
+      - |
+        VBoxManage \
+          natnetwork add
+          {{- if .disable }} \
+          --disable
+          {{- end -}}
+          {{- if .enable }} \
+          --enable
+          {{- end -}}
+          {{- if .netname }} \
+          --netname={{ .netname | quote }}
+          {{- end -}}
+          {{- if .network }} \
+          --network {{ .network | quote }}
+          {{- end -}}
+          {{- if .dhcp }} \
+          --dhcp={{ .dhcp | quote }}
+          {{- end }}
+          {{- if .ipv6 }} \
+          --ipv6={{ .ipv6 | quote }}
+          {{- end -}}
+          {{- if .lookback_4 }} \
+          --lookback-4={{ .lookback_4 | quote }}
+          {{- end -}}
+          {{- if .lookback_6 }} \
+          --lookback-6={{ .ipv6 | quote }}
+          {{- end -}}
