@@ -1,0 +1,15 @@
+---
+version: '3'
+tasks:
+  default:
+    deps:
+      - task: repo-view
+  repo-view:
+    vars:
+      repo_dir: '{{ .repo_dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - |
+        set -e
+        cd {{ .repo_dir | quote }};
+        defaultBranchName=$(gh repo view --json defaultBranchRef | jq -r '.defaultBranchRef.name');
+        echo $defaultBranchName
