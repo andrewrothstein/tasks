@@ -1,48 +1,30 @@
 ---
 version: '3'
 includes:
-  kubectl:
-    taskfile: kubectl.yml
-    internal: true
+  repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: gatekeeper
+      url: https://open-policy-agent.github.io/gatekeeper/charts
   helm:
     taskfile: helm.yml
     internal: true
-vars:
-  OPA_CHART_REPO_NAME: gatekeeper
-  OPA_CHART_REPO_URL: https://open-policy-agent.github.io/gatekeeper/charts
-  OPA_CHART: gatekeeper
-  OPA_VER: 3.10.0
-  OPA_NS: '{{ .OPA_NS | default "gatekeeper-system" }}'
-  OPA_NAME: '{{ .OPA_NAME | default "gatekeeper" }}'
-  OPA_NAME_TEMPLATE: '{{ .OPA_NAME_TEMPLATE | default "gatekeeper" }}'
+    vars:
+      NAMESPACE: gatekeeper-system
+      CREATE_NAMESPACE: true
+      NAME: gatekeeper
+      CHART_REPO_NAME: gatekeeper
+      CHART: gatekeeper
+      CHART_VER: 3.12.0
 tasks:
-  helm-repo-add:
-    internal: true
-    cmds:
-      - task: helm:repo-add
-        vars:
-          CHART_REPO_NAME: '{{ .OPA_CHART_REPO_NAME }}'
-          CHART_REPO_URL: '{{ .OPA_CHART_REPO_URL }}'
+  default:
+    deps:
+      - install
   install:
     deps:
-      - helm-repo-add
+      - task: repo:add
     cmds:
-      - task: kubectl:ns-create
-        vars:
-          n: '{{ .OPA_NS }}'
       - task: helm:install
-        vars:
-          NAMESPACE: '{{ .OPA_NS }}'
-          NAME: '{{ .OPA_NAME }}'
-          CHART_REPO_NAME: '{{ .OPA_CHART_REPO_NAME }}'
-          CHART: '{{ .OPA_CHART }}'
-          CHART_VER: '{{ .OPA_VER }}'
   delete:
     cmds:
       - task: helm:delete
-        vars:
-          NAMESPACE: '{{ .OPA_NS }}'
-          NAME: '{{ .OPA_NAME }}'
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .OPA_NS }}'
