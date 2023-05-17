@@ -26,18 +26,22 @@ tasks:
       - task: crossplane-repo
     cmds:
       - task: crossplane-helm:install
-      - task: crossplane-providers:apply
-        vars:
-          f: crossplane/aws-provider.yml
-      - task: crossplane-providers:apply
-        vars:
-          f: crossplane/azure-provider.yml
-      - task: crossplane-providers:apply
-        vars:
-          f: crossplane/azuread-provider.yml
-      - task: crossplane-providers:apply
-        vars:
-          f: crossplane/gcp-provider.yml
+  install-providers:
+    deps:
+      - task: install
+    cmds:
+#      - task: crossplane-providers:apply
+#        vars:
+#          f: crossplane/aws-provider.yml
+#      - task: crossplane-providers:apply
+#        vars:
+#          f: crossplane/azure-provider.yml
+#      - task: crossplane-providers:apply
+#        vars:
+#          f: crossplane/azuread-provider.yml
+#      - task: crossplane-providers:apply
+#        vars:
+#          f: crossplane/gcp-provider.yml
       - task: crossplane-providers:apply
         vars:
           f: crossplane/terraform-provider.yml
