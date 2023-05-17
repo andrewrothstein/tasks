@@ -10,8 +10,8 @@ includes:
   pre-mesh: pre-mesh.yml
 #  pre-mesh: pet.yml
 
-#  post-mesh: post-mesh.yml
-  post-mesh: pet.yml
+  post-mesh: post-mesh.yml
+#  post-mesh: pet.yml
 tasks:
   up:
     cmds:

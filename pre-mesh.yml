@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  csi-driver-nfs: csi-driver-nfs.yml
-#  csi-driver-nfs: pet.yml
+#  csi-driver-nfs: csi-driver-nfs.yml
+  csi-driver-nfs: pet.yml
 
 #  cert-manager: cert-manager.yml
   cert-manager: pet.yml

@@ -4,23 +4,20 @@ includes:
   gatekeeper: gatekeeper.yml
 #  gatekeeper: pet.yml
 
-  pinniped: pinniped.yml
-#  pinniped: pet.yml
+  pinniped-concierge: pinniped-concierge.yml
+#  pinniped-concierge: pet.yml
 
-  vault-dev: vault-dev.yml
-#  vault-dev: pet.yml
+#  vault-dev: vault-dev.yml
+  vault-dev: pet.yml
 
-  jetstack: jetstack.yml
-#  jetstack: pet.yml
+#  gitea: gitea.yml
+  gitea: pet.yml
 
-  gitea: gitea.yml
-#  gitea: pet.yml
+#  gitlab: gitlab.yml
+  gitlab: pet.yml
 
-  gitlab: gitlab.yml
-#  gitlab: pet.yml
-
-  argoproj: argoproj.yml
-#  argoproj: pet.yml
+#  argoproj: argoproj.yml
+  argoproj: pet.yml
 
 tasks:
   default:
@@ -30,8 +27,7 @@ tasks:
     cmds:
       - task: gatekeeper:install
       - task: vault-dev:install
-      - task: pinniped:deploy-concierge
-      - task: jetstack:install
+      - task: pinniped-concierge:install
       - task: argoproj:install
       - task: gitea:install
       - task: gitlab:install
@@ -39,8 +35,7 @@ tasks:
     cmds:
       - task: gitea:delete
       - task: argoproj:delete
-      - task: jetstack:delete
-      - task: pinniped:delete-concierge
+      - task: pinniped-concierge:delete
       - task: knative:delete
       - task: vault-dev:delete
       - task: gatekeeper:delete

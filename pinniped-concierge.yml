@@ -1,0 +1,17 @@
+---
+version: '3'
+vars:
+  PINNIPED_VER: 0.20.0
+includes:
+  kapp:
+    taskfile: kapp.yml
+    vars:
+      APP: pinniped-concierge
+      FILE: https://get.pinniped.dev/v{{ .PINNIPED_VER }}/install-pinniped-concierge.yaml
+tasks:
+  install:
+    cmds:
+      - task: kapp:deploy
+  delete:
+    cmds:
+      - task: kapp:delete
