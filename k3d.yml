@@ -107,6 +107,9 @@ tasks:
       - task: wait_for_ready
     status:
       - k3d cluster list {{ .name | quote }}
+  list:
+    cmds:
+      - k3d cluster list
   delete:
     cmds:
       - k3d cluster delete {{ .name | quote }}
