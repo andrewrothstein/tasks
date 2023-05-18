@@ -1,0 +1,17 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    vars:
+      n: cartographer-system
+tasks:
+  install:
+    cmds:
+      - task: kubectl:ns-create
+      - task: kubectl:apply
+        vars:
+          f: https://github.com/vmware-tanzu/cartographer/releases/latest/download/cartographer.yaml
+  default:
+    deps:
+      - task: install
