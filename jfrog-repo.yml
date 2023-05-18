@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: jfrog
+      url: https://charts.jfrog.io
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
