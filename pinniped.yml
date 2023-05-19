@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  kapp: kapp.yml
+tasks:
+  install:
+    vars:
+      APP: '{{ .APP }}'
+      VER: '{{ .VER }}'
+    cmds:
+      - task: kapp:deploy
+        vars:
+          APP: '{{ .APP }}'
+          FILE: https://get.pinniped.dev/v{{ .VER }}/install-{{ .APP }}.yaml
+  delete:
+    vars:
+      APP: '{{ .APP }}'
+      VER: '{{ .VER }}'
+    cmds:
+      - task: kapp:delete
+        vars:
+          APP: '{{ .APP }}'
+          FILE: https://get.pinniped.dev/v{{ .VER }}/install-{{ .APP }}.yaml

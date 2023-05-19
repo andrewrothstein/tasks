@@ -4,7 +4,7 @@ includes:
   pinniped:
     taskfile: pinniped.yml
     vars:
-      APP: pinniped-concierge
+      APP: pinniped-supervisor
       VER: 0.23.0
 tasks:
   install:
