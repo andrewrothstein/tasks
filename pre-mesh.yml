@@ -1,14 +1,23 @@
 ---
 version: '3'
 includes:
+  elastic: elastic.yml
+#  elastic: pet.yml
+
 #  csi-driver-nfs: csi-driver-nfs.yml
   csi-driver-nfs: pet.yml
 
-#  cert-manager: cert-manager.yml
-  cert-manager: pet.yml
+  cert-manager: cert-manager.yml
+#  cert-manager: pet.yml
 
-#  metallb: metallb.yml
-  metallb: pet.yml
+#  flux: flux.yml
+  flux: pet.yml
+
+#  argoproj: argoproj.yml
+  argoproj: pet.yml
+
+  metallb: metallb.yml
+#  metallb: pet.yml
 
 #  rook: rook.yml
   rook: pet.yml
@@ -66,9 +75,11 @@ tasks:
       - up
   up:
     cmds:
+      - task: cert-manager:install
+      - task: flux:install
+      - task: argoproj:install
       - task: csi-driver-nfs:install
       - task: trident:install
-      - task: cert-manager:install
       - task: metallb:install
       - task: rook:install
       - task: kube-prometheus-stack:install
@@ -108,3 +119,5 @@ tasks:
       - task: cert-manager:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
+      - task: argoproj:delete
+      - task: flux:delete
