@@ -11,7 +11,7 @@ includes:
       NAME: elastic-operator
       CHART_REPO_NAME: elastic
       CHART: eck-operator
-      CHART_VER: 2.6.1
+      CHART_VER: 2.7.0
 tasks:
   default:
     deps:

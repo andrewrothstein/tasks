@@ -6,7 +6,7 @@ includes:
 tasks:
   default:
     deps:
-      - apply
+      - install
   install:
     deps:
       - task: eck:install
