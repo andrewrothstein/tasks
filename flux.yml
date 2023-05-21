@@ -12,9 +12,8 @@ tasks:
       - flux check --pre
   install:
     deps:
-      - task: version
-    cmds:
       - task: preflight-check
+    cmds:
       - flux install
   delete:
     cmds:

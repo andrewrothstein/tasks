@@ -12,7 +12,7 @@ includes:
       NAME: vault
       CHART_REPO_NAME: hashicorp
       CHART: vault
-      CHART_VER: 0.23.0
+      CHART_VER: 0.24.1
       HELM_ARGS: -f vault-dev-values.yml
 tasks:
   default:

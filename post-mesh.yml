@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+  flux: flux.yml
+#  flux: pet.yml
+
   gatekeeper: gatekeeper.yml
 #  gatekeeper: pet.yml
 
@@ -10,11 +13,11 @@ includes:
   pinniped-concierge: pinniped-concierge.yml
 #  pinniped-concierge: pet.yml
 
-#  vault-dev: vault-dev.yml
-  vault-dev: pet.yml
+  vault-dev: vault-dev.yml
+#  vault-dev: pet.yml
 
-#  gitea: gitea.yml
-  gitea: pet.yml
+  gitea: gitea.yml
+#  gitea: pet.yml
 
 #  gitlab: gitlab.yml
   gitlab: pet.yml
@@ -28,6 +31,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: flux:install
       - task: gatekeeper:install
       - task: vault-dev:install
       - task: pinniped-supervisor:install
@@ -37,6 +41,7 @@ tasks:
       - task: gitlab:install
   delete:
     cmds:
+      - task: gitlab:delete
       - task: gitea:delete
       - task: argoproj:delete
       - task: pinniped-concierge:delete
@@ -44,4 +49,4 @@ tasks:
       - task: knative:delete
       - task: vault-dev:delete
       - task: gatekeeper:delete
-      - task: gitlab:delete
+      - task: flux:delete

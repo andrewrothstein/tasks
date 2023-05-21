@@ -1,9 +1,7 @@
 ---
 version: '3'
 includes:
-  repo:
-    taskfile: gitea-repo.yml
-    internal: true
+  repo: gitea-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -12,7 +10,7 @@ includes:
       NAME: gitea
       CHART_REPO_NAME: gitea-charts
       CHART: gitea
-      CHART_VER: 8.0.2
+      CHART_VER: 8.3.0
 tasks:
   default:
     deps:
