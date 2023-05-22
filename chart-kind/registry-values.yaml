@@ -1,7 +1,8 @@
 ---
-extraMounts:
-  - hostPath: /var/run/docker.sock
-    containerPath: /var/run/docker.sock
+node:
+  extraMounts:
+    - hostPath: /var/run/docker.sock
+      containerPath: /var/run/docker.sock
 registryMirrors:
   - src: '*'
     dest: http://kind-registry:5000

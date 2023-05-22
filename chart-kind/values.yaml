@@ -5,13 +5,18 @@ workloadNodeCount: 4
 #ipFamily: ipv6
 #apiServerAddress: 127.0.0.1
 #apiServerPort: 6443
+
 disableDefaultCNI: false
 #podSubnet: '10.10.0.0/16'
 #serviceSubnet: '10.11.0.0/16'
 #kubeProxyMode: ipvs
-#extraMounts:
-#  - hostPath: /var/run/docker.sock
-#    containerPath: /var/run/docker.sock
+
+node:
+  image: kindest/node:v1.25.9@sha256:c08d6c52820aa42e533b70bce0c2901183326d86dcdcbedecc9343681db45161
+#  extraMounts:
+#    - hostPath: /var/run/docker.sock
+#      containerPath: /var/run/docker.sock
+
 #registryMirrors:
 #  - src: '*'
 #    dest: http://kind-registry:5000
