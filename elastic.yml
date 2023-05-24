@@ -2,7 +2,16 @@
 version: '3'
 includes:
   eck: eck.yml
-  kubectl: kubectl.yml
+  elasticsearch:
+    taskfile: kubectl.yml
+    vars:
+      n: elasticsearch
+      f: elasticsearch.yml
+  kibana:
+    taskfile: kubectl.yml
+    vars:
+      n: kibana
+      f: kibana.yml
 tasks:
   default:
     deps:
@@ -11,18 +20,16 @@ tasks:
     deps:
       - task: eck:install
     cmds:
-      - task: kubectl:apply
-        vars:
-          f: elasticsearch.yml
-      - task: kubectl:apply
+      - task: elasticsearch:ns-create
+      - task: elasticsearch:apply
+      - task: kibana:ns-create
+      - task: kibana:apply
         vars:
           f: kibana.yml
   delete:
     cmds:
-      - task: kubectl:delete
-        vars:
-          f: elasticsearch.yml
-      - task: kubectl:delete
-        vars:
-          f: kibana.yml
+      - task: elasticsearch:delete
+      - task: elasticsearch:ns-delete
+      - task: kibana:delete
+      - task: kibana:ns-delete
       - task: eck:delete

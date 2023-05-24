@@ -82,6 +82,7 @@ tasks:
       - task: trident:install
       - task: metallb:install
       - task: rook:install
+      - task: elastic:install
       - task: kube-prometheus-stack:install
       - task: minio:install
       - task: tekton-pipelines:apply
@@ -114,6 +115,7 @@ tasks:
       - task: tekton-pipelines:delete
       - task: minio:delete
       - task: kube-prometheus-stack:delete
+      - task: elastic:delete
       - task: rook:delete
       - task: metallb:install
       - task: cert-manager:delete
