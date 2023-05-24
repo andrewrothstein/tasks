@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  repo: coredns-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: coredns
+      CREATE_NAMESPACE: true
+      NAME: coredns
+      CHART_REPO_NAME: coredns
+      CHART: coredns
+      CHART_VER: 1.23.0
+      HELM_ARGS: -f coredns-etcd.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

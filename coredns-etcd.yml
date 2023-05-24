@@ -1,0 +1,4 @@
+---
+isClusterService: false
+autoscaler:
+  enabled: true
