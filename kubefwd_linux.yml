@@ -1,0 +1,10 @@
+---
+version: '3'
+tasks:
+  up:
+    cmds:
+      - sudo -E kubefwd svc -A
+  default:
+    deps:
+      - up
+
