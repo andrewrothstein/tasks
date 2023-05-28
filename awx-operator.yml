@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  repo: awx-operator-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: awx-operator
+      CREATE_NAMESPACE: true
+      NAME: my-awx-operator
+      CHART_REPO_NAME: awx-operator
+      CHART: awx-operator
+      CHART_VER: 2.2.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
