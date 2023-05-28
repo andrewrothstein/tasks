@@ -5,7 +5,7 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: awx-operator
+      NAMESPACE: awx
       CREATE_NAMESPACE: true
       NAME: my-awx-operator
       CHART_REPO_NAME: awx-operator
