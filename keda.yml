@@ -10,7 +10,7 @@ includes:
       NAME: keda
       CHART_REPO_NAME: kedacore
       CHART: keda
-      CHART_VER: 2.10.0
+      CHART_VER: 2.10.2
 tasks:
   default:
     deps:
