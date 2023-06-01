@@ -1,9 +1,11 @@
 ---
 version: '3'
-vars:
-  TEKTON_TRIGGERS_VER: 0.23.0
-  TEKTON_TRIGGERS_MIRROR: https://storage.googleapis.com/tekton-releases/triggers/previous/v{{ .TEKTON_TRIGGERS_VER }}
 includes:
+  triggers:
+    taskfile: tekton.yml
+    vars:
+      APP: triggers
+      VER: 0.23.0
   release:
     taskfile: kubectl.yml
     vars:
@@ -15,12 +17,16 @@ includes:
 tasks:
   apply:
     cmds:
-      - task: release:apply
-      - task: interceptors:apply
+      - task: triggers:apply
+      - task: triggers:apply
+        vars:
+          F: interceptors.yaml
   delete:
     cmds:
-      - task: interceptors:delete
-      - task: release:delete
+      - task: triggers:apply
+        vars:
+          F: interceptors.yaml
+      - task: triggers:delete
   default:
     deps:
       - apply

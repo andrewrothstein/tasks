@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  kubectl: kubectl.yml
+tasks:
+  apply:
+    vars:
+      APP: '{{ .APP }}'
+      VER: '{{ .VER }}'
+      F: '{{ .F }}'
+    deps:
+      - task: kubectl:apply
+        vars:
+          f: 'https://storage.googleapis.com/tekton-releases/{{ .APP }}/previous/v{{ .VER }}/{{ .F | default "release.yaml" }}'
+  delete:
+    vars:
+      APP: '{{ .APP }}'
+      VER: '{{ .VER }}'
+      F: '{{ .F }}'
+    deps:
+      - task: kubectl:delete
+        vars:
+          f: 'https://storage.googleapis.com/tekton-releases/{{ .APP }}/previous/v{{ .VER }}/{{ .F | default "release.yaml" }}'
