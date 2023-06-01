@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  repo: ingress-nginx-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: ingress-nginx
+      CREATE_NAMESPACE: true
+      NAME: ingress-nginx
+      CHART_REPO_NAME: ingress-nginx
+      CHART: ingress-nginx
+      CHART_VER: 4.7.0
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

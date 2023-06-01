@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: ingress-nginx
+      url: https://kubernetes.github.io/ingress-nginx
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
