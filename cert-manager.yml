@@ -14,7 +14,7 @@ includes:
       NAMESPACE: cert-manager
       NAME: cert-manager
       CHART_REPO_NAME: jetstack
-      CHART_VER: 1.12.0
+      CHART_VER: 1.12.1
       CHART: cert-manager
       HELM_ARGS: --set installCRDs=true
   approver_policy:
@@ -24,7 +24,7 @@ includes:
       NAMESPACE: cert-manager
       NAME: cert-manager-approver-policy
       CHART_REPO_NAME: jetstack
-      CHART_VER: 0.6.3
+      CHART_VER: 0.7.0
       CHART: cert-manager-approver-policy
   csi_driver:
     taskfile: helm.yml
