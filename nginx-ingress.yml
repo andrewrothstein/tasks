@@ -1,0 +1,21 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: nginx-ingress
+      CREATE_NAMESPACE: true
+      NAME: nginx-ingress
+      CHART: oci://ghcr.io/nginxinc/charts/nginx-ingress
+      CHART_VER: 0.17.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
