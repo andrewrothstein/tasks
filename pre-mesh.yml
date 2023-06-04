@@ -1,14 +1,17 @@
 ---
 version: '3'
 includes:
+  cert-manager: cert-manager.yml
+#  cert-manager: pet.yml
+
   elastic: elastic.yml
 #  elastic: pet.yml
 
+  kube-prometheus-stack: kube-prometheus-stack.yml
+#  kube-prometheus-stack: pet.yml
+
 #  csi-driver-nfs: csi-driver-nfs.yml
   csi-driver-nfs: pet.yml
-
-  cert-manager: cert-manager.yml
-#  cert-manager: pet.yml
 
 #  flux: flux.yml
   flux: pet.yml
@@ -19,11 +22,11 @@ includes:
   metallb: metallb.yml
 #  metallb: pet.yml
 
+#  ingress: nginx-ingress.yml
+  ingress: pet.yml
+
 #  rook: rook.yml
   rook: pet.yml
-
-#  kube-prometheus-stack: kube-prometheus-stack.yml
-  kube-prometheus-stack: pet.yml
 
 #  minio: minio.yml
   minio: pet.yml
@@ -76,14 +79,15 @@ tasks:
   up:
     cmds:
       - task: cert-manager:install
+      - task: elastic:install
+      - task: kube-prometheus-stack:install
+      - task: ingress:install
       - task: flux:install
       - task: argoproj:install
       - task: csi-driver-nfs:install
       - task: trident:install
       - task: metallb:install
       - task: rook:install
-      - task: elastic:install
-      - task: kube-prometheus-stack:install
       - task: minio:install
       - task: tekton-pipelines:apply
       - task: tekton-triggers:apply
@@ -114,12 +118,13 @@ tasks:
       - task: tekton-triggers:delete
       - task: tekton-pipelines:delete
       - task: minio:delete
-      - task: kube-prometheus-stack:delete
-      - task: elastic:delete
       - task: rook:delete
       - task: metallb:install
-      - task: cert-manager:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
       - task: argoproj:delete
       - task: flux:delete
+      - task: ingress:delete
+      - task: kube-prometheus-stack:delete
+      - task: elastic:delete
+      - task: cert-manager:delete
