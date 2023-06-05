@@ -1,11 +1,49 @@
 ---
 version: '3'
+vars:
+  ISTIO_VER: 1.17.2
+includes:
+  repo: gitea-repo.yml
+  istio-base:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: istio-system
+      CREATE_NAMESPACE: true
+      NAME: istio-base
+      CHART_REPO_NAME: istio
+      CHART: base
+      CHART_VER: '{{ .ISTIO_VER }}'
+  istiod:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: istio-system
+      NAME: istiod
+      CHART_REPO_NAME: istio
+      CHART: istiod
+      CHART_VER: '{{ .ISTIO_VER }}'
+  ingress:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: istio-ingress
+      CREATE_NAMESPACE: true
+      NAME: istio-ingress
+      CHART_REPO_NAME: istio
+      CHART: gateway
+      CHART_VER: '{{ .ISTIO_VER }}'
 tasks:
+  default:
+    deps:
+      - task: install
   up:
+    deps:
+      - task: install
+  install:
     cmds:
-      - istioctl install -y
-    status:
-      - istioctl verify-install
+      - task: istio-base:install
+      - task: istiod:install
+      - task: ingress:install
   delete:
     cmds:
-      - istioctl uninstall --purge --force -y
+      - task: ingress:delete
+      - task: istiod:delete
+      - task: istio-base:delete
