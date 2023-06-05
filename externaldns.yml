@@ -1,16 +1,16 @@
 ---
 version: '3'
 includes:
-  repo: prometheus-community-repo.yml
+  repo: externaldns-repo.yml
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: kube-prometheus-stack
+      NAMESPACE: external-dns
       CREATE_NAMESPACE: true
-      NAME: kube-prometheus-stack
-      CHART_REPO_NAME: prometheus-community
-      CHART: kube-prometheus-stack
-      CHART_VER: 46.6.0
+      NAME: external-dns
+      CHART_REPO_NAME: external-dns
+      CHART: external-dns
+      CHART_VER: 1.12.2
 tasks:
   default:
     deps:

@@ -21,9 +21,9 @@ tasks:
       - task: post-mesh:up
   delete:
     cmds:
-      - task: post-mesh:delete
-      - task: mesh:delete
-      - task: pre-mesh:delete
+#      - task: post-mesh:delete
+#      - task: mesh:delete
+#      - task: pre-mesh:delete
       - task: k8s:delete
   default:
     deps:

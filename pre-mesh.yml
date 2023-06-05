@@ -10,6 +10,9 @@ includes:
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
 
+  dns: coredns.yml
+#  dns: pet.yml
+
 #  csi-driver-nfs: csi-driver-nfs.yml
   csi-driver-nfs: pet.yml
 
@@ -81,6 +84,7 @@ tasks:
       - task: cert-manager:install
       - task: elastic:install
       - task: kube-prometheus-stack:install
+      - task: dns:install
       - task: ingress:install
       - task: flux:install
       - task: argoproj:install
@@ -125,6 +129,7 @@ tasks:
       - task: argoproj:delete
       - task: flux:delete
       - task: ingress:delete
+      - task: dns:delete
       - task: kube-prometheus-stack:delete
       - task: elastic:delete
       - task: cert-manager:delete

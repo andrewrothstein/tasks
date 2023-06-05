@@ -17,8 +17,8 @@ includes:
 #  gitea: gitea.yml
   gitea: pet.yml
 
-  gitlab: gitlab.yml
-#  gitlab: pet.yml
+#  gitlab: gitlab.yml
+  gitlab: pet.yml
 
 tasks:
   default:
