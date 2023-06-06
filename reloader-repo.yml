@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: stakater
+      url: https://stakater.github.io/stakater-charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
