@@ -26,3 +26,8 @@ tasks:
           list \
           -o json \
           | jq -e '.[] | select(.name=={{ .n | quote }})'
+  delete:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - helm repo remove {{ .n | quote }}
