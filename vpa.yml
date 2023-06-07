@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  repo: cowboysysop-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      NAMESPACE: vpa
+      CREATE_NAMESPACE: true
+      NAME: vpa
+      CHART_REPO_NAME: cowboysysop
+      CHART: vertical-pod-autoscaler
+      CHART_VER: 7.0.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
