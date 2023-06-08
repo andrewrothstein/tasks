@@ -1,24 +1,23 @@
 ---
 version: '3'
 includes:
-  repo: externaldns-repo.yml
+  helm-repo: bitnami.yml
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: external-dns
+      NAMESPACE: bitnami-externaldns
       CREATE_NAMESPACE: true
-      NAME: external-dns
-      CHART_REPO_NAME: external-dns
+      NAME: bitnami-externaldns
+      CHART_REPO_NAME: bitnami
       CHART: external-dns
-      CHART_VER: 1.12.2
-      HELM_ARGS: -f externaldns-values.yml
+      CHART_VER: 6.20.3
 tasks:
   default:
     deps:
       - install
   install:
     deps:
-      - task: repo
+      - task: helm-repo
     cmds:
       - task: helm:install
   delete:

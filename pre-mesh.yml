@@ -61,7 +61,7 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
   kubevirt-vms: pet.yml
 
-#  postgresql: postgresql.yml
+#  postgresql: bitnami-postgresql.yml
   postgresql: pet.yml
 
 #  coderv2: coderv2.yml

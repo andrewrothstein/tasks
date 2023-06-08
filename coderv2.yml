@@ -2,7 +2,7 @@
 version: '3'
 includes:
   postgresql:
-    taskfile: postgresql.yml
+    taskfile: bitnami-postgresql.yml
     internal: true
     vars:
       NAMESPACE: coder
