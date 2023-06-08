@@ -1,9 +1,7 @@
 ---
 version: '3'
 includes:
-  dragonfly-repo:
-    taskfile: dragonfly-repo.yml
-    internal: true
+  helm-repo: dragonfly-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -11,14 +9,14 @@ includes:
       NAME: dragonfly
       CHART_REPO_NAME: dragonfly
       CHART: dragonfly
-      CHART_VER: 1.0.1
+      CHART_VER: 1.0.3
 tasks:
   default:
     deps:
       - install
   install:
     deps:
-      - task: dragonfly-repo
+      - task: helm-repo
     cmds:
       - task: helm:install
         vars:
