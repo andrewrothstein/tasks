@@ -10,6 +10,9 @@ includes:
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
 
+  keda: keda.yml
+#  keda: pet.yml
+
   dns: coredns.yml
 #  dns: pet.yml
 
@@ -84,6 +87,7 @@ tasks:
       - task: cert-manager:install
       - task: elastic:install
       - task: kube-prometheus-stack:install
+      - task: keda:install
       - task: dns:install
       - task: ingress:install
       - task: flux:install
@@ -130,6 +134,7 @@ tasks:
       - task: flux:delete
       - task: ingress:delete
       - task: dns:delete
+      - task: keda:delete
       - task: kube-prometheus-stack:delete
       - task: elastic:delete
       - task: cert-manager:delete
