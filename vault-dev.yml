@@ -1,34 +1,58 @@
 ---
 version: '3'
 includes:
-  ss-csi: secrets-store-csi-driver.yml
-  hashicorp: hashicorp.yml
-  vault:
-    taskfile: helm.yml
-    internal: true
-    vars:
-      NAMESPACE: vault
-      CREATE_NAMESPACE: true
-      NAME: vault
-      CHART_REPO_NAME: hashicorp
-      CHART: vault
-      CHART_VER: 0.24.1
-      HELM_ARGS: -f vault-dev-values.yml
+  ss-csi: pet.yml
+#  ss-csi: secrets-store-csi-driver.yml
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+  kubectl-exec: kubectl-exec.yml
 tasks:
+  init:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
+    cmds:
+      - task: kubectl-exec
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          POD: vault-0
+          COMMAND: vault
+          ARGS: operator init -key-shares=1 -key-threshold=1 -format=json
+          OUTPUT: .vault-secrets.json
   default:
     deps:
       - install
-  vault-install:
-    internal: true
-    deps:
-      - task: hashicorp
-    cmds:
-      - task: vault:install
   install:
-    cmds:
+    vars:
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "hashicorp" }}'
+      CHART: '{{ .CHART | default "vault" }}'
+      CHART_VER: '{{ .CHART_VER | default "0.24.1" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+      NAME: '{{ .NAME | default "vault" }}'
+      HELM_ARGS: -f vault-dev-values.yml
+    deps:
       - task: ss-csi:install
-      - task: vault-install
+    cmds:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .CHART_REPO_NAME }}'
+          url: https://helm.releases.hashicorp.com
+      - task: helm:install
+        vars:
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
   delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
+      NAME: '{{ .NAME | default "vault" }}'
     cmds:
       - task: ss-csi:delete
-      - task: vault:delete
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'

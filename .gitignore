@@ -8,6 +8,7 @@
 tf-validate.json
 *.*secrets.yml
 *.*secrets.env
+*.*secrets.json
 openid-configuration.json
 rsa-*.key
 rsa-*.pub

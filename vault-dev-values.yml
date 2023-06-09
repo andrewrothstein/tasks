@@ -1,8 +1,7 @@
 ---
 server:
-  dev:
+  affinity: ""
+  ha:
     enabled: true
-injector:
-  enabled: true
-csi:
-  enabled: true
+    raft:
+      enabled: true

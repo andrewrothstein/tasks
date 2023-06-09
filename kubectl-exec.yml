@@ -1,0 +1,20 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE }}'
+      POD: '{{ .POD }}'
+      COMMAND: '{{ .COMMAND }}'
+      ARGS: '{{ .ARGS }}'
+      OUTPUT: '{{ .OUTPUT }}'
+    cmds:
+      - |+
+        kubectl exec \
+          -n {{ .NAMESPACE | quote }} \
+          {{ .POD | quote }} \
+          -- \
+          {{ .COMMAND | quote }}
+          {{- if .ARGS }} \
+          {{ .ARGS }}{{ end }}
+          {{- if .OUTPUT }} > {{ .OUTPUT | quote }}{{ end }}
