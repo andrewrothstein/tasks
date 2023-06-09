@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  repo: externaldns-repo.yml
+  repo: external-dns-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -11,7 +11,7 @@ includes:
       CHART_REPO_NAME: external-dns
       CHART: external-dns
       CHART_VER: 1.12.2
-      HELM_ARGS: -f externaldns-values.yml
+      HELM_ARGS: -f external-dns-values.yml
 tasks:
   default:
     deps:
