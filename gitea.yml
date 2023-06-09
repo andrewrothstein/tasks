@@ -1,25 +1,40 @@
 ---
 version: '3'
 includes:
-  repo: gitea-repo.yml
-  helm:
-    taskfile: helm.yml
-    vars:
-      NAMESPACE: gitea
-      CREATE_NAMESPACE: true
-      NAME: gitea
-      CHART_REPO_NAME: gitea-charts
-      CHART: gitea
-      CHART_VER: 8.3.0
+  helm-repo: helm-repo.yml
+  helm: helm.yml
 tasks:
   default:
     deps:
       - install
   install:
+    vars:
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "gitea-charts" }}'
+      CHART: '{{ .CHART | default "gitea" }}'
+      CHART_VER: '{{ .CHART_VER | default "8.3.0" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "gitea" }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
+      NAME: '{{ .NAME | default "gitea" }}'
     deps:
-      - task: repo
+      - task: helm-repo:add
+        vars:
+          n: '{{ .CHART_REPO_NAME }}'
+          url: https://dl.gitea.io/charts
     cmds:
       - task: helm:install
+        vars:
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          NAME: '{{ .NAME }}'
   delete:
+    vars:
+      NAMESPACE: '{{ .NAMESPACE | default "gitea" }}'
+      NAME: '{{ .NAME | default "gitea" }}'
     cmds:
       - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
