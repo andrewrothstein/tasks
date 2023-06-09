@@ -5,19 +5,7 @@ includes:
 #  ss-csi: secrets-store-csi-driver.yml
   helm-repo: helm-repo.yml
   helm: helm.yml
-  kubectl-exec: kubectl-exec.yml
 tasks:
-  init:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-    cmds:
-      - task: kubectl-exec
-        vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-0
-          COMMAND: vault
-          ARGS: operator init -key-shares=1 -key-threshold=1 -format=json
-          OUTPUT: .vault-secrets.json
   default:
     deps:
       - install
