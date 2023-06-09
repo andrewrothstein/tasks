@@ -1,0 +1,42 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "bitnami" }}'
+      CHART: '{{ .CHART }}'
+      CHART_VER: '{{ .CHART_VER }}'
+      NAME: '{{ .NAME }}'
+      NAMESPACE: '{{ .NAMESPACE }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+      HELM_ARGS: '{{ .HELM_ARGS }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: bitnami
+          url: https://charts.bitnami.com/bitnami
+    cmds:
+      - task: helm:install
+        vars:
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAME: '{{ .NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
+  delete:
+    vars:
+      NAME: '{{ .NAME }}'
+      NAMESPACE: '{{ .NAMESPACE }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          NAME: '{{ .NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'

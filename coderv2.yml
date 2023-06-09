@@ -1,58 +1,66 @@
 ---
 version: '3'
 includes:
-  postgresql:
-    taskfile: bitnami-postgresql.yml
-    internal: true
-    vars:
-      NAMESPACE: coder
-  coderv2-helm-repo:
-    taskfile: helm-repo.yml
-    internal: true
-    vars:
-      n: coder-v2
-      url: https://helm.coder.com/v2
-  coderv2-secret:
-    taskfile: k8s-literal-secret.yml
-    internal: true
-    vars:
-      n: coder
-      s: coder-db-url
-  coderv2:
-    taskfile: helm.yml
-    internal: true
-    vars:
-      NAMESPACE: coder
-      CREATE_NAMESPACE: false
-      NAME: coder
-      CHART_REPO_NAME: coder-v2
-      CHART: coder
-      CHART_VER: 0.13.6
+  postgresql: bitnami-postgresql.yml
+  coderv2-helm-repo: helm-repo.yml
+  coderv2-secret: k8s-literal-secret.yml
+  coderv2: helm.yml
 tasks:
+  default:
+    deps:
+      - task: install
   install:
     vars:
-      CODER_ADMIN_USER: '{{ .CODER_ADMIN_USER | default "coder" }}'
-      CODER_ADMIN_PASSWORD: '{{ .CODER_ADMIN_PASSWORD | default "e7c32e46-bd6f-11ed-9c8d-38d54714ef1a" }}'
-      CODER_ADMIN_DB: '{{ .CODER_ADMIN_DB | default "coder" }}'
-      CODER_DB_SIZE: '{{ .CODER_DB_SIZE | default "10Gi" }}'
+      NAME: '{{ .NAME | default "coder" }}'
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "coder-v2" }}'
+      CHART: '{{ .CHART | default "coder" }}'
+      CHART_VER: '{{ .CHART_VER | default "0.23.7" }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default "true" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "coder" }}'
+      ADMIN_USERNAME: '{{ .ADMIN_USERNAME | default "coder" }}'
+      ADMIN_PASSWORD: '{{ .ADMIN_PASSWORD | default "e7c32e46-bd6f-11ed-9c8d-38d54714ef1a" }}'
+      ADMIN_DB: '{{ .ADMIN_DB | default "coder" }}'
+      DB_SIZE: '{{ .DB_SIZE | default "10Gi" }}'
     cmds:
       - task: postgresql:install
         vars:
-          ADMIN_USERNAME: '{{ .CODER_ADMIN_USER }}'
-          ADMIN_PASSWORD: '{{ .CODER_ADMIN_PASSWORD }}'
-          ADMIN_DB: '{{ .CODER_ADMIN_DB }}'
-          DB_SIZE: '{{ .CODER_DB_SIZE }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          ADMIN_USERNAME: '{{ .ADMIN_USERNAME }}'
+          ADMIN_PASSWORD: '{{ .ADMIN_PASSWORD }}'
+          ADMIN_DB: '{{ .ADMIN_DB }}'
+          DB_SIZE: '{{ .DB_SIZE }}'
       - task: coderv2-helm-repo:add
+        vars:
+          n: coder-v2
+          url: https://helm.coder.com/v2
       - task: coderv2-secret:apply
         vars:
+          n: '{{ .NAMESPACE }}'
+          s: coder-db-url
           k: url
-          v: postgres://{{ .CODER_ADMIN_USERNAME }}:{{ .CODER_ADMIN_PASSWORD }}@postgresql:5432/{{ .CODER_ADMIN_DB }}?sslmode=disable
+          v: "postgres://{{ .ADMIN_USERNAME }}:{{ .ADMIN_PASSWORD }}@postgresql:5432/{{ .ADMIN_DB }}?sslmode=disable"
       - task: coderv2:install
         vars:
-          HELM_ARGS: >
-            --values coderv2/values.yml
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          HELM_ARGS: -f coderv2/values.yml
   delete:
+    vars:
+      NAME: '{{ .NAME | default "coder" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "coder" }}'
     cmds:
       - task: coderv2:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
       - task: coderv2-secret:delete
+        vars:
+          n: '{{ .NAMESPACE }}'
+          k: url
       - task: postgresql:delete
+        vars:
+          NAMESPACE: coder

@@ -1,43 +1,43 @@
 ---
 version: '3'
 includes:
-  bitnami: bitnami.yml
-  helm:
-    taskfile: helm.yml
-    internal: true
-    vars:
-      NAME: postgresql
-      CHART_REPO_NAME: bitnami
-      CHART: postgresql
-      CHART_VER: 12.1.6
+  bitnami-chart: bitnami-chart.yml
 tasks:
   default:
     deps:
-      - install
+      - task: install
+        vars:
+          CREATE_NAMESPACE: true
   install:
     vars:
-      ADMIN_USERNAME: '{{ .ADMIN_USERNAME | default "coder" }}'
-      ADMIN_PASSWORD: '{{ .ADMIN_PASSWORD | default "coder" }}'
-      ADMIN_DB: '{{ .ADMIN_DB | default "coder" }}'
+      CHART: '{{ .CHART | default "postgresql" }}'
+      CHART_VER: '{{ .CHART_VER | default "12.5.6" }}'
+      NAME: '{{ .NAME | default "postgresql" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "bitnami-postgresql" }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+      ADMIN_USERNAME: '{{ .ADMIN_USERNAME | default "pgadmin" }}'
+      ADMIN_PASSWORD: '{{ .ADMIN_PASSWORD | default "password" }}'
+      ADMIN_DB: '{{ .ADMIN_DB | default "pgadmin" }}'
       DB_SIZE: '{{ .DB_SIZE | default "10Gi" }}'
-    deps:
-      - task: bitnami
     cmds:
-      - task: helm:install
+      - task: bitnami-chart:install
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "coder" }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-          NAME: postgresql
-          CHART_REPO_NAME: bitnami
-          CHART: postgresql
-          CHART_VER: 12.1.6
-          HELM_ARGS: >
-            --set auth.username={{ .ADMIN_USERNAME }}
-            --set auth.password={{ .ADMIN_PASSWORD }}
-            --set auth.database={{ .ADMIN_DB }}
-            --set persistence.size={{ .DB_SIZE }}
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAME: '{{ .NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          HELM_ARGS: >-
+            --set auth.username={{ .ADMIN_USERNAME | quote }}
+            --set auth.password={{ .ADMIN_PASSWORD | quote }}
+            --set auth.database={{ .ADMIN_DB | quote }}
+            --set persistence.size={{ .DB_SIZE | quote }}
   delete:
+    vars:
+      NAME: '{{ .NAME }}'
+      NAMESPACE: '{{ .NAMESPACE }}'
     cmds:
-      - task: helm:delete
+      - task: bitnami-chart:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE | default "coder" }}'
+          NAME: '{{ .NAME | default "postgresql" }}'
+          NAMESPACE: '{{ .NAMESPACE | default "bitnami-postgresql" }}'

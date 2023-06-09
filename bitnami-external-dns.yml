@@ -1,0 +1,36 @@
+---
+version: '3'
+includes:
+  bitnami-chart: bitnami-chart.yml
+tasks:
+  default:
+    deps:
+      - task: install
+        vars:
+          CREATE_NAMESPACE: true
+  install:
+    vars:
+      CHART: '{{ .CHART | default "external-dns" }}'
+      CHART_VER: '{{ .CHART_VER | default "6.20.3" }}'
+      NAME: '{{ .NAME | default "external-dns" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "bitnami-external-dns" }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default "true" }}'
+      HELM_ARGS: '{{ .HELM_ARGS }}'
+    cmds:
+      - task: bitnami-chart:install
+        vars:
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAME: '{{ .NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+          HELM_ARGS: '{{ .HELM_ARGS }}'
+  delete:
+    vars:
+      NAME: '{{ .NAME | default "external-dns" }}'
+      NAMESPACE: '{{ .NAMESPACE | default "bitnami-external-dns" }}'
+    cmds:
+      - task: bitnami-chart:delete
+        vars:
+          NAME: '{{ .NAME }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
