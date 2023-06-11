@@ -18,3 +18,22 @@ tasks:
   delete:
     cmds:
       - task: argo-release:delete
+  list:
+    vars:
+      n: '{{ .n | default "argo" }}'
+    cmds:
+      - argo list -n {{ .n | quote }}
+  test:
+    vars:
+      n: '{{ .n | default "argo" }}'
+      f: '{{ .f | default "argo-hello-world.yml" }}'
+      watch: '{{ .watch | default true }}'
+    cmds:
+      - >-
+        argo submit
+        -n {{ .n | quote }}
+        {{- if .watch }} --watch{{ end }}
+        {{ .f | quote }}
+  port-forward:
+    cmds:
+      - kubectl -n argo port-forward deployment/argo-server 2746:2746
