@@ -28,7 +28,7 @@ jobs:
         with:
           pull: true
           push: true
-          targets: both
+          targets: only
     strategy:
       fail-fast: false
       matrix:
