@@ -1,0 +1,44 @@
+---
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  schedule:
+    - cron:  '0 0 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: "${{ github.actor }}"
+          password: "${{ github.token }}"
+      - uses: docker/bake-action@v3
+        env:
+          UPSTREAM_IMAGE_TAG: "${{ matrix.tag.name }}"
+          TARGET_IMAGE_TAG: "${{ matrix.tag.name }}"
+        with:
+          pull: true
+          push: true
+          targets: only
+    strategy:
+      fail-fast: false
+      matrix:
+        tag:
+          - name: alpine_3.17
+          - name: alpine_3.18
+          - name: alpine_edge
+          - name: archlinux_latest
+          - name: debian_bookworm
+          - name: debian_bullseye
+          - name: fedora_37
+          - name: fedora_38
+          - name: rockylinux_8
+          - name: rockylinux_9
+          - name: ubuntu_focal
+          - name: ubuntu_jammy
