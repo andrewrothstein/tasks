@@ -19,6 +19,7 @@
     - andrewrothstein.kubefwd
     - andrewrothstein.kubeshark
     - andrewrothstein.kubernetes-helm
+    - andrewrothstein.helmfile
     - andrewrothstein.k9s
     - andrewrothstein.cluster_api
     - andrewrothstein.kubevirt
@@ -28,3 +29,9 @@
     - andrewrothstein.vault
     - andrewrothstein.velero
     - andrewrothstein.jq
+    - andrewrothstein.terraform
+    - andrewrothstein.terragrunt
+    - andrewrothstein.packer
+    - andrewrothstein.vault
+    - andrewrothstein.consul
+    - andrewrothstein.nomad
