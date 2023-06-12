@@ -3,7 +3,7 @@
   vars:
     carvel_apps:
       - name: kapp
-        version: 0.54.1
+        version: 0.57.0
   roles:
     - andrewrothstein.k3d
     - andrewrothstein.kind
