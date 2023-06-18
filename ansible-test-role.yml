@@ -2,8 +2,7 @@
 version: '3'
 includes:
   gh: gh.yml
-  ansible-galaxy:
-    taskfile: ansible-galaxy.yml
+  ansible-galaxy: ansible-galaxy.yml
   local:
     taskfile: ansible.yml
     vars:
@@ -44,6 +43,9 @@ tasks:
       - task: sauce
         vars:
           dir: '{{ .dir }}'
+      - task: ansible-galaxy:role-import
+        vars:
+          name: '{{ .name }}'
     status:
       - test -d {{ .dir | quote }}
   local:

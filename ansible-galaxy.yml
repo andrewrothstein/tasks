@@ -1,6 +1,21 @@
 ---
 version: '3'
 tasks:
+  role-import:
+    dotenv: [.galaxy-secrets.env]
+    vars:
+      org: '{{ .org | default "andrewrothstein" }}'
+      name: '{{ .name }}'
+      branch: '{{ .branch | default "main" }}'
+    cmds:
+      - |
+        ansible-galaxy \
+          role \
+            import \
+              --branch {{ .branch | quote }} \
+              --token "${ANSIBLE_GALAXY_TOKEN}" \
+              {{ .org | quote }} \
+              {{ .name | quote }}
   install:
     vars:
       requirements: '{{ .requirements | default "requirements.yml" }}'
