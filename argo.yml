@@ -23,17 +23,32 @@ tasks:
       n: '{{ .n | default "argo" }}'
     cmds:
       - argo list -n {{ .n | quote }}
-  test:
+  submit:
     vars:
       n: '{{ .n | default "argo" }}'
-      f: '{{ .f | default "argo-hello-world.yml" }}'
+      f: '{{ .f }}'
+      log: '{{ .log | default true }}'
       watch: '{{ .watch | default true }}'
     cmds:
       - >-
         argo submit
         -n {{ .n | quote }}
         {{- if .watch }} --watch{{ end }}
+        {{- if .log }} --log{{ end }}
         {{ .f | quote }}
+  test:
+    vars:
+      n: '{{ .n | default "argo" }}'
+      f: '{{ .f | default "argo-templates/hello-world.yml" }}'
+      log: '{{ .log | default true }}'
+      watch: '{{ .watch | default true }}'
+    cmds:
+      - task: submit
+        vars:
+          n: '{{ .n }}'
+          f: '{{ .f }}'
+          log: '{{ .log }}'
+          watch: '{{ .watch }}'
   port-forward:
     cmds:
       - kubectl -n argo port-forward deployment/argo-server 2746:2746

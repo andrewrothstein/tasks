@@ -5,8 +5,12 @@ includes:
     taskfile: kubectl-exec.yml
     vars:
       COMMAND: vault
+  argo:
+    taskfile: argo.yml
+    vars:
+      n: argo
 tasks:
-  status:
+  status-kk:
     vars:
       NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
       POD: '{{ .POD | default "vault-0" }}'
@@ -16,6 +20,13 @@ tasks:
           NAMESPACE: '{{ .NAMESPACE }}'
           POD: '{{ .POD }}'
           ARGS: status
+  status-argo:
+    cmds:
+      - task: argo:submit
+        vars:
+          f: argo-templates/vault-status.yml
+    vars:
+      VAULT_ADDR: http://vault.vault.svc:8200
   init:
     vars:
       NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
