@@ -3,13 +3,40 @@ version: '3'
 tasks:
   default:
     deps:
-      - task: repo-view
-  repo-view:
+      - task: show-default-branch-name
+  show-default-branch-name:
     vars:
       repo_dir: '{{ .repo_dir | default .USER_WORKING_DIR }}'
     cmds:
       - |
+        set -ex
+        cd {{ .repo_dir | quote }};
+        gh repo view --json defaultBranchRef | jq -r '.defaultBranchRef.name';
+  rename-default-branch:
+    vars:
+      repo_dir: '{{ .repo_dir | default .USER_WORKING_DIR }}'
+      remote: '{{ .remote | default "origin" }}'
+      from: '{{ .from | default "master" }}'
+      to: '{{ .to | default "main" }}'
+      fq_to: '{{ .remote }}/{{ .to }}'
+    cmds:
+      - |
         set -e
         cd {{ .repo_dir | quote }};
-        defaultBranchName=$(gh repo view --json defaultBranchRef | jq -r '.defaultBranchRef.name');
-        echo $defaultBranchName
+        dflt=$(gh repo view --json defaultBranchRef | jq -r '.defaultBranchRef.name');
+        if [[ "${dflt}" == {{ .from | quote }} && "${dflt}" != {{ .to | quote }} ]];
+        then
+          echo "forking {{ .remote }}/${dflt} to {{ .to }}...";
+          git checkout -b {{ .to | quote }} "{{ .remote }}/${dflt}";
+          echo "pushing to {{ .fq_to }}...";
+          git push -u {{ .remote | quote }} {{ .to | quote }};
+          echo "setting default branch to {{ .to | quote }}...";
+          gh repo edit --default-branch {{ .to | quote }};
+          echo "deleting ${dflt} branch...";
+          git branch -d ${dflt};
+          echo "deleting {{ .remote }}/${dflt}...";
+          git push -d {{ .remote | quote }} "${dflt}";
+          echo done;
+        else
+          echo "default branch not {{ .from | quote }} or already {{ .to }}";
+        fi

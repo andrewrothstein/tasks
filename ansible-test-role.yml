@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  gh: gh.yml
   ansible-galaxy:
     taskfile: ansible-galaxy.yml
   local:
@@ -17,6 +18,10 @@ tasks:
     internal: true
     vars:
       dir: '{{ .dir }}'
+    deps:
+      - task: gh:rename-default-branch
+        vars:
+          repo_dir: '{{ .dir }}'
     cmds:
       - |
         cd {{ .dir | quote }};
