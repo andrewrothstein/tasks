@@ -4,6 +4,19 @@ tasks:
   default:
     deps:
       - task: show-default-branch-name
+  list-repos:
+    vars:
+      org: '{{ .org | default "andrewrothstein" }}'
+      prefix: '{{ .prefix | default "ansible-" }}'
+      limit: '{{ .limit | default 10000 }}'
+    cmds:
+      - |
+        gh repo list \
+          {{ .org | quote }} \
+          --json \
+          name \
+          {{ if .limit }} --limit {{ .limit }}{{ end }} \
+            | jq -r '.[].name | select(startswith({{ .prefix | quote }}))'
   show-default-branch-name:
     vars:
       repo_dir: '{{ .repo_dir | default .USER_WORKING_DIR }}'
