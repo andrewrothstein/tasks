@@ -1,0 +1,13 @@
+.task/
+.ansible-roles/
+.onetime
+.terraform/
+tf-validate.json
+*.*secrets.yml
+*.*secrets.env
+*.*secrets.json
+openid-configuration.json
+rsa-*.key
+rsa-*.pub
+aad-secret-*.json
+*-s3-policy.json

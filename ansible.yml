@@ -41,11 +41,13 @@ tasks:
       limit: '{{ .limit }}'
       i: '{{ .i }}'
       c: '{{ .c }}'
+      playbook_dir: '{{ .playbook_dir | default .USER_WORKING }}'
       playbook: '{{ .playbook | default "playbook.yml" }}'
+      fq_playbook: '{{ .playbook_dir }}/{{ .playbook }}'
     cmds:
       - |
         ansible-playbook \
           {{ if .i }}-i {{ .i | quote }}{{ end }} \
           {{ if .c }}-c {{ .c | quote }}{{ end }} \
           {{ if .limit }}--limit {{ .limit | quote }}{{ end }} \
-          {{ .playbook | quote }}
+          {{ .fq_playbook | quote }}

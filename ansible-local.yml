@@ -1,0 +1,17 @@
+---
+version: '3'
+includes:
+  ansible-galaxy: ansible-galaxy.yml
+  ansible:
+    taskfile: ansible.yml
+    vars:
+      i: 'localhost,'
+      c: local
+      target: localhost
+      limit: localhost
+tasks:
+  default:
+    deps:
+      - task: ansible-galaxy:install
+    cmds:
+      - task: ansible:playbook

@@ -18,16 +18,18 @@ tasks:
               {{ .name | quote }}
   install:
     vars:
+      requirements_dir: '{{ .requirements_dir | default .USER_WORKING_DIR }}'
       requirements: '{{ .requirements | default "requirements.yml" }}'
+      fq_requirements: '{{ .requirements_dir }}/{{ .requirements }}'
       force: '{{ .force | default false }}'
     cmds:
       - |
-        if [ -e {{ .requirements | quote }} ];
+        if [ -e {{ .fq_requirements | quote }} ];
         then
           ansible-galaxy \
             install \
             {{ if .force }}-f{{ end }} \
-            -r {{ .requirements | quote }}
+            -r {{ .fq_requirements | quote }}
         else
-          echo {{ .requirements | quote }} not found, skipping...
+          echo {{ .fq_requirements | quote }} not found, skipping...
         fi

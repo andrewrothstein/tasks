@@ -51,17 +51,15 @@ tasks:
   local:
     cmds:
       - task: ansible-galaxy:install
-        vars:
-          requirements: '{{ .USER_WORKING_DIR }}/requirements.yml'
       - task: ansible-galaxy:install
         vars:
-          requirements: '{{ .USER_WORKING_DIR }}/meta/requirements.yml'
+          requirements_dir: '{{ .USER_WORKING_DIR }}/meta'
       - task: ansible-galaxy:install
         vars:
-          requirements: '{{ .USER_WORKING_DIR }}/test-requirements.yml'
+          requirements: test-requirements.yml
       - task: local:playbook
         vars:
-          playbook: '{{ .USER_WORKING_DIR }}/test.yml'
+          playbook: test.yml
   default:
     deps:
       - task: dcb:install
