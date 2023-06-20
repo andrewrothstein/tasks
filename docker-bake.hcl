@@ -26,16 +26,16 @@ variable "TARGET_IMAGE_TAG" {
 target "both" {
   context = "."
   dockerfile-inline = <<-EOF
+  FROM alpine:latest as downloader
+  RUN apk --no-cache add ca-certificates curl
+  RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /tmp
+  RUN chmod +x /tmp/task
+
   FROM ${UPSTREAM_REGISTRY_HOSTNAME}/${UPSTREAM_REGISTRY_PATH}/${UPSTREAM_IMAGE_NAME}:${UPSTREAM_IMAGE_TAG}
-  ADD playbook.yml playbook.yml
-  ADD requirements.yml requirements.yml
-  RUN ansible-galaxy install \
-        -r requirements.yml \
-      && \
-      ansible-playbook \
-        -i localhost, \
-        -c local \
-        playbook.yml
+  COPY --from=downloader /tmp/task /tmp/task
+  ADD . /tasks
+  WORKDIR /tasks
+  RUN /tmp/task -t ansible-local.yml; rm /tmp/task
   EOF
   labels = {
     maintainer = "Andrew Rothstein andrew.rothstein@gmail.com"
