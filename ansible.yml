@@ -41,7 +41,7 @@ tasks:
       limit: '{{ .limit }}'
       i: '{{ .i }}'
       c: '{{ .c }}'
-      playbook_dir: '{{ .playbook_dir | default .USER_WORKING }}'
+      playbook_dir: '{{ .playbook_dir | default .USER_WORKING_DIR }}'
       playbook: '{{ .playbook | default "playbook.yml" }}'
       fq_playbook: '{{ .playbook_dir }}/{{ .playbook }}'
     cmds:
