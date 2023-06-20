@@ -22,8 +22,8 @@ includes:
 #  flux: flux.yml
   flux: pet.yml
 
-#  argoproj: argoproj.yml
-  argoproj: pet.yml
+  argoproj: argoproj.yml
+#  argoproj: pet.yml
 
   metallb: metallb.yml
 #  metallb: pet.yml

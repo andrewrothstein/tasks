@@ -4,7 +4,7 @@ tasks:
   install:
     vars:
       NAMESPACE: '{{ .NAMESPACE }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
+      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default false }}'
       NAME: '{{ .NAME }}'
       CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
       CHART: '{{ .CHART }}'
@@ -15,9 +15,11 @@ tasks:
     cmds:
       - |
         helm \
-          install \
+          install
+          {{- if .NAMESPACE }} \
           -n {{ .NAMESPACE | quote }}
-          {{- if .CREATE_NAMESPACE }}  \
+          {{- end }}
+          {{- if eq "true" .CREATE_NAMESPACE }}  \
           --create-namespace
           {{- end }} \
           {{ .NAME | quote }} \
@@ -25,7 +27,7 @@ tasks:
           {{- .CHART -}}
           {{- if .CHART_VER }} \
           --version {{ .CHART_VER | quote }}
-          {{- if .WAIT }} --wait --timeout {{ .TIMEOUT | quote }}{{ end }}
+          {{- if eq "true" .WAIT }} --wait --timeout {{ .TIMEOUT | quote }}{{ end }}
           {{- end }}
           {{- if .HELM_ARGS }} \
           {{ .HELM_ARGS }}{{ end }}
@@ -40,16 +42,24 @@ tasks:
     vars:
       NAMESPACE: '{{ .NAMESPACE }}'
       NAME: '{{ .NAME }}'
+      WAIT: '{{ .WAIT | default true }}'
     preconditions:
       - |
         helm \
-          list \
-          -n {{ .NAMESPACE | quote }} \
+          list
+          {{- if .NAMESPACE }} \
+          -n {{ .NAMESPACE | quote }}
+          {{- end }} \
           -o json \
           | jq -e '.[] | select(.name=={{ .NAME | quote }})'
     cmds:
       - |
         helm \
-          delete \
-          -n {{ .NAMESPACE | quote }} \
+          delete
+          {{- if .NAMESPACE }} \
+          -n {{ .NAMESPACE | quote }}
+          {{- end }}
+          {{- if eq "true" .WAIT }} \
+          --wait
+          {{- end }} \
           {{ .NAME | quote }}
