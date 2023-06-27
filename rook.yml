@@ -1,9 +1,7 @@
 ---
 version: '3'
 includes:
-  repo:
-    taskfile: rook-repo.yml
-    internal: true
+  repo: rook-repo.yml
   operator:
     taskfile: helm.yml
     vars:
@@ -12,7 +10,7 @@ includes:
       NAME: rook-ceph
       CHART_REPO_NAME: rook-release
       CHART: rook-ceph
-      CHART_VER: 1.11.2
+      CHART_VER: 1.11.8
   cluster:
     taskfile: helm.yml
     vars:
@@ -21,7 +19,7 @@ includes:
       NAME: rook-ceph-cluster
       CHART_REPO_NAME: rook-release
       CHART: rook-ceph-cluster
-      CHART_VER: 1.11.2
+      CHART_VER: 1.11.8
       HELM_ARGS: >-
         --set operatorNamespace=rook-ceph
 tasks:
