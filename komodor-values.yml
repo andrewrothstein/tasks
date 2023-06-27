@@ -1,0 +1,14 @@
+---
+helm:
+  enableActions: true
+metrics:
+  enabled: true
+watcher:
+  actions:
+    advanced: true
+    basic: true
+    podExec: true
+  clusterName: default
+  enableHelm: true
+  resources:
+    secret: true

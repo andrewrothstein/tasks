@@ -1,0 +1,38 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm:
+    taskfile: helm.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "komodorio" }}'
+      CHART: '{{ .CHART | default "k8s-watcher" }}'
+      CHART_VER: '{{ .CHART_VER | default "1.14.30" }}'
+      NAME: '{{ .NAME | default "k8s-watcher" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .CHART_REPO_NAME }}'
+          url: https://https://helm-charts.komodor.io
+    cmds:
+      - task: helm:install
+        vars:
+          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
+          CHART: '{{ .CHART }}'
+          CHART_VER: '{{ .CHART_VER }}'
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
+          HELM_ARGS: -f komodor-values.yml -f .komodor-secrets.yml
+  delete:
+    vars:
+      NAME: '{{ .NAME | default "k8s-watcher" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          NAMESPACE: '{{ .NAMESPACE }}'
+          NAME: '{{ .NAME }}'
