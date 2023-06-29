@@ -14,8 +14,9 @@ tasks:
             import \
               --branch {{ .branch | quote }} \
               --token "${ANSIBLE_GALAXY_TOKEN}" \
+              --role-name {{ .name | quote }} \
               {{ .org | quote }} \
-              {{ .name | quote }}
+              ansible-{{ .name | quote }}
   install:
     vars:
       requirements_dir: '{{ .requirements_dir | default .USER_WORKING_DIR }}'
