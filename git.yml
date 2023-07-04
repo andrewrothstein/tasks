@@ -1,20 +1,34 @@
 ---
 version: '3'
 tasks:
+  setup:
+    cmds:
+      - task: config
+        vars:
+          global: 'true'
+          args: user.name "Andrew Rothstein"
+      - task: config
+        vars:
+          global: 'true'
+          args: user.email "andrew.rothstein@gmail.com"
   config:
     vars:
-      global: '{{ .global }}'
-      system: '{{ .system }}'
-      local: '{{ .local }}'
-      l: '{{ .l }}'
+      global: '{{ .global | default "false" }}'
+      system: '{{ .system | default "false" }}'
+      local: '{{ .local | default "false" }}'
+      l: '{{ .l | default "false" }}'
+      args: '{{ .args | default .CLI_ARGS }}'
     cmds:
       - |
         git config
-        {{- if .global }} --global{{ end }}
-        {{- if .system }} --system{{ end }}
-        {{- if .local }} --local{{ end -}}
-        {{- if .l }} -l
-        {{- end }} {{ .CLI_ARGS }}
+        {{- if eq .global "true" }} --global
+        {{- end -}}
+        {{- if eq .system "true" }} --system
+        {{- end -}}
+        {{- if eq .local "true" }} --local
+        {{- end -}}
+        {{- if eq .l "true" }} -l
+        {{- end }} {{ .args }}
   clone:
     vars:
       'template': '{{ .template }}'
