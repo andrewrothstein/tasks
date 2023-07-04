@@ -5,9 +5,11 @@
       - name: kapp
         version: 0.57.1
   roles:
+    - andrewrothstein.sudoers
     - andrewrothstein.k3d
     - andrewrothstein.kind
     - andrewrothstein.kubectl
+    - andrewrothstein.kubelogin
     - andrewrothstein.istio
     - andrewrothstein.gh
     - andrewrothstein.git
@@ -23,6 +25,7 @@
     - andrewrothstein.helmfile
     - andrewrothstein.k9s
     - andrewrothstein.cluster_api
+    - andrewrothstein.vcluster
     - andrewrothstein.kubevirt
     - andrewrothstein.flux
     - andrewrothstein.cilium
