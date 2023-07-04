@@ -14,16 +14,16 @@ includes:
   loxilb:
     taskfile: docker-daemon.yml
     vars:
-      NAME: loxilb
-      RESTART: unless-stopped
-      ARGS: >-
+      name: loxilb
+      restart: unless-stopped
+      args: >-
         -u root
         --cap-add SYS_ADMIN
         --privileged
         -v /dev/log:/dev/log
         --net=llbnet
         --ip=172.30.1.195
-      IMAGE: ghcr.io/loxilb-io/loxilb:latest
+      image: ghcr.io/loxilb-io/loxilb:latest
   kube-loxilb:
     taskfile: kubectl.yml
     vars:

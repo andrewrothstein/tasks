@@ -1,20 +1,27 @@
 ---
 version: '3'
 includes:
-  docker-daemon:
-    taskfile: docker-daemon.yml
-    internal: true
+  docker-daemon: docker-daemon.yml
 tasks:
+  default:
+    deps:
+      - apply
   apply:
+    vars:
+      name: '{{ .name | default "kind-registry" }}'
+      image: '{{ .image | default "registry:2" }}'
+      registry_proxy_remote_url: '{{ .registry_proxy_remote_url | default "https://registry-1.docker.io" }}'
     cmds:
       - task: docker-daemon:apply
         vars:
-          NAME: '{{ .NAME | default "kind-registry" }}'
-          P: '127.0.0.1:{{ .HOST_PORT | default 5000 }}:{{ .CONTAINER_PORT | default 5000 }}'
-          IMAGE: '{{ .IMAGE | default "registry:2" }}'
-          E: 'REGISTRY_PROXY_REMOTEURL={{ .REGISTRY_PROXY_REMOTE_URL | default "https://registry-1.docker.io" }}'
+          name: '{{ .name }}'
+          args: >-
+            -e REGISTRY_PROXY_REMOTEURL={{ .registry_proxy_remote_url }}
+          image: '{{ .image }}'
   delete:
+    vars:
+      name: '{{ .name | default "kind-registry" }}'
     cmds:
       - task: docker-daemon:delete
         vars:
-          NAME: '{{ .NAME | default "kind-registry" }}'
+          name: '{{ .name }}'

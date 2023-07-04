@@ -3,27 +3,27 @@ version: '3'
 tasks:
   apply:
     vars:
-      NAME: '{{ .NAME }}'
-      RESTART: '{{ .RESTART | default "always" }}'
-      ARGS: '{{ .ARGS }}'
-      IMAGE: '{{ .IMAGE }}'
+      name: '{{ .name }}'
+      restart: '{{ .restart | default "always" }}'
+      args: '{{ .args }}'
+      image: '{{ .image }}'
     cmds:
       - |
         docker \
           run -d \
-          --name={{ .NAME | quote }} \
-          --restart={{ .RESTART | quote }}
-          {{- if .ARGS }} \
-          {{ .ARGS }}{{ end }} \
-          {{ .IMAGE | quote }}
+          --name={{ .name | quote }} \
+          --restart={{ .restart | quote }}
+          {{- if .args }} \
+          {{ .args }}{{ end }} \
+          {{ .image | quote }}
     status:
       - |
         docker ps \
-          --filter "name={{ .NAME }}" \
+          --filter "name={{ .name }}" \
           --format '{"Names":{{ "{{ .Names }}" | quote }} }' \
-          | jq -e -s '.[] | select(.Names=={{ .NAME | quote}})'
+          | jq -e -s '.[] | select(.Names=={{ .name | quote}})'
   delete:
     vars:
-      NAME: '{{ .NAME }}'
+      name: '{{ .name }}'
     cmds:
-      - docker rm -f {{ .NAME | quote }}
+      - docker rm -f {{ .name | quote }}
