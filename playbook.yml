@@ -9,6 +9,7 @@
     - andrewrothstein.kind
     - andrewrothstein.kubectl
     - andrewrothstein.istio
+    - andrewrothstein.gh
     - andrewrothstein.git
     - andrewrothstein.jq
     - andrewrothstein.task

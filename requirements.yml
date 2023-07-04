@@ -1,9 +1,13 @@
 ---
+collections:
+  - ansible.posix
+  - community.windows
 roles:
   - andrewrothstein.k3d
   - andrewrothstein.kind
   - andrewrothstein.kubectl
   - andrewrothstein.istio
+  - andrewrothstein.gh
   - andrewrothstein.git
   - andrewrothstein.jq
   - andrewrothstein.task
