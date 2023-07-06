@@ -5,7 +5,7 @@ tasks:
     vars:
       n: '{{ .n | default "kind" }}'
       f: '{{ .f | default "" }}'
-      disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
+      disableDefaultCNI: '{{ .disableDefaultCNI | default "false" }}'
     cmds:
       - |
         helm template chart-kind \

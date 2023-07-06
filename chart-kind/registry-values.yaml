@@ -1,8 +1,9 @@
 ---
 node:
   extraMounts:
-    - hostPath: /var/run/docker.sock
-      containerPath: /var/run/docker.sock
-registryMirrors:
-  - src: '*'
-    dest: http://kind-registry:5000
+    - hostPath: /home/arothste/git/github.com/andrewrothstein/tasks/certs.d
+      containerPath: /etc/containerd/certs.d
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
