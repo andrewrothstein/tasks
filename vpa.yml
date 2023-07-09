@@ -5,12 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: vpa
-      CREATE_NAMESPACE: true
-      NAME: vpa
-      CHART_REPO_NAME: cowboysysop
-      CHART: vertical-pod-autoscaler
-      CHART_VER: 7.0.1
+      namespace: vpa
+      create_namespace: true
+      name: vpa
+      chart_repo_name: cowboysysop
+      chart: vertical-pod-autoscaler
+      chart_ver: 7.0.1
 tasks:
   default:
     deps:

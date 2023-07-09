@@ -7,30 +7,30 @@ tasks:
     deps:
       - task: install
         vars:
-          CREATE_NAMESPACE: true
+          create_namespace: true
   install:
     vars:
-      CHART: '{{ .CHART | default "external-dns" }}'
-      CHART_VER: '{{ .CHART_VER | default "6.20.3" }}'
-      NAME: '{{ .NAME | default "external-dns" }}'
-      NAMESPACE: '{{ .NAMESPACE | default "bitnami-external-dns" }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default "true" }}'
-      HELM_ARGS: '{{ .HELM_ARGS }}'
+      chart: '{{ .chart | default "external-dns" }}'
+      chart_ver: '{{ .chart_ver | default "6.20.3" }}'
+      name: '{{ .name | default "external-dns" }}'
+      namespace: '{{ .namespace | default "bitnami-external-dns" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      helm_args: '{{ .helm_args }}'
     cmds:
       - task: bitnami-chart:install
         vars:
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          NAME: '{{ .NAME }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
-          HELM_ARGS: '{{ .HELM_ARGS }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          helm_args: '{{ .helm_args }}'
   delete:
     vars:
-      NAME: '{{ .NAME | default "external-dns" }}'
-      NAMESPACE: '{{ .NAMESPACE | default "bitnami-external-dns" }}'
+      name: '{{ .name | default "external-dns" }}'
+      namespace: '{{ .namespace | default "bitnami-external-dns" }}'
     cmds:
       - task: bitnami-chart:delete
         vars:
-          NAME: '{{ .NAME }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'

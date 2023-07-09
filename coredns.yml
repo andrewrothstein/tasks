@@ -5,13 +5,13 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: coredns
-      CREATE_NAMESPACE: true
-      NAME: coredns
-      CHART_REPO_NAME: coredns
-      CHART: coredns
-      CHART_VER: 1.23.0
-      HELM_ARGS: -f coredns-etcd.yml
+      namespace: coredns
+      create_namespace: true
+      name: coredns
+      chart_repo_name: coredns
+      chart: coredns
+      chart_ver: 1.23.0
+      helm_args: -f coredns-etcd.yml
 tasks:
   default:
     deps:

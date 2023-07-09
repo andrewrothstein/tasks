@@ -7,18 +7,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: scylla-operator
-      CREATE_NAMESPACE: true
-      NAME: scylla-operator
-      CHART_REPO_NAME: scylla
-      CHART: scylla-operator
-      CHART_VER: 1.8.0
-#  kubectl:
-#    taskfile: kubectl.yml
-#    internal: true
-#    vars:
-#      n: k8ssandra-operator
-#      f: k8ssandra-kind.yml
+      namespace: scylla-operator
+      create_namespace: true
+      name: scylla-operator
+      chart_repo_name: scylla
+      chart: scylla-operator
+      chart_ver: 1.8.0
 tasks:
   default:
     deps:
@@ -29,9 +23,7 @@ tasks:
       - task: cm:install
     cmds:
       - task: operator:install
-#      - task: kubectl:apply
   delete:
     cmds:
-#      - task: kubectl:delete
       - task: operator:delete
       - task: cm:delete

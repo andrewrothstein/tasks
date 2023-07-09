@@ -11,36 +11,36 @@ tasks:
       - install
   install:
     vars:
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "hashicorp" }}'
-      CHART: '{{ .CHART | default "vault" }}'
-      CHART_VER: '{{ .CHART_VER | default "0.24.1" }}'
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-      NAME: '{{ .NAME | default "vault" }}'
-      HELM_ARGS: -f vault-dev-values.yml
+      chart_repo_name: '{{ .chart_repo_name | default "hashicorp" }}'
+      chart: '{{ .chart | default "vault" }}'
+      chart_ver: '{{ .chart_ver | default "0.24.1" }}'
+      namespace: '{{ .namespace | default "vault" }}'
+      create_namespace: '{{ .create_namespace | default true }}'
+      name: '{{ .name | default "vault" }}'
+      helm_args: -f vault-dev-values.yml
     deps:
       - task: ss-csi:install
     cmds:
       - task: helm-repo:add
         vars:
-          n: '{{ .CHART_REPO_NAME }}'
+          n: '{{ .chart_repo_name }}'
           url: https://helm.releases.hashicorp.com
       - task: helm:install
         vars:
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
-          NAME: '{{ .NAME }}'
-          HELM_ARGS: '{{ .HELM_ARGS }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+          helm_args: '{{ .helm_args }}'
   delete:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      NAME: '{{ .NAME | default "vault" }}'
+      namespace: '{{ .namespace | default "vault" }}'
+      name: '{{ .name | default "vault" }}'
     cmds:
       - task: ss-csi:delete
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'

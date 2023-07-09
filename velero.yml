@@ -6,13 +6,13 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: velero
-      CREATE_NAMESPACE: true
-      NAME: velero
-      CHART_REPO_NAME: vmware-tanzu
-      CHART: velero
-      CHART_VER: 3.1.6
-      HELM_ARGS: -f verleo-values.yml
+      namespace: velero
+      create_namespace: true
+      name: velero
+      chart_repo_name: vmware-tanzu
+      chart: velero
+      chart_ver: 3.1.6
+      helm_args: -f verleo-values.yml
 tasks:
   default:
     deps:

@@ -5,12 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: reloader
-      CREATE_NAMESPACE: true
-      NAME: reloader
-      CHART_REPO_NAME: stakater
-      CHART: reloader
-      CHART_VER: v1.0.26
+      namespace: reloader
+      create_namespace: true
+      name: reloader
+      chart_repo_name: stakater
+      chart: reloader
+      chart_ver: v1.0.26
 tasks:
   default:
     deps:

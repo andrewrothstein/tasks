@@ -6,12 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      CREATE_NAMESPACE: true
-      NAMESPACE: elastic-system
-      NAME: elastic-operator
-      CHART_REPO_NAME: elastic
-      CHART: eck-operator
-      CHART_VER: 2.7.0
+      create_namespace: true
+      namespace: elastic-system
+      name: elastic-operator
+      chart_repo_name: elastic
+      chart: eck-operator
+      chart_ver: 2.7.0
 tasks:
   default:
     deps:

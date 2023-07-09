@@ -5,12 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: kube-prometheus-stack
-      CREATE_NAMESPACE: true
-      NAME: kube-prometheus-stack
-      CHART_REPO_NAME: prometheus-community
-      CHART: kube-prometheus-stack
-      CHART_VER: 46.6.0
+      namespace: kube-prometheus-stack
+      create_namespace: true
+      name: kube-prometheus-stack
+      chart_repo_name: prometheus-community
+      chart: kube-prometheus-stack
+      chart_ver: 46.6.0
 tasks:
   default:
     deps:

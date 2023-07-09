@@ -5,13 +5,13 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: tigera-operator
-      CREATE_NAMESPACE: true
-      NAME: calico
-      CHART_REPO_NAME: projectcalico
-      CHART: tigera-operator
-      CHART_VER: 3.25.0
-#      HELM_ARGS: >-
+      namespace: tigera-operator
+      create_namespace: true
+      name: calico
+      chart_repo_name: projectcalico
+      chart: tigera-operator
+      chart_ver: 3.25.0
+#      helm_args: >-
 #        --values=calico-values.yml
 tasks:
   default:

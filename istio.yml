@@ -1,26 +1,26 @@
 ---
 version: '3'
 vars:
-  ISTIO_VER: 1.17.2
+  istio_ver: 1.17.2
 includes:
   repo: gitea-repo.yml
   istio-base:
     taskfile: helm.yml
     vars:
-      NAMESPACE: istio-system
-      CREATE_NAMESPACE: true
-      NAME: istio-base
-      CHART_REPO_NAME: istio
-      CHART: base
-      CHART_VER: '{{ .ISTIO_VER }}'
+      namespace: istio-system
+      create_namespace: true
+      name: istio-base
+      chart_repo_name: istio
+      chart: base
+      chart_ver: '{{ .istio_ver }}'
   istiod:
     taskfile: helm.yml
     vars:
-      NAMESPACE: istio-system
-      NAME: istiod
-      CHART_REPO_NAME: istio
-      CHART: istiod
-      CHART_VER: '{{ .ISTIO_VER }}'
+      namespace: istio-system
+      name: istiod
+      chart_repo_name: istio
+      chart: istiod
+      chart_ver: '{{ .istio_ver }}'
   merbridge:
     taskfile: kubectl.yml
     vars:
@@ -28,12 +28,12 @@ includes:
   ingress:
     taskfile: helm.yml
     vars:
-      NAMESPACE: istio-ingress
-      CREATE_NAMESPACE: true
-      NAME: istio-ingress
-      CHART_REPO_NAME: istio
-      CHART: gateway
-      CHART_VER: '{{ .ISTIO_VER }}'
+      namespace: istio-ingress
+      create_namespace: true
+      name: istio-ingress
+      chart_repo_name: istio
+      chart: gateway
+      chart_ver: '{{ .istio_ver }}'
 tasks:
   default:
     deps:

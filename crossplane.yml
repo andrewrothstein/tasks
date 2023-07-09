@@ -6,12 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: crossplane-system
-      CREATE_NAMESPACE: true
-      NAME: crossplane
-      CHART_REPO_NAME: crossplane-stable
-      CHART: crossplane
-      CHART_VER: 1.11.2
+      namespace: crossplane-system
+      create_namespace: true
+      name: crossplane
+      chart_repo_name: crossplane-stable
+      chart: crossplane
+      chart_ver: 1.11.2
   crossplane-providers:
     taskfile: kubectl.yml
     internal: true

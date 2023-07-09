@@ -5,11 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: dragonfly-system
-      NAME: dragonfly
-      CHART_REPO_NAME: dragonfly
-      CHART: dragonfly
-      CHART_VER: 1.0.3
+      create_namespace: true
+      namespace: dragonfly-system
+      name: dragonfly
+      chart_repo_name: dragonfly
+      chart: dragonfly
+      chart_ver: 1.0.3
 tasks:
   default:
     deps:
@@ -19,8 +20,6 @@ tasks:
       - task: helm-repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
   delete:
     cmds:
       - task: helm:delete

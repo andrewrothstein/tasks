@@ -6,12 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: trident-operator
-      CREATE_NAMESPACE: true
-      CHART_REPO_NAME: netapp-trident
-      CHART: trident-operator
-      NAME: trident-operator
-      CHART_VER: 23.01.1
+      namespace: trident-operator
+      create_namespace: true
+      chart_repo_name: netapp-trident
+      chart: trident-operator
+      name: trident-operator
+      chart_ver: 23.01.1
 tasks:
   default:
     deps:

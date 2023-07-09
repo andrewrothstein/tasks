@@ -6,11 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: keda
-      NAME: keda
-      CHART_REPO_NAME: kedacore
-      CHART: keda
-      CHART_VER: 2.11.1
+      create_namespace: true
+      namespace: keda
+      name: keda
+      chart_repo_name: kedacore
+      chart: keda
+      chart_ver: 2.11.1
 tasks:
   default:
     deps:
@@ -20,8 +21,6 @@ tasks:
       - task: keda-repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
   delete:
     cmds:
       - task: helm:delete

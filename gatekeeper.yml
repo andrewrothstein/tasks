@@ -10,12 +10,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: gatekeeper-system
-      CREATE_NAMESPACE: true
-      NAME: gatekeeper
-      CHART_REPO_NAME: gatekeeper
-      CHART: gatekeeper
-      CHART_VER: 3.12.0
+      namespace: gatekeeper-system
+      create_namespace: true
+      name: gatekeeper
+      chart_repo_name: gatekeeper
+      chart: gatekeeper
+      chart_ver: 3.12.0
 tasks:
   default:
     deps:

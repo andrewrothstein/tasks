@@ -12,12 +12,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: gitlab
-      NAME: gitlab
-      CHART_REPO_NAME: gitlab
-      CHART: gitlab
-      CHART_VER: 6.11.5
-      HELM_ARGS: -f gitlab-values.yml
+      namespace: gitlab
+      name: gitlab
+      chart_repo_name: gitlab
+      chart: gitlab
+      chart_ver: 6.11.5
+      helm_args: -f gitlab-values.yml
 tasks:
   default:
     deps:

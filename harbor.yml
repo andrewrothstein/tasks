@@ -6,11 +6,13 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: harbor
-      NAME: harbor
-      CHART_REPO_NAME: harbor
-      CHART: harbor
-      CHART_VER: 1.11.1
+      create_namespace: true
+      helm_args: ''
+      namespace: harbor
+      name: harbor
+      chart_repo_name: harbor
+      chart: harbor
+      chart_ver: 1.11.1
 tasks:
   default:
     deps:
@@ -20,9 +22,6 @@ tasks:
       - task: harbor-repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
-          HELM_ARGS: ''
   delete:
     cmds:
       - task: helm:delete

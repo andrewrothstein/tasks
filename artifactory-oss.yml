@@ -6,12 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-    # helm install -name artifactory jfrog/artifactory-oss
-      NAMESPACE: artifactory
-      NAME: artifactory
-      CHART_REPO_NAME: jfrog
-      CHART: artifactory-oss
-      CHART_VER: 107.55.13
+      create_namespace: true
+      namespace: artifactory
+      name: artifactory
+      chart_repo_name: jfrog
+      chart: artifactory-oss
+      chart_ver: 107.55.13
 tasks:
   default:
     deps:
@@ -21,8 +21,6 @@ tasks:
       - task: repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
   delete:
     cmds:
       - task: helm:delete

@@ -9,32 +9,32 @@ tasks:
       - install
   install:
     vars:
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "gitea-charts" }}'
-      CHART: '{{ .CHART | default "gitea" }}'
-      CHART_VER: '{{ .CHART_VER | default "8.3.0" }}'
-      NAMESPACE: '{{ .NAMESPACE | default "gitea" }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default true }}'
-      NAME: '{{ .NAME | default "gitea" }}'
+      chart_repo_name: '{{ .chart_repo_name | default "gitea-charts" }}'
+      chart: '{{ .chart | default "gitea" }}'
+      chart_ver: '{{ .chart_ver | default "8.3.0" }}'
+      namespace: '{{ .namespace | default "gitea" }}'
+      create_namespace: '{{ .create_namespace | default true }}'
+      name: '{{ .name | default "gitea" }}'
     deps:
       - task: helm-repo:add
         vars:
-          n: '{{ .CHART_REPO_NAME }}'
+          n: '{{ .chart_repo_name }}'
           url: https://dl.gitea.io/charts
     cmds:
       - task: helm:install
         vars:
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
-          NAME: '{{ .NAME }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
   delete:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "gitea" }}'
-      NAME: '{{ .NAME | default "gitea" }}'
+      namespace: '{{ .namespace | default "gitea" }}'
+      name: '{{ .name | default "gitea" }}'
     cmds:
       - task: helm:delete
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          NAME: '{{ .NAME }}'
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'

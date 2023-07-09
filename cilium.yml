@@ -5,13 +5,13 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: kube-system
-      CREATE_NAMESPACE: false
-      NAME: cilium
-      CHART_REPO_NAME: cilium
-      CHART: cilium
-      CHART_VER: 1.13.3
-      HELM_ARGS: >-
+      namespace: kube-system
+      create_namespace: false
+      name: cilium
+      chart_repo_name: cilium
+      chart: cilium
+      chart_ver: 1.13.3
+      helm_args: >-
         --values=cilium-values.yml
 tasks:
   default:

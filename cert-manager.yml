@@ -11,39 +11,39 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: cert-manager
-      NAME: cert-manager
-      CHART_REPO_NAME: jetstack
-      CHART_VER: 1.12.1
-      CHART: cert-manager
-      HELM_ARGS: --set installCRDs=true
+      namespace: cert-manager
+      name: cert-manager
+      chart_repo_name: jetstack
+      chart_ver: 1.12.1
+      chart: cert-manager
+      helm_args: --set installCRDs=true
   approver_policy:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: cert-manager
-      NAME: cert-manager-approver-policy
-      CHART_REPO_NAME: jetstack
-      CHART_VER: 0.7.0
-      CHART: cert-manager-approver-policy
+      namespace: cert-manager
+      name: cert-manager-approver-policy
+      chart_repo_name: jetstack
+      chart_ver: 0.7.0
+      chart: cert-manager-approver-policy
   csi_driver:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: cert-manager
-      NAME: cert-manager-csi-driver
-      CHART_REPO_NAME: jetstack
-      CHART_VER: 0.5.0
-      CHART: cert-manager-csi-driver
+      namespace: cert-manager
+      name: cert-manager-csi-driver
+      chart_repo_name: jetstack
+      chart_ver: 0.5.0
+      chart: cert-manager-csi-driver
   trust_manager:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: cert-manager
-      NAME: trust-manager
-      CHART_REPO_NAME: jetstack
-      CHART_VER: 0.5.0
-      CHART: trust-manager
+      namespace: cert-manager
+      name: trust-manager
+      chart_repo_name: jetstack
+      chart_ver: 0.5.0
+      chart: trust-manager
   ss:
     taskfile: kubectl.yml
     internal: true

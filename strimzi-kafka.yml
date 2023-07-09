@@ -4,9 +4,9 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: strimzi
-      NAME: strimzi-kafka
-      CHART: chart-strimzi-kafka
+      namespace: strimzi
+      name: strimzi-kafka
+      chart: chart-strimzi-kafka
 tasks:
   default:
     deps:

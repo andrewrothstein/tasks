@@ -7,11 +7,11 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: k8ssandra-operator
-      NAME: k8ssandra-operator
-      CHART_REPO_NAME: k8ssandra
-      CHART: k8ssandra-operator
-      CHART_VER: 1.6.0
+      namespace: k8ssandra-operator
+      name: k8ssandra-operator
+      chart_repo_name: k8ssandra
+      chart: k8ssandra-operator
+      chart_ver: 1.6.0
   kubectl:
     taskfile: kubectl.yml
     internal: true
@@ -29,7 +29,7 @@ tasks:
     cmds:
       - task: operator:install
         vars:
-          CREATE_NAMESPACE: true
+          create_namespace: true
       - task: kubectl:apply
   delete:
     cmds:

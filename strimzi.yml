@@ -6,12 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: strimzi
-      CREATE_NAMESPACE: true
-      CHART_REPO_NAME: strimzi
-      CHART: strimzi-kafka-operator
-      NAME: strimzi-kafka-operator
-      CHART_VER: 0.35.0
+      namespace: strimzi
+      create_namespace: true
+      chart_repo_name: strimzi
+      chart: strimzi-kafka-operator
+      name: strimzi-kafka-operator
+      chart_ver: 0.35.0
 tasks:
   default:
     deps:

@@ -6,11 +6,15 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: datadog
-      NAME: datadog
-      CHART_REPO_NAME: datadog
-      CHART: datadog
-      CHART_VER: 3.19.1
+      namespace: datadog
+      name: datadog
+      chart_repo_name: datadog
+      chart: datadog
+      chart_ver: 3.19.1
+      create_namespace: true
+      helm_args: >-
+        -f datadog-values.yml
+        -f .datadog-secrets.yml
 tasks:
   default:
     deps:
@@ -20,11 +24,6 @@ tasks:
       - task: repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
-          HELM_ARGS: >-
-            -f datadog-values.yml
-            -f .datadog-secrets.yml
   delete:
     cmds:
       - task: helm:delete

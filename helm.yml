@@ -3,63 +3,63 @@ version: '3'
 tasks:
   install:
     vars:
-      NAMESPACE: '{{ .NAMESPACE }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE | default false }}'
-      NAME: '{{ .NAME }}'
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-      CHART: '{{ .CHART }}'
-      CHART_VER: '{{ .CHART_VER }}'
-      WAIT: '{{ .WAIT | default true }}'
-      TIMEOUT: '{{ .TIMEOUT | default "10m" }}'
-      HELM_ARGS: '{{ .HELM_ARGS | default "" }}'
+      namespace: '{{ .namespace }}'
+      create_namespace: '{{ .create_namespace | default false }}'
+      name: '{{ .name }}'
+      chart_repo_name: '{{ .chart_repo_name }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      wait: '{{ .wait | default true }}'
+      timeout: '{{ .timeout | default "10m" }}'
+      helm_args: '{{ .helm_args | default "" }}'
     cmds:
       - |
         helm \
           install
-          {{- if .NAMESPACE }} \
-          -n {{ .NAMESPACE | quote }}
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
           {{- end }}
-          {{- if eq "true" .CREATE_NAMESPACE }}  \
+          {{- if eq "true" .create_namespace }}  \
           --create-namespace
           {{- end }} \
-          {{ .NAME | quote }} \
-          {{ if .CHART_REPO_NAME }}{{ .CHART_REPO_NAME }}/{{ end -}}
-          {{- .CHART -}}
-          {{- if .CHART_VER }} \
-          --version {{ .CHART_VER | quote }}
-          {{- if eq "true" .WAIT }} --wait --timeout {{ .TIMEOUT | quote }}{{ end }}
+          {{ .name | quote }} \
+          {{ if .chart_repo_name }}{{ .chart_repo_name }}/{{ end -}}
+          {{- .chart -}}
+          {{- if .chart_ver }} \
+          --version {{ .chart_ver | quote }}
+          {{- if eq "true" .wait }} --wait --timeout {{ .timeout | quote }}{{ end }}
           {{- end }}
-          {{- if .HELM_ARGS }} \
-          {{ .HELM_ARGS }}{{ end }}
+          {{- if .helm_args }} \
+          {{ .helm_args }}{{ end }}
     status:
       - |
         helm \
           list \
-          -n {{ .NAMESPACE | quote }} \
+          -n {{ .namespace | quote }} \
           -o json \
-          | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+          | jq -e '.[] | select(.name=={{ .name | quote }})'
   delete:
     vars:
-      NAMESPACE: '{{ .NAMESPACE }}'
-      NAME: '{{ .NAME }}'
-      WAIT: '{{ .WAIT | default true }}'
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+      wait: '{{ .wait | default true }}'
     preconditions:
       - |
         helm \
           list
-          {{- if .NAMESPACE }} \
-          -n {{ .NAMESPACE | quote }}
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
           {{- end }} \
           -o json \
-          | jq -e '.[] | select(.name=={{ .NAME | quote }})'
+          | jq -e '.[] | select(.name=={{ .name | quote }})'
     cmds:
       - |
         helm \
           delete
-          {{- if .NAMESPACE }} \
-          -n {{ .NAMESPACE | quote }}
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
           {{- end }}
-          {{- if eq "true" .WAIT }} \
+          {{- if eq "true" .wait }} \
           --wait
           {{- end }} \
-          {{ .NAME | quote }}
+          {{ .name | quote }}

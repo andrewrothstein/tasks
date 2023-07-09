@@ -5,12 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: awx
-      CREATE_NAMESPACE: true
-      NAME: my-awx-operator
-      CHART_REPO_NAME: awx-operator
-      CHART: awx-operator
-      CHART_VER: 2.2.1
+      namespace: awx
+      create_namespace: true
+      name: my-awx-operator
+      chart_repo_name: awx-operator
+      chart: awx-operator
+      chart_ver: 2.2.1
 tasks:
   default:
     deps:

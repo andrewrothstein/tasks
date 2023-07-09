@@ -5,12 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: ingress-nginx
-      CREATE_NAMESPACE: true
-      NAME: ingress-nginx
-      CHART_REPO_NAME: ingress-nginx
-      CHART: ingress-nginx
-      CHART_VER: 4.7.0
+      namespace: ingress-nginx
+      create_namespace: true
+      name: ingress-nginx
+      chart_repo_name: ingress-nginx
+      chart: ingress-nginx
+      chart_ver: 4.7.0
 tasks:
   default:
     deps:

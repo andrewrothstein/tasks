@@ -6,11 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      NAMESPACE: questdb
-      NAME: my-questdb
-      CHART_REPO_NAME: questdb
-      CHART: questdb
-      CHART_VER: 0.27.0
+      create_namespace: true
+      namespace: questdb
+      name: my-questdb
+      chart_repo_name: questdb
+      chart: questdb
+      chart_ver: 0.27.0
 tasks:
   default:
     deps:
@@ -20,8 +21,6 @@ tasks:
       - task: questdb-repo
     cmds:
       - task: helm:install
-        vars:
-          CREATE_NAMESPACE: true
   delete:
     cmds:
       - task: helm:delete

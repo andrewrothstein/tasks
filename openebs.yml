@@ -7,13 +7,13 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      NAMESPACE: openebs
-      CREATE_NAMESPACE: true
-      NAME: openebs
-      CHART_REPO_NAME: openebs
-      CHART: openebs
-      CHART_VER: 3.5.0
-      HELM_ARGS: >-
+      namespace: openebs
+      create_namespace: true
+      name: openebs
+      chart_repo_name: openebs
+      chart: openebs
+      chart_ver: 3.5.0
+      helm_args: >-
         --set zfs-localpv.enabled=true
 tasks:
   default:

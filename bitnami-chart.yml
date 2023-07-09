@@ -9,13 +9,13 @@ tasks:
       - install
   install:
     vars:
-      CHART_REPO_NAME: '{{ .CHART_REPO_NAME | default "bitnami" }}'
-      CHART: '{{ .CHART }}'
-      CHART_VER: '{{ .CHART_VER }}'
-      NAME: '{{ .NAME }}'
-      NAMESPACE: '{{ .NAMESPACE }}'
-      CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
-      HELM_ARGS: '{{ .HELM_ARGS }}'
+      chart_repo_name: '{{ .chart_repo_name | default "bitnami" }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      name: '{{ .name }}'
+      namespace: '{{ .namespace }}'
+      create_namespace: '{{ .create_namespace }}'
+      helm_args: '{{ .helm_args }}'
     deps:
       - task: helm-repo:add
         vars:
@@ -24,19 +24,19 @@ tasks:
     cmds:
       - task: helm:install
         vars:
-          CHART_REPO_NAME: '{{ .CHART_REPO_NAME }}'
-          CHART: '{{ .CHART }}'
-          CHART_VER: '{{ .CHART_VER }}'
-          NAME: '{{ .NAME }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
-          CREATE_NAMESPACE: '{{ .CREATE_NAMESPACE }}'
-          HELM_ARGS: '{{ .HELM_ARGS }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          helm_args: '{{ .helm_args }}'
   delete:
     vars:
-      NAME: '{{ .NAME }}'
-      NAMESPACE: '{{ .NAMESPACE }}'
+      name: '{{ .name }}'
+      namespace: '{{ .namespace }}'
     cmds:
       - task: helm:delete
         vars:
-          NAME: '{{ .NAME }}'
-          NAMESPACE: '{{ .NAMESPACE }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
