@@ -3,11 +3,13 @@ services:
   registry:
     image: docker.io/mcronce/oci-registry:v0.3.9
     container_name: kind-registry
-    command: >-
-      --upstream-config-file /registry_config
-      --listen 0.0.0.0:5000
-      filesystem
-      --root /registry_cache
+    command: filesystem
+    environment:
+      LISTEN: '0.0.0.0:5000'
+      DEFAULT_NAMESPACE: docker.io
+      UPSTREAM_CONFIG_FILE: /registry_config
+      FILESYSTEM_ROOT: /registry_cache
+      RUST_LOG: 'info,actix-web=debug'
     networks:
       - kind
     ports:
@@ -15,11 +17,7 @@ services:
     configs:
       - registry_config
     volumes:
-      - type: volume
-        source: registry_cache
-        target: /registry_cache
-        volume:
-          nocopy: true
+      - registry_cache:/registry_cache:rw
 networks:
   kind: {}
 configs:
