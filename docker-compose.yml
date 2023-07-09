@@ -1,0 +1,20 @@
+---
+version: '3'
+tasks:
+  apply:
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+    cmds:
+      - docker compose -p {{ .p | quote }} -f {{ .f | quote }} up -d
+  delete:
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+    cmds:
+      - docker compose -p {{ .p | quote }} -f {{ .f | quote }} down
+  ls:
+    vars:
+      format: '{{ .format | default "table" }}'
+    cmds:
+      - docker compose ls --format {{ .format | quote }}

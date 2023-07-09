@@ -1,28 +1,18 @@
 ---
 version: '3'
 includes:
-  docker-daemon: docker-daemon.yml
+  docker-compose:
+    taskfile: docker-compose.yml
+    vars:
+      p: oci-registry
+      f: oci-registry-compose.yml
 tasks:
   default:
     deps:
       - apply
   apply:
-    vars:
-      name: '{{ .name | default "kind-registry" }}'
-      image: '{{ .image | default "registry:2" }}'
-      registry_proxy_remote_url: '{{ .registry_proxy_remote_url | default "https://registry-1.docker.io" }}'
     cmds:
-      - task: docker-daemon:apply
-        vars:
-          name: '{{ .name }}'
-          args: >-
-            -p 5000:5000
-            -e REGISTRY_PROXY_REMOTEURL={{ .registry_proxy_remote_url }}
-          image: '{{ .image }}'
+      - task: docker-compose:apply
   delete:
-    vars:
-      name: '{{ .name | default "kind-registry" }}'
     cmds:
-      - task: docker-daemon:delete
-        vars:
-          name: '{{ .name }}'
+      - task: docker-compose:delete

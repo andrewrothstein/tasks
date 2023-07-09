@@ -1,0 +1,29 @@
+---
+services:
+  registry:
+    image: docker.io/mcronce/oci-registry:v0.3.9
+    container_name: kind-registry
+    command: >-
+      --upstream-config-file /registry_config
+      --listen 0.0.0.0:5000
+      filesystem
+      --root /registry_cache
+    networks:
+      - kind
+    ports:
+      - '5000:5000'
+    configs:
+      - registry_config
+    volumes:
+      - type: volume
+        source: registry_cache
+        target: /registry_cache
+        volume:
+          nocopy: true
+networks:
+  kind: {}
+configs:
+  registry_config:
+    file: ./oci-registry-config.yaml
+volumes:
+  registry_cache: {}
