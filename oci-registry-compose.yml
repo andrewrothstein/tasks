@@ -7,21 +7,15 @@ services:
     environment:
       LISTEN: '0.0.0.0:5000'
       DEFAULT_NAMESPACE: docker.io
-      UPSTREAM_CONFIG_FILE: /registry_config
       FILESYSTEM_ROOT: /registry_cache
       RUST_LOG: 'info,actix-web=debug'
     networks:
       - kind
     ports:
       - '5000:5000'
-    configs:
-      - registry_config
     volumes:
       - registry_cache:/registry_cache:rw
 networks:
   kind: {}
-configs:
-  registry_config:
-    file: ./oci-registry-config.yaml
 volumes:
   registry_cache: {}
