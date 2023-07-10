@@ -16,12 +16,27 @@ tasks:
           f: chart-kind/registry-values.yaml
           disableDefaultCNI: '{{ .disableDefaultCNI }}'
       - |+
-        REGISTRY_DIR="/etc/containerd/certs.d/localhost:5000"
+        REGISTRY_ROOT_DIR="/etc/containerd/certs.d"
         for node in $(kind get nodes); do
-          docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
-          docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml" <<EOF
-        [host."http://${reg_name}:5000"]
+          for r in \
+            docker.io \
+            quay.io \
+            gcr.io \
+            ghcr.io \
+            k8s.gcr.io \
+            registry.k8s.io; do
+              h="$r"
+              if [ "${r}" == "docker.io" ]; then
+                h="registry-1.docker.io"
+              fi
+              REGISTRY_DIR="${REGISTRY_ROOT_DIR}/${r}"
+              docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
+              docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml" <<EOF
+        server = "https://${h}"
+        [host."http://kind-registry:5000"]
+        	capabilities = ["pull", "resolve"]
         EOF
+          done
         done
       - task: docker-network:connect
         vars:
