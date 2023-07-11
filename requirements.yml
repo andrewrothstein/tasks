@@ -4,6 +4,7 @@ collections:
   - community.windows
 roles:
   - andrewrothstein.sudoers
+  - andrewrothstein.docker_compose
   - andrewrothstein.k3d
   - andrewrothstein.kind
   - andrewrothstein.kubectl

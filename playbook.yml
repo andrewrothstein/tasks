@@ -6,6 +6,7 @@
         version: 0.57.1
   roles:
     - andrewrothstein.sudoers
+    - andrewrothstein.docker_compose
     - andrewrothstein.k3d
     - andrewrothstein.kind
     - andrewrothstein.kubectl
