@@ -9,7 +9,7 @@ nodes:
 {{- range $j := until (int $.Values.workloadNodeCount) -}}
 - role: worker
 {{- include "kind.node" $.Values.node | nindent 2 }}
-{{ end -}}
+{{ end }}
 networking:
 {{- if $.Values.ipFamily }}
   ipFamily: {{ $.Values.ipFamily | quote }}
@@ -30,9 +30,9 @@ networking:
 {{- if $.Values.kubeProxyMode }}
   kubeProxyMode: {{ $.Values.kubeProxyMode | quote }}
 {{- end }}
-{{ if $.Values.registryMirrors -}}
+{{ if $.Values.containerdConfigPatches -}}
 containerdConfigPatches:
 {{- range $p := $.Values.containerdConfigPatches }}
-  - '{{ $p }}'
+  - {{ $p | quote }}
 {{ end -}}
 {{- end }}

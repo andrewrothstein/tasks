@@ -1,7 +1,7 @@
 {{- define "kind.node" -}}
 {{- if .image -}}
 image: {{ .image }}
-{{ end -}}
+{{- end }}
 {{- if .extraMounts -}}
 extraMounts:
   {{- toYaml .extraMounts | nindent 2 }}

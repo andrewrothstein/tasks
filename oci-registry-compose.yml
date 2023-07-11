@@ -5,14 +5,10 @@ services:
     container_name: kind-registry
     command: filesystem
     environment:
-      LISTEN: '0.0.0.0:5000'
-      DEFAULT_NAMESPACE: docker.io
       FILESYSTEM_ROOT: /registry_cache
       RUST_LOG: 'info,actix-web=debug'
     networks:
       - kind
-    ports:
-      - '5000:5000'
     volumes:
       - registry_cache:/registry_cache:rw
 networks:
