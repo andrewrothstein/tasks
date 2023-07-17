@@ -8,6 +8,8 @@ tasks:
     cmds:
       - flux --version
   preflight-check:
+    deps:
+      - version
     cmds:
       - flux check --pre
   install:
