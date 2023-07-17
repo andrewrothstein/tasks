@@ -4,8 +4,8 @@ includes:
   k8s: k8s.yml
 #  k8s: pet.yml
 
-#  mesh: istio.yml
-  mesh: pet.yml
+  mesh: istio.yml
+#  mesh: pet.yml
 
   pre-mesh: pre-mesh.yml
 #  pre-mesh: pet.yml
