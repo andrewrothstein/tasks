@@ -46,10 +46,10 @@ tasks:
       - task: istio-base:install
       - task: istiod:install
       - task: merbridge:apply
-      - task: ingress:install
+#      - task: ingress:install
   delete:
     cmds:
-      - task: ingress:delete
+#      - task: ingress:delete
       - task: merbridge:delete
       - task: istiod:delete
       - task: istio-base:delete
