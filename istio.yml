@@ -1,9 +1,9 @@
 ---
 version: '3'
 vars:
-  istio_ver: 1.17.2
+  istio_ver: 1.18.1
 includes:
-  repo: gitea-repo.yml
+  repo: istio-repo.yml
   istio-base:
     taskfile: helm.yml
     vars:
