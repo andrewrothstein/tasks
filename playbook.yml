@@ -22,7 +22,7 @@
     - andrewrothstein.argo
     - andrewrothstein.kubefwd
     - andrewrothstein.kubeshark
-    - andrewrothstein.kubernetes-helm
+    - andrewrothstein.kubernetes_helm
     - andrewrothstein.helmfile
     - andrewrothstein.k9s
     - andrewrothstein.cluster_api
