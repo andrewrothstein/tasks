@@ -5,17 +5,17 @@ includes:
 #  gatekeeper: gatekeeper.yml
   gatekeeper: pet.yml
 
-  pinniped-supervisor: pinniped-supervisor.yml
-#  pinniped-supervisor: pet.yml
+#  pinniped-supervisor: pinniped-supervisor.yml
+  pinniped-supervisor: pet.yml
 
-  pinniped-concierge: pinniped-concierge.yml
-#  pinniped-concierge: pet.yml
+#  pinniped-concierge: pinniped-concierge.yml
+  pinniped-concierge: pet.yml
 
-  vault-dev: vault-dev.yml
-#  vault-dev: pet.yml
+#  vault-dev: vault-dev.yml
+  vault-dev: pet.yml
 
-  external-dns: bitnami-external-dns.yml
-#  external-dns: pet.yml
+#  external-dns: bitnami-external-dns.yml
+  external-dns: pet.yml
 
 #  gitea: gitea.yml
   gitea: pet.yml

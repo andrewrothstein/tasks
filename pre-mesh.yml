@@ -4,29 +4,29 @@ includes:
   cert-manager: cert-manager.yml
 #  cert-manager: pet.yml
 
-  elastic: elastic.yml
-#  elastic: pet.yml
+#  elastic: elastic.yml
+  elastic: pet.yml
 
-  kube-prometheus-stack: kube-prometheus-stack.yml
-#  kube-prometheus-stack: pet.yml
+#  kube-prometheus-stack: kube-prometheus-stack.yml
+  kube-prometheus-stack: pet.yml
 
-  keda: keda.yml
-#  keda: pet.yml
+#  keda: keda.yml
+  keda: pet.yml
 
-  dns: coredns.yml
-#  dns: pet.yml
+#  dns: coredns.yml
+  dns: pet.yml
 
 #  csi-driver-nfs: csi-driver-nfs.yml
   csi-driver-nfs: pet.yml
 
-#  flux: flux.yml
-  flux: pet.yml
+  flux: flux.yml
+#  flux: pet.yml
 
   argoproj: argoproj.yml
 #  argoproj: pet.yml
 
-  metallb: metallb.yml
-#  metallb: pet.yml
+#  metallb: metallb.yml
+  metallb: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
