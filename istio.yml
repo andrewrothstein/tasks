@@ -42,6 +42,8 @@ tasks:
     deps:
       - task: install
   install:
+    deps:
+      - repo
     cmds:
       - task: istio-base:install
       - task: istiod:install
