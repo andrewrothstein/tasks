@@ -67,8 +67,8 @@ includes:
 #  coderv2: coderv2.yml
   coderv2: pet.yml
 
-#  crossplane: crossplane.yml
-  crossplane: pet.yml
+  crossplane: crossplane.yml
+#  crossplane: pet.yml
 
 #  k8ssandra: k8ssandra.yml
   k8ssandra: pet.yml
