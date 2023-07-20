@@ -6,13 +6,19 @@ tasks:
     vars:
       org: '{{ .org | default "andrewrothstein" }}'
       name: '{{ .name }}'
-      branch: '{{ .branch | default "main" }}'
+      branch: '{{ .branch | default "" }}'
     cmds:
       - |
+        if [[ -z {{ .branch | quote }} ]];
+        then
+          branch="$(gh repo view --json defaultBranchRef {{ .org }}/ansible-{{ .name }} | jq -r .defaultBranchRef.name)"
+        else
+          branch={{ .branch | quote }}
+        fi
         ansible-galaxy \
           role \
             import \
-              --branch {{ .branch | quote }} \
+              --branch "$branch" \
               --token "${ANSIBLE_GALAXY_TOKEN}" \
               --role-name {{ .name | quote }} \
               {{ .org | quote }} \
