@@ -24,7 +24,7 @@ includes:
   merbridge:
     taskfile: kubectl.yml
     vars:
-      f: https://raw.githubusercontent.com/merbridge/merbridge/main/deploy/all-in-one.yaml
+      f: https://raw.githubusercontent.com/merbridge/merbridge/0.8.1/deploy/all-in-one.yaml
   ingress:
     taskfile: helm.yml
     vars:
