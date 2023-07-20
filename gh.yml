@@ -51,5 +51,5 @@ tasks:
           git push -d {{ .remote | quote }} "${dflt}";
           echo done;
         else
-          echo "default branch not {{ .from | quote }} or already {{ .to }}";
+          echo "default branch (${dflt}) not {{ .from | quote }} or already {{ .to }}";
         fi
