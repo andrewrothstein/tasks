@@ -5,8 +5,11 @@ services:
     container_name: kind-registry
     command: filesystem
     environment:
-      FILESYSTEM_ROOT: /registry_cache
-      RUST_LOG: 'info,actix-web=debug'
+      - FILESYSTEM_ROOT=/registry_cache
+      - RUST_LOG=info,actix-web=debug
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - NO_PROXY
     networks:
       - kind
     volumes:
