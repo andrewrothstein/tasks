@@ -78,12 +78,17 @@ includes:
 
 #  trident: trident.yml
   trident: pet.yml
+
+  komodor: komodor.yml
+#  komodor: pet.yml
+
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: komodor:install
       - task: cert-manager:install
       - task: elastic:install
       - task: kube-prometheus-stack:install
@@ -138,3 +143,4 @@ tasks:
       - task: kube-prometheus-stack:delete
       - task: elastic:delete
       - task: cert-manager:delete
+      - task: komodor:delete

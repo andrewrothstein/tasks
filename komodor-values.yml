@@ -8,7 +8,6 @@ watcher:
     advanced: true
     basic: true
     podExec: true
-  clusterName: default
   enableHelm: true
   resources:
     secret: true
