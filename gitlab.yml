@@ -2,21 +2,15 @@
 version: '3'
 includes:
   helm-repo: gitlab-repo.yml
-  kubectl:
-    taskfile: kubectl.yml
-    internal: true
-    vars:
-      n: gitlab
-      f: gitlab-runner-secret.yml
   helm:
     taskfile: helm.yml
-    internal: true
     vars:
+      create_namespace: 'true'
       namespace: gitlab
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 6.11.5
+      chart_ver: 7.1.2
       helm_args: -f gitlab-values.yml
 tasks:
   default:
@@ -26,11 +20,7 @@ tasks:
     deps:
       - task: helm-repo
     cmds:
-      - task: kubectl:ns-create
-      - task: kubectl:apply
       - task: helm:install
   delete:
     cmds:
       - task: helm:delete
-      - task: kubectl:delete
-      - task: kubectl:ns-delete

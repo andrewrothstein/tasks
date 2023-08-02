@@ -25,8 +25,8 @@ includes:
   argoproj: argoproj.yml
 #  argoproj: pet.yml
 
-#  metallb: metallb.yml
-  metallb: pet.yml
+  metallb: metallb.yml
+#  metallb: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml

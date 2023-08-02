@@ -1,31 +1,25 @@
 ---
+certmanager:
+  install: false
 global:
   hosts:
-    domain: kind.local
+    domain: gitlab
   ingress:
     configureCertmanager: false
     annotations:
-      'kubernetes.io/tls-acme': 'true'
+      'kubernetes.io/tls-acme': true
       'cert-manager.io/cluster-issuer': selfsigned-cluster-issuer
   pages:
     enabled: true
 gitlab:
-  gitlab-grafana:
-    ingress:
-      tls:
-        secretName: gitlab-grafana-tls
-  gitlab-pages:
-    ingress:
-      tls:
-        secretName: gitlab-pages-tls
-  kas:
-    ingress:
-      tls:
-        secretName: gitlab-kas-tls
   webservice:
     ingress:
       tls:
         secretName: gitlab-gitlab-tls
+  kas:
+    ingress:
+      tls:
+        secretName: gitlab-kas-tls
 registry:
   ingress:
     tls:
@@ -34,7 +28,5 @@ minio:
   ingres:
     tls:
       secretName: gitlab-minio-tls
-certmanager:
-  install: false
 gitlab-runner:
-  certsSecretName: gitlab-runner-tls
+  install: false
