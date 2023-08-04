@@ -14,7 +14,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: 1.12.2
+      chart_ver: 1.12.3
       chart: cert-manager
       helm_args: --set installCRDs=true
   approver_policy:
