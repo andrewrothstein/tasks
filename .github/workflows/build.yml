@@ -25,6 +25,7 @@ jobs:
         with:
           pull: true
           push: true
+          files: docker-bake.hcl
           targets: only
     strategy:
       fail-fast: false
