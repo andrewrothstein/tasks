@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  kubectl: kubectl.yml
+tasks:
+  apply:
+    vars:
+      kpack_ver: '{{ .kpack_ver | default "0.9.5" }}'
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: https://github.com/buildpacks-community/kpack/releases/download/v{{ .kpack_ver }}/release-{{ .kpack_ver }}.yaml
+  delete:
+    vars:
+      kpack_ver: '{{ .kpack_ver | default "0.9.5" }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: https://github.com/buildpacks-community/kpack/releases/download/v{{ .kpack_ver }}/release-{{ .kpack_ver }}.yaml
