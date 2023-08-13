@@ -1,0 +1,66 @@
+---
+version: '3'
+tasks:
+  _config:
+    vars:
+      add: '{{ .add | default "true" }}'
+      global: '{{ .global | default "true" }}'
+      key: '{{ .key }}'
+      value: '{{ .value }}'
+    cmds:
+      - >-
+        dolt config
+        {{ if eq .global "true" }}--global{{ end }}
+        {{ if eq .add "true" }}--add{{ end }}
+        {{ .key | quote }}
+        {{ .value | quote }}
+  config:
+    vars:
+      user_email: '{{ .user_email | default "andrew.rothstein@gmail.com" }}'
+      user_name: '{{ .user_name | default "Andrew Rothstein" }}'
+      default_branch: '{{ .default_branch | default "main" }}'
+    cmds:
+      - task: _config
+        vars:
+          key: user.email
+          value: '{{ .user_email }}'
+      - task: _config
+        vars:
+          key: user.name
+          value: '{{ .user_name }}'
+      - task: _config
+        vars:
+          key: init.defaultBranch
+          value: '{{ .default_branch }}'
+  status:
+    vars:
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - cd {{ .db_dir | quote }}; dolt status
+  init:
+    vars:
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - cd {{ .db_dir | quote }}; dolt init
+    status:
+      - cd {{ .db_dir | quote }}; dolt status
+  sql-server:
+    vars:
+      config: '{{ .config }}'
+      H: '{{ .host | default .H | default "localhost" }}'
+      P: '{{ .port | default .P | default 3306 }}'
+      u: '{{ .user | default .u | default "root" }}'
+      p: '{{ .password | default .p | default "" }}'
+      t: '{{ .timeout | default .t | default 28800000 }}'
+      r: '{{ .readonly | default .r | default "false" }}'
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - >-
+        cd {{ .db_dir | quote }};
+        dolt sql-server
+        {{ if .config }}--config={{ .config | quote }}{{ end }}
+        {{ if .H }}-H {{ .H | quote }}{{ end }}
+        {{ if .P }}-P {{ .P | quote }}{{ end }}
+        {{ if .u }}-u {{ .u | quote }}{{ end }}
+        {{ if .p }}-p {{ .p | quote }}{{ end }}
+        {{ if ne .r "false" }}-r{{ end }}

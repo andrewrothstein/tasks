@@ -40,3 +40,5 @@
     - andrewrothstein.vault
     - andrewrothstein.consul
     - andrewrothstein.nomad
+    - andrewrothstein.dolt
+    - andrewrothstein.liquibase
