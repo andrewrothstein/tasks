@@ -19,8 +19,8 @@ includes:
 #  csi-driver-nfs: csi-driver-nfs.yml
   csi-driver-nfs: pet.yml
 
-  flux: flux.yml
-#  flux: pet.yml
+#  flux: flux.yml
+  flux: pet.yml
 
   argoproj: argoproj.yml
 #  argoproj: pet.yml
@@ -79,8 +79,8 @@ includes:
 #  trident: trident.yml
   trident: pet.yml
 
-  komodor: komodor.yml
-#  komodor: pet.yml
+#  komodor: komodor.yml
+  komodor: pet.yml
 
 tasks:
   default:
