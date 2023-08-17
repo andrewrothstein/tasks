@@ -8,9 +8,11 @@ tasks:
   up:
     vars:
       disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
-    deps:
-      - task: docker-registry:apply
     cmds:
+      - task: docker-network:create
+        vars:
+          name: kind
+      - task: docker-registry:apply
       - task: kind:up
         vars:
           f: chart-kind/registry-values.yaml
@@ -40,10 +42,6 @@ tasks:
         EOF
           done
         done
-      - task: docker-network:connect
-        vars:
-          net: kind
-          container: kind-registry
   delete:
     cmds:
       - task: kind:delete

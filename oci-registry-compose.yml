@@ -10,11 +10,11 @@ services:
       - HTTP_PROXY
       - HTTPS_PROXY
       - NO_PROXY
-    networks:
-      - kind
     volumes:
       - registry_cache:/registry_cache:rw
 networks:
-  kind: {}
+  default:
+    name: kind
+    external: true
 volumes:
   registry_cache: {}
