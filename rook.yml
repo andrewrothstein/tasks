@@ -10,7 +10,7 @@ includes:
       name: rook-ceph
       chart_repo_name: rook-release
       chart: rook-ceph
-      chart_ver: 1.11.8
+      chart_ver: 1.12.2
   cluster:
     taskfile: helm.yml
     vars:
@@ -19,7 +19,7 @@ includes:
       name: rook-ceph-cluster
       chart_repo_name: rook-release
       chart: rook-ceph-cluster
-      chart_ver: 1.11.8
+      chart_ver: 1.12.2
       helm_args: >-
         --set operatorNamespace=rook-ceph
 tasks:
