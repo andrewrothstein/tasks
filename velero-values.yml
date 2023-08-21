@@ -1,5 +1,20 @@
 ---
 configuration:
-  provider: pd.csi.storage.gke.io
+  backupStorageLocation:
+    - name: my-backup-storage-location
+      provider: aws
+      bucket: velero-backup-bucket
+      config:
+        region: us-east-1
+  volumeSnapshotLocation:
+    - name: my-volume-snapshot-location
+      provider: aws
+      config:
+        region: us-east-1
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero-plugin-for-aws:v1.7.1
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
 
-    
