@@ -21,6 +21,14 @@ includes:
       chart_repo_name: istio
       chart: istiod
       chart_ver: '{{ .istio_ver }}'
+  cni:
+    taskfile: helm.yml
+    vars:
+      namespace: kube-system
+      name: istio-cni
+      chart_repo_name: istio
+      chart: cni
+      chart_ver: '{{ .istio_ver }}'
   merbridge:
     taskfile: kubectl.yml
     vars:
@@ -47,11 +55,13 @@ tasks:
     cmds:
       - task: istio-base:install
       - task: istiod:install
+      - task: cni:install
       - task: merbridge:apply
       - task: ingress:install
   delete:
     cmds:
       - task: ingress:delete
       - task: merbridge:delete
+      - task: cni:delete
       - task: istiod:delete
       - task: istio-base:delete
