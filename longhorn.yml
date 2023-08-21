@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  repo: longhorn-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: longhorn-system
+      create_namespace: true
+      name: longhorn
+      chart_repo_name: longhorn
+      chart: longhorn
+      chart_ver: 1.5.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

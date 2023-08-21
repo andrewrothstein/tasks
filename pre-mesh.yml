@@ -49,8 +49,8 @@ includes:
 #  knative: knative.yml
   knative: pet.yml
 
-  vclusters: vcluster.yml
-#  vclusters: pet.yml
+#  vclusters: vcluster.yml
+  vclusters: pet.yml
 
 #  kubevirt: kubevirt.yml
   kubevirt: pet.yml
@@ -81,6 +81,9 @@ includes:
 
 #  komodor: komodor.yml
   komodor: pet.yml
+
+  longhorn: longhorn.yml
+#  longhorn: pet.yml
 
 tasks:
   default:
@@ -115,8 +118,10 @@ tasks:
       - task: crossplane:install
       - task: k8ssandra:install
       - task: velero:install
+      - task: longhorn:install
   delete:
     cmds:
+      - task: longhorn:delete
       - task: velero:delete
       - task: k8ssandra:delete
       - task: crossplane:delete
