@@ -82,8 +82,8 @@ includes:
 #  komodor: komodor.yml
   komodor: pet.yml
 
-  longhorn: longhorn.yml
-#  longhorn: pet.yml
+#  longhorn: longhorn.yml
+  longhorn: pet.yml
 
 tasks:
   default:
