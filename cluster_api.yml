@@ -1,7 +1,5 @@
 ---
 version: '3'
-vars:
-  k8s_ver: 1.27.2
 tasks:
   config-repositories:
     cmds:
@@ -47,95 +45,23 @@ tasks:
         {{- if .b }} -b {{ .b | quote }}{{ end -}}
         {{- if .c }} -c {{ .c | quote }}{{ end -}}
         {{- if .i }} -i {{ .i | quote }}{{ end }}
-  workload-cluster:
-    vars:
-      # kubectl command, i.e. apply or delete
-      kk: '{{ .kk | default "apply" }}'
-      # workload cluster template variant/flavor
-      f: '{{ .f }}'
-      # workload cluster name
-      n: '{{ .n }}'
-      # workload cluster k8s version
-      v: '{{ .v | default .k8s_ver }}'
-      ## cluster size / machine counts
-      control_plane_machine_count: '{{ .control_plane_machine_count }}'
-      worker_machine_count: '{{ .worker_machine_count }}'
-      target_namespace: '{{ .target_namespace }}'
-    env:
-      HELM_VALUES: ''
-    cmds:
-      - |
-        clusterctl \
-          generate \
-          cluster {{ .n | quote }} \
-          {{ if .f -}}
-          -f {{ .f | quote }} \
-          {{ end -}}
-          {{- if .v -}}
-          --kubernetes-version {{ .v | quote }} \
-          {{ end -}}
-          {{- if .control_plane_machine_count -}}
-          --control-plane-machine-count {{ .control_plane_machine_count }} \
-          {{ end -}}
-          {{- if .worker_machine_count -}}
-          --worker-machine-count {{ .worker_machine_count }} \
-          {{ end -}}
-          | kubectl {{ .kk | quote }} -f -
   get-kubeconfig:
     vars:
-      n: '{{ .n }}'
-      kubeconfig: "~/.kube/{{ .n }}-config"
+      name: '{{ .name }}'
+      kubeconfig: '{{ .kubeconfig | default "${HOME}/.kube/{{ .n }}-config" }}'
     cmds:
-      - clusterctl get kubeconfig {{ .n }} > {{ .kubeconfig }}
+      - >-
+        clusterctl
+        get kubeconfig
+        {{ .name }} > {{ .kubeconfig }}
   kk:
     vars:
-      n: '{{ .n }}'
+      name: '{{ .name }}'
       kk: '{{ .kk }}'
     deps:
       - task: get-kubeconfig
         vars:
-          n: '{{ .n }}'
+          name: '{{ .name }}'
     cmds:
-      - export KUBECONFIG="~/.kube/{{ .n }}-config"
+      - export KUBECONFIG="~/.kube/{{ .name }}-config"
       - '{{ if .kk }}{{ .kk }}{{ end }}'
-  default:
-    deps:
-      - task: apply
-        vars:
-          i: vcluster
-  install:
-    deps:
-      - apply
-  apply:
-    vars:
-      i: '{{ .i }}'
-    deps:
-      - task: init
-        vars:
-          i: '{{ .i }}'
-    cmds:
-      - task: workload-cluster
-        vars:
-          kk: apply
-          n: dev-1
-          v: '{{ .v }}'
-      - task: workload-cluster
-        vars:
-          kk: apply
-          n: tst-1
-          v: '{{ .v }}'
-  delete:
-    vars:
-      # workload cluster k8s version
-      v: '{{ .v | default .k8s_ver }}'
-    deps:
-      - task: workload-cluster
-        vars:
-          kk: delete
-          n: tst-1
-          v: '{{ .v }}'
-      - task: workload-cluster
-        vars:
-          kk: delete
-          n: dev-1
-          v: '{{ .v }}'

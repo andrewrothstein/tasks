@@ -49,8 +49,8 @@ includes:
 #  knative: knative.yml
   knative: pet.yml
 
-#  cluster_api: cluster_api.yml
-  cluster_api: pet.yml
+  vclusters: vcluster.yml
+#  vclusters: pet.yml
 
 #  kubevirt: kubevirt.yml
   kubevirt: pet.yml
@@ -106,7 +106,7 @@ tasks:
       - task: tekton-triggers:apply
       - task: dragonfly:install
       - task: knative:install
-      - task: cluster_api:apply
+      - task: vclusters:apply
       - task: kubevirt:apply
       - task: kubevirt-cdi:apply
       - task: kubevirt-vms:apply
@@ -125,7 +125,7 @@ tasks:
       - task: kubevirt-vms:delete
       - task: kubevirt-cdi:delete
       - task: kubevirt:delete
-      - task: cluster_api:delete
+      - task: vclusters:delete
       - task: knative:delete
       - task: dragonfly:delete
       - task: tekton-triggers:delete
