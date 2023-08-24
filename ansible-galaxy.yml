@@ -12,7 +12,7 @@ tasks:
       - |
         cd {{ .roles_dir | default .USER_WORKING_DIR | quote }};
         ansible-galaxy role init {{ .name | quote }}
-  import:
+  role-import:
     dotenv: [.galaxy-secrets.env]
     vars:
       org: '{{ .org | default "andrewrothstein" }}'

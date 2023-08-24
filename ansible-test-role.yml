@@ -44,7 +44,10 @@ tasks:
         vars:
           roles_dir: '{{ .roles_dir }}'
           name: '{{ .name }}'
-      - mv "{{ .roles_dir }}/{{ .name }}" "{{ .roles_dir }}/{{ .role_name }}"
+      - |
+        cd {{ .roles_dir | quote }};
+        galaxify {{ .name | quote }};
+        mv {{ .name | quote }} {{ .role_name | quote }};
       - task: gh:create-repo
         vars:
           dir: '{{ .roles_dir }}'
