@@ -17,6 +17,18 @@ tasks:
           name \
           {{ if .limit }} --limit {{ .limit }}{{ end }} \
             | jq -r '.[].name | select(startswith({{ .prefix | quote }}))'
+  create-repo:
+    vars:
+      dir: '{{ .dir }}'
+      repo: '{{ .repo }}'
+      public: '{{ .public | default "true" }}'
+      clone: '{{ .clone | default "true" }}'
+    cmds:
+      - |
+        cd {{ .dir | default .USER_WORKING_DIR | quote }};
+        gh repo create {{ .repo | quote }}
+        {{- if eq .public "true" }} --public{{ end }}
+        {{- if eq .clone "true" }} -c{{ end }}
   show-default-branch-name:
     vars:
       repo_dir: '{{ .repo_dir | default .USER_WORKING_DIR }}'

@@ -1,7 +1,18 @@
 ---
 version: '3'
+includes:
+  gh: gh.yml
 tasks:
-  role-import:
+  role-init:
+    dotenv: [.galaxy-secrets.env]
+    vars:
+      roles_dir: '{{ .roles_dir | default "${HOME}/git/github.com/andrewrothstein" }}'
+      name: '{{ .name }}'
+    cmds:
+      - |
+        cd {{ .roles_dir | default .USER_WORKING_DIR | quote }};
+        ansible-galaxy role init {{ .name | quote }}
+  import:
     dotenv: [.galaxy-secrets.env]
     vars:
       org: '{{ .org | default "andrewrothstein" }}'

@@ -29,6 +29,26 @@ tasks:
         then
           git rm -f requirements.txt
         fi;
+  create:
+    vars:
+      git_org: '{{ .git_org | default "https://github.com/andrewrothstein" }}'
+      roles_dir: '{{ .roles_dir | default "${HOME}/git/github.com/andrewrothstein" }}'
+      name: '{{ .name }}'
+      infix: '{{ .infix | default "-" }}'
+      role_name: ansible{{ .infix }}{{ .name }}
+      git_repo: '{{ .git_org }}/{{ .role_name }}'
+      dir: '{{ .roles_dir }}/{{ .role_name }}'
+      public: true
+    cmds:
+      - task: ansible-galaxy:role-init
+        vars:
+          roles_dir: '{{ .roles_dir }}'
+          name: '{{ .name }}'
+      - mv "{{ .roles_dir }}/{{ .name }}" "{{ .roles_dir }}/{{ .role_name }}"
+      - task: gh:create-repo
+        vars:
+          dir: '{{ .roles_dir }}'
+          repo: '{{ .role_name }}'
   clone:
     vars:
       git_org: '{{ .git_org | default "https://github.com/andrewrothstein" }}'
