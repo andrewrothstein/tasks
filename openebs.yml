@@ -1,9 +1,7 @@
 ---
 version: '3'
 includes:
-  repo:
-    taskfile: openebs-repo.yml
-    internal: true
+  repo: openebs-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -12,7 +10,7 @@ includes:
       name: openebs
       chart_repo_name: openebs
       chart: openebs
-      chart_ver: 3.5.0
+      chart_ver: 3.8.0
       helm_args: >-
         --set zfs-localpv.enabled=true
 tasks:
