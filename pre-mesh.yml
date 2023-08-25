@@ -85,6 +85,9 @@ includes:
 #  longhorn: longhorn.yml
   longhorn: pet.yml
 
+#  openebs: openebs.yml
+  openebs: pet.yaml
+
 tasks:
   default:
     deps:
@@ -119,8 +122,10 @@ tasks:
       - task: k8ssandra:install
       - task: velero:install
       - task: longhorn:install
+      - task: openebs:install
   delete:
     cmds:
+      - task: openebs:delete
       - task: longhorn:delete
       - task: velero:delete
       - task: k8ssandra:delete
