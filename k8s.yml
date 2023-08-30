@@ -13,6 +13,9 @@ tasks:
     cmds:
       - task: kind:delete
 #      - task: k3d:delete
+  destroy:
+    cmds:
+      - task: k8s:delete
   default:
     deps:
       - up

@@ -1,6 +1,8 @@
 ---
 version: '3'
 includes:
+  k8s-storage: k8s-storage.yml
+
   cert-manager: cert-manager.yml
 #  cert-manager: pet.yml
 
@@ -16,9 +18,6 @@ includes:
 #  dns: coredns.yml
   dns: pet.yml
 
-#  csi-driver-nfs: csi-driver-nfs.yml
-  csi-driver-nfs: pet.yml
-
 #  flux: flux.yml
   flux: pet.yml
 
@@ -30,9 +29,6 @@ includes:
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
-
-#  rook: rook.yml
-  rook: pet.yml
 
 #  minio: minio.yml
   minio: pet.yml
@@ -73,20 +69,8 @@ includes:
 #  k8ssandra: k8ssandra.yml
   k8ssandra: pet.yml
 
-#  velero: velero.yml
-  velero: pet.yml
-
-#  trident: trident.yml
-  trident: pet.yml
-
 #  komodor: komodor.yml
   komodor: pet.yml
-
-#  longhorn: longhorn.yml
-  longhorn: pet.yml
-
-#  openebs: openebs.yml
-#  openebs: pet.yaml
 
 tasks:
   default:
@@ -94,6 +78,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: k8s-storage:install
       - task: komodor:install
       - task: cert-manager:install
       - task: elastic:install
@@ -103,10 +88,7 @@ tasks:
       - task: ingress:install
       - task: flux:install
       - task: argoproj:install
-      - task: csi-driver-nfs:install
-      - task: trident:install
       - task: metallb:install
-      - task: rook:install
       - task: minio:install
       - task: tekton-pipelines:apply
       - task: tekton-triggers:apply
@@ -120,14 +102,8 @@ tasks:
       - task: coderv2:install
       - task: crossplane:install
       - task: k8ssandra:install
-      - task: velero:install
-      - task: longhorn:install
-      - task: openebs:install
   delete:
     cmds:
-      - task: openebs:delete
-      - task: longhorn:delete
-      - task: velero:delete
       - task: k8ssandra:delete
       - task: crossplane:delete
       - task: coderv2:delete
@@ -141,10 +117,7 @@ tasks:
       - task: tekton-triggers:delete
       - task: tekton-pipelines:delete
       - task: minio:delete
-      - task: rook:delete
       - task: metallb:install
-      - task: trident:delete
-      - task: csi-driver-nfs:delete
       - task: argoproj:delete
       - task: flux:delete
       - task: ingress:delete
@@ -154,3 +127,4 @@ tasks:
       - task: elastic:delete
       - task: cert-manager:delete
       - task: komodor:delete
+      - task: k8s-storage:delete

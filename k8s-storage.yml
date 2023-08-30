@@ -1,0 +1,37 @@
+---
+version: '3'
+
+includes:
+#  longhorn: longhorn.yml
+  longhorn: pet.yml
+
+#  csi-driver-nfs: csi-driver-nfs.yml
+  csi-driver-nfs: pet.yml
+
+#  trident: trident.yml
+  trident: pet.yml
+
+#  velero: velero.yml
+  velero: pet.yml
+
+#  rook: rook.yml
+  rook: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: rook:install
+      - task: longhorn:install
+      - task: csi-driver-nfs:install
+      - task: trident:install
+      - task: velero:install
+  delete:
+    cmds:
+      - task: velero:delete
+      - task: trident:delete
+      - task: csi-driver-nfs:delete
+      - task: longhorn:delete
+      - task: rook:delete

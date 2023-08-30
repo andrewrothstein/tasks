@@ -24,6 +24,8 @@
     - andrewrothstein.kubeshark
     - andrewrothstein.kubernetes_helm
     - andrewrothstein.helmfile
+    - andrewrothstein.gator
+    - andrewrothstein.opa
     - andrewrothstein.k9s
     - andrewrothstein.cluster_api
     - andrewrothstein.vcluster
