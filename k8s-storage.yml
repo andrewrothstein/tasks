@@ -2,6 +2,7 @@
 version: '3'
 
 includes:
+
 #  longhorn: longhorn.yml
   longhorn: pet.yml
 
@@ -10,6 +11,9 @@ includes:
 
 #  trident: trident.yml
   trident: pet.yml
+
+#  minio: minio.yml
+  minio: pet.yml
 
 #  velero: velero.yml
   velero: pet.yml
@@ -27,10 +31,12 @@ tasks:
       - task: longhorn:install
       - task: csi-driver-nfs:install
       - task: trident:install
+      - task: minio:install
       - task: velero:install
   delete:
     cmds:
       - task: velero:delete
+      - task: minio:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
       - task: longhorn:delete

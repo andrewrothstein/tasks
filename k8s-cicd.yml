@@ -1,0 +1,29 @@
+---
+version: '3'
+includes:
+#  flux: flux.yml
+  flux: pet.yml
+
+  argoproj: argoproj.yml
+#  argoproj: pet.yml
+
+#  tekton-pipelines: tekton-pipelines.yml
+  tekton-pipelines: pet.yml
+
+#  tekton-triggers: tekton-triggers.yml
+  tekton-triggers: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: flux:install
+      - task: argoproj:install
+      - task: tekton-pipelines:apply
+      - task: tekton-triggers:apply
+  delete:
+    cmds:
+      - task: argoproj:delete
+      - task: flux:delete

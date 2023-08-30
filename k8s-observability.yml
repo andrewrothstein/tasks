@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+
+#  komodor: komodor.yml
+  komodor: pet.yml
+
+#  kube-prometheus-stack: kube-prometheus-stack.yml
+  kube-prometheus-stack: pet.yml
+
+#  elastic: elastic.yml
+  elastic: pet.yml
+
+#  keda: keda.yml
+  keda: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: komodor:install
+      - task: kube-prometheus-stack:install
+      - task: elastic:install
+      - task: keda:install
+  delete:
+    cmds:
+      - task: keda:delete
+      - task: elastic:delete
+      - task: kube-prometheus-stack:delete
+      - task: komodor:delete

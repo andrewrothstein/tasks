@@ -1,43 +1,19 @@
 ---
 version: '3'
 includes:
+  k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
-
-  cert-manager: cert-manager.yml
-#  cert-manager: pet.yml
-
-#  elastic: elastic.yml
-  elastic: pet.yml
-
-#  kube-prometheus-stack: kube-prometheus-stack.yml
-  kube-prometheus-stack: pet.yml
-
-#  keda: keda.yml
-  keda: pet.yml
+  k8s-cicd: k8s-cicd.yml
+  k8s-observability: k8s-observability.yml
 
 #  dns: coredns.yml
   dns: pet.yml
-
-#  flux: flux.yml
-  flux: pet.yml
-
-  argoproj: argoproj.yml
-#  argoproj: pet.yml
 
   metallb: metallb.yml
 #  metallb: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
-
-#  minio: minio.yml
-  minio: pet.yml
-
-#  tekton-pipelines: tekton-pipelines.yml
-  tekton-pipelines: pet.yml
-
-#  tekton-triggers: tekton-triggers.yml
-  tekton-triggers: pet.yml
 
 #  dragonfly: dragonfly.yml
   dragonfly: pet.yml
@@ -69,29 +45,19 @@ includes:
 #  k8ssandra: k8ssandra.yml
   k8ssandra: pet.yml
 
-#  komodor: komodor.yml
-  komodor: pet.yml
-
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: k8s-secrets:install
       - task: k8s-storage:install
-      - task: komodor:install
-      - task: cert-manager:install
-      - task: elastic:install
-      - task: kube-prometheus-stack:install
-      - task: keda:install
+      - task: k8s-observability:install
+      - task: k8s-cicd:install
       - task: dns:install
       - task: ingress:install
-      - task: flux:install
-      - task: argoproj:install
       - task: metallb:install
-      - task: minio:install
-      - task: tekton-pipelines:apply
-      - task: tekton-triggers:apply
       - task: dragonfly:install
       - task: knative:install
       - task: vclusters:apply
@@ -114,17 +80,10 @@ tasks:
       - task: vclusters:delete
       - task: knative:delete
       - task: dragonfly:delete
-      - task: tekton-triggers:delete
-      - task: tekton-pipelines:delete
-      - task: minio:delete
       - task: metallb:install
-      - task: argoproj:delete
-      - task: flux:delete
       - task: ingress:delete
       - task: dns:delete
-      - task: keda:delete
-      - task: kube-prometheus-stack:delete
-      - task: elastic:delete
-      - task: cert-manager:delete
-      - task: komodor:delete
+      - task: k8s-cicd:delete
+      - task: k8s-observability:delete
       - task: k8s-storage:delete
+      - task: k8s-secrets:delete
