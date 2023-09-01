@@ -14,3 +14,5 @@ rsa-*.key
 rsa-*.pub
 aad-secret-*.json
 *-s3-policy.json
+jaffle_shop/
+logs/

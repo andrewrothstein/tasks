@@ -1,0 +1,19 @@
+---
+version: '3'
+tasks:
+  version:
+    cmds:
+      - dbt --version
+  clean:
+    vars:
+      project_name: '{{ .project_name | default "jaffle_shop" }}'
+    cmds:
+      - rm -rf {{ .project_name | quote }}
+  init:
+    vars:
+      interactive: '{{ .interactive | default "false" }}'
+      project_name: '{{ .project_name | default "jaffle_shop" }}'
+    cmds:
+      - dbt init {{ if eq .interactive "false" }}-s {{ end -}} {{ .project_name | quote }}
+    status:
+      - test -d {{ .project_name | quote }}
