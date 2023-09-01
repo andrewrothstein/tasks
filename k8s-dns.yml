@@ -1,0 +1,20 @@
+---
+version: '3'
+includes:
+#  coredns: coredns.yml
+  coredns: pet.yml
+
+#  external-dns: bitnami-external-dns.yml
+  external-dns: pet.yml
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: coredns:install
+      - task: external-dns:install
+  delete:
+    cmds:
+      - task: external-dns:delete
+      - task: coredns:delete

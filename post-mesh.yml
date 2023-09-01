@@ -11,9 +11,6 @@ includes:
 #  pinniped-concierge: pinniped-concierge.yml
   pinniped-concierge: pet.yml
 
-#  external-dns: bitnami-external-dns.yml
-  external-dns: pet.yml
-
 #  gitea: gitea.yml
   gitea: pet.yml
 
@@ -27,8 +24,6 @@ tasks:
   up:
     cmds:
       - task: gatekeeper:install
-      - task: vault-dev:install
-      - task: external-dns:install
       - task: pinniped-supervisor:install
       - task: pinniped-concierge:install
       - task: gitea:install
@@ -39,6 +34,4 @@ tasks:
       - task: gitea:delete
       - task: pinniped-concierge:delete
       - task: pinniped-supervisor:delete
-      - task: external-dns:delete
-      - task: vault-dev:delete
       - task: gatekeeper:delete

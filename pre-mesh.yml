@@ -3,11 +3,9 @@ version: '3'
 includes:
   k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
+  k8s-dns: k8s-dns.yml
   k8s-cicd: k8s-cicd.yml
   k8s-observability: k8s-observability.yml
-
-#  dns: coredns.yml
-  dns: pet.yml
 
   metallb: metallb.yml
 #  metallb: pet.yml
@@ -51,11 +49,11 @@ tasks:
       - up
   up:
     cmds:
-      - task: k8s-secrets:install
-      - task: k8s-storage:install
-      - task: k8s-observability:install
-      - task: k8s-cicd:install
-      - task: dns:install
+      - task: k8s-secrets:up
+      - task: k8s-storage:up
+      - task: k8s-dns:up
+      - task: k8s-observability:up
+      - task: k8s-cicd:up
       - task: ingress:install
       - task: metallb:install
       - task: dragonfly:install
@@ -82,8 +80,8 @@ tasks:
       - task: dragonfly:delete
       - task: metallb:install
       - task: ingress:delete
-      - task: dns:delete
       - task: k8s-cicd:delete
       - task: k8s-observability:delete
+      - task: k8s-dns:delete
       - task: k8s-storage:delete
       - task: k8s-secrets:delete
