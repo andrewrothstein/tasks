@@ -11,7 +11,7 @@ tasks:
   install:
     vars:
       chart: '{{ .chart | default "postgresql" }}'
-      chart_ver: '{{ .chart_ver | default "12.5.6" }}'
+      chart_ver: '{{ .chart_ver | default "12.9.0" }}'
       name: '{{ .name | default "postgresql" }}'
       namespace: '{{ .namespace | default "bitnami-postgresql" }}'
       create_namespace: '{{ .create_namespace }}'
