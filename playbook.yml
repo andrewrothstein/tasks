@@ -4,6 +4,10 @@
     carvel_apps:
       - name: kapp
         version: 0.57.1
+    kind_config:
+      sysctl:
+        fs.inotify.max_user_watches: 524288
+        fs.inotify.max_user_instances: 512
   roles:
     - andrewrothstein.sudoers
     - andrewrothstein.docker_compose
