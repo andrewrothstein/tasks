@@ -1,46 +1,44 @@
 ---
 version: '3'
 includes:
-  ss-csi: pet.yml
-#  ss-csi: secrets-store-csi-driver.yml
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  ss-csi: secrets-store-csi-driver.yml
+  hashicorp:
+    taskfile: helm-repo.yml
+    vars:
+      n: hashicorp
+      url: https://helm.releases.hashicorp.com
+  vault-secrets-operator:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: hashicorp
+      chart: vault-secrets-operator
+      chart_ver: 0.1.0
+      create_namespace: true
+      namespace: vault-secrets-operator
+      name: vault-secrets-operator
+  vault:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: hashicorp
+      chart: vault
+      chart_ver: 0.25.0
+      create_namespace: true
+      namespace: vault
+      name: vault
+      helm_arts: -f vault-dev-values.yml
 tasks:
   default:
     deps:
       - install
   install:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "hashicorp" }}'
-      chart: '{{ .chart | default "vault" }}'
-      chart_ver: '{{ .chart_ver | default "0.24.1" }}'
-      namespace: '{{ .namespace | default "vault" }}'
-      create_namespace: '{{ .create_namespace | default true }}'
-      name: '{{ .name | default "vault" }}'
-      helm_args: -f vault-dev-values.yml
     deps:
       - task: ss-csi:install
     cmds:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://helm.releases.hashicorp.com
-      - task: helm:install
-        vars:
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: '{{ .helm_args }}'
+      - task: hashicorp:add
+      - task: vault-secrets-operator:install
+      - task: vault:install
   delete:
-    vars:
-      namespace: '{{ .namespace | default "vault" }}'
-      name: '{{ .name | default "vault" }}'
     cmds:
+      - task: vault:delete
+      - task: vault-secrets-operator:install
       - task: ss-csi:delete
-      - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
