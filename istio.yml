@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  istio_ver: 1.18.2
+  istio_ver: 1.19.0
 includes:
   repo: istio-repo.yml
   istio-base:
