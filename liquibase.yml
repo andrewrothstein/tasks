@@ -1,0 +1,38 @@
+---
+version: '3'
+vars:
+  liquibase_exe: /usr/local/liquibase/liquibase
+tasks:
+  help:
+    cmds:
+      - >-
+        {{ .liquibase_exe | default "liquibase" }}
+        --help
+  init-project:
+    vars:
+      help: '{{ .help | default "true" }}'
+    cmds:
+      - >-
+        {{ .liquibase_exe | default "liquibase" }}
+        init project
+        {{ if eq "true" .help }}--help{{ end }}
+  init-start-h2:
+    vars:
+      bind_address: '{{ .bind_address }}'
+      db_port: '{{ .db_port }}'
+      web_port: '{{ .web_port }}'
+      help: '{{ .help | default "false" }}'
+      launch_browser: '{{ .launch_browser | default "false" }}'
+      username: '{{ .username }}'
+      password: '{{ .password }}'
+    cmds:
+      - >-
+        {{ .liquibase_exe }}
+        init start-h2
+        --bind-address={{ .bind_address | default "127.0.0.1" | quote }}
+        --db-port={{ .db_port | default "9090" | quote }}
+        {{ if eq .help "true" }}--help{{ end }}
+        --launch-browser={{ .launch_browser }}
+        {{ if .username }}--username={{ .username | quote }}{{ end }}
+        {{ if .password }}--password={{ .password | quote }}{{ end }}
+        --web-port={{ .web_port | default "8080" }}

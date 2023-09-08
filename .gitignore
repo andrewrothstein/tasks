@@ -16,3 +16,4 @@ aad-secret-*.json
 *-s3-policy.json
 jaffle_shop/
 logs/
+.dolt/
