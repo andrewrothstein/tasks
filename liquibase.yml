@@ -10,12 +10,30 @@ tasks:
         --help
   init-project:
     vars:
-      help: '{{ .help | default "true" }}'
+      changelog_file: '{{ .changelog_file }}'
+      format: '{{ .format }}'
+      help: '{{ .help | default "false" }}'
+      keep_temp_files: '{{ .keep_temp_files }}'
+      password: '{{ .password }}'
+      project_defaults_file: '{{ .project_defaults_file }}'
+      project_dir: '{{ .project_dir | default "liquibase-example" }}'
+      project_guide: '{{ .project_guide | default "off" }}'
+      url: '{{ .url | default "jdbc:h2:tcp://localhost:9090/mem:dev" }}'
+      username: '{{ .username }}'
     cmds:
       - >-
         {{ .liquibase_exe | default "liquibase" }}
         init project
+        --changelog-file={{ .changelog_file | default "changelog.yml" | quote }}
+        --format={{ .format | default "yml" | quote }}
         {{ if eq "true" .help }}--help{{ end }}
+        {{ if .keep_temp_files }}--keep-temp-files={{ .keep_temp_files | quote }}{{ end }}
+        {{ if .password }}--password={{ .password | quote }}{{ end }}
+        {{ if .project_defaults_file }}--project-defaults-file={{ .project_defaults_file | quote }}{{ end }}
+        {{ if .project_dir }}--project-dir={{ .project_dir | quote }}{{ end }}
+        {{ if .project_guide }}--project-guide={{ .project_guide | quote }}{{ end }}
+        {{ if .url }}--url={{ .url | quote }}{{ end }}
+        {{ if .username }}--username={{ .username | quote }}{{ end }}
   init-start-h2:
     vars:
       bind_address: '{{ .bind_address }}'
