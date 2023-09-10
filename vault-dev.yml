@@ -25,7 +25,7 @@ includes:
       create_namespace: true
       namespace: vault
       name: vault
-      helm_arts: -f vault-dev-values.yml
+      helm_args: -f vault-dev-values.yml
 tasks:
   default:
     deps:
@@ -40,5 +40,5 @@ tasks:
   delete:
     cmds:
       - task: vault:delete
-      - task: vault-secrets-operator:install
+      - task: vault-secrets-operator:delete
       - task: ss-csi:delete
