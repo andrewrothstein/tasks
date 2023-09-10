@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       n: argo-events
-      v: 1.8.0
+      v: 1.8.1
       p: events
 tasks:
   default:
