@@ -89,7 +89,7 @@ tasks:
     cmds:
       - task: dcb:default
         vars:
-          pushall: '{{ .pushall | default true }}'
+          pushall: '{{ .pushall | default "true" }}'
   generate-checksum:
     internal: true
     vars:
