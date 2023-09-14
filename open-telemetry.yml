@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  repo: open-telemetry-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: open-telemetry-operator
+      create_namespace: true
+      name: open-telemetry-operator
+      chart_repo_name: open-telemetry
+      chart: opentelemetry-operator
+      chart_ver: 0.37.1
+      helm_args: >-
+        --set admissionWebhooks.certManager.enabled=true
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

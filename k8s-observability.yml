@@ -5,6 +5,9 @@ includes:
 #  komodor: komodor.yml
   komodor: pet.yml
 
+#  open-telemetry: open-telemetry.yml
+  open-telemetry: pet.yml
+
 #  kube-prometheus-stack: kube-prometheus-stack.yml
   kube-prometheus-stack: pet.yml
 
@@ -20,6 +23,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: open-telemetry:install
       - task: komodor:install
       - task: kube-prometheus-stack:install
       - task: elastic:install
@@ -30,3 +34,4 @@ tasks:
       - task: elastic:delete
       - task: kube-prometheus-stack:delete
       - task: komodor:delete
+      - task: open-telemetry:delete
