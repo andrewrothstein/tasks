@@ -2,16 +2,12 @@
 version: '3'
 includes:
   k8s-secrets: k8s-secrets.yml
+  k8s-network: k8s-network.yml
   k8s-storage: k8s-storage.yml
+  k8s-observability: k8s-observability.yml
   k8s-dns: k8s-dns.yml
   k8s-cicd: k8s-cicd.yml
-  k8s-observability: k8s-observability.yml
-
-  metallb: metallb.yml
-#  metallb: pet.yml
-
-#  ingress: nginx-ingress.yml
-  ingress: pet.yml
+  k8s-virtualization: k8s-virtualization.yml
 
 #  dragonfly: dragonfly.yml
   dragonfly: pet.yml
@@ -19,29 +15,8 @@ includes:
 #  knative: knative.yml
   knative: pet.yml
 
-#  vclusters: vcluster.yml
-  vclusters: pet.yml
-
-#  kubevirt: kubevirt.yml
-  kubevirt: pet.yml
-
-#  kubevirt-cdi: kubevirt-cdi.yml
-  kubevirt-cdi: pet.yml
-
-#  kubevirt-vms: kubevirt-vm.yml
-  kubevirt-vms: pet.yml
-
-#  postgresql: bitnami-postgresql.yml
-  postgresql: pet.yml
-
 #  coderv2: coderv2.yml
   coderv2: pet.yml
-
-#  crossplane: crossplane.yml
-  crossplane: pet.yml
-
-#  k8ssandra: k8ssandra.yml
-  k8ssandra: pet.yml
 
 tasks:
   default:
@@ -50,36 +25,20 @@ tasks:
   up:
     cmds:
       - task: k8s-secrets:up
+      - task: k8s-network:up
       - task: k8s-storage:up
-      - task: k8s-dns:up
       - task: k8s-observability:up
+      - task: k8s-dns:up
       - task: k8s-cicd:up
-      - task: ingress:install
-      - task: metallb:install
+      - task: k8s-virtualization:up
       - task: dragonfly:install
       - task: knative:install
-      - task: vclusters:apply
-      - task: kubevirt:apply
-      - task: kubevirt-cdi:apply
-      - task: kubevirt-vms:apply
-      - task: postgresql:install
       - task: coderv2:install
-      - task: crossplane:install
-      - task: k8ssandra:install
   delete:
     cmds:
-      - task: k8ssandra:delete
-      - task: crossplane:delete
       - task: coderv2:delete
-      - task: postgresql:delete
-      - task: kubevirt-vms:delete
-      - task: kubevirt-cdi:delete
-      - task: kubevirt:delete
-      - task: vclusters:delete
       - task: knative:delete
       - task: dragonfly:delete
-      - task: metallb:install
-      - task: ingress:delete
       - task: k8s-cicd:delete
       - task: k8s-observability:delete
       - task: k8s-dns:delete

@@ -1,0 +1,22 @@
+---
+version: '3'
+includes:
+#  metallb: metallb.yml
+  metallb: pet.yml
+
+#  ingress: nginx-ingress.yml
+  ingress: pet.yml
+
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: metallb:install
+      - task: ingress:install
+  delete:
+    cmds:
+      - task: metallb:delete
+      - task: ingress:delete

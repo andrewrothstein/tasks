@@ -1,0 +1,37 @@
+---
+version: '3'
+includes:
+#  vclusters: vcluster.yml
+  vclusters: pet.yml
+
+#  kubevirt: kubevirt.yml
+  kubevirt: pet.yml
+
+#  kubevirt-cdi: kubevirt-cdi.yml
+  kubevirt-cdi: pet.yml
+
+#  kubevirt-vms: kubevirt-vm.yml
+  kubevirt-vms: pet.yml
+
+#  crossplane: crossplane.yml
+  crossplane: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+
+      - task: vclusters:apply
+      - task: kubevirt:apply
+      - task: kubevirt-cdi:apply
+      - task: kubevirt-vms:apply
+      - task: crossplane:install
+  delete:
+    cmds:
+      - task: crossplane:delete
+      - task: kubevirt-vms:delete
+      - task: kubevirt-cdi:delete
+      - task: kubevirt:delete
+      - task: vclusters:delete

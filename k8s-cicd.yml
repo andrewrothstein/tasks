@@ -4,11 +4,11 @@ includes:
 #  flux: flux.yml
   flux: pet.yml
 
-  argoproj: argoproj.yml
-#  argoproj: pet.yml
+#  argoproj: argoproj.yml
+  argoproj: pet.yml
 
-  kpack: kpack.yml
-#  kpack: pet.yml
+#  kpack: kpack.yml
+  kpack: pet.yml
 
 #  tekton-pipelines: tekton-pipelines.yml
   tekton-pipelines: pet.yml

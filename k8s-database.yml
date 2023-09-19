@@ -1,0 +1,21 @@
+---
+version: '3'
+includes:
+#  postgresql: bitnami-postgresql.yml
+  postgresql: pet.yml
+
+#  k8ssandra: k8ssandra.yml
+  k8ssandra: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: k8ssandra:install
+      - task: postgresql:install
+  delete:
+    cmds:
+      - task: k8ssandra:delete
+      - task: postgresql:delete
