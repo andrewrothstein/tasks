@@ -15,7 +15,7 @@ tasks:
     vars:
       cluster_name: '{{ .cluster_name | default "kind" }}'
       chart: '{{ .chart | default "k8s-watcher" }}'
-      chart_ver: '{{ .chart_ver | default "1.15.2" }}'
+      chart_ver: '{{ .chart_ver | default "1.16.15" }}'
       name: '{{ .name | default "k8s-watcher" }}'
     deps:
       - task: helm-repo:add
