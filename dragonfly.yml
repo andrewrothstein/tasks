@@ -10,7 +10,7 @@ includes:
       name: dragonfly
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.1.4
+      chart_ver: 1.1.8
 tasks:
   default:
     deps:
