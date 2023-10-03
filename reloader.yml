@@ -10,7 +10,7 @@ includes:
       name: reloader
       chart_repo_name: stakater
       chart: reloader
-      chart_ver: v1.0.26
+      chart_ver: v1.0.41
 tasks:
   default:
     deps:
