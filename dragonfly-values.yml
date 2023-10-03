@@ -1,0 +1,43 @@
+---
+containerRuntime:
+  containerd:
+    enable: true
+    injectConfigPath: true
+    registries:
+      - https://docker.io
+      - https://gcr.io
+      - https://ghcr.io
+      - https://k8s.gcr.io
+      - https://quay.io
+      - https://registry.gitlab.com
+      - https://public.ecr.aws
+      - https://registry.k8s.io
+scheduler:
+  replicas: 1
+  metrics:
+    enable: true
+  config:
+    verbose: true
+    pprofPort: 18066
+seedPeer:
+  replicas: 1
+  metrics:
+    enable: true
+  config:
+    verbose: true
+    pprofPort: 18066
+dfdaemon:
+  metrics:
+    enable: true
+  config:
+    verbose: true
+    pprofPort: 18066
+manager:
+  replicas: 1
+  metrics:
+    enable: true
+  config:
+    verbose: true
+    pprofPort: 18066
+jaegar:
+  enable: true
