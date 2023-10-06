@@ -43,4 +43,5 @@ tasks:
       - task: k8s-observability:delete
       - task: k8s-dns:delete
       - task: k8s-storage:delete
+      - task: k8s-network:delete
       - task: k8s-secrets:delete
