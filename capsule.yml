@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  clastix: clastix.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      create_namespace: true
+      namespace: capsule-system
+      name: capsule
+      chart_repo_name: clastix
+      chart: capsule
+      chart_ver: 0.4.6
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: clastix
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
