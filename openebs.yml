@@ -10,9 +10,9 @@ includes:
       name: openebs
       chart_repo_name: openebs
       chart: openebs
-      chart_ver: 3.8.0
-      helm_args: >-
-        --set zfs-localpv.enabled=true
+      chart_ver: 3.9.0
+#      helm_args: >-
+#        --set zfs-localpv.enabled=true
 tasks:
   default:
     deps:
