@@ -15,7 +15,7 @@ includes:
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.12.0
+      chart_ver: 3.13.2
 tasks:
   default:
     deps:
