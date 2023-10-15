@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       n: argo
-      v: 3.4.11
+      v: 3.5.0
       p: workflows
 tasks:
   default:
