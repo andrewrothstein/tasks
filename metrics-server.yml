@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  helm-repo: metrics-server-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      create_namespace: false
+      namespace: kube-system
+      name: metrics-server
+      chart_repo_name: metrics-server
+      chart: metrics-server
+      chart_ver: 3.11.0
+      helm_args: --set args={--kubelet-insecure-tls}
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: helm-repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

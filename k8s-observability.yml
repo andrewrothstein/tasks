@@ -1,6 +1,8 @@
 ---
 version: '3'
 includes:
+  metrics-server: metrics-server.yml
+#  metrics-server: pet.yml
 
 #  komodor: komodor.yml
   komodor: pet.yml
@@ -23,6 +25,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: metrics-server:install
       - task: open-telemetry:install
       - task: komodor:install
       - task: kube-prometheus-stack:install
@@ -35,3 +38,4 @@ tasks:
       - task: kube-prometheus-stack:delete
       - task: komodor:delete
       - task: open-telemetry:delete
+      - task: metrics-server:delete
