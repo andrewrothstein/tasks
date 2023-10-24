@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: kubernetes-dashboard
+      url: https://kubernetes.github.io/dashboard/
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
