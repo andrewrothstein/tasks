@@ -4,12 +4,12 @@ tasks:
   install:
     vars:
       namespace: '{{ .namespace }}'
-      create_namespace: '{{ .create_namespace | default false }}'
+      create_namespace: '{{ .create_namespace | default "false" }}'
       name: '{{ .name }}'
       chart_repo_name: '{{ .chart_repo_name }}'
       chart: '{{ .chart }}'
       chart_ver: '{{ .chart_ver }}'
-      wait: '{{ .wait | default true }}'
+      wait: '{{ .wait | default "true" }}'
       timeout: '{{ .timeout | default "10m" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
@@ -42,7 +42,7 @@ tasks:
     vars:
       namespace: '{{ .namespace }}'
       name: '{{ .name }}'
-      wait: '{{ .wait | default true }}'
+      wait: '{{ .wait | default "true" }}'
     preconditions:
       - |
         helm \
