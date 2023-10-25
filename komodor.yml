@@ -14,25 +14,28 @@ tasks:
   install:
     vars:
       cluster_name: '{{ .cluster_name | default "kind" }}'
-      chart: '{{ .chart | default "k8s-watcher" }}'
-      chart_ver: '{{ .chart_ver | default "1.16.16" }}'
-      name: '{{ .name | default "k8s-watcher" }}'
+      chart: '{{ .chart | default "komodor-agent" }}'
+      chart_ver: '{{ .chart_ver | default "2.0.5" }}'
+      name: '{{ .name | default "komodor-agent" }}'
     deps:
       - task: helm-repo:add
     cmds:
       - task: helm:install
         vars:
+          create_namespace: 'true'
+          namespace: komodorio
           chart_repo_name: komodorio
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           helm_args: >-
-            --set watcher.clusterName={{ .cluster_name | quote }}
+            --set clusterName={{ .cluster_name | quote }}
             -f komodor-values.yml
             -f .komodor-secrets.yml
   delete:
     vars:
-      name: '{{ .name | default "k8s-watcher" }}'
+      name: '{{ .name | default "komodor-agent" }}'
+      namespace: komodorio
     cmds:
       - task: helm:delete
         vars:
