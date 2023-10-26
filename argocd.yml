@@ -12,6 +12,9 @@ tasks:
   default:
     deps:
       - apply
+  initial-admin-secret:
+    cmds:
+      - kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
   apply:
     cmds:
       - task: argo-raw:apply
