@@ -11,7 +11,7 @@ includes:
       name: velero
       chart_repo_name: vmware-tanzu
       chart: velero
-      chart_ver: 5.0.2
+      chart_ver: 5.1.0
       helm_args: -f velero-values.yml
 tasks:
   default:
