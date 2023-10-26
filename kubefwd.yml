@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  under: kubefwd_{{ OS }}.yml
+tasks:
+  up:
+    deps:
+      - task: under:up
+  default:
+    deps:
+      - up
+
