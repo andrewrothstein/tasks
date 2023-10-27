@@ -4,6 +4,7 @@ includes:
   k3d: k3d.yml
   kind: kind.yml
   k8s: kind+registry.yml
+#  k8s: kind+cilium.yml
 #  k8s: k3d.yml
 tasks:
   up:
