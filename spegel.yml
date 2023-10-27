@@ -1,0 +1,22 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: spegel
+      create_namespace: 'true'
+      name: spegel
+      chart_repo_name: oci://ghcr.io/xenitab/helm-charts
+      chart: spegel
+      chart_ver: v0.0.13
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete
