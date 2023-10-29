@@ -1,5 +1,7 @@
 ---
 version: '3'
+#vars:
+#  dashvees: '-vvvvv'
 includes:
   gh: gh.yml
 tasks:
@@ -17,21 +19,48 @@ tasks:
     vars:
       org: '{{ .org | default "andrewrothstein" }}'
       name: '{{ .name }}'
-      branch: '{{ .branch | default "" }}'
+      branch: '{{ .branch }}'
+      token: '{{ .token | default "${ANSIBLE_GALAXY_TOKEN}" }}'
     cmds:
-      - |
-        if [[ -z {{ .branch | quote }} ]];
-        then
-          branch="$(gh repo view --json defaultBranchRef {{ .org }}/ansible-{{ .name }} | jq -r .defaultBranchRef.name)"
-        else
-          branch={{ .branch | quote }}
-        fi
+      - |-
+        {{ if .branch -}}
         ansible-galaxy \
           role \
-            import \
-              --branch "$branch" \
-              --token "${ANSIBLE_GALAXY_TOKEN}" \
-              --role-name {{ .name | quote }} \
+            import
+              {{- if .dashvees }} \
+              {{ .dashvees | quote -}}
+              {{- end -}}
+              {{- if .branch }} \
+              --branch {{ .branch | quote -}}
+              {{- end -}}
+              {{- if .token }} \
+              --token {{ .token | quote -}}
+              {{- end -}}
+              {{- if .name }} \
+              --role-name {{ .name | quote -}}
+              {{- end }} \
+              {{ .org | quote }} \
+              "ansible-{{ .name }}"
+        {{- else -}}
+        echo "please specify a tag to import with branch=1.2.3"
+        {{- end }}
+  role-delete:
+    dotenv: [.galaxy-secrets.env]
+    vars:
+      token: '{{ .token | default "${ANSIBLE_GALAXY_TOKEN}" }}'
+      org: '{{ .org | default "andrewrothstein" }}'
+      name: '{{ .name }}'
+    cmds:
+      - |-
+        ansible-galaxy \
+          role \
+            delete
+              {{- if .dashvees }} \
+              {{ .dashvees -}}
+              {{- end -}}
+              {{- if .token }} \
+              --token {{ .token | quote -}}
+              {{- end }} \
               {{ .org | quote }} \
               "ansible-{{ .name }}"
   install:
