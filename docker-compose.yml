@@ -1,18 +1,52 @@
 ---
 version: '3'
 tasks:
+  _apply:
+    internal: true
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+      cmd: '{{ .cmd }}'
+      args: '{{ .args }}'
+    cmds:
+      - |
+        docker compose \
+          -p {{ .p | quote }} \
+          -f {{ .f | quote }} \
+          {{ .cmd | quote -}}
+          {{- if .args }} {{ .args }}{{ end }}
   apply:
     vars:
       p: '{{ .p }}'
       f: '{{ .f }}'
     cmds:
-      - docker compose -p {{ .p | quote }} -f {{ .f | quote }} up -d
+      - task: _apply
+        vars:
+          p: '{{ .p }}'
+          f: '{{ .f }}'
+          cmd: up
+          args: -d
   delete:
     vars:
       p: '{{ .p }}'
       f: '{{ .f }}'
     cmds:
-      - docker compose -p {{ .p | quote }} -f {{ .f | quote }} down
+      - task: _apply
+        vars:
+          p: '{{ .p }}'
+          f: '{{ .f }}'
+          cmd: down
+  logs:
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+    cmds:
+      - task: _apply
+        vars:
+          p: '{{ .p }}'
+          f: '{{ .f }}'
+          cmd: logs
+          args: -f
   ls:
     vars:
       format: '{{ .format | default "table" }}'

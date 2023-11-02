@@ -16,3 +16,6 @@ tasks:
   delete:
     cmds:
       - task: docker-compose:delete
+  logs:
+    cmds:
+      - task: docker-compose:logs
