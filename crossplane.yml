@@ -11,7 +11,7 @@ includes:
       name: crossplane
       chart_repo_name: crossplane-stable
       chart: crossplane
-      chart_ver: 1.13.2
+      chart_ver: 1.14.0
   crossplane-providers:
     taskfile: kubectl.yml
     internal: true
