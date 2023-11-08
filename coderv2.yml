@@ -34,12 +34,12 @@ tasks:
         vars:
           n: coder-v2
           url: https://helm.coder.com/v2
-      - task: coderv2-secret:apply
+      - task: coderv2-secret:create
         vars:
           n: '{{ .namespace }}'
           s: coder-db-url
-          k: url
-          v: "postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
+          args: >-
+            --from-literal=url="postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
       - task: coderv2:install
         vars:
           namespace: '{{ .namespace }}'
