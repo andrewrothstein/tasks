@@ -29,6 +29,7 @@ tasks:
             registry.gitlab.com \
             public.ecr.aws \
             container-registry.oracle.com \
+            cr.k8ssandra.io \
             registry.k8s.io; do
               h="$r"
               if [ "${r}" == "docker.io" ]; then
