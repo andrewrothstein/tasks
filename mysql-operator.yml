@@ -1,5 +1,7 @@
 ---
 version: '3'
+dotenv:
+  - .mysql-cluster-secrets.env
 includes:
   repo: mysql-operator-repo.yml
   helm:
@@ -17,31 +19,30 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: mysql-clusters
+      f: mysql-cluster.yml
   k8s-secret:
     taskfile: k8s-literal-secret.yml
     vars:
       n: mysql-clusters
+      s: mypwds
+      args: >-
+        --from-literal='rootUser=root'
+        --from-literal='rootHost=%'
+        --from-literal="rootPassword=${MYSQL_ROOT_PWD}"
 tasks:
   default:
     deps:
       - install
   install:
-    dotenv: [.mysql-cluster-secrets.env]
     deps:
       - task: repo
     cmds:
       - task: helm:install
       - task: kk:ns-create
       - task: k8s-secret:create
-        vars:
-          s: mypwds
-          args: >-
-            --from-literal=rootUser=root
-            --from-literal=rootHost=%
-            --from-literal=rootPassword="${MYSQL_ROOT_PWD}"
       - task: kk:apply
-        vars:
-          f: mysql-cluster.yml
   delete:
     cmds:
+      - task: k8s-secret:delete
+      - task: kk:ns-delete
       - task: helm:delete
