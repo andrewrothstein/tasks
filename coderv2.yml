@@ -1,5 +1,7 @@
 ---
 version: '3'
+dotenv:
+  - .coderv2-secrets.env
 includes:
   postgresql: bitnami-postgresql.yml
   coderv2-helm-repo: helm-repo.yml
@@ -14,11 +16,10 @@ tasks:
       name: '{{ .name | default "coder" }}'
       chart_repo_name: '{{ .chart_repo_name | default "coder-v2" }}'
       chart: '{{ .chart | default "coder" }}'
-      chart_ver: '{{ .chart_ver | default "0.23.7" }}'
+      chart_ver: '{{ .chart_ver | default "2.3.3" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       namespace: '{{ .namespace | default "coder" }}'
       admin_username: '{{ .admin_username | default "coder" }}'
-      admin_password: '{{ .admin_password | default "e7c32e46-bd6f-11ed-9c8d-38d54714ef1a" }}'
       admin_db: '{{ .admin_db | default "coder" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
@@ -39,7 +40,7 @@ tasks:
           n: '{{ .namespace }}'
           s: coder-db-url
           args: >-
-            --from-literal=url="postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
+            --from-literal=url="postgres://{{ .admin_username }}:${POSTGRES_PASSWORD}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
       - task: coderv2:install
         vars:
           namespace: '{{ .namespace }}'
@@ -47,7 +48,7 @@ tasks:
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
-          helm_args: -f coderv2/values.yml
+          helm_args: -f coderv2-values.yml
   delete:
     vars:
       name: '{{ .name | default "coder" }}'
@@ -60,7 +61,7 @@ tasks:
       - task: coderv2-secret:delete
         vars:
           n: '{{ .namespace }}'
-          k: url
+          s: coder-db-url
       - task: postgresql:delete
         vars:
           namespace: coder

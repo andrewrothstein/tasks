@@ -1,5 +1,7 @@
 ---
 version: '3'
+dotfile:
+  - .pg-secrets.env
 includes:
   bitnami-chart: bitnami-chart.yml
 tasks:
@@ -16,7 +18,7 @@ tasks:
       namespace: '{{ .namespace | default "bitnami-postgresql" }}'
       create_namespace: '{{ .create_namespace }}'
       admin_username: '{{ .admin_username | default "pgadmin" }}'
-      admin_password: '{{ .admin_password | default "password" }}'
+      admin_password: '{{ .admin_password | default "${POSTGRES_PASSWORD}" }}'
       admin_db: '{{ .admin_db | default "pgadmin" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
