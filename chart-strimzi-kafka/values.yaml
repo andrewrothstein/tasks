@@ -2,7 +2,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 kafka:
-  version: 3.4.0
+  version: 3.6.0
   pvcSize: 100Gi
   replicas: 3
   deleteClaim: true
@@ -30,4 +30,4 @@ min:
 inter:
   broker:
     protocol:
-      version: "3.4"
+      version: '3.6'
