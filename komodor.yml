@@ -15,7 +15,7 @@ tasks:
     vars:
       cluster_name: '{{ .cluster_name | default "kind" }}'
       chart: '{{ .chart | default "komodor-agent" }}'
-      chart_ver: '{{ .chart_ver | default "2.0.5" }}'
+      chart_ver: '{{ .chart_ver | default "2.0.4" }}'
       name: '{{ .name | default "komodor-agent" }}'
     deps:
       - task: helm-repo:add
