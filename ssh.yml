@@ -1,0 +1,6 @@
+---
+version: '3'
+tasks:
+  default:
+    cmds:
+      - ssh -L 7080:127.0.0.1:7080 console
