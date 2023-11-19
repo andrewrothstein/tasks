@@ -7,7 +7,10 @@ tasks:
   pull:
     cmds:
       - docker pull ghcr.io/srl-labs/clab
-  run-in-docker:
+      - docker pull ghcr.io/nokia/srlinux
+  bash:
+    vars:
+      c: '{{ .c }}'
     cmds:
       - |-
         docker run \
@@ -20,6 +23,11 @@ tasks:
           -v /etc/hosts:/etc/hosts \
           -v /var/lib/docker/containers:/var/lib/docker/containers \
           --pid="host" \
-          -v $(pwd):$(pwd) \
-          -w $(pwd) \
-          ghcr.io/srl-labs/clab bash
+          -v {{ .USER_WORKING_DIR }}:/clab \
+          -w /clab \
+          ghcr.io/srl-labs/clab bash -lc {{ .c | quote }}
+  deploy:
+    cmds:
+      - task: bash
+        vars:
+          c: containerlab deploy --reconfigure
