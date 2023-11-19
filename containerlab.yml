@@ -1,0 +1,25 @@
+---
+version: '3'
+tasks:
+  init:
+    cmds:
+      - bash -c "$(curl -sL https://get.containerlab.dev)"
+  pull:
+    cmds:
+      - docker pull ghcr.io/srl-labs/clab
+  run-in-docker:
+    cmds:
+      - |-
+        docker run \
+          --rm \
+          -it \
+          --privileged \
+          --network host \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v /var/run/netns:/var/run/netns \
+          -v /etc/hosts:/etc/hosts \
+          -v /var/lib/docker/containers:/var/lib/docker/containers \
+          --pid="host" \
+          -v $(pwd):$(pwd) \
+          -w $(pwd) \
+          ghcr.io/srl-labs/clab bash
