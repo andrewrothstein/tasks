@@ -16,7 +16,7 @@ tasks:
       name: '{{ .name | default "coder" }}'
       chart_repo_name: '{{ .chart_repo_name | default "coder-v2" }}'
       chart: '{{ .chart | default "coder" }}'
-      chart_ver: '{{ .chart_ver | default "2.3.3" }}'
+      chart_ver: '{{ .chart_ver | default "2.4.0" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       namespace: '{{ .namespace | default "coder" }}'
       admin_username: '{{ .admin_username | default "coder" }}'
