@@ -5,16 +5,20 @@ includes:
     taskfile: argo-raw.yml
     internal: true
     vars:
-      n: argo-cd
+      n: argocd
       p: cd
       v: 2.9.1
 tasks:
   default:
     deps:
       - apply
-  initial-admin-secret:
+  initial-password:
+    vars:
+      n: '{{ .n }}'
     cmds:
-      - kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+      - |-
+        argocd admin initial-password \
+          -n {{ .n | default "argocd" | quote }}
   apply:
     cmds:
       - task: argo-raw:apply
