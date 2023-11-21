@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bitnami-keycloak
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: local
+            url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{ cluster }}-bitnami-keycloak'
+    spec:
+      project: default
+      source:
+        chart: keycloak
+        repoURL: https://bitnami-labs.github.io/keycloak
+        targetRevision: 17.3.3
+        helm:
+          releaseName: bitnami-keycloak
+      destination:
+        server: '{{ url }}'
+        namespace: argocd
