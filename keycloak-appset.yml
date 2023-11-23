@@ -3,7 +3,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: bitnami-keycloak
-  namespace: argocd
 spec:
   generators:
     - list:
@@ -17,10 +16,9 @@ spec:
       project: default
       source:
         chart: keycloak
-        repoURL: https://bitnami-labs.github.io/keycloak
-        targetRevision: 17.3.3
+        repoURL: https://charts.bitnami.com/bitnami
+        targetRevision: 17.3.1
         helm:
           releaseName: bitnami-keycloak
       destination:
         server: '{{ url }}'
-        namespace: argocd
