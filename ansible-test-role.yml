@@ -10,8 +10,7 @@ includes:
       c: local
       target: localhost
       limit: localhost
-  dcb:
-    taskfile: dcb.yml
+  docker-buildx: docker-buildx.yml
 tasks:
   sauce:
     internal: true
@@ -81,12 +80,21 @@ tasks:
         vars:
           playbook: test.yml
   default:
-    deps:
-      - task: dcb:install
+    vars:
+      OS: debian
+      OS_VER: bookworm
+      TARGET_SLUG:
+        sh: basename {{ .USER_WORKING_DIR | quote }}
+      TAG: 0.0.0-{{ .OS }}.{{ .OS_VER }}
+      BAKEFILE: https://github.com/andrewrothstein/bake-ansible-images-v1.git#develop
+    env:
+      UPSTREAM_TAG: '{{ .TAG }}'
+      TARGET_SLUG: '{{ .TARGET_SLUG }}'
+      TARGET_TAG: '{{ .TAG }}'
     cmds:
-      - task: dcb:default
-        vars:
-          pushall: '{{ .pushall | default "true" }}'
+      - |-
+        cd {{ .USER_WORKING_DIR | quote }}
+        docker buildx bake {{ .BAKEFILE | quote }} --load --progress tty
   generate-checksum:
     internal: true
     vars:
