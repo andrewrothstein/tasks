@@ -4,13 +4,42 @@ tasks:
   install:
     cmds:
       - docker run --privileged --rm tonistiigi/binfmt --install all
+  ls:
+    cmds:
+      - docker buildx ls
+  create:
+    vars:
+      name: '{{ .name | default "buildkit" }}'
+      driver: '{{ .driver | default "docker-container" }}'
+      use: '{{ .use | default "false" }}'
+    cmds:
       - |
-        docker buildx create --use \
-          --name mybuilder \
-          --driver docker-container
+        docker \
+          buildx \
+            create \
+              --name {{ .name | quote -}}
+              {{- if .driver }} \
+              --driver {{ .driver | quote -}}
+              {{- end -}}
+              {{- if eq .use "true" }} \
+              --use
+              {{- end -}}
+  rm:
+    vars:
+      name: '{{ .name | default "buildkit" }}'
+      driver: '{{ .driver }}'
+    cmds:
+      - |-
+        docker \
+          buildx \
+            rm
+              {{- if .driver }} \
+              --driver {{ .driver | quote -}}
+              {{- end }} \
+              {{ .name | quote }}
   bake:
     vars:
-      builder: '{{ .builder }}'
+      builder: '{{ .builder | default "buildkit" }}'
       f: '{{ .f }}'
       load: '{{ .load }}'
       print: '{{ .print }}'
@@ -22,8 +51,8 @@ tasks:
       - |-
         docker buildx bake
         {{- if .builder }} \
-          --builder {{ .builder | default "default" }}
-        {{- end }}
+          --builder {{ .builder | quote -}}
+        {{- end -}}
         {{- if .f }} \
           -f {{ .f }}
         {{- end }}
@@ -51,9 +80,5 @@ tasks:
         vars:
           f: docker-bake.hcl
           pull: true
+          load: true
           args: only
-      - task: bake
-        vars:
-          f: docker-bake.hcl
-          pull: true
-          args: both
