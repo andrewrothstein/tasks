@@ -39,36 +39,40 @@ tasks:
               {{ .name | quote }}
   bake:
     vars:
+      source: '{{ .source }}'
       builder: '{{ .builder | default "buildkit" }}'
       f: '{{ .f }}'
-      load: '{{ .load }}'
+      load: '{{ .load | default "false" }}'
       print: '{{ .print }}'
-      pull: '{{ .pull }}'
-      push: '{{ .push }}'
-      no_cache: '{{ .no_cache }}'
+      pull: '{{ .pull | default "false" }}'
+      push: '{{ .push | default "false" }}'
+      no_cache: '{{ .no_cache | default "false" }}'
       args: '{{ .args }}'
     cmds:
       - |-
         docker buildx bake
+        {{- if .source }} \
+        {{ .source | quote }}
+        {{- end -}}
         {{- if .builder }} \
           --builder {{ .builder | quote -}}
         {{- end -}}
         {{- if .f }} \
           -f {{ .f }}
         {{- end }}
-        {{- if .load }} \
+        {{- if eq "true" .load }} \
           --load
         {{- end }}
         {{- if .print }} \
-          --print
+          --print {{ .print | quote }}
         {{- end }}
-        {{- if .pull }} \
+        {{- if eq "true" .pull }} \
           --pull
         {{- end }}
-        {{- if .push }} \
+        {{- if eq "true" .push }} \
           --push
         {{- end }}
-        {{- if .no_cache }} \
+        {{- if eq "true" .no_cache }} \
           --no-cache
         {{- end }}
         {{- if .args }} \
@@ -79,6 +83,6 @@ tasks:
       - task: bake
         vars:
           f: docker-bake.hcl
-          pull: true
-          load: true
+          pull: "true"
+          load: "true"
           args: only
