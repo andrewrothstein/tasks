@@ -7,7 +7,7 @@ includes:
     vars:
       n: argocd
       p: cd
-      v: 2.9.1
+      v: 2.9.2
 tasks:
   default:
     deps:
