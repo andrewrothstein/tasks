@@ -81,8 +81,8 @@ tasks:
           playbook: test.yml
   default:
     vars:
-      OS: debian
-      OS_VER: bookworm
+      OS: '{{ .OS | default "debian" }}'
+      OS_VER: '{{ .OS_VER | default "bookworm" }}'
       TARGET_SLUG:
         sh: basename {{ .USER_WORKING_DIR | quote }}
       TAG: 0.0.0-{{ .OS }}.{{ .OS_VER }}
@@ -94,7 +94,11 @@ tasks:
     cmds:
       - |-
         cd {{ .USER_WORKING_DIR | quote }}
-        docker buildx bake {{ .BAKEFILE | quote }} --load --progress tty
+        docker \
+          buildx bake \
+            {{ .BAKEFILE | quote }} \
+            --load \
+            --progress plain
   generate-checksum:
     internal: true
     vars:
