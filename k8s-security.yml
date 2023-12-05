@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+#  trivy-operator: trivy-operator.yml
+  trivy-operator: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: trivy-operator:install
+  delete:
+    cmds:
+      - task: trivy-operator:delete

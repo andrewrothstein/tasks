@@ -1,0 +1,26 @@
+---
+version: '3'
+includes:
+  repo: aqua-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: trivy-system
+      create_namespace: true
+      chart_repo_name: aqua
+      chart: trivy-operator
+      name: trivy-operator
+      chart_ver: 0.19.1
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:install
+  delete:
+    cmds:
+      - task: helm:delete

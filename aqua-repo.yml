@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    internal: true
+    taskfile: helm-repo.yml
+    vars:
+      n: aqua
+      url: https://aquasecurity.github.io/helm-charts/
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

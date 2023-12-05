@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-network: k8s-network.yml
   k8s-storage: k8s-storage.yml
@@ -24,6 +25,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: k8s-security:up
       - task: k8s-secrets:up
       - task: k8s-network:up
       - task: k8s-storage:up
@@ -45,3 +47,4 @@ tasks:
       - task: k8s-storage:delete
       - task: k8s-network:delete
       - task: k8s-secrets:delete
+      - task: k8s-security:delete
