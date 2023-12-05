@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  cc: cookiecutter.yml
   gh: gh.yml
   ansible-galaxy: ansible-galaxy.yml
   local:
@@ -33,20 +34,18 @@ tasks:
       git_org: '{{ .git_org | default "https://github.com/andrewrothstein" }}'
       roles_dir: '{{ .roles_dir | default "${HOME}/git/github.com/andrewrothstein" }}'
       name: '{{ .name }}'
-      infix: '{{ .infix | default "-" }}'
-      role_name: ansible{{ .infix }}{{ .name }}
+      role_name: ansible-{{ .name }}
       git_repo: '{{ .git_org }}/{{ .role_name }}'
       dir: '{{ .roles_dir }}/{{ .role_name }}'
       public: true
     cmds:
-      - task: ansible-galaxy:role-init
+      - task: cc
         vars:
-          roles_dir: '{{ .roles_dir }}'
-          name: '{{ .name }}'
-      - |
-        cd {{ .roles_dir | quote }};
-        galaxify {{ .name | quote }};
-        mv {{ .name | quote }} {{ .role_name | quote }};
+          cc_args: >-
+            https://github.com/andrewrothstein/cookiecutter-ansible-role.git
+            role_name={{ .name | quote }}
+          output_dir: '{{ .roles_dir }}'
+          no_input: "true"
       - task: gh:create-repo
         vars:
           dir: '{{ .roles_dir }}'

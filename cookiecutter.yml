@@ -1,0 +1,71 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      no_input: '{{ .no_input | default "false" }}'
+      c: '{{ .c }}'
+      directory: '{{ .directory }}'
+      replay: '{{ .replay | default "false" }}'
+      replay_file: '{{ .replay_file }}'
+      v: '{{ .v | default "false" }}'
+      f: '{{ .f | default "false" }}'
+      s: '{{ .s | default "false" }}'
+      output_dir: '{{ .output_dir }}'
+      config_file: '{{ .config_file }}'
+      default_config: '{{ .default_config | default "false" }}'
+      debug_file: '{{ .debug_file }}'
+      accept_hooks: '{{ .accept_hooks }}'
+      cc_template: '{{ .cc_template }}'
+      extra_context: '{{ .extra_context }}'
+    cmds:
+      - |-
+        cookiecutter
+        {{- if eq "true" .no_input }} \
+          --no-input
+        {{- end -}}
+        {{- if .c }} \
+          -c {{ .c | quote -}}
+        {{- end -}}
+        {{- if .directory }} \
+          --directory={{ .directory | quote }}
+        {{- end -}}
+        {{- if eq "true" .v }} \
+          --verbose
+        {{- end -}}
+        {{- if eq "true" .replay }} \
+          --replay
+        {{- end -}}
+        {{- if .replay_file }} \
+          --replay-file={{ .repay_file | quote }}
+        {{- end -}}
+        {{- if eq "true" .f }} \
+          -f
+        {{- end -}}
+        {{- if eq "true" .s }} \
+          -s
+        {{- end -}}
+        {{- if .output_dir }} \
+          --output-dir={{ .output_dir | quote }}
+        {{- end -}}
+        {{- if .config_file }} \
+          --config-file={{ .config_file | quote }}
+        {{- end -}}
+        {{- if eq "true" .default_config }} \
+          --default-config
+        {{- end -}}
+        {{- if .debug_file }} \
+          --debug-file={{ .debug_file | quote }}
+        {{- end -}}
+        {{- if .accept_hooks }} \
+          --accept-hooks={{ .accept_hooks | quote }}
+        {{- end }} \
+          {{ .cc_args -}}
+  test:
+    cmds:
+      - task: default
+        vars:
+          cc_args: '{{ .USER_WORKING_DIR }}'
+          output_dir: '{{ .USER_WORKING_DIR }}/.tests'
+          no_input: "true"
+          f: "true"
