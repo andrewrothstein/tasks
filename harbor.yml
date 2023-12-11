@@ -6,13 +6,13 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      create_namespace: 'true'
       helm_args: ''
       namespace: harbor
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.12.1
+      chart_ver: 1.13.1
 tasks:
   default:
     deps:
