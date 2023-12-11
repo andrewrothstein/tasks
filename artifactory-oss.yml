@@ -11,7 +11,7 @@ includes:
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.55.13
+      chart_ver: 107.71.8
 tasks:
   default:
     deps:
