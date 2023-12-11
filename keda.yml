@@ -11,7 +11,7 @@ includes:
       name: keda
       chart_repo_name: kedacore
       chart: keda
-      chart_ver: 2.11.2
+      chart_ver: 2.12.1
 tasks:
   default:
     deps:
