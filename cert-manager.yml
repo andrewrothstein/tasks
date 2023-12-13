@@ -14,7 +14,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: 1.13.1
+      chart_ver: 1.13.3
       chart: cert-manager
       helm_args: --set installCRDs=true
   approver_policy:
@@ -24,7 +24,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: 0.8.0
+      chart_ver: 0.11.0
       chart: cert-manager-approver-policy
   csi_driver:
     taskfile: helm.yml
@@ -33,7 +33,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: 0.5.0
+      chart_ver: 0.6.0
       chart: cert-manager-csi-driver
   trust_manager:
     taskfile: helm.yml
@@ -42,7 +42,7 @@ includes:
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack
-      chart_ver: 0.6.0
+      chart_ver: 0.7.0
       chart: trust-manager
   ss:
     taskfile: kubectl.yml
