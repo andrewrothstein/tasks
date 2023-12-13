@@ -31,6 +31,7 @@ tasks:
             container-registry.oracle.com \
             cr.k8ssandra.io \
             releases-docker.jfrog.io \
+            xpkg.upbound.io \
             registry.k8s.io; do
               h="$r"
               if [ "${r}" == "docker.io" ]; then
