@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: percona
+      url:  https://percona.github.io/percona-helm-charts/
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
