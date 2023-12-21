@@ -1,124 +1,48 @@
 ---
 version: '3'
 includes:
-  capi: cluster_api.yml
+  helm-repo: helm-repo.yml
+  helm: helm.yml
 tasks:
-  list:
-    cmds:
-      - vcluster list
-  init:
-    internal: true
-    cmds:
-      - task: capi:init
-        vars:
-          i: vcluster
-  provision:
-    internal: true
-    vars:
-      # kubectl command, i.e. apply or delete
-      kk: '{{ .kk }}'
-      # workload cluster template variant/flavor
-      f: '{{ .f }}'
-      # namespace
-      n: '{{ .n }}'
-      # workload cluster name
-      name: '{{ .name }}'
-      # workload cluster k8s version
-      v: '{{ .v }}'
-      ## cluster size / machine counts
-      control_plane_machine_count: '{{ .control_plane_machine_count }}'
-      worker_machine_count: '{{ .worker_machine_count }}'
-      target_namespace: '{{ .target_namespace }}'
-    env:
-      HELM_VALUES: ''
-    cmds:
-      - |
-        clusterctl \
-          generate \
-          cluster {{ .name | quote -}} \
-          --kubernetes-version {{ .v | default "1.27.3" | quote }} \
-          -n {{ .n | default "default" | quote }}
-          {{- if .f }} \
-          -f {{ .f | quote -}}
-          {{- end -}}
-          {{- if .control_plane_machine_count -}} \
-          --control-plane-machine-count {{ .control_plane_machine_count -}}
-          {{- end -}}
-          {{- if .worker_machine_count }} \
-          --worker-machine-count {{ .worker_machine_count -}}
-          {{- end }} | kubectl {{ .kk | quote }} -f -
   create:
     vars:
-      # workload cluster template variant/flavor
-      f: '{{ .f }}'
-      # namespace
-      n: '{{ .n }}'
-      # workload cluster name
-      name: '{{ .name }}'
-      # workload cluster k8s version
-      v: '{{ .v }}'
-      ## cluster size / machine counts
-      control_plane_machine_count: '{{ .control_plane_machine_count }}'
-      worker_machine_count: '{{ .worker_machine_count }}'
-      target_namespace: '{{ .target_namespace }}'
+      chart_repo_name: '{{ .chart_repo_name | default "loft-sh" }}'
+      chart: '{{ .chart | default "vcluster" }}'
+      chart_ver: '{{ .chart_ver | default "0.18.1" }}'
+      namespace: '{{ .namespace | default "vclusters" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "my-vcluster" }}'
     deps:
-      - task: provision
+      - task: helm-repo:add
         vars:
-          kk: apply
-          f: '{{ .f }}'
-          n: '{{ .n }}'
+          n: '{{ .chart_repo_name }}'
+          url: https://charts.loft.sh
+    cmds:
+      - task: helm:install
+        vars:
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
-          v: '{{ .v }}'
-          control_plane_machine_count: '{{ .control_plane_machine_count }}'
-          worker_machine_count: '{{ .worker_machine_count }}'
   destroy:
     vars:
-      # workload cluster template variant/flavor
-      f: '{{ .f }}'
-      # namespace
-      n: '{{ .n }}'
-      # workload cluster name
-      name: '{{ .name }}'
-      # workload cluster k8s version
-      v: '{{ .v }}'
-      ## cluster size / machine counts
-      control_plane_machine_count: '{{ .control_plane_machine_count }}'
-      worker_machine_count: '{{ .worker_machine_count }}'
-      target_namespace: '{{ .target_namespace }}'
-    deps:
-      - task: provision
+      namespace: '{{ .namespace | default "vclusters" }}'
+      name: '{{ .name | default "my-vcluster" }}'
+    cmds:
+      - task: helm:delete
         vars:
-          kk: delete
-          f: '{{ .f }}'
-          n: '{{ .n }}'
+          namespace: '{{ .namespace }}'
           name: '{{ .name }}'
-          v: '{{ .v }}'
-          control_plane_machine_count: '{{ .control_plane_machine_count }}'
-          worker_machine_count: '{{ .worker_machine_count }}'
-  connect:
-    vars:
-      name: '{{ .name }}'
-      n: '{{ .n }}'
-    cmds:
-      - >-
-        vcluster
-        connect {{ .name | quote }}
-        -n {{ .n | default "default" | quote }}
-  apply:
-    deps:
-      - task: init
+  default:
     cmds:
       - task: create
         vars:
-          name: dev-1
+          name: padm
       - task: create
         vars:
-          name: tst-1
-  delete:
-    deps:
-      - task: destroy
+          name: dev
+      - task: create
         vars:
-          name: tst-1
-      - task: destroy
-        vars:
-          name: dev-1
+          name: qa

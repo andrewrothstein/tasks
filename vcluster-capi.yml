@@ -1,0 +1,124 @@
+---
+version: '3'
+includes:
+  capi: cluster_api.yml
+tasks:
+  list:
+    cmds:
+      - vcluster list
+  init:
+    internal: true
+    cmds:
+      - task: capi:init
+        vars:
+          i: vcluster
+  provision:
+    internal: true
+    vars:
+      # kubectl command, i.e. apply or delete
+      kk: '{{ .kk }}'
+      # workload cluster template variant/flavor
+      f: '{{ .f }}'
+      # namespace
+      n: '{{ .n }}'
+      # workload cluster name
+      name: '{{ .name }}'
+      # workload cluster k8s version
+      v: '{{ .v }}'
+      ## cluster size / machine counts
+      control_plane_machine_count: '{{ .control_plane_machine_count }}'
+      worker_machine_count: '{{ .worker_machine_count }}'
+      target_namespace: '{{ .target_namespace }}'
+    env:
+      HELM_VALUES: ''
+    cmds:
+      - |
+        clusterctl \
+          generate \
+          cluster {{ .name | quote -}} \
+          --kubernetes-version {{ .v | default "1.27.3" | quote }} \
+          -n {{ .n | default "default" | quote }}
+          {{- if .f }} \
+          -f {{ .f | quote -}}
+          {{- end -}}
+          {{- if .control_plane_machine_count -}} \
+          --control-plane-machine-count {{ .control_plane_machine_count -}}
+          {{- end -}}
+          {{- if .worker_machine_count }} \
+          --worker-machine-count {{ .worker_machine_count -}}
+          {{- end }} | kubectl {{ .kk | quote }} -f -
+  create:
+    vars:
+      # workload cluster template variant/flavor
+      f: '{{ .f }}'
+      # namespace
+      n: '{{ .n }}'
+      # workload cluster name
+      name: '{{ .name }}'
+      # workload cluster k8s version
+      v: '{{ .v }}'
+      ## cluster size / machine counts
+      control_plane_machine_count: '{{ .control_plane_machine_count }}'
+      worker_machine_count: '{{ .worker_machine_count }}'
+      target_namespace: '{{ .target_namespace }}'
+    deps:
+      - task: provision
+        vars:
+          kk: apply
+          f: '{{ .f }}'
+          n: '{{ .n }}'
+          name: '{{ .name }}'
+          v: '{{ .v }}'
+          control_plane_machine_count: '{{ .control_plane_machine_count }}'
+          worker_machine_count: '{{ .worker_machine_count }}'
+  destroy:
+    vars:
+      # workload cluster template variant/flavor
+      f: '{{ .f }}'
+      # namespace
+      n: '{{ .n }}'
+      # workload cluster name
+      name: '{{ .name }}'
+      # workload cluster k8s version
+      v: '{{ .v }}'
+      ## cluster size / machine counts
+      control_plane_machine_count: '{{ .control_plane_machine_count }}'
+      worker_machine_count: '{{ .worker_machine_count }}'
+      target_namespace: '{{ .target_namespace }}'
+    deps:
+      - task: provision
+        vars:
+          kk: delete
+          f: '{{ .f }}'
+          n: '{{ .n }}'
+          name: '{{ .name }}'
+          v: '{{ .v }}'
+          control_plane_machine_count: '{{ .control_plane_machine_count }}'
+          worker_machine_count: '{{ .worker_machine_count }}'
+  connect:
+    vars:
+      name: '{{ .name }}'
+      n: '{{ .n }}'
+    cmds:
+      - >-
+        vcluster
+        connect {{ .name | quote }}
+        -n {{ .n | default "default" | quote }}
+  apply:
+    deps:
+      - task: init
+    cmds:
+      - task: create
+        vars:
+          name: dev-1
+      - task: create
+        vars:
+          name: tst-1
+  delete:
+    deps:
+      - task: destroy
+        vars:
+          name: tst-1
+      - task: destroy
+        vars:
+          name: dev-1
