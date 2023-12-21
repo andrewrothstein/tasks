@@ -35,7 +35,7 @@ tasks:
         vars:
           namespace: '{{ .namespace }}'
           name: '{{ .name }}'
-  default:
+  create-all:
     cmds:
       - task: create
         vars:
@@ -46,3 +46,17 @@ tasks:
       - task: create
         vars:
           name: qa
+  destroy-all:
+    cmds:
+      - task: destroy
+        vars:
+          name: qa
+      - task: destroy
+        vars:
+          name: dev
+      - task: destroy
+        vars:
+          name: padm
+  default:
+    cmds:
+      - task: create-all
