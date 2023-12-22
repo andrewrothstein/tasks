@@ -26,6 +26,16 @@ tasks:
           f: '{{ .f }}'
           cmd: up
           args: -d
+  restart:
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+    cmds:
+      - task: _apply
+        vars:
+          p: '{{ .p }}'
+          f: '{{ .f }}'
+          cmd: restart
   delete:
     vars:
       p: '{{ .p }}'
