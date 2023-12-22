@@ -10,14 +10,14 @@ tasks:
       - apply
   apply:
     vars:
-      ver: '{{ .ver | default "1.11.0" }}'
+      ver: '{{ .ver | default "1.14.1" }}'
     cmds:
       - task: kubectl:apply
         vars:
           f: '{{ .antreamirror }}/v{{ .ver }}/antrea.yml'
   delete:
     vars:
-      ver: '{{ .ver | default "1.11.0" }}'
+      ver: '{{ .ver | default "1.14.1" }}'
     cmds:
       - task: kubectl:delete
         vars:
