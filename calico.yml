@@ -10,7 +10,7 @@ includes:
       name: calico
       chart_repo_name: projectcalico
       chart: tigera-operator
-      chart_ver: 3.25.0
+      chart_ver: 3.27.0
 #      helm_args: >-
 #        --values=calico-values.yml
 tasks:
