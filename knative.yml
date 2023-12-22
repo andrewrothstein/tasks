@@ -5,10 +5,14 @@ includes:
     taskfile: kubectl.yml
     internal: true
 vars:
-  KNATIVE_OPERATOR_DEFAULT_VER: 1.8.2
-  KNATIVE_SERVING_DEFAULT_VER: 1.8.3
-  KNATIVE_EVENTING_DEFAULT_VER: 1.8.5
-  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.8.6
+  # https://github.com/knative/operator/releases
+  KNATIVE_OPERATOR_DEFAULT_VER: 1.11.2
+  # https://github.com/knative/serving/releases
+  KNATIVE_SERVING_DEFAULT_VER: 1.12.3
+  # https://github.com/knative/eventing/releases
+  KNATIVE_EVENTING_DEFAULT_VER: 1.11.8
+  # https://github.com/knative-extensions/eventing-kafka-broker/releases
+  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.12.1
   KNATIVE_MIRROR: https://github.com
 tasks:
   default:
@@ -106,34 +110,34 @@ tasks:
     cmds:
       - task: install-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-controller.yaml
       - task: install-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-channel.yaml
       - task: install-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-broker.yaml
   delete-eventing-kafka-broker:
     cmds:
       - task: delete-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-broker.yaml
       - task: delete-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-channel.yaml
       - task: delete-component
         vars:
-          c: knative-sandbox/eventing-kafka-broker
+          c: knative-extensions/eventing-kafka-broker
           v: '{{ .v | default .KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER }}'
           y: eventing-kafka-controller.yaml
   install:
