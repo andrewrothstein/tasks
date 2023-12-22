@@ -45,3 +45,4 @@ roles:
   - andrewrothstein.go_dev
   - andrewrothstein.pack
   - andrewrothstein.kn
+  - andrewrothstein.kubeseal
