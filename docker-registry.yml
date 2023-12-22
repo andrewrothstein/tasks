@@ -19,3 +19,6 @@ tasks:
   logs:
     cmds:
       - task: docker-compose:logs
+  top:
+    cmds:
+      - task: docker-compose:top
