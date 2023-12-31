@@ -1,14 +1,10 @@
 ---
 version: '3'
 includes:
-  pip:
-    taskfile: python-pip.yml
-  python:
-    taskfile: python.yml
-  unittest:
-    taskfile: python-unittest.yml
-  build:
-    taskfile: python-build.yml
+  pip: python-pip.yml
+  python: python.yml
+  python-unittest: python-unittest.yml
+  python-build: python-build.yml
 tasks:
   test:
     cmds:
@@ -16,9 +12,9 @@ tasks:
       - task: pip:install
         vars:
           e: '{{ .USER_WORKING_DIR }}'
-      - task: unittest
+      - task: python-unittest
   default:
     deps:
-      - build
+      - task: python-build
     cmds:
       - task: test
