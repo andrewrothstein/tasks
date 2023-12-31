@@ -1,0 +1,16 @@
+---
+version: '3'
+tasks:
+  login:
+    dotenv: [.xethub-secrets.env]
+    vars:
+      u: '{{ .u | default "andrewrothstein" }}'
+      e: '{{ .e | default "andrew.rothstein@gmail.com" }}'
+      p: '{{ .p | default "$XETHUB_TOKEN" }}'
+    cmds:
+      - |-
+        git \
+          xet login \
+          -u {{ .u | quote }} \
+          -e {{ .e | quote }} \
+          -p {{ .p | quote }}
