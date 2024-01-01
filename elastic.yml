@@ -5,12 +5,12 @@ includes:
   elasticsearch:
     taskfile: kubectl.yml
     vars:
-      n: elasticsearch
+      n: elk
       f: elasticsearch.yml
   kibana:
     taskfile: kubectl.yml
     vars:
-      n: kibana
+      n: elk
       f: kibana.yml
 tasks:
   default:
