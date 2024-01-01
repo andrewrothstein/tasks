@@ -1,0 +1,46 @@
+---
+version: '3'
+dotenv:
+  - .drone-secrets.env
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "drone" }}'
+      chart: '{{ .chart | default "drone" }}'
+      chart_ver: '{{ .chart_ver | default "0.6.5" }}'
+      namespace: '{{ .namespace | default "drone" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "drone" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .chart_repo_name }}'
+          url: https://charts.drone.io
+    cmds:
+      - task: helm:install
+        vars:
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+          helm_args: >-
+            --set env.DRONE_SERVER_HOST=drone.kind
+            --set env.DRONE_SERVER_PROTO=https
+            --set env.DRONE_RPC_SECRET="${DRONE_RPC_SECRET}"
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "drone" }}'
+      name: '{{ .name | default "drone" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
