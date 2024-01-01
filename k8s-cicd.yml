@@ -16,6 +16,9 @@ includes:
 #  tekton-triggers: tekton-triggers.yml
   tekton-triggers: pet.yml
 
+#  tekton-operator: tekton-operator.yml
+  tekton-operator: pet.yml
+
 tasks:
   default:
     deps:
@@ -25,12 +28,14 @@ tasks:
       - task: flux:install
       - task: argoproj:install
       - task: kpack:apply
+      - task: tekton-operator:apply
       - task: tekton-pipelines:apply
       - task: tekton-triggers:apply
   delete:
     cmds:
       - task: tekton-triggers:delete
       - task: tekton-pipelines:delete
+      - task: tekton-operator:delete
       - task: kpack:delete
       - task: argoproj:delete
       - task: flux:delete

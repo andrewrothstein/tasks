@@ -5,7 +5,7 @@ includes:
     taskfile: tekton.yml
     vars:
       APP: operator
-      VER: 0.67.0
+      VER: 0.69.1
 tasks:
   apply:
     deps:
