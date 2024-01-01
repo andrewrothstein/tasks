@@ -1,6 +1,6 @@
 ---
 version: '3'
-#dotfile:
+#dotenv:
 #  - .argo-workflows-secrets.env
 includes:
   bitnami-chart: bitnami-chart.yml
