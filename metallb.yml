@@ -17,6 +17,7 @@ includes:
       chart_repo_name: metallb
       chart_ver: 0.13.12
       chart: metallb
+      helm_args: -f metallb-values.yml
 tasks:
   default:
     deps:
