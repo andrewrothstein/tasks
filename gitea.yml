@@ -29,6 +29,7 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
+          helm_args: -f gitea-values.yml
   delete:
     vars:
       namespace: '{{ .namespace | default "gitea" }}'
