@@ -1,0 +1,8 @@
+---
+server:
+  service:
+    type: LoadBalancer
+    annotations:
+      tailscale.com/expose: 'true'
+applicationSet:
+  enabled: true

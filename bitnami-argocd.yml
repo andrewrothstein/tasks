@@ -25,11 +25,7 @@ tasks:
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
-#          helm_args: >-
-#            --set auth.username={{ .admin_username | quote }}
-#            --set auth.password={{ .admin_password | quote }}
-#            --set auth.database={{ .admin_db | quote }}
-#            --set persistence.size={{ .db_size | quote }}
+          helm_args: -f bitnami-argocd-values.yml
   delete:
     vars:
       name: '{{ .name }}'
@@ -39,3 +35,12 @@ tasks:
         vars:
           name: '{{ .name | default "argo-cd" }}'
           namespace: '{{ .namespace | default "argocd" }}'
+  initial-password:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - |-
+        kubectl \
+          -n {{ .n | default "argocd" | quote }} \
+          get secret argocd-secret \
+          -o jsonpath="{.data.clearPassword}" | base64 -d
