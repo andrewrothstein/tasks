@@ -1,0 +1,26 @@
+---
+version: '3'
+tasks:
+  _create:
+    internal: true
+    vars:
+      d: '{{ .d | default .USER_WORKING_DIR }}'
+      chart_name: '{{ .chart_name }}'
+    cmds:
+      - |-
+        set -ex
+        cd {{ .d | quote }}
+        helm create
+        {{- if .chart_name }} \
+        {{ .chart_name | quote }}
+        {{- end -}}
+  create:
+    vars:
+      gh_root: '{{ .git_root | default "${HOME}/git/github.com" }}'
+      gh_org: '{{ .gh_org | default "andrewrothstein" }}'
+      name: '{{ .name }}'
+    cmds:
+      - task: _create
+        vars:
+          d: '{{ .gh_root }}/{{ .gh_org }}'
+          chart_name: chart-{{ .name }}
