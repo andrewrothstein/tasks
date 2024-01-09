@@ -1,7 +1,8 @@
 ---
 version: '3'
 tasks:
-  default:
+  _install:
+    internal: true
     vars:
       cluster: '{{ .cluster | default "false" }}'
       host: '{{ .host }}'
@@ -85,10 +86,17 @@ tasks:
         {{- if .user }} \
           --user {{ .user | quote }}
         {{- end }}
-  install-gateway:
+  default:
+    vars:
+      local_path: '{{ .USER_WORKING_DIR }}/.kubeconfigs/{{ .host }}.yml'
     cmds:
-      - task: default
+      - task: _install
         vars:
-          host: gateway
+          host: '{{ .host | default "gateway" }}'
+          sudo: true
           local: "true"
-          local_path: '{{ .USER_WORKING_DIR }}/.kubeconfig'
+          local_path: '{{ .local_path }}'
+      - |-
+        export KUBECONFIG={{ .local_path | quote }}
+        kubectl config use-context default
+        kubectl get node -o wide
