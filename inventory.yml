@@ -11,10 +11,13 @@ all:
       ansible_user: arothste
   children:
     docker_zfs:
-      children:
+      hosts:
         console:
         gateway:
+      vars:
+        docker_engine_daemon_json:
+          storage-driver: zfs
     docker:
-      children:
+      hosts:
         console:
         gateway:

@@ -17,3 +17,4 @@ aad-secret-*.json
 jaffle_shop/
 logs/
 .dolt/
+.kubeconfigs/
