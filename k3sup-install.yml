@@ -86,17 +86,37 @@ tasks:
         {{- if .user }} \
           --user {{ .user | quote }}
         {{- end }}
-  default:
+  local-install:
     vars:
-      local_path: '{{ .USER_WORKING_DIR }}/.kubeconfigs/{{ .host }}.yml'
+      local_path: '{{ .USER_WORKING_DIR }}/.kubeconfigs/localhost.yml'
     cmds:
       - task: _install
         vars:
-          host: '{{ .host | default "gateway" }}'
-          sudo: true
           local: "true"
           local_path: '{{ .local_path }}'
+          sudo: "true"
       - |-
         export KUBECONFIG={{ .local_path | quote }}
         kubectl config use-context default
         kubectl get node -o wide
+  cluster-install:
+    vars:
+      host: '{{ .host | default "gateway" }}'
+      local_path: '{{ .USER_WORKING_DIR }}/.kubeconfigs/{{ .host }}.yml'
+      user: '{{ .user | default "${USER}" }}'
+    cmds:
+      - task: _install
+        vars:
+          cluster: "true"
+          host: '{{ .host }}'
+          local_path: '{{ .local_path }}'
+          sudo: "true"
+          user: '{{ .user }}'
+      - |-
+        export KUBECONFIG={{ .local_path | quote }}
+        kubectl config use-context default
+        kubectl get node -o wide
+  default:
+    cmds:
+#      - task: local-install
+      - task: cluster-install
