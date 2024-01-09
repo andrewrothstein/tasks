@@ -1,6 +1,97 @@
 ---
 version: '3'
 tasks:
+  _join:
+    internal: true
+    vars:
+      host: '{{ .host }}'
+      ip: '{{ .ip }}'
+      k3s_channel: '{{ .k3s_channel }}'
+      k3s_extra_args: '{{ .k3s_extra_args }}'
+      k3s_version: '{{ .k3s_version }}'
+      no_extras: '{{ .no_extras | default "false" }}'
+      node_token: '{{ .node_token }}'
+      node_token_path: '{{ .node_token_path }}'
+      print_command: '{{ .print_command | default "false" }}'
+      server: '{{ .server | default "false" }}'
+      server_data_dir: '{{ .server_data_dir }}'
+      server_host: '{{ .server_host }}'
+      server_ip: '{{ .server_ip }}'
+      server_ssh_port: '{{ .server_ssh_port }}'
+      server_url: '{{ .server_url }}'
+      server_user: '{{ .server_user }}'
+      skip_install: '{{ .skip_install | default "false" }}'
+      ssh_key: '{{ .ssh_key }}'
+      ssh_port: '{{ .ssh_port }}'
+      sudo: '{{ .sudo | default "false" }}'
+      tls_san: '{{ .tls_san }}'
+      user: '{{ .user }}'
+    cmds:
+      - |-
+        k3sup join
+        {{- if .host }} \
+          --host {{ .host | quote }}
+        {{- end }}
+        {{- if .ip }} \
+          --ip {{ .ip | quote }}
+        {{- end }}
+        {{- if .k3s_channel }} \
+          --k3s-channel {{ .k3s_channel | quote }}
+        {{- end }}
+        {{- if .k3s_extra_args }} \
+          --k3s-extra-args {{ .k3s_extra_args | quote }}
+        {{- end }}
+        {{- if eq "true" .no_extras }} \
+          --no-extras
+        {{- end }}
+        {{- if .node_token }} \
+          --node-token {{ .node_token | quote }}
+        {{- end }}
+        {{- if .node_token_path }} \
+          --node-token-path {{ .node_token_path | quote }}
+        {{- end }}
+        {{- if eq "true" .print_command }} \
+          --print-command
+        {{- end }}
+        {{- if eq "true" .server }} \
+          --server
+        {{- end }}
+        {{- if .server_data_dir }} \
+          --server-data-dir {{ .server_data_dir | quote }}
+        {{- end }}
+        {{- if .server_host }} \
+          --server-host {{ .server_host | quote }}
+        {{- end }}
+        {{- if .server_ip }} \
+          --server-ip {{ .server_ip | quote }}
+        {{- end }}
+        {{- if .server_ssh_port }} \
+          --server-ssh-port {{ .server_ssh_port | quote }}
+        {{- end }}
+        {{- if .server_url }} \
+          --server-url {{ .server_url | quote }}
+        {{- end }}
+        {{- if .server_user }} \
+          --server-user {{ .server_user | quote }}
+        {{- end }}
+        {{- if eq "true" .skip_install }} \
+          --skip-install
+        {{- end }}
+        {{- if .ssh_key }} \
+          --ssh-key {{ .ssh_key | quote }}
+        {{- end }}
+        {{- if .ssh_port }} \
+          --ssh-port {{ .ssh_port | quote }}
+        {{- end }}
+        {{- if eq "true" .sudo }} \
+          --sudo
+        {{- end }}
+        {{- if .tls_san }} \
+          --tls-san {{ .tls_san | quote }}
+        {{- end }}
+        {{- if .user }} \
+          --user {{ .user | quote }}
+        {{- end }}
   _install:
     internal: true
     vars:
