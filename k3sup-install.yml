@@ -1,0 +1,94 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      cluster: '{{ .cluster | default "false" }}'
+      host: '{{ .host }}'
+      ip: '{{ .ip }}'
+      ipsec: '{{ .ipsec }}'
+      k3s_channel: '{{ .k3s_channel | default "stable" }}'
+      k3s_extra_args: '{{ .k3s_extra_args }}'
+      k3s_version: '{{ .k3s_version }}'
+      local: '{{ .local | default "false" }}'
+      local_path: '{{ .local_path }}'
+      merge: '{{ .merge | default "false" }}'
+      no_extras: '{{ .no_extras | default "false" }}'
+      print_commands: '{{ .print_commands | default "false" }}'
+      skip_install: '{{ .skip_install | default "false" }}'
+      ssh_key: '{{ .ssh_key }}'
+      ssh_port: '{{ .ssh_port }}'
+      sudo: '{{ .sudo | default "true" }}'
+      tls_san: '{{ .tls_san }}'
+      token: '{{ .token }}'
+      user: '{{ .user }}'
+    cmds:
+      - |-
+        k3sup install
+        {{- if eq .cluster "true" }} \
+          --cluster
+        {{- end }}
+        {{- if .host }} \
+          --host {{ .host | quote }}
+        {{- end }}
+        {{- if .ip }} \
+          --ip {{ .ip | quote }}
+        {{- end }}
+        {{- if .ipsec }} \
+          --ipsec {{ .ipsec | quote }}
+        {{- end }}
+        {{- if .k3s_channel }} \
+          --k3s-channel {{ .k3s_channel | quote }}
+        {{- end }}
+        {{- if .k3s_extra_args }} \
+          --k3s-extra-args {{ .k3s_extra_args | quote }}
+        {{- end }}
+        {{- if .k3s_version }} \
+          --k3s-version {{ .k3s_version | quote }}
+        {{- end }}
+        {{- if eq .local "true" }} \
+          --local
+        {{- end }}
+        {{- if .local_path }} \
+          --local-path {{ .local_path | quote }}
+        {{- end }}
+        {{- if eq .merge "true" }} \
+          --merge
+        {{- end }}
+        {{- if eq .no_extra "true" }} \
+          --no-extra
+        {{- end }}
+        {{- if eq .print_commands "true" }} \
+          --print-commands
+        {{- end }}
+        {{- if eq .print_config "true" }} \
+          --print-config
+        {{- end }}
+        {{- if eq .skip_install "true" }} \
+          --skip-install
+        {{- end }}
+        {{- if .ssh_key }} \
+          --ssh-key {{ .ssh_key | quote }}
+        {{- end }}
+        {{- if .ssh_port }} \
+          --ssh-key {{ .ssh_key | quote }}
+        {{- end }}
+        {{- if eq .sudo "true" }} \
+          --sudo
+        {{- end }}
+        {{- if .tls_san }} \
+          --tls-san {{ .tls_san | quote }}
+        {{- end }}
+        {{- if .token }} \
+          --token {{ .token | quote }}
+        {{- end }}
+        {{- if .user }} \
+          --user {{ .user | quote }}
+        {{- end }}
+  install-gateway:
+    cmds:
+      - task: default
+        vars:
+          host: gateway
+          local: "true"
+          local_path: '{{ .USER_WORKING_DIR }}/.kubeconfig'
