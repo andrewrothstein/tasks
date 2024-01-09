@@ -3,3 +3,18 @@ all:
   hosts:
     localhost:
       ansible_connection: local
+    truenas:
+      ansible_user: root
+    gateway:
+      ansible_user: arothste
+    console:
+      ansible_user: arothste
+  children:
+    docker_zfs:
+      children:
+        console:
+        gateway:
+    docker:
+      children:
+        console:
+        gateway:

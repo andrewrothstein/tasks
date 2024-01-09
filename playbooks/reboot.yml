@@ -1,0 +1,8 @@
+---
+# ansible-playbook reboot.yml -e reboot_group=docker
+- hosts: '{{ reboot_group }}'
+  tasks:
+    - become: true
+      become_user: root
+      ansible.builtin.reboot:
+        reboot_timeout: '{{ reboot_timeout | default(3600) }}'

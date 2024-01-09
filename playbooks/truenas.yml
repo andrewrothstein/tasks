@@ -1,0 +1,19 @@
+---
+- name: Bootstrap k8s
+  hosts:
+    - truenas
+  tasks:
+    - name: Add tailscale helm chart repository
+      kubernetes.core.helm_repository:
+        name: tailscale
+        repo_url: https://pkgs.tailscale.com/helmcharts
+    - name: Install tailscale operator
+      kubernetes.core.helm:
+        chart_ref: tailscale/tailscale-operator
+        chart_version: 1.56.1
+        create_namespace: true
+        release_name: tailscale-operator
+        release_namespace: tailscale
+        kubeconfig: /etc/rancher/k3s/k3s.yaml
+        values: '{{ lookup("file", ".tailscale-secrets.yml") | from_yaml }}'
+        state: present

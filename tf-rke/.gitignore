@@ -1,0 +1,4 @@
+.terraform*
+terraform.tfstate*
+kube_config_cluster.yml
+rke-provider-log.txt
