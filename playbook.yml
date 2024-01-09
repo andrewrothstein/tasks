@@ -11,6 +11,7 @@
   roles:
     - andrewrothstein.sudoers
     - andrewrothstein.docker_compose
+    - andrewrothstein.k3sup
     - andrewrothstein.k3d
     - andrewrothstein.kind
     - andrewrothstein.kubectl
