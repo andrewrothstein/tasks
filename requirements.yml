@@ -48,3 +48,4 @@ roles:
   - andrewrothstein.kn
   - andrewrothstein.kubeseal
   - andrewrothstein.calicoctl
+  - andrewrothstein.pki
