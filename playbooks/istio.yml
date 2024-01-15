@@ -1,0 +1,49 @@
+---
+- name: Install istio
+  hosts:
+    - localhost
+  vars:
+    istio_ver: 1.20.1
+  tasks:
+    - ansible.builtin.include_role:
+        name: andrewrothstein.istio
+    - name: Add istio helm chart repository
+      kubernetes.core.helm_repository:
+        name: istio
+        repo_url: https://istio-release.storage.googleapis.com/charts
+    - name: Install istio/base
+      kubernetes.core.helm:
+        chart_ref: istio/base
+        chart_version: '{{ istio_ver }}'
+        create_namespace: "true"
+        release_name: istio-base
+        release_namespace: istio-system
+        context: gateway
+        state: present
+    - name: Install istio/istiod
+      kubernetes.core.helm:
+        chart_ref: istio/istiod
+        chart_version: '{{ istio_ver }}'
+        create_namespace: "false"
+        release_name: istiod
+        release_namespace: istio-system
+        context: gateway
+        state: present
+    - name: Install istio/cni
+      kubernetes.core.helm:
+        chart_ref: istio/cni
+        chart_version: '{{ istio_ver }}'
+        create_namespace: "false"
+        release_name: istio-cni
+        release_namespace: kube-system
+        context: gateway
+        state: absent
+    - name: Install istio/gateway
+      kubernetes.core.helm:
+        chart_ref: istio/gateway
+        chart_version: '{{ istio_ver }}'
+        create_namespace: "true"
+        release_name: istio-gateway
+        release_namespace: istio-gateway
+        context: gateway
+        state: present
