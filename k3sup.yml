@@ -11,7 +11,7 @@ tasks:
       k3s_channel: '{{ .k3s_channel }}'
       k3s_extra_args: '{{ .k3s_extra_args }}'
       k3s_version: '{{ .k3s_version }}'
-      no_extras: '{{ .no_extras | default "false" }}'
+      no_extras: '{{ .no_extras }}'
       node_token: '{{ .node_token }}'
       node_token_path: '{{ .node_token_path }}'
       print_command: '{{ .print_command | default "false" }}'
@@ -108,7 +108,7 @@ tasks:
       local: '{{ .local | default "false" }}'
       local_path: '{{ .local_path }}'
       merge: '{{ .merge | default "false" }}'
-      no_extras: '{{ .no_extras | default "false" }}'
+      no_extras: '{{ .no_extras }}'
       print_commands: '{{ .print_commands | default "false" }}'
       skip_install: '{{ .skip_install | default "false" }}'
       ssh_key: '{{ .ssh_key }}'
@@ -153,8 +153,8 @@ tasks:
         {{- if eq .merge "true" }} \
           --merge
         {{- end }}
-        {{- if eq .no_extra "true" }} \
-          --no-extra
+        {{- if eq .no_extras "true" }} \
+          --no-extras
         {{- end }}
         {{- if eq .print_commands "true" }} \
           --print-commands
@@ -187,10 +187,13 @@ tasks:
     vars:
       host: '{{ .host }}'
       context: '{{ .context | default .host }}'
-      local_path: '{{ .USER_WORKING_DIR }}/.kubeconfigs/{{ .host }}.yml'
+      kubeconfigs: '${HOME}/.kube/configs'
+      local_path: '{{ .kubeconfigs }}/{{ .host }}.yml'
+      no_extras: '{{ .no_extras }}'
       sudo: '{{ .sudo | default "true" }}'
       user: '{{ .user | default "${USER}" }}'
     cmds:
+      - mkdir -p {{ .kubeconfigs | quote }}
       - task: _install
         vars:
           local: '{{ if eq "localhost" .host }}true{{ else }}false{{ end }}'
@@ -198,6 +201,7 @@ tasks:
           context: '{{ .context }}'
           host: '{{ .host }}'
           local_path: '{{ .local_path }}'
+          no_extras: '{{ .no_extras }}'
           sudo: '{{ .sudo }}'
           user: '{{ .user }}'
       - |-
@@ -209,7 +213,9 @@ tasks:
       - task: install
         vars:
           host: console
+          no_extras: "true"
       - task: install
         vars:
           host: gateway
+          no_extras: "true"
       - task: kubeconfig:merge-all

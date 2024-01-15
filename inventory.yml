@@ -7,12 +7,18 @@ all:
       ansible_user: root
     gateway:
       ansible_user: arothste
+      kubeconfig: /etc/rancher/k3s/k3s.yaml
     console:
       ansible_user: arothste
+      kubeconfig: /etc/rancher/k3s/k3s.yaml
   children:
-    docker_zfs:
+    k3s:
       hosts:
+        gatway:
         console:
+      vars:
+    zfs:
+      hosts:
         gateway:
       vars:
         docker_engine_daemon_json:

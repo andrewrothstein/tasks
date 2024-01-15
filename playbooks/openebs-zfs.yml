@@ -1,0 +1,24 @@
+---
+- ansible.builtin.import_playbook: iscsi.yml
+- name: Install openebs-zfs
+  hosts:
+    - localhost
+  tasks:
+    - ansible.builtin.include_role:
+        name: andrewrothstein.kubernetes_helm
+    - name: Add openebs helm chart repository
+      kubernetes.core.helm_repository:
+        name: openebs
+        repo_url: https://openebs.github.io/charts
+    - name: Install openebs
+      kubernetes.core.helm:
+        chart_ref: openebs/openebs
+        chart_version: 3.10.0
+        create_namespace: true
+        release_name: openebs
+        release_namespace: openebs
+        context: gateway
+        values:
+          zfs-localpv:
+            enabled: true
+        state: present

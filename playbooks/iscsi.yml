@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: zfs
   tasks:
     - name: install open iscsi initiator
       become: true

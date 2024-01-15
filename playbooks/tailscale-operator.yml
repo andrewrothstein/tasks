@@ -1,5 +1,5 @@
 ---
-- name: Bootstrap k8s
+- name: Install tailscale-operator
   hosts:
     - truenas
   tasks:
