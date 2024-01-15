@@ -2,6 +2,8 @@
 collections:
   - ansible.posix
   - community.windows
+  - community.hashi_vault
+  - community.kubernetes
 roles:
   - andrewrothstein.sudoers
   - andrewrothstein.docker_compose
