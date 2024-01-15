@@ -33,12 +33,12 @@ includes:
     taskfile: kubectl.yml
     vars:
       f: https://raw.githubusercontent.com/merbridge/merbridge/0.8.1/deploy/all-in-one.yaml
-  ingress:
+  gateway:
     taskfile: helm.yml
     vars:
-      namespace: istio-ingress
+      namespace: istio-gateway
       create_namespace: true
-      name: istio-ingress
+      name: istio-gateway
       chart_repo_name: istio
       chart: gateway
       chart_ver: '{{ .istio_ver }}'
@@ -58,10 +58,10 @@ tasks:
       - task: istiod:install
       - task: cni:install
       - task: merbridge:apply
-      - task: ingress:install
+      - task: gateway:install
   delete:
     cmds:
-      - task: ingress:delete
+      - task: gateway:delete
       - task: merbridge:delete
       - task: cni:delete
       - task: istiod:delete
