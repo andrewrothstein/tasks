@@ -1,0 +1,31 @@
+---
+- name: Installing {{ fq_chart_ref }} on {{ kubecontext }}
+  hosts:
+    - localhost
+  vars:
+    kubecontext: gateway
+    helm_repo_name: jfrog
+    helm_repo_url: https://charts.jfrog.io
+    chart_name: artifactory-oss
+    chart_ver: 107.71.11
+    release_name: artifactory
+    create_namespace: "true"
+    namespace: artifactory
+
+    fq_helm_repo: '{{ helm_repo_name }}@{{ helm_repo_url }}'
+    chart_ref: '{{ helm_repo_name }}/{{ chart_name }}'
+    fq_chart_ref: '{{ chart_ref }}:{{ chart_ver }}'
+  tasks:
+    - name: Adding helm repo {{ fq_helm_repo }}
+      kubernetes.core.helm_repository:
+        name: '{{ helm_repo_name }}'
+        repo_url: '{{ helm_repo_url }}'
+    - name: Installing {{ fq_chart_ref }}
+      kubernetes.core.helm:
+        chart_ref: '{{ chart_ref }}'
+        chart_version: '{{ chart_ver }}'
+        create_namespace: '{{ create_namespace }}'
+        release_name: '{{ release_name }}'
+        release_namespace: '{{ namespace }}'
+        context: '{{ kubecontext }}'
+        state: present
