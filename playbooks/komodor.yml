@@ -1,0 +1,32 @@
+---
+- name: Installing {{ fq_chart_ref }} on {{ kubecontext }}
+  hosts:
+    - localhost
+  vars:
+    kubecontext: gateway
+    helm_repo_name: komodorio
+    helm_repo_url: https://helm-charts.komodor.io
+    chart_name: komodor-agent
+    chart_ver: 2.2.0
+    release_name: komodor-agent
+    create_namespace: "true"
+    namespace: komodorio
+
+    fq_helm_repo: '{{ helm_repo_name }}@{{ helm_repo_url }}'
+    chart_ref: '{{ helm_repo_name }}/{{ chart_name }}'
+    fq_chart_ref: '{{ chart_ref }}:{{ chart_ver }}'
+  tasks:
+    - name: Adding helm repo {{ fq_helm_repo }}
+      kubernetes.core.helm_repository:
+        name: '{{ helm_repo_name }}'
+        repo_url: '{{ helm_repo_url }}'
+    - name: Installing {{ fq_chart_ref }}
+      kubernetes.core.helm:
+        chart_ref: '{{ chart_ref }}'
+        chart_version: '{{ chart_ver }}'
+        create_namespace: '{{ create_namespace }}'
+        release_name: '{{ release_name }}'
+        release_namespace: '{{ namespace }}'
+        context: '{{ kubecontext }}'
+        values: '{{ lookup("file", ".komodor-gateway-secrets.yml") | from_yaml }}'
+        state: present
