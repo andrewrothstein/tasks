@@ -3,7 +3,7 @@
   hosts:
     - localhost
   vars:
-    istio_ver: 1.20.1
+    istio_ver: 1.20.2
   tasks:
     - ansible.builtin.include_role:
         name: andrewrothstein.istio
