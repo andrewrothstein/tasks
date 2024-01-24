@@ -7,10 +7,11 @@ includes:
     vars:
       namespace: awx
       create_namespace: true
-      name: my-awx-operator
+      name: awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
       chart_ver: 2.10.0
+      helm_args: -f awx-values.yml
 tasks:
   default:
     deps:
