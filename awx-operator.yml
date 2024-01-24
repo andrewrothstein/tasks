@@ -10,7 +10,7 @@ includes:
       name: my-awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
-      chart_ver: 2.2.1
+      chart_ver: 2.10.0
 tasks:
   default:
     deps:
