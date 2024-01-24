@@ -1,6 +1,40 @@
 ---
 version: '3'
 tasks:
+  upgrade:
+    vars:
+      install: '{{ .install | default "true" }}'
+      namespace: '{{ .namespace }}'
+      create_namespace: '{{ .create_namespace | default "false" }}'
+      name: '{{ .name }}'
+      chart_repo_name: '{{ .chart_repo_name }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      wait: '{{ .wait | default "true" }}'
+      timeout: '{{ .timeout | default "10m" }}'
+      helm_args: '{{ .helm_args | default "" }}'
+    cmds:
+      - |-
+        helm \
+          upgrade
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
+          {{- end }}
+          {{- if eq "true" .install }} \
+          --install
+          {{- end }}
+          {{- if eq "true" .create_namespace }}  \
+          --create-namespace
+          {{- end }} \
+          {{ .name | quote }} \
+          {{ if .chart_repo_name }}{{ .chart_repo_name }}/{{ end -}}
+          {{- .chart -}}
+          {{- if .chart_ver }} \
+          --version {{ .chart_ver | quote }}
+          {{- if eq "true" .wait }} --wait --timeout {{ .timeout | quote }}{{ end }}
+          {{- end }}
+          {{- if .helm_args }} \
+          {{ .helm_args }}{{ end }}
   install:
     vars:
       namespace: '{{ .namespace }}'
@@ -13,7 +47,7 @@ tasks:
       timeout: '{{ .timeout | default "10m" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
-      - |
+      - |-
         helm \
           install
           {{- if .namespace }} \

@@ -5,8 +5,9 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
+      install: "true"
       namespace: awx
-      create_namespace: true
+      create_namespace: "true"
       name: awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
@@ -20,7 +21,7 @@ tasks:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
