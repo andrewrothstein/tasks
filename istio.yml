@@ -7,8 +7,9 @@ includes:
   istio-base:
     taskfile: helm.yml
     vars:
+      install: 'true'
       namespace: istio-system
-      create_namespace: true
+      create_namespace: 'true'
       name: istio-base
       chart_repo_name: istio
       chart: base
@@ -16,6 +17,7 @@ includes:
   istiod:
     taskfile: helm.yml
     vars:
+      install: 'true'
       namespace: istio-system
       name: istiod
       chart_repo_name: istio
@@ -24,6 +26,7 @@ includes:
   cni:
     taskfile: helm.yml
     vars:
+      install: 'true'
       namespace: kube-system
       name: istio-cni
       chart_repo_name: istio
@@ -36,8 +39,9 @@ includes:
   gateway:
     taskfile: helm.yml
     vars:
+      install: 'true'
       namespace: istio-gateway
-      create_namespace: true
+      create_namespace: 'true'
       name: istio-gateway
       chart_repo_name: istio
       chart: gateway
@@ -54,11 +58,11 @@ tasks:
     deps:
       - repo
     cmds:
-      - task: istio-base:install
-      - task: istiod:install
-      - task: cni:install
+      - task: istio-base:upgrade
+      - task: istiod:upgrade
+      - task: cni:upgrade
       - task: merbridge:apply
-      - task: gateway:install
+      - task: gateway:upgrade
   delete:
     cmds:
       - task: gateway:delete
