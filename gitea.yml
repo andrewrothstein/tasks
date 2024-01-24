@@ -11,9 +11,9 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "gitea-charts" }}'
       chart: '{{ .chart | default "gitea" }}'
-      chart_ver: '{{ .chart_ver | default "10.0.1" }}'
+      chart_ver: '{{ .chart_ver | default "10.1.0" }}'
       namespace: '{{ .namespace | default "gitea" }}'
-      create_namespace: '{{ .create_namespace | default true }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "gitea" }}'
     deps:
       - task: helm-repo:add
@@ -21,8 +21,9 @@ tasks:
           n: '{{ .chart_repo_name }}'
           url: https://dl.gitea.io/charts
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
         vars:
+          install: 'true'
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
