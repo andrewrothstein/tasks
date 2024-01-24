@@ -1,11 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo:
-    taskfile: helm-repo.yml
-    vars:
-      n: komodorio
-      url: https://helm-charts.komodor.io
+  helm-repo: helm-repo.yml
   helm: helm.yml
 tasks:
   default:
@@ -19,9 +15,13 @@ tasks:
       name: '{{ .name | default "komodor-agent" }}'
     deps:
       - task: helm-repo:add
-    cmds:
-      - task: helm:install
         vars:
+          n: komodorio
+          url: https://helm-charts.komodor.io
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: 'true'
           create_namespace: 'true'
           namespace: komodorio
           chart_repo_name: komodorio
