@@ -4,5 +4,5 @@ kind: Provider
 metadata:
   name: provider-gcp
 spec:
-  # https://marketplace.upbound.io/providers/upbound/provider-gcp/v0.34.0
-  package: xpkg.upbound.io/upbound/provider-gcp:v0.34.0
+  # https://marketplace.upbound.io/providers/upbound/provider-gcp/v0.41.1
+  package: xpkg.upbound.io/upbound/provider-gcp:v0.41.1

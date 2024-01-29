@@ -7,11 +7,12 @@ includes:
     internal: true
     vars:
       namespace: crossplane-system
-      create_namespace: true
+      install: 'true'
+      create_namespace: 'true'
       name: crossplane
       chart_repo_name: crossplane-stable
       chart: crossplane
-      chart_ver: 1.14.4
+      chart_ver: 1.14.5
   crossplane-providers:
     taskfile: kubectl.yml
     internal: true
@@ -25,7 +26,7 @@ tasks:
     deps:
       - task: crossplane-repo
     cmds:
-      - task: crossplane-helm:install
+      - task: crossplane-helm:upgrade
       - task: install-providers
   install-providers:
     deps:

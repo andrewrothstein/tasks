@@ -4,5 +4,5 @@ kind: Provider
 metadata:
   name: provider-azure
 spec:
-  # https://marketplace.upbound.io/providers/upbound/provider-azure/v0.34.0
-  package: xpkg.upbound.io/upbound/provider-azure:v0.34.0
+  # https://marketplace.upbound.io/providers/upbound/provider-azure/v0.42.0
+  package: xpkg.upbound.io/upbound/provider-azure:v0.42.0
