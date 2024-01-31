@@ -1,0 +1,42 @@
+---
+version: '3'
+includes:
+  helm-repo: fleet-repo.yml
+  fleet-crd:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: cattle-fleet-system
+      install: 'true'
+      create_namespace: 'true'
+      name: fleet-crd
+      chart_repo_name: fleet
+      chart_ver: 0.9.0
+      chart: fleet-crd
+      helm_args: -f fleet-crd-values.yml
+  fleet:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: cattle-fleet-system
+      install: 'true'
+      create_namespace: 'true'
+      name: fleet
+      chart_repo_name: fleet
+      chart_ver: 0.9.0
+      chart: fleet
+      helm_args: -f fleet-values.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    deps:
+       - task: helm-repo
+    cmds:
+      - task: fleet-crd:install
+      - task: fleet:install
+  delete:
+    cmds:
+      - task: fleet:delete
+      - task: fleet-crd:delete
