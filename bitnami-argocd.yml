@@ -13,7 +13,7 @@ tasks:
   install:
     vars:
       chart: '{{ .chart | default "argo-cd" }}'
-      chart_ver: '{{ .chart_ver | default "5.4.5" }}'
+      chart_ver: '{{ .chart_ver | default "5.5.4" }}'
       name: '{{ .name | default "argo-cd" }}'
       namespace: '{{ .namespace | default "argocd" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
