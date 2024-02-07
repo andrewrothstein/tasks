@@ -4,7 +4,7 @@ tasks:
   up:
     vars:
       n: '{{ .n | default "kind" }}'
-      f: '{{ .f | default "" }}'
+      f: '{{ .f }}'
       disableDefaultCNI: '{{ .disableDefaultCNI | default "false" }}'
     cmds:
       - |
