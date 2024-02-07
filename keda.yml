@@ -1,26 +1,29 @@
 ---
 version: '3'
 includes:
-  keda-repo: keda-repo.yml
+  repo:
+    internal: true
+    taskfile: keda-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      install: 'true'
+      create_namespace: 'true'
       namespace: keda
       name: keda
       chart_repo_name: kedacore
       chart: keda
-      chart_ver: 2.12.1
+      chart_ver: 2.13.0
 tasks:
   default:
     deps:
       - install
   install:
     deps:
-      - task: keda-repo
+      - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
