@@ -27,8 +27,8 @@ tasks:
           --create-namespace
           {{- end }} \
           {{ .name | quote }} \
-          {{ if .chart_repo_name }}{{ .chart_repo_name }}/{{ end -}}
-          {{- .chart -}}
+          "{{ if .chart_repo_name }}{{ .chart_repo_name }}/
+          {{- end }}{{ .chart }}"
           {{- if .chart_ver }} \
           --version {{ .chart_ver | quote }}
           {{- if eq "true" .wait }} --wait --timeout {{ .timeout | quote }}{{ end }}
