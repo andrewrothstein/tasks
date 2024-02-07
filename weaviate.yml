@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  docker-compose:
+    taskfile: docker-compose.yml
+    vars:
+      p: weaviate
+      f: weaviate-compose.yml
+tasks:
+  default:
+    deps:
+      - apply
+  apply:
+    cmds:
+      - task: docker-compose:apply
+  logs:
+    cmds:
+      - task: docker-compose:logs
+
