@@ -6,22 +6,23 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: false
+      create_namespace: 'false'
+      install: 'true'
       namespace: kube-system
       name: metrics-server
       chart_repo_name: metrics-server
       chart: metrics-server
-      chart_ver: 3.11.0
+      chart_ver: 3.12.0
       helm_args: --set args={--kubelet-insecure-tls}
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

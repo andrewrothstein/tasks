@@ -28,7 +28,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: metrics-server:install
+      - task: metrics-server:upgrade
       - task: k8s-dashboard:install
       - task: open-telemetry:install
       - task: komodor:install
