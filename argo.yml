@@ -5,16 +5,19 @@ includes:
     taskfile: argo-release.yml
     internal: true
     vars:
-      n: argo
-      v: 3.5.4
-      p: workflows
+      chart: argo-workflows
+      chart_ver: 0.40.11
+      name: argo
+      namespace: argo
+      create_namespace: 'true'
+      install: 'true'
 tasks:
   default:
     deps:
-      - apply
-  apply:
+      - upgrade
+  upgrade:
     cmds:
-      - task: argo-release:apply
+      - task: argo-release:upgrade
   delete:
     cmds:
       - task: argo-release:delete

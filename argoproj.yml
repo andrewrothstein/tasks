@@ -1,26 +1,26 @@
 ---
 version: '3'
 includes:
-#  argo: pet.yml
-#  argo: argo.yml
-  argo: bitnami-argo-workflows.yml
+  argo: pet.yml
+  argo: argo.yml
+#  argo: bitnami-argo-workflows.yml
 #  argocd: pet.yml
-#  argocd: argocd.yml
-  argocd: bitnami-argocd.yml
-  argo-events: pet.yml
-#  argo-events: argo-events.yml
-  argo-rollouts: pet.yml
-#  argo-rollouts: argo-rollouts.yml
+  argocd: argocd.yml
+#  argocd: bitnami-argocd.yml
+#  argo-events: pet.yml
+  argo-events: argo-events.yml
+#  argo-rollouts: pet.yml
+  argo-rollouts: argo-rollouts.yml
 tasks:
   default:
     deps:
       - install
   install:
     cmds:
-      - task: argo:install
-      - task: argocd:install
-      - task: argo-events:apply
-      - task: argo-rollouts:apply
+      - task: argo:upgrade
+      - task: argocd:upgrade
+      - task: argo-events:upgrade
+      - task: argo-rollouts:upgrade
   delete:
     deps:
       - task: argo-rollouts:delete

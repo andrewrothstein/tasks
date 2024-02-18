@@ -1,20 +1,23 @@
 ---
 version: '3'
 includes:
-  argo-raw:
-    taskfile: argo-raw.yml
+  argo-release:
+    taskfile: argo-release.yml
     internal: true
     vars:
-      n: argo-events
-      v: 1.8.1
-      p: events
+      chart: argo-events
+      chart_ver: 2.4.3
+      name: argo-events
+      namespace: argo-events
+      create_namespace: 'true'
+      install: 'true'
 tasks:
   default:
     deps:
-      - apply
-  apply:
+      - upgrade
+  upgrade:
     cmds:
-      - task: argo-raw:apply
+      - task: argo-release:upgrade
   delete:
     cmds:
-      - task: argo-raw:delete
+      - task: argo-release:delete

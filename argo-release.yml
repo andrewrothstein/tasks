@@ -1,37 +1,46 @@
 ---
 version: '3'
 includes:
-  kubectl:
-    taskfile: kubectl.yml
+  helm-repo:
     internal: true
-tasks:
-  apply:
+    taskfile: helm-repo.yml
     vars:
-      m: '{{ .m | default "https://github.com/argoproj" }}'
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
-      y: '{{ .y | default "install.yaml" }}'
+      n: argo
+      url: https://argoproj.github.io/argo-helm
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - install
+  upgrade:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "argo" }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      name: '{{ .name }}'
+      namespace: '{{ .namespace }}'
+      create_namespace: '{{ .create_namespace }}'
+      install: '{{ .install }}'
+      helm_args: '{{ .helm_args }}'
+    deps:
+      - task: helm-repo:add
     cmds:
-      - task: kubectl:ns-create
+      - task: helm:upgrade
         vars:
-          n: '{{ .n }}'
-      - task: kubectl:apply
-        vars:
-          n: '{{ .n }}'
-          f: '{{ .m }}/argo-{{ .p }}/releases/download/v{{ .v }}/{{ .y }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
+          helm_args: '{{ .helm_args }}'
   delete:
     vars:
-      m: '{{ .m | default "https://github.com/argoproj" }}'
-      n: '{{ .n }}'
-      p: '{{ .p }}'
-      v: '{{ .v }}'
-      y: '{{ .y | default "install.yaml" }}'
+      name: '{{ .name }}'
+      namespace: '{{ .namespace }}'
     cmds:
-      - task: kubectl:delete
+      - task: helm:delete
         vars:
-          n: '{{ .n }}'
-          f: '{{ .m }}/argo-{{ .p }}/releases/download/v{{ .v }}/{{ .y }}'
-      - task: kubectl:ns-delete
-        vars:
-          n: '{{ .n }}'
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'

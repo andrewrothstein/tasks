@@ -1,17 +1,20 @@
 ---
 version: '3'
 includes:
-  argo-raw:
-    taskfile: argo-raw.yml
+  argo-release:
+    taskfile: argo-release.yml
     internal: true
     vars:
-      n: argocd
-      p: cd
-      v: 2.10.1
+      chart: argo-cd
+      chart_ver: 6.1.0
+      name: argo-cd
+      namespace: argocd
+      create_namespace: 'true'
+      install: 'true'
 tasks:
   default:
     deps:
-      - apply
+      - upgrade
   initial-password:
     vars:
       n: '{{ .n }}'
@@ -19,9 +22,9 @@ tasks:
       - |-
         argocd admin initial-password \
           -n {{ .n | default "argocd" | quote }}
-  apply:
+  upgrade:
     cmds:
-      - task: argo-raw:apply
+      - task: argo-release:upgrade
   delete:
     cmds:
-      - task: argo-raw:delete
+      - task: argo-release:delete
