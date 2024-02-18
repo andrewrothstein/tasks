@@ -2,10 +2,13 @@
 version: '3'
 vars:
   KPACK_MIRROR: https://github.com/buildpacks-community/kpack/releases/download
-  KPACK_VER: 0.12.0
+  KPACK_VER: 0.13.2
 includes:
   kubectl: kubectl.yml
 tasks:
+  default:
+    deps:
+      - apply
   apply:
     vars:
       kpack_ver: '{{ .kpack_ver | default .KPACK_VER }}'
