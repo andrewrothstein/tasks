@@ -1,0 +1,33 @@
+---
+version: '3'
+tasks:
+  configure-default-repository:
+    vars:
+      registry: '{{ .registry | default "http://harbor-registry.harbor:5000" }}'
+    cmds:
+      - |-
+        set -ex
+        kp config \
+          default-repository \
+          {{ .registry | quote }};
+
+  configure-default-service-account:
+    vars:
+      service_account: '{{ .service_account | default "default" }}'
+      service_account_namespace: '{{ .service_account_namespace }}'
+    cmds:
+      - |-
+        set -ex
+        kp config \
+          default-service-account {{ .service_account | quote }}
+        {{- if .service_account_namespace }} \
+          --service-account-namespace {{ .service_account_namespace | quote }}
+        {{- end }}
+  config:
+    cmds:
+      - task: configure-default-repository
+      - task: configure-default-service-account
+  default:
+    cmds:
+      - kp config default-repository
+      - kp config default-service-account
