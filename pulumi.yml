@@ -1,0 +1,6 @@
+---
+version: '3'
+tasks:
+  login-local:
+    cmds:
+      - pulumi login --local
