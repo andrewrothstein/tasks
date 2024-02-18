@@ -4,16 +4,18 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      namespace: strimzi
-      name: strimzi-kafka
+      create_namespace: 'true'
+      install: 'true'
+      namespace: strimzi-kafka
+      name: strimzi-kafka-clusters
       chart: chart-strimzi-kafka
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
