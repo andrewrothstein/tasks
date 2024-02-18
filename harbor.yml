@@ -7,21 +7,22 @@ includes:
     internal: true
     vars:
       create_namespace: 'true'
-      helm_args: ''
+      install: 'true'
       namespace: harbor
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.13.1
+      chart_ver: 1.14.0
+#      helm_args: ''
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: harbor-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
