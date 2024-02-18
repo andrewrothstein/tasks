@@ -1,0 +1,7 @@
+---
+watchAnyNamespace: true
+replicas: 3
+podDisruptionBudget:
+  enabled: true
+dashboards:
+  enabled: true

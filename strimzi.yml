@@ -7,20 +7,22 @@ includes:
     internal: true
     vars:
       namespace: strimzi
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
       name: strimzi-kafka-operator
-      chart_ver: 0.38.0
+      chart_ver: 0.39.0
+      helm_args: -f strimzi-operator-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
