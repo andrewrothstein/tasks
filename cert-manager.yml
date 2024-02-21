@@ -66,12 +66,18 @@ tasks:
       - task: kubectl:ns-create
       - task: cm:upgrade
       - task: approver_policy:upgrade
+      - task: kubectl:apply
+        vars:
+          f: approver-policy.yml
       - task: csi_driver:upgrade
       - task: ss:apply
   delete:
     cmds:
       - task: ss:delete
       - task: csi_driver:delete
+      - task: kubectl:delete
+        vars:
+          f: approver-policy.yml
       - task: approver_policy:delete
       - task: cm:delete
       - task: kubectl:ns-delete
