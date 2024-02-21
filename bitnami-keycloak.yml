@@ -7,26 +7,26 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
-        vars:
-          create_namespace: 'true'
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       chart: '{{ .chart | default "keycloak" }}'
-      chart_ver: '{{ .chart_ver | default "18.0.0" }}'
+      chart_ver: '{{ .chart_ver | default "18.4.0" }}'
       name: '{{ .name | default "keycloak" }}'
       namespace: '{{ .namespace | default "keycloak" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
       admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER}" }}'
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
     cmds:
-      - task: bitnami-chart:install
+      - task: bitnami-chart:upgrade
         vars:
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           helm_args: >-
             -f bitnami-keycloak-values.yml
             --set-string auth.adminUser={{ .admin_user | quote }}

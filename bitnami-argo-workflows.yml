@@ -7,24 +7,24 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
-        vars:
-          create_namespace: 'true'
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       chart: '{{ .chart | default "argo-workflows" }}'
-      chart_ver: '{{ .chart_ver | default "6.3.0" }}'
+      chart_ver: '{{ .chart_ver | default "6.5.0" }}'
       name: '{{ .name | default "argo-workflows" }}'
       namespace: '{{ .namespace | default "argo-workflows" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
     cmds:
-      - task: bitnami-chart:install
+      - task: bitnami-chart:upgrade
         vars:
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
 #          helm_args: >-
 #            --set auth.username={{ .admin_username | quote }}
 #            --set auth.password={{ .admin_password | quote }}

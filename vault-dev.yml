@@ -12,8 +12,9 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
-      chart_ver: 0.4.2
-      create_namespace: true
+      chart_ver: 0.5.0
+      create_namespace: 'true'
+      install: 'true'
       namespace: vault-secrets-operator
       name: vault-secrets-operator
   vault:
@@ -22,21 +23,22 @@ includes:
       chart_repo_name: hashicorp
       chart: vault
       chart_ver: 0.27.0
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: vault
       name: vault
       helm_args: -f vault-dev-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: ss-csi:upgrade
     cmds:
       - task: hashicorp:add
-      - task: vault-secrets-operator:install
-      - task: vault:install
+      - task: vault-secrets-operator:upgrade
+      - task: vault:upgrade
   delete:
     cmds:
       - task: vault:delete

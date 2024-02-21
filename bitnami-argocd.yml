@@ -7,15 +7,14 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
-        vars:
-          create_namespace: 'true'
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       chart: '{{ .chart | default "argo-cd" }}'
-      chart_ver: '{{ .chart_ver | default "5.6.0" }}'
+      chart_ver: '{{ .chart_ver | default "5.7.0" }}'
       name: '{{ .name | default "argo-cd" }}'
       namespace: '{{ .namespace | default "argocd" }}'
+      install: '{{ .install | default "true" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
     cmds:
       - task: bitnami-chart:install
@@ -25,6 +24,7 @@ tasks:
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           helm_args: -f bitnami-argocd-values.yml
   delete:
     vars:

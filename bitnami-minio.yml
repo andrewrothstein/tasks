@@ -7,25 +7,24 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
-        vars:
-          install: 'true'
-          create_namespace: 'true'
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       chart: '{{ .chart | default "minio" }}'
-      chart_ver: '{{ .chart_ver | default "13.3.1" }}'
+      chart_ver: '{{ .chart_ver | default "13.5.1" }}'
       name: '{{ .name | default "minio" }}'
       namespace: '{{ .namespace | default "minio" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
     cmds:
-      - task: bitnami-chart:install
+      - task: bitnami-chart:upgrade
         vars:
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           helm_args: -f bitnami-minio-values.yml
   delete:
     vars:

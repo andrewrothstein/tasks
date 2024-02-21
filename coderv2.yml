@@ -4,34 +4,36 @@ dotenv:
   - .coderv2-secrets.env
 includes:
   postgresql: bitnami-postgresql.yml
-  coderv2-helm-repo: helm-repo.yml
+  repo: helm-repo.yml
   coderv2-secret: k8s-literal-secret.yml
   coderv2: helm.yml
 tasks:
   default:
     deps:
-      - task: install
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       name: '{{ .name | default "coder" }}'
       chart_repo_name: '{{ .chart_repo_name | default "coder-v2" }}'
       chart: '{{ .chart | default "coder" }}'
       chart_ver: '{{ .chart_ver | default "2.6.0" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
       namespace: '{{ .namespace | default "coder" }}'
       admin_username: '{{ .admin_username | default "coder" }}'
       admin_db: '{{ .admin_db | default "coder" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
-      - task: postgresql:install
+      - task: postgresql:upgrade
         vars:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           admin_username: '{{ .admin_username }}'
           admin_password: '{{ .admin_password }}'
           admin_db: '{{ .admin_db }}'
           db_size: '{{ .db_size }}'
-      - task: coderv2-helm-repo:add
+      - task: repo:add
         vars:
           n: coder-v2
           url: https://helm.coder.com/v2
@@ -41,13 +43,14 @@ tasks:
           s: coder-db-url
           args: >-
             --from-literal=url="postgres://{{ .admin_username }}:${POSTGRES_PASSWORD}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
-      - task: coderv2:install
+      - task: coderv2:upgrade
         vars:
           namespace: '{{ .namespace }}'
           name: '{{ .name }}'
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
+          install: '{{ .install }}'
           helm_args: -f coderv2-values.yml
   delete:
     vars:

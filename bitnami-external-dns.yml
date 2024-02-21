@@ -5,25 +5,25 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
-        vars:
-          create_namespace: true
-  install:
+      - task: upgrade
+  upgrade:
     vars:
       chart: '{{ .chart | default "external-dns" }}'
-      chart_ver: '{{ .chart_ver | default "6.20.3" }}'
+      chart_ver: '{{ .chart_ver | default "6.33.0" }}'
       name: '{{ .name | default "external-dns" }}'
       namespace: '{{ .namespace | default "bitnami-external-dns" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
       helm_args: '{{ .helm_args }}'
     cmds:
-      - task: bitnami-chart:install
+      - task: bitnami-chart:upgrade
         vars:
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           helm_args: '{{ .helm_args }}'
   delete:
     vars:

@@ -11,7 +11,7 @@ tasks:
   default:
     deps:
       - install
-  install:
+  upgrade:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "bitnami" }}'
       chart: '{{ .chart }}'
@@ -19,11 +19,12 @@ tasks:
       name: '{{ .name }}'
       namespace: '{{ .namespace }}'
       create_namespace: '{{ .create_namespace }}'
+      install: '{{ .install }}'
       helm_args: '{{ .helm_args }}'
     deps:
       - task: helm-repo:add
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
         vars:
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
@@ -31,6 +32,7 @@ tasks:
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           helm_args: '{{ .helm_args }}'
   delete:
     vars:
