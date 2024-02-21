@@ -32,7 +32,7 @@ tasks:
       - install
   install:
     deps:
-      - task: ss-csi:install
+      - task: ss-csi:upgrade
     cmds:
       - task: hashicorp:add
       - task: vault-secrets-operator:install
