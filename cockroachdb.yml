@@ -6,22 +6,23 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: cockroachdb
       name: my-cockroachdb
       chart_repo_name: cockroachdb
       chart: cockroachdb
-      chart_ver: 11.2.3
+      chart_ver: 12.0.1
       helm_args: --values cockroachdb-values.yml
 tasks:
   default:
-    deps:
-      - install
-  install:
+    cmds:
+      - task: upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
