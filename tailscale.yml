@@ -7,15 +7,16 @@ includes:
   helm: helm.yml
 tasks:
   default:
-    deps:
-      - install
-  install:
+    cmds:
+      - task: upgrade
+  upgrade:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "tailscale" }}'
       chart: '{{ .chart | default "tailscale-operator" }}'
-      chart_ver: '{{ .chart_ver | default "1.56.1" }}'
+      chart_ver: '{{ .chart_ver | default "1.58.2" }}'
       namespace: '{{ .namespace | default "tailscale" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
       name: '{{ .name | default "tailscale" }}'
     deps:
       - task: helm-repo:add
@@ -23,13 +24,14 @@ tasks:
           n: '{{ .chart_repo_name }}'
           url: https://pkgs.tailscale.com/helmcharts
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
         vars:
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           name: '{{ .name }}'
           helm_args: >-
             --set-string oauth.clientId="${TAILSCALE_OAUTH_CLIENTID}"
