@@ -14,7 +14,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: metallb:install
+      - task: metallb:upgrade
       - task: ingress:install
   delete:
     cmds:

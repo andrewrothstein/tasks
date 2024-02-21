@@ -15,19 +15,20 @@ includes:
       namespace: metallb-system
       name: metallb
       chart_repo_name: metallb
-      chart_ver: 0.13.12
+      chart_ver: 0.14.3
       chart: metallb
+      install: 'true'
       helm_args: -f metallb-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
-    cmds:
       - task: kubectl:ns-create
-      - task: metallb:install
+    cmds:
+      - task: metallb:upgrade
       - task: kubectl:apply
   delete:
     cmds:
