@@ -6,20 +6,21 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: kube-prometheus-stack
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: kube-prometheus-stack
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
-      chart_ver: 56.6.2
+      chart_ver: 56.7.0
 tasks:
   default:
     deps:
-      - install
+      - upgrade
   install:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

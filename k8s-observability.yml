@@ -13,8 +13,8 @@ includes:
 #  open-telemetry: open-telemetry.yml
   open-telemetry: pet.yml
 
-#  kube-prometheus-stack: kube-prometheus-stack.yml
-  kube-prometheus-stack: pet.yml
+  kube-prometheus-stack: kube-prometheus-stack.yml
+#  kube-prometheus-stack: pet.yml
 
 #  elastic: elastic.yml
   elastic: pet.yml
