@@ -32,10 +32,6 @@ includes:
       chart_repo_name: istio
       chart: cni
       chart_ver: '{{ .istio_ver }}'
-  merbridge:
-    taskfile: kubectl.yml
-    vars:
-      f: https://raw.githubusercontent.com/merbridge/merbridge/0.8.1/deploy/all-in-one.yaml
   gateway:
     taskfile: helm.yml
     vars:
@@ -61,12 +57,10 @@ tasks:
       - task: istio-base:upgrade
       - task: istiod:upgrade
       - task: cni:upgrade
-      - task: merbridge:apply
       - task: gateway:upgrade
   delete:
     cmds:
       - task: gateway:delete
-      - task: merbridge:delete
       - task: cni:delete
       - task: istiod:delete
       - task: istio-base:delete
