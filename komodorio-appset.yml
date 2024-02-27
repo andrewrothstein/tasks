@@ -17,7 +17,7 @@ spec:
       source:
         repoURL: registry-1.docker.io/komodorio
         chart: komodor-agent
-        targetRevision: 2.3.1-RC1
+        targetRevision: 2.3.0
         helm:
           releaseName: komodor-agent
       destination:
