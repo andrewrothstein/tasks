@@ -1,7 +1,5 @@
 ---
 version: '3'
-vars:
-  jwt: '${HOME}/.minio-admin.token'
 includes:
   minio-repo: minio-repo.yml
   helm: helm.yml
@@ -12,11 +10,11 @@ tasks:
   install:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "minio" }}'
-      chart: '{{ .chart | default "operator" }}'
+      chart: '{{ .chart | default "tenant" }}'
       chart_ver: '{{ .chart_ver | default "5.0.12" }}'
-      namespace: '{{ .namespace | default "minio-operator" }}'
+      namespace: '{{ .namespace | default "minio-tenants" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "operator" }}'
+      name: '{{ .name | default "tenant-1" }}'
     deps:
       - task: minio-repo
     cmds:
@@ -29,21 +27,10 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
-          helm_args: -f minio-operator-values.yml
-  admin-jwt:
-    vars:
-      namespace: '{{ .namespace | default "minio-operator" }}'
-      jwt: '{{ .jwt | default "${HOME}/.minio-admin.token" }}'
-    cmds:
-      - |-
-        kubectl get secret/console-sa-secret
-        {{- if .namespace }} -n {{ .namespace | quote }}{{ end }} \
-          -o json | jq -r ".data.token" | base64 -d > {{ .jwt | quote }};
-        chmod 400 {{ .jwt | quote }}
   delete:
     vars:
-      namespace: '{{ .namespace | default "minio-operator" }}'
-      name: '{{ .name | default "operator" }}'
+      namespace: '{{ .namespace | default "minio-tenants" }}'
+      name: '{{ .name | default "tenant-1" }}'
     cmds:
       - task: helm:delete
         vars:
