@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  atlassian-data-center-repo: atlassian-data-center-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      create_namespace: 'true'
+      install: 'true'
+      namespace: confluence
+      name: confluence
+      chart_repo_name: atlassian-data-center
+      chart: confluence
+      chart_ver: '1.18'
+#      helm_args: -f atlassian-data-center-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: atlassian-data-center-repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
