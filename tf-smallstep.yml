@@ -1,6 +1,6 @@
 ---
 version: '3'
-#dotenv:
+dotenv:
 #  - .minio-local-secrets.env
 #  - minio-local.env
   - .smallstep-secrets.env

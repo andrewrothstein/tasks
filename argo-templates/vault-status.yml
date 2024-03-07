@@ -11,11 +11,11 @@ metadata:
 spec:
   entrypoint: main
   templates:
-  - name: main
-    container:
-      env:
-        - name: VAULT_ADDR
-          value: http://vault.vault.svc:8200
-      image: hashicorp/vault:1.14.2
-      args:
-        - status
+    - name: main
+      container:
+        env:
+          - name: VAULT_ADDR
+            value: http://vault.vault.svc:8200
+        image: hashicorp/vault:1.14.2
+        args:
+          - status

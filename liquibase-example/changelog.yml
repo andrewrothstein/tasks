@@ -1,3 +1,4 @@
+---
 databaseChangeLog:
   - changeSet:
       id:  1
@@ -5,23 +6,23 @@ databaseChangeLog:
 #        labels: example-label
 #        context: example-context
 #        comment: example-comment
-     changes:
-       - createTable:
-           tableName: regions
-           columns:
-             - column:
-                 name: id
-                 type: int
-                 autoIncrement: true
-                 constraints:
-                   primaryKey:  true
-                   nullable:  false
-            - column:
-                name: abbrev
-                type: varchar(50)
-                constraints:
-                  nullable:  false
-       - addUniqueConstraint:
-           columnNames: abbrev
-           constraintName: regionsUnique1
-           tableName: regions
+      changes:
+        - createTable:
+            tableName: regions
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey:  true
+                    nullable:  false
+              - column:
+                  name: abbrev
+                  type: varchar(50)
+                  constraints:
+                    nullable:  false
+        - addUniqueConstraint:
+            columnNames: abbrev
+            constraintName: regionsUnique1
+            tableName: regions
