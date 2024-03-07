@@ -7,21 +7,31 @@
   schedule:
     - cron: '0 0 * * *'
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      dist: ${{ steps.read-matrix.outputs.dist }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: read platform-matrix-v1.json
+        id: read-matrix
+        run: echo "dist=$(jq -cr '@json' < platform-matrix-v1.json)" >> $GITHUB_OUTPUT
   build:
     runs-on: ubuntu-latest
+    needs: [prepare-matrix]
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-      - uses: docker/login-action@v2
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
           password: "${{ github.token }}"
-      - uses: docker/bake-action@v3
+      - uses: docker/bake-action@v4
         env:
-          UPSTREAM_IMAGE_TAG: "${{ matrix.tag.name }}"
-          TARGET_IMAGE_TAG: "${{ matrix.tag.name }}"
+          UPSTREAM_IMAGE_TAG: "0.0.0-${{ matrix.dist.OS }}.${{ matrix.dist.OS_VER }}"
+          TARGET_IMAGE_TAG: "0.0.0-${{ matrix.dist.OS }}.${{ matrix.dist.OS_VER }}"
         with:
           pull: true
           push: true
@@ -30,16 +40,4 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tag:
-          - name: alpine_3.17
-          - name: alpine_3.18
-          - name: alpine_edge
-          - name: archlinux_latest
-          - name: debian_bookworm
-          - name: debian_bullseye
-          - name: fedora_37
-          - name: fedora_38
-          - name: rockylinux_8
-          - name: rockylinux_9
-          - name: ubuntu_focal
-          - name: ubuntu_jammy
+        dist: ${{ fromJSON(needs.prepare-matrix.outputs.dist) }}
