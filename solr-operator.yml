@@ -1,0 +1,43 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "apache-solr" }}'
+      chart: '{{ .chart | default "solr-operator" }}'
+      chart_ver: '{{ .chart_ver | default "0.8.0" }}'
+      namespace: '{{ .namespace | default "solr-operator" }}'
+      install: '{{ .install | default "true" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "solr-operator" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .chart_repo_name }}'
+          url: https://solr.apache.org/charts
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: '{{ .install }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+#          helm_args: -f solr-operator-values.yml
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "solr-operator" }}'
+      name: '{{ .name | default "solr-operator" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
