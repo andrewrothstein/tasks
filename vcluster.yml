@@ -8,7 +8,7 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "loft-sh" }}'
       chart: '{{ .chart | default "vcluster" }}'
-      chart_ver: '{{ .chart_ver | default "0.19.0" }}'
+      chart_ver: '{{ .chart_ver | default "0.19.4" }}'
       namespace: '{{ .namespace | default "vclusters" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "my-vcluster" }}'
