@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
-      chart_ver: 0.5.0
+      chart_ver: 0.5.1
       create_namespace: 'true'
       install: 'true'
       namespace: vault-secrets-operator
