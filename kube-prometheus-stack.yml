@@ -11,12 +11,12 @@ includes:
       name: kube-prometheus-stack
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
-      chart_ver: 56.7.0
+      chart_ver: 57.0.1
 tasks:
   default:
     deps:
       - upgrade
-  install:
+  upgrade:
     deps:
       - task: repo
     cmds:
