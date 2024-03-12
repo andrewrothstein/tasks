@@ -6,14 +6,15 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "kubeshark" }}'
       chart: '{{ .chart | default "kubeshark" }}'
-      chart_ver: '{{ .chart_ver | default "52.0.0" }}'
+      chart_ver: '{{ .chart_ver | default "52.1.66" }}'
       namespace: '{{ .namespace | default "kubeshark" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
+      install: '{{ .install | default "true" }}'
       name: '{{ .name | default "kubeshark" }}'
     deps:
       - task: helm-repo:add
@@ -21,13 +22,14 @@ tasks:
           n: '{{ .chart_repo_name }}'
           url: https://helm.kubeshark.co
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
         vars:
           chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
+          install: '{{ .install }}'
           name: '{{ .name }}'
   delete:
     vars:
