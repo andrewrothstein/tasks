@@ -6,20 +6,21 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: reloader
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: reloader
       chart_repo_name: stakater
       chart: reloader
-      chart_ver: v1.0.52
+      chart_ver: v1.0.69
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
