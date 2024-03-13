@@ -45,9 +45,12 @@ tasks:
         vars:
           action: start
           name: jumpstation
-  apply:
+  default:
     deps:
-      - vm-start
+      - apply
+  apply:
+    cmds:
+      - task: vm-start
   delete:
     cmds:
       - task: vm
