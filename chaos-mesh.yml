@@ -9,18 +9,18 @@ tasks:
       - install
   install:
     vars:
-      chart_repo_name: '{{ .chart_repo_name | default "gitea-charts" }}'
-      chart: '{{ .chart | default "gitea" }}'
-      chart_ver: '{{ .chart_ver | default "10.1.0" }}'
-      namespace: '{{ .namespace | default "gitea" }}'
+      chart_repo_name: '{{ .chart_repo_name | default "chaos-mesh" }}'
+      chart: '{{ .chart | default "chaos-mesh" }}'
+      chart_ver: '{{ .chart_ver | default "2.6.3" }}'
+      namespace: '{{ .namespace | default "chaos-mesh" }}'
       install: '{{ .install | default "true" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "gitea" }}'
+      name: '{{ .name | default "chaos-mesh" }}'
     deps:
       - task: helm-repo:add
         vars:
           n: '{{ .chart_repo_name }}'
-          url: https://dl.gitea.io/charts
+          url: https://charts.chaos-mesh.org
     cmds:
       - task: helm:upgrade
         vars:
@@ -31,11 +31,11 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
-          helm_args: -f gitea-values.yml
+#          helm_args: -f chaos-mesh-values.yml
   delete:
     vars:
-      namespace: '{{ .namespace | default "gitea" }}'
-      name: '{{ .name | default "gitea" }}'
+      namespace: '{{ .namespace | default "chaos-mesh" }}'
+      name: '{{ .name | default "chaos-mesh" }}'
     cmds:
       - task: helm:delete
         vars:
