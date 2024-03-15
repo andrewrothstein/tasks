@@ -6,22 +6,23 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      namespace: velero
-      create_namespace: true
-      name: velero
+      create_namespace: 'true'
+      install: 'true'
       chart_repo_name: vmware-tanzu
       chart: velero
-      chart_ver: 5.1.6
+      chart_ver: 6.0.0
+      namespace: velero
+      name: velero
       helm_args: -f velero-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

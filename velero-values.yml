@@ -13,8 +13,7 @@ configuration:
         region: us-east-1
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero-plugin-for-aws:v1.7.1
+    image: velero/velero-plugin-for-aws:v1.9.1
     volumeMounts:
       - mountPath: /target
         name: plugins
-
