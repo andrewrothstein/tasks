@@ -1,37 +1,41 @@
 ---
 version: '3'
+vars:
+  rook_ver: 1.13.7
 includes:
   repo: rook-repo.yml
   operator:
     taskfile: helm.yml
     vars:
       namespace: rook-ceph
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: rook-ceph
       chart_repo_name: rook-release
       chart: rook-ceph
-      chart_ver: 1.12.2
+      chart_ver: '{{ .rook_ver }}'
   cluster:
     taskfile: helm.yml
     vars:
       namespace: rook-ceph-cluster
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: rook-ceph-cluster
       chart_repo_name: rook-release
       chart: rook-ceph-cluster
-      chart_ver: 1.12.2
+      chart_ver: '{{ .rook_ver }}'
       helm_args: >-
         --set operatorNamespace=rook-ceph
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: operator:install
-      - task: cluster:install
+      - task: operator:upgrade
+      - task: cluster:upgrade
   delete:
     cmds:
       - task: cluster:delete
