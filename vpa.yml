@@ -6,20 +6,21 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: vpa
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: vpa
       chart_repo_name: cowboysysop
       chart: vertical-pod-autoscaler
-      chart_ver: 7.0.1
+      chart_ver: 9.6.0
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
