@@ -32,7 +32,7 @@ tasks:
       - task: k8s-dashboard:install
       - task: open-telemetry:install
       - task: komodor:install
-      - task: kube-prometheus-stack:install
+      - task: kube-prometheus-stack:upgrade
       - task: elastic:install
       - task: keda:install
   delete:
