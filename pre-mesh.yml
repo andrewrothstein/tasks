@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  operator-sdk: operator-sdk.yml
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-network: k8s-network.yml
@@ -25,6 +26,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: operator-sdk:olm-install
       - task: k8s-security:up
       - task: k8s-secrets:up
       - task: k8s-network:up
@@ -48,3 +50,5 @@ tasks:
       - task: k8s-network:delete
       - task: k8s-secrets:delete
       - task: k8s-security:delete
+      - task: operator-sdk:olm-uninstall
+

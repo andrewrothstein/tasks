@@ -54,3 +54,5 @@
     - andrewrothstein.kn
     - andrewrothstein.kubeseal
     - andrewrothstein.calicoctl
+    - andrewrothstein.operator_sdk
+    - andrewrothstein.olm

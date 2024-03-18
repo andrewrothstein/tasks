@@ -51,3 +51,5 @@ roles:
   - andrewrothstein.kubeseal
   - andrewrothstein.calicoctl
   - andrewrothstein.pki
+  - andrewrothstein.operator_sdk
+  - andrewrothstein.olm

@@ -1,0 +1,25 @@
+---
+version: '3'
+tasks:
+  default:
+    cmds:
+      - task: olm-install
+  olm-install:
+    vars:
+      timeout: '{{ .timeout | default "10m0s" }}'
+      version: '{{ .version }}'
+    cmds:
+      - |-
+        operator-sdk \
+          olm install
+        {{- if .timeout }} \
+          --timeout {{ .timeout | quote }}
+        {{- end }}
+        {{- if .version }} \
+          --version {{ .version | quote }}
+        {{- end }}
+    status:
+      - operator-sdk olm status
+  olm-uninstall:
+    cmds:
+      - operator-sdk olm uninstall
