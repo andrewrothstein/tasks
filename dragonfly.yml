@@ -5,22 +5,23 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: dragonfly-system
       name: dragonfly
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.1.8
+      chart_ver: 1.1.33
       helm_args: -f dragonfly-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
