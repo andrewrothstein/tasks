@@ -1,0 +1,63 @@
+---
+version: '3'
+tasks:
+  init:
+    vars:
+      t: '{{ .t | default "." }}'
+    cmds:
+      - |-
+        set -ex;
+        cd {{ .USER_WORKING_DIR | quote }};
+        packer init \
+          {{ .t | quote }}
+  build:
+    vars:
+      debug: '{{ .debug | default "false" }}'
+      except: '{{ .except }}'
+      force: '{{ .force | default "false" }}'
+      # on_error: cleanup|abort|ask|run-cleanup-provisioner
+      on_error: '{{ .on_error }}'
+      only: '{{ .only }}'
+      parallel_builds: '{{ .parallel_builds }}'
+      timestamp_ui: '{{ .timestamp_ui | default "false" }}'
+      # build_args: -var-file=file1.pkr.hcl -var=foo=bar
+      build_args: '{{ .build_args }}'
+      warn_on_undeclared_var: '{{ .warn_on_undeclared_var | default "true" }}'
+      t: '{{ .t | default "." }}'
+    cmds:
+      - |-
+        set -ex;
+        cd {{ .USER_WORKING_DIR | quote }};
+        packer build
+        {{- if eq "true" .debug }} \
+          -debug
+        {{- end }}
+        {{- if .except }} \
+          -except={{ .except | quote }}
+        {{- end }}
+        {{- if eq "true" .force }} \
+          -force
+        {{- end }}
+        {{- if .on_error }} \
+          -on-error={{ .on_error | quote }}
+        {{- end }}
+        {{- if .only }} \
+          -only={{ .only | quote }}
+        {{- end }}
+        {{- if .parallel_builds }} \
+          -parallel-builds={{ .parallel_builds | quote }}
+        {{- end }}
+        {{- if eq "true" .timestamp_ui }} \
+          -timestamp-ui
+        {{- end }}
+        {{- if .build_args }} \
+          {{.build_args }}
+        {{- end }}
+        {{- if eq "true" .warn_on_undeclared_var }} \
+          -warn-on-undeclared-var
+        {{- end }} \
+          {{ .t | quote }}
+  default:
+    cmds:
+      - task: init
+      - task: build
