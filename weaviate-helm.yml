@@ -12,7 +12,7 @@ includes:
       name: weaviate
       chart_repo_name: weaviate
       chart: weaviate
-      chart_ver: 16.8.1
+      chart_ver: 16.8.7
 #      helm_args: -f weaviate-values.yml
 tasks:
   default:
