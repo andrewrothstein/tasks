@@ -23,7 +23,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: gatekeeper:install
+      - task: gatekeeper:upgrade
       - task: pinniped-supervisor:install
       - task: pinniped-concierge:install
       - task: gitea:install

@@ -11,20 +11,21 @@ includes:
     internal: true
     vars:
       namespace: gatekeeper-system
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.14.0
+      chart_ver: 3.15.1
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo:add
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
