@@ -11,7 +11,7 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "cnpg" }}'
       chart: '{{ .chart | default "cloudnative-pg" }}'
-      chart_ver: '{{ .chart_ver | default "0.20.1" }}'
+      chart_ver: '{{ .chart_ver | default "0.20.2" }}'
       namespace: '{{ .namespace | default "cnpg-system" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "cnpg" }}'
