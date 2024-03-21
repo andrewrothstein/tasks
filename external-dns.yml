@@ -6,21 +6,22 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: external-dns
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: external-dns
       chart_repo_name: external-dns
       chart: external-dns
-      chart_ver: 1.12.2
+      chart_ver: 1.14.3
       helm_args: -f external-dns-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
