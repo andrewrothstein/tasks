@@ -1,0 +1,6 @@
+---
+admissionWebhooks:
+  certManager:
+    enabled: true
+  autoGenerateCert:
+    enabled: false

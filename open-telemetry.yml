@@ -6,22 +6,22 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: open-telemetry-operator
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: open-telemetry-operator
       chart_repo_name: open-telemetry
       chart: opentelemetry-operator
-      chart_ver: 0.37.1
-      helm_args: >-
-        --set admissionWebhooks.certManager.enabled=true
+      chart_ver: 0.50.0
+      helm_args: -f open-telemetry-operator-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
