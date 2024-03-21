@@ -5,10 +5,10 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      namespace: open-telemetry-operator
+      namespace: otel-operator
       create_namespace: 'true'
       install: 'true'
-      name: open-telemetry-operator
+      name: otel-operator
       chart_repo_name: open-telemetry
       chart: opentelemetry-operator
       chart_ver: 0.50.0
