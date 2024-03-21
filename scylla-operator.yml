@@ -14,6 +14,11 @@ includes:
       chart_repo_name: scylla
       chart: scylla-operator
       chart_ver: 1.11.3
+  cluster:
+    taskfile: kubectl.yml
+    vars:
+      n: scylla-clusters
+      f: scylla-cluster.yml
 tasks:
   default:
     deps:
@@ -24,7 +29,11 @@ tasks:
       - task: cm:upgrade
     cmds:
       - task: operator:upgrade
+      - task: cluster:ns-create
+      - task: cluster:apply
   delete:
     cmds:
+      - task: cluster:delete
+      - task: cluster:ns-delete
       - task: operator:delete
       - task: cm:delete
