@@ -3,6 +3,11 @@ version: '3'
 includes:
   helm-repo: helm-repo.yml
   helm: helm.yml
+  cluster:
+    taskfile: kubectl.yml
+    vars:
+      n: cnpg-clusters
+      f: cnpg-cluster.yml
 tasks:
   default:
     deps:
@@ -30,12 +35,16 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
-#          helm_args: -f cnpg-values.yml
+          helm_args: -f cnpg-values.yml
+      - task: cluster:ns-create
+      - task: cluster:apply
   delete:
     vars:
       namespace: '{{ .namespace | default "gitea" }}'
       name: '{{ .name | default "gitea" }}'
     cmds:
+      - task: cluster:delete
+      - task: cluster:ns-delete
       - task: helm:delete
         vars:
           namespace: '{{ .namespace }}'
