@@ -8,21 +8,22 @@ includes:
     internal: true
     vars:
       namespace: scylla-operator
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: scylla-operator
       chart_repo_name: scylla
       chart: scylla-operator
-      chart_ver: 1.8.0
+      chart_ver: 1.11.3
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
-      - task: cm:install
+      - task: cm:upgrade
     cmds:
-      - task: operator:install
+      - task: operator:upgrade
   delete:
     cmds:
       - task: operator:delete
