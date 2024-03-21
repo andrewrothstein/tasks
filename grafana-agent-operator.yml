@@ -6,21 +6,22 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: grafana
       name: grafana-agent-operator
       chart_repo_name: grafana
       chart: grafana-agent-operator
-      chart_ver: 0.2.14
+      chart_ver: 0.3.19
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

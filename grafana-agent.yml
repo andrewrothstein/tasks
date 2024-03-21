@@ -7,18 +7,19 @@ includes:
     internal: true
     vars:
       namespace: grafana-agent
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: grafana-agent
       chart: chart-grafana-agent
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
