@@ -6,28 +6,26 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: kubernetes-dashboard
       name: kubernetes-dashboard
       chart_repo_name: kubernetes-dashboard
       chart: kubernetes-dashboard
-      chart_ver: 6.0.8
+      chart_ver: 7.1.2
       helm_args: -f k8s-dashboard-values.yml
 tasks:
   port-forward:
     cmds:
-      - |
-        export POD_NAME=$(kubectl get pods -n kubernetes-dashboard -l "app.kubernetes.io/name=kubernetes-dashboard,app.kubernetes.io/instance=kubernetes-dashboard" -o jsonpath="{.items[0].metadata.name}")
-        echo https://127.0.0.1:8443/
-        kubectl -n kubernetes-dashboard port-forward $POD_NAME 8443:8443
+      - kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
