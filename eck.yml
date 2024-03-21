@@ -6,21 +6,22 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       namespace: elastic-system
       name: elastic-operator
       chart_repo_name: elastic
       chart: eck-operator
-      chart_ver: 2.10.0
+      chart_ver: 2.11.1
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

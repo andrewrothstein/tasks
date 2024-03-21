@@ -15,10 +15,10 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
-      - task: eck:install
+      - task: eck:upgrade
     cmds:
       - task: elasticsearch:ns-create
       - task: elasticsearch:apply
