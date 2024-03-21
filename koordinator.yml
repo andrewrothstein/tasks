@@ -1,0 +1,43 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - install
+  install:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "koordinator-sh" }}'
+      chart: '{{ .chart | default "koordinator" }}'
+      chart_ver: '{{ .chart_ver | default "1.4.1" }}'
+      namespace: '{{ .namespace | default "koordinator" }}'
+      install: '{{ .install | default "true" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "koordinator" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .chart_repo_name }}'
+          url: https://koordinator-sh.github.io/charts
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: '{{ .install }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+#          helm_args: -f koordinator-values.yml
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "koordinator" }}'
+      name: '{{ .name | default "koordinator" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'

@@ -33,6 +33,7 @@ tasks:
             releases-docker.jfrog.io \
             xpkg.upbound.io \
             cr.weaviate.io \
+            registry.cn-beijing.aliyuncs.com \
             registry.k8s.io; do
               h="$r"
               if [ "${r}" == "docker.io" ]; then
