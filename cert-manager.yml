@@ -16,7 +16,7 @@ includes:
       chart_repo_name: jetstack
       chart_ver: 1.14.4
       chart: cert-manager
-      helm_args: --set installCRDs=true -f cert-manager-values.yml
+      helm_args: -f cert-manager-values.yml
       install: 'true'
   approver_policy:
     taskfile: helm.yml

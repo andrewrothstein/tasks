@@ -1,4 +1,5 @@
 ---
+installCRDs: true
 # Disable cert-manager's built-in approver
 extraArgs:
  - "--controllers=*,-certificaterequests-approver"
