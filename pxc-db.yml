@@ -2,13 +2,14 @@
 version: '3'
 includes:
   pxc-operator: pxc-operator.yml
-  pxc-db:
+  helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: percona
       chart: pxc-db
-      chart_ver: 1.13.7
+      chart_ver: 1.14.1
       create_namespace: 'false'
+      install: 'true'
       namespace: pxc-operator
       name: pxc-db
 tasks:
@@ -16,7 +17,7 @@ tasks:
     deps:
       - task: pxc-operator
     cmds:
-      - task: pxc-db:install
+      - task: helm:upgrade
   delete:
     cmds:
-      - task: pxc-db:delete
+      - task: helm:delete
