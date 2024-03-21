@@ -8,7 +8,7 @@ metadata:
     {{- include "chart-grafana-agent.labels" . | nindent 4 }}
     app: {{ .Release.Name }}
 spec:
-  image: grafana/agent:v0.32.1
+  image: {{ .Values.image | quote }}
   logLevel: info
   serviceAccountName: '{{ include "chart-grafana-agent.serviceAccountName" . }}'
   metrics:
