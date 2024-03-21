@@ -6,21 +6,22 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: coredns
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: coredns
       chart_repo_name: coredns
       chart: coredns
-      chart_ver: 1.23.0
+      chart_ver: 1.29.0
       helm_args: -f coredns-etcd.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
