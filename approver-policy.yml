@@ -47,3 +47,36 @@ spec:
       serialNumber: {value: "*"}
   selector:
     issuerRef: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cert-manager-policy:allow-all
+rules:
+  - apiGroups:
+      - policy.cert-manager.io
+    resources:
+      - certificaterequestpolicies
+    verbs:
+      - use
+    resourceNames:
+      - allow-all
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager-policy:allow-all
+roleRef:
+# ClusterRole or Role _must_ be bound to a user for the policy to be considered.
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cert-manager-policy:allow-all
+subjects:
+# The users who should be bound to the policies defined.
+# Note that in the case of users creating Certificate resources, cert-manager
+# is the entity that is creating the actual CertificateRequests, and so the
+# cert-manager controller's
+# Service Account should be bound instead.
+- kind: ServiceAccount
+  name: cert-manager
+  namespace: cert-manager
