@@ -53,3 +53,4 @@ roles:
   - andrewrothstein.pki
   - andrewrothstein.operator_sdk
   - andrewrothstein.olm
+  - andrewrothstein.trident

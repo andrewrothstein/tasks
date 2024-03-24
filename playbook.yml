@@ -56,3 +56,4 @@
     - andrewrothstein.calicoctl
     - andrewrothstein.operator_sdk
     - andrewrothstein.olm
+    - andrewrothstein.trident

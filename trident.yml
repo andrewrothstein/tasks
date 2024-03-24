@@ -7,11 +7,12 @@ includes:
     internal: true
     vars:
       namespace: trident-operator
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       chart_repo_name: netapp-trident
       chart: trident-operator
       name: trident-operator
-      chart_ver: 23.01.1
+      chart_ver: 100.2402.0
 tasks:
   default:
     deps:
