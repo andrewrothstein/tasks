@@ -10,8 +10,8 @@ includes:
 #  komodor: komodor.yml
   komodor: pet.yml
 
-#  open-telemetry: open-telemetry.yml
-  open-telemetry: pet.yml
+#  open-telemetry-operator: open-telemetry-operator.yml
+  open-telemetry-operator: pet.yml
 
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
@@ -19,8 +19,8 @@ includes:
 #  elastic: elastic.yml
   elastic: pet.yml
 
-#  keda: keda.yml
-  keda: pet.yml
+  keda: keda.yml
+#  keda: pet.yml
 
 tasks:
   default:
@@ -29,12 +29,12 @@ tasks:
   up:
     cmds:
       - task: metrics-server:upgrade
-      - task: k8s-dashboard:install
-      - task: open-telemetry:install
-      - task: komodor:install
+      - task: k8s-dashboard:upgrade
+      - task: open-telemetry-operator:upgrade
+      - task: komodor:upgrade
       - task: kube-prometheus-stack:upgrade
       - task: elastic:upgrade
-      - task: keda:install
+      - task: keda:upgrade
   delete:
     cmds:
       - task: keda:delete

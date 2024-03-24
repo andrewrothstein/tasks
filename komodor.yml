@@ -6,13 +6,13 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     vars:
       namespace: '{{ .namespace | default "komodorio" }}'
       cluster_name: '{{ .cluster_name | default "kind" }}'
       chart: '{{ .chart | default "komodor-agent" }}'
-      chart_ver: '{{ .chart_ver | default "2.2.0" }}'
+      chart_ver: '{{ .chart_ver | default "2.3.0" }}'
       name: '{{ .name | default "komodor-agent" }}'
       repo_name: '{{ .repo_name | default "komodorio" }}'
     deps:
