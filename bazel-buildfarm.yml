@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: bazel-buildfarm
+      create_namespace: 'true'
+      install: 'true'
+      name: buildfarm
+      chart_repo_name: oci://ghcr.io/andrewrothstein
+      chart: buildfarm
+      chart_ver: 0.2.4
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
