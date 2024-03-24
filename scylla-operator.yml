@@ -1,7 +1,6 @@
 ---
 version: '3'
 includes:
-  cm: cert-manager.yml
   repo: scylla-repo.yml
   operator:
     taskfile: helm.yml
@@ -26,7 +25,6 @@ tasks:
   upgrade:
     deps:
       - task: repo
-      - task: cm:upgrade
     cmds:
       - task: operator:upgrade
       - task: cluster:ns-create
@@ -36,4 +34,3 @@ tasks:
       - task: cluster:delete
       - task: cluster:ns-delete
       - task: operator:delete
-      - task: cm:delete
