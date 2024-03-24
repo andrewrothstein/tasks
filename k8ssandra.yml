@@ -8,9 +8,11 @@ includes:
     vars:
       namespace: k8ssandra-operator
       name: k8ssandra-operator
+      create_namespace: 'true'
+      install: 'true'
       chart_repo_name: k8ssandra
       chart: k8ssandra-operator
-      chart_ver: 1.12.0
+      chart_ver: 1.13.0
   kubectl:
     taskfile: kubectl.yml
     internal: true
@@ -20,14 +22,12 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: operator:install
-        vars:
-          create_namespace: true
+      - task: operator:upgrade
       - task: kubectl:apply
   delete:
     cmds:

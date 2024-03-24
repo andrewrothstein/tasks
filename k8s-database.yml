@@ -13,7 +13,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: k8ssandra:install
+      - task: k8ssandra:upgrade
       - task: postgresql:upgrade
   delete:
     cmds:
