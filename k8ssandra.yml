@@ -1,7 +1,6 @@
 ---
 version: '3'
 includes:
-  cm: cert-manager.yml
   repo: k8ssandra-repo.yml
   operator:
     taskfile: helm.yml
@@ -25,7 +24,6 @@ tasks:
   install:
     deps:
       - task: repo
-      - task: cm:install
     cmds:
       - task: operator:install
         vars:
@@ -35,4 +33,3 @@ tasks:
     cmds:
       - task: kubectl:delete
       - task: operator:delete
-      - task: cm:delete
