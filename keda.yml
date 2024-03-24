@@ -14,12 +14,13 @@ includes:
       name: keda
       chart_repo_name: kedacore
       chart: keda
-      chart_ver: 2.13.0
+      chart_ver: 2.13.2
+      helm_args: -f keda-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
