@@ -57,3 +57,4 @@
     - andrewrothstein.operator_sdk
     - andrewrothstein.olm
     - andrewrothstein.trident
+    - andrewrothstein.trivy
