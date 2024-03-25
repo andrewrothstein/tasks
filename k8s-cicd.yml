@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-#  flux: flux.yml
-  flux: pet.yml
+  flux: flux.yml
+#  flux: pet.yml
 
   argoproj: argoproj.yml
 #  argoproj: pet.yml
