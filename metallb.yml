@@ -15,7 +15,7 @@ includes:
       namespace: metallb-system
       name: metallb
       chart_repo_name: metallb
-      chart_ver: 0.14.3
+      chart_ver: 0.14.4
       chart: metallb
       install: 'true'
       helm_args: -f metallb-values.yml
