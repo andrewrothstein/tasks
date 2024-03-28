@@ -12,7 +12,7 @@ includes:
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.14.0
+      chart_ver: 1.14.1
       helm_args: -f harbor-values.yml
 tasks:
   default:
