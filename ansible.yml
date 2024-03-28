@@ -41,13 +41,29 @@ tasks:
       limit: '{{ .limit }}'
       i: '{{ .i }}'
       c: '{{ .c }}'
+      playbook_yml: '{{ .playbook_yml }}'
       playbook_dir: '{{ .playbook_dir | default .USER_WORKING_DIR }}'
       playbook: '{{ .playbook | default "playbook.yml" }}'
       fq_playbook: '{{ .playbook_dir }}/{{ .playbook }}'
     cmds:
       - |
-        ansible-playbook \
-          {{ if .i }}-i {{ .i | quote }}{{ end }} \
-          {{ if .c }}-c {{ .c | quote }}{{ end }} \
-          {{ if .limit }}--limit {{ .limit | quote }}{{ end }} \
-          {{ .fq_playbook | quote }}
+        export FQ_PLAYBOOK=""
+        {{- if .playbook_yml }}
+        FQ_PLAYBOOK="$(mktemp --suffix=.yml)"
+        cat >"${FQ_PLAYBOOK}" <<HERE
+        {{ .playbook_yml }}
+        HERE
+        {{- else }}
+        FQ_PLAYBOOK={{ .fq_playbook | quote }}
+        {{- end }}
+
+        if [ -e "${FQ_PLAYBOOK}" ];
+        then
+          ansible-playbook \
+            {{ if .i }}-i {{ .i | quote }}{{ end }} \
+            {{ if .c }}-c {{ .c | quote }}{{ end }} \
+            {{ if .limit }}--limit {{ .limit | quote }}{{ end }} \
+            "${FQ_PLAYBOOK}"
+        else
+          echo "${FQ_PLAYBOOK} not found, skipping"
+        fi

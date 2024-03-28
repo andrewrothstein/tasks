@@ -65,18 +65,28 @@ tasks:
               "ansible-{{ .name }}"
   install:
     vars:
+      requirements_yml: '{{ .requirements_yml }}'
       requirements_dir: '{{ .requirements_dir | default .USER_WORKING_DIR }}'
       requirements: '{{ .requirements | default "requirements.yml" }}'
       fq_requirements: '{{ .requirements_dir }}/{{ .requirements }}'
-      force: '{{ .force | default false }}'
+      force: '{{ .force | default "false" }}'
     cmds:
       - |
-        if [ -e {{ .fq_requirements | quote }} ];
+        export FQ_REQUIREMENTS=""
+        {{- if .requirements_yml }}
+        FQ_REQUIREMENTS="$(mktemp --suffix=.yaml)"
+        cat >"${FQ_REQUIREMENTS}" <<HERE
+        {{ .requirements_yml }}
+        HERE
+        {{- else }}
+        FQ_REQUIREMENTS={{ .fq_requirements | quote }}
+        {{- end }}
+        if [ -e "${FQ_REQUIREMENTS}" ];
         then
           ansible-galaxy \
             install \
-            {{ if .force }}-f{{ end }} \
-            -r {{ .fq_requirements | quote }}
+            {{ if eq "true" .force }}-f{{ end }} \
+            -r "${FQ_REQUIREMENTS}"
         else
-          echo {{ .fq_requirements | quote }} not found, skipping...
+          echo "${FQ_REQUIREMENTS} not found, skipping..."
         fi

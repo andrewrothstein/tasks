@@ -1,0 +1,11 @@
+---
+version: '3'
+includes:
+  ansible-oneshot:
+    taskfile: ansible-oneshot.yml
+    vars:
+      r: andrewrothstein.tigerbeetle
+tasks:
+  default:
+    cmds:
+      - task: ansible-oneshot

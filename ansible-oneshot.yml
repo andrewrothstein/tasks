@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  galaxy: ansible-galaxy.yml
+  ansible: ansible.yml
+tasks:
+  default:
+    vars:
+      r: '{{ .r }}'
+    cmds:
+      - task: galaxy:install
+        vars:
+          f: "true"
+          requirements_yml: |-
+            ---
+            - name: {{ .r }}
+      - task: ansible:playbook
+        vars:
+          i: 'localhost,'
+          c: 'local'
+          playbook_yml: |-
+            ---
+            - hosts: localhost
+              roles:
+                - {{ .r }}
