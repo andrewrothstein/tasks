@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-cd
-      chart_ver: 6.7.3
+      chart_ver: 6.7.6
       name: argo-cd
       namespace: argocd
       create_namespace: 'true'
