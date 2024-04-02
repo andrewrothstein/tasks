@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: synopsys
+      url: https://sig-repo.synopsys.com/artifactory/sig-cloudnative
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
