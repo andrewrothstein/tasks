@@ -69,12 +69,16 @@ tasks:
   local:
     cmds:
       - task: ansible-galaxy:install
+        vars:
+          force: 'true'
       - task: ansible-galaxy:install
         vars:
           requirements_dir: '{{ .USER_WORKING_DIR }}/meta'
+          force: 'true'
       - task: ansible-galaxy:install
         vars:
           requirements: test-requirements.yml
+          force: 'true'
       - task: local:playbook
         vars:
           playbook: test.yml
