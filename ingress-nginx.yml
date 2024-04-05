@@ -6,20 +6,21 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: ingress-nginx
-      create_namespace: true
+      create_namespace: 'true'
+      install: 'true'
       name: ingress-nginx
       chart_repo_name: ingress-nginx
       chart: ingress-nginx
-      chart_ver: 4.7.0
+      chart_ver: 4.10.0
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
