@@ -98,32 +98,33 @@ tasks:
             {{ .BAKEFILE | quote }} \
             --load \
             --progress plain
-  generate-checksum:
+  checksums:
     internal: true
     vars:
       append: '{{ .append }}'
-      dl: '{{ .dl }}'
-      target: '{{ .target }}'
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      f: '{{ .f }}'
+      target: '{{ .target | default "defaults/main.yml" }}'
     cmds:
-      - |
-        if [ -e {{ .dl | quote }} ];
+      - |-
+        cd {{ .dir | quote }};
+        if [ -e {{ .f | quote }} ];
         then
-          {{ .dl | quote }}{{ if eq .append "true" }} >> {{ .target | quote }}{{ end }}
+          "{{ .dir }}/{{ .f }}" {{ if eq .append "true" }} >> {{ .target | quote }}{{ end }}
         else
-          echo {{ .dl | quote }} not found. skipping...
+          echo {{ .f | quote }} not found. skipping...
         fi
-  generate-checksums:
-    vars:
-      target: '{{ .USER_WORKING_DIR }}/defaults/main.yml'
-      append: '{{ .append | default false }}'
+  update-checksums:
     cmds:
-      - task: generate-checksum
+      - task: checksums
         vars:
-          dl: '{{ .USER_WORKING_DIR }}/dl-checksum.sh'
-          append: '{{ .append }}'
-          target: '{{ .target }}'
-      - task: generate-checksum
+          f: update-checksums.sh
+          append: 'false'
+      - task: checksums
         vars:
-          dl: '{{ .USER_WORKING_DIR }}/dl-checksums.sh'
-          append: '{{ .append }}'
-          target: '{{ .target }}'
+          f: dl-checksum.sh
+          append: 'true'
+      - task: checksums
+        vars:
+          f: dl-checksums.sh
+          append: 'true'
