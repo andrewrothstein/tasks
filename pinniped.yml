@@ -3,10 +3,10 @@ version: '3'
 includes:
   kapp: kapp.yml
 tasks:
-  install:
+  deploy:
     vars:
       APP: '{{ .APP }}'
-      VER: '{{ .VER }}'
+      VER: '{{ .VER | default "0.29.0" }}'
     cmds:
       - task: kapp:deploy
         vars:
@@ -15,7 +15,7 @@ tasks:
   delete:
     vars:
       APP: '{{ .APP }}'
-      VER: '{{ .VER }}'
+      VER: '{{ .VER | default "0.29.0" }}'
     cmds:
       - task: kapp:delete
         vars:

@@ -5,11 +5,13 @@ includes:
     taskfile: pinniped.yml
     vars:
       APP: pinniped-concierge
-      VER: 0.23.0
 tasks:
-  install:
+  default:
     cmds:
-      - task: pinniped:install
+      - task: deploy
+  deploy:
+    cmds:
+      - task: pinniped:deploy
   delete:
     cmds:
       - task: pinniped:delete
