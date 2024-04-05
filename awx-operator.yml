@@ -11,7 +11,7 @@ includes:
       name: awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
-      chart_ver: 2.12.1
+      chart_ver: 2.14.0
       helm_args: -f awx-values.yml
 tasks:
   default:
