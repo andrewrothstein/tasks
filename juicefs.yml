@@ -1,0 +1,36 @@
+---
+version: '3'
+includes:
+  juicefs-repo: juicefs-repo.yml
+  csi-driver:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: juicefs
+      chart: juicefs-csi-driver
+      chart_ver: 0.19.8
+      namespace: kube-system
+      install: 'true'
+      name: juicefs-csi-driver
+  s3-gateway:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: juicefs
+      chart: juicefs-s3-gateway
+      chart_ver: 0.11.2
+      namespace: kube-system
+      install: 'true'
+      name: juicefs-s3-gateway
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: juicefs-repo
+    cmds:
+      - task: csi-driver:upgrade
+#      - task: s3-gateway:upgrade
+  delete:
+    cmds:
+#      - task: s3-gateway:delete
+      - task: csi-driver:delete

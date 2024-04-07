@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: juicefs
+      url: https://juicedata.github.io/charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

@@ -56,3 +56,4 @@ roles:
   - andrewrothstein.trident
   - andrewrothstein.trivy
   - andrewrothstein.synopsysctl
+  - andrewrothstein.juicefs
