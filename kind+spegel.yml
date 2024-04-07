@@ -1,0 +1,36 @@
+---
+version: '3'
+includes:
+  kind: kind.yml
+  docker-network: docker-network.yml
+  spegel: spegel.yml
+tasks:
+  up:
+    vars:
+      disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
+    cmds:
+      - task: docker-network:create
+        vars:
+          name: kind
+      - task: kind:up
+        vars:
+          f: chart-kind/registry-values.yaml
+          disableDefaultCNI: '{{ .disableDefaultCNI }}'
+      - |+
+        CONTAINERD_CONFIG_DIR="/etc/containerd/config.d"
+        for node in $(kind get nodes); do
+          docker exec "${node}" \
+            mkdir -p "${CONTAINERD_CONFIG_DIR}"
+          docker exec \
+            -i "${node}" \
+            cp /dev/stdin "${CONTAINERD_CONFIG_DIR}/spegel.toml" <<EOF
+        [plugins."io.containerd.grpc.v1.cri".registry]
+            config_path = "/etc/containerd/certs.d"
+        [plugins."io.containerd.grpc.v1.cri".containerd]
+            discard_unpacked_layers = false
+        EOF
+        done
+      - task: spegel:upgrade
+  delete:
+    cmds:
+      - task: kind:delete
