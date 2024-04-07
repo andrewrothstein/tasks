@@ -22,15 +22,21 @@ tasks:
   default:
     deps:
       - upgrade
+  create-cluster:
+    cmds:
+      - task: cluster:ns-create
+      - task: cluster:apply
+  delete-cluster:
+    cmds:
+      - task: cluster:delete
+      - task: cluster:ns-delete
   upgrade:
     deps:
       - task: repo
     cmds:
       - task: operator:upgrade
-      - task: cluster:ns-create
-      - task: cluster:apply
+      - task: create-cluster
   delete:
     cmds:
-      - task: cluster:delete
-      - task: cluster:ns-delete
+      - task: delete-cluster
       - task: operator:delete
