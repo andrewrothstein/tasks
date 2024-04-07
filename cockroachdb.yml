@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: cockroachdb-repo.yml
+  ca:
+    taskfile: kubectl.yml
+    vars:
+      n: cockroachdb
+      f: cockroachdb-issuer.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -12,7 +17,7 @@ includes:
       name: my-cockroachdb
       chart_repo_name: cockroachdb
       chart: cockroachdb
-      chart_ver: 12.0.2
+      chart_ver: 12.0.3
       helm_args: --values cockroachdb-values.yml
 tasks:
   default:
@@ -22,7 +27,10 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: ca:ns-create
+      - task: ca:apply
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: ca:delete
