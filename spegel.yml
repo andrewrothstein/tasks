@@ -6,17 +6,18 @@ includes:
     vars:
       namespace: spegel
       create_namespace: 'true'
+      install: 'true'
       name: spegel
-      chart_repo_name: oci://ghcr.io/xenitab/helm-charts
+      chart_repo_name: oci://ghcr.io/spegel-org/helm-charts
       chart: spegel
-      chart_ver: v0.0.13
+      chart_ver: v0.0.20
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
