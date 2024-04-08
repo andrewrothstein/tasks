@@ -8,12 +8,12 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "minio" }}'
       chart: '{{ .chart | default "operator" }}'
-      chart_ver: '{{ .chart_ver | default "5.0.12" }}'
+      chart_ver: '{{ .chart_ver | default "5.0.14" }}'
       namespace: '{{ .namespace | default "minio-operator" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "operator" }}'
