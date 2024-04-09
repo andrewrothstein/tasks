@@ -57,3 +57,4 @@ roles:
   - andrewrothstein.trivy
   - andrewrothstein.synopsysctl
   - andrewrothstein.juicefs
+  - andrewrothstein.keycloak

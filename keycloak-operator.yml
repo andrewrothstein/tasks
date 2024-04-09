@@ -1,0 +1,46 @@
+---
+version: '3'
+vars:
+  mirror: https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources
+  default_ver: 24.0.2
+  crd1: kubernetes/keycloaks.k8s.keycloak.org-v1.yml
+  crd2: kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
+  operator: kubernetes/kubernetes.yml
+includes:
+  kubectl:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: keycloak-operator
+tasks:
+  default:
+    cmds:
+      - task: apply
+  apply:
+    vars:
+      ver: '{{ .ver | default .default_ver }}'
+    cmds:
+      - task: kubectl:ns-create
+      - task: kubectl:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
+      - task: kubectl:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kubectl:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+  delete:
+    vars:
+      ver: '{{ .ver | default .default_ver }}'
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+      - task: kubectl:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kubectl:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
+      - task: kubectl:ns-delete
