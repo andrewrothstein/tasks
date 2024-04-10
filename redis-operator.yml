@@ -1,0 +1,43 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "ot-helm" }}'
+      chart: '{{ .chart | default "redis-operator" }}'
+      chart_ver: '{{ .chart_ver | default "0.15.9" }}'
+      namespace: '{{ .namespace | default "ot-operators" }}'
+      install: '{{ .install | default "true" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "redis-operator" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .chart_repo_name }}'
+          url: https://ot-container-kit.github.io/helm-charts
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: '{{ .install }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+#          helm_args: -f redis-operator-values.yml
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "ot-operators" }}'
+      name: '{{ .name | default "redis-operator" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
