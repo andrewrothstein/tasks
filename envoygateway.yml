@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: envoy-gateway-system
+      create_namespace: 'true'
+      install: 'true'
+      name: envoy-gateway
+      chart_repo_name: oci://docker.io/envoyproxy
+      chart: gateway-helm
+      chart_ver: v1.0.1
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
