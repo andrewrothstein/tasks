@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  rook_ver: 1.13.7
+  rook_ver: 1.14.0
 includes:
   repo: rook-repo.yml
   operator:
@@ -24,8 +24,7 @@ includes:
       chart_repo_name: rook-release
       chart: rook-ceph-cluster
       chart_ver: '{{ .rook_ver }}'
-      helm_args: >-
-        --set operatorNamespace=rook-ceph
+      helm_args: '--set operatorNamespace=rook-ceph'
 tasks:
   default:
     deps:
