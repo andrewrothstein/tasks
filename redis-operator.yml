@@ -3,11 +3,16 @@ version: '3'
 includes:
   helm-repo: helm-repo.yml
   helm: helm.yml
+  kubectl:
+    taskfile: kubectl.yml
+    vars:
+      n: redis-instances
 tasks:
   default:
-    deps:
-      - upgrade
-  upgrade:
+    cmds:
+      - task: upgrade-operator
+      - task: apply-instances
+  upgrade-operator:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "ot-helm" }}'
       chart: '{{ .chart | default "redis-operator" }}'
@@ -41,3 +46,21 @@ tasks:
         vars:
           namespace: '{{ .namespace }}'
           name: '{{ .name }}'
+  apply-instances:
+    cmds:
+      - task: kubectl:ns-create
+      - task: kubectl:apply
+        vars:
+          f: redis-standalone.yaml
+      - task: kubectl:apply
+        vars:
+          f: redis-cluster.yaml
+  delete-instances:
+    cmds:
+      - task: kubectl:delete
+        vars:
+          f: redis-cluster.yaml
+      - task: kubectl:delete
+        vars:
+          f: redis-standalone.yaml
+      - task: kubectl:ns-delete
