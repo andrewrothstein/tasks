@@ -1,0 +1,47 @@
+---
+version: '3'
+includes:
+  prefect-repo: prefect-repo.yml
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+    vars:
+      n: prefect
+  server:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: prefect
+      name: prefect-server
+      chart_repo_name: prefect
+      chart_ver: 2024.4.11235848
+      chart: prefect-server
+      install: 'true'
+#      helm_args: -f prefect-server-values.yml
+  worker:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: prefect
+      name: prefect-worker
+      chart_repo_name: prefect
+      chart_ver: 2024.4.11235848
+      chart: prefect-worker
+      helm_args: -f prefect-worker-values.yml
+      install: 'true'
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+       - task: prefect-repo
+    cmds:
+      - task: kubectl:ns-create
+      - task: server:upgrade
+      - task: worker:upgrade
+  delete:
+    cmds:
+      - task: worker:delete
+      - task: server:delete
+      - task: kubectl:ns-delete

@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: prefect
+      url: https://prefecthq.github.io/prefect-helm
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

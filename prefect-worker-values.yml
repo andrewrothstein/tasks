@@ -1,0 +1,7 @@
+---
+worker:
+  apiConfig: server
+  config:
+    workPool: kind-pool
+  serverApiConfig:
+    apiUrl: http://prefect-server.prefect.svc.cluster.local
