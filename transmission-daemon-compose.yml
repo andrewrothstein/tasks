@@ -1,0 +1,18 @@
+---
+version: '3'
+services:
+  transmission:
+    image: ghcr.io/andrewrothstein/ansible-transmission:0.0.0-ubuntu.jammy
+    command: /usr/local/bin/transmission-daemon -f -c /watch -w /downloads -u transmission -p transmission
+    container_name: transmission
+    volumes:
+      - downloads:/downloads
+      - watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+volumes:
+  downloads:
+  watch:

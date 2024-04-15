@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  transmission-daemon:
+    taskfile: docker-compose.yml
+    vars:
+      p: transmission-daemon
+      f: transmission-daemon-compose.yml
+tasks:
+  default:
+    deps:
+      - apply
+  apply:
+    cmds:
+      - task: transmission-daemon:apply
+  restart:
+    cmds:
+      - task: transmission-daemon:restart
+  delete:
+    cmds:
+      - task: transmission-daemon:delete
+  logs:
+    cmds:
+      - task: transmission-daemon:logs
+  top:
+    cmds:
+      - task: transmission-daemon:top
