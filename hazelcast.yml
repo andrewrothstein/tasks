@@ -28,6 +28,9 @@ tasks:
     cmds:
       - task: kubectl:ns-create
       - task: platform-operator:upgrade
+      - task: kubectl:apply
+        vars:
+          f: hazelcast-sample.yml
   delete:
     cmds:
       - task: platform-operator:delete
