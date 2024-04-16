@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: hazelcast
+      url: https://hazelcast-charts.s3.amazonaws.com
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
