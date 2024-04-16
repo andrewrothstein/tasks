@@ -25,11 +25,11 @@
   },
   {
     "OS": "fedora",
-    "OS_VER": "38"
+    "OS_VER": "39"
   },
   {
     "OS": "fedora",
-    "OS_VER": "39"
+    "OS_VER": "40"
   },
   {
     "OS": "rockylinux",
