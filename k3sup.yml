@@ -214,12 +214,4 @@ tasks:
         vars:
           host: console
           no_extras: "true"
-      - task: install
-        vars:
-          host: gateway
-          no_extras: "true"
-      - task: install
-        vars:
-          host: ssk
-          no_extras: "true"
       - task: kubeconfig:merge-all

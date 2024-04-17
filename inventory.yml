@@ -3,27 +3,19 @@ all:
   hosts:
     localhost:
       ansible_connection: local
-    truenas:
-      ansible_user: root
-    gateway:
-      ansible_user: arothste
-      kubeconfig: /etc/rancher/k3s/k3s.yaml
     console:
       ansible_user: arothste
       kubeconfig: /etc/rancher/k3s/k3s.yaml
   children:
     k3s:
       hosts:
-        gatway:
         console:
       vars:
     zfs:
       hosts:
-        gateway:
       vars:
         docker_engine_daemon_json:
           storage-driver: zfs
     docker:
       hosts:
         console:
-        gateway:

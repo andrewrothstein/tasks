@@ -1,19 +1,23 @@
 ---
 - name: Install tailscale-operator
   hosts:
-    - truenas
+    - localhost
+  vars:
+    contexts:
+      - console
   tasks:
     - name: Add tailscale helm chart repository
       kubernetes.core.helm_repository:
         name: tailscale
         repo_url: https://pkgs.tailscale.com/helmcharts
     - name: Install tailscale operator
+      with_items: '{{ contexts }}'
       kubernetes.core.helm:
         chart_ref: tailscale/tailscale-operator
-        chart_version: 1.56.1
+        chart_version: 1.62.1
         create_namespace: true
         release_name: tailscale-operator
         release_namespace: tailscale
-        kubeconfig: /etc/rancher/k3s/k3s.yaml
+        context: '{{ item }}'
         values: '{{ lookup("file", ".tailscale-secrets.yml") | from_yaml }}'
         state: present

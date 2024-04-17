@@ -3,47 +3,54 @@
   hosts:
     - localhost
   vars:
-    istio_ver: 1.20.2
+    istio_ver: 1.21.1
+    contexts:
+      - console
   tasks:
-    - ansible.builtin.include_role:
+    - name: Installing istioctl
+      ansible.builtin.include_role:
         name: andrewrothstein.istio
     - name: Add istio helm chart repository
       kubernetes.core.helm_repository:
         name: istio
         repo_url: https://istio-release.storage.googleapis.com/charts
     - name: Install istio/base
+      with_items: '{{ contexts }}'
       kubernetes.core.helm:
         chart_ref: istio/base
         chart_version: '{{ istio_ver }}'
         create_namespace: "true"
         release_name: istio-base
         release_namespace: istio-system
-        context: gateway
+        context: '{{ item }}'
         state: present
     - name: Install istio/istiod
+      with_items: '{{ contexts }}'
       kubernetes.core.helm:
         chart_ref: istio/istiod
         chart_version: '{{ istio_ver }}'
         create_namespace: "false"
         release_name: istiod
         release_namespace: istio-system
-        context: gateway
+        context: '{{ item }}'
         state: present
     - name: Install istio/cni
+      with_items: '{{ contexts }}'
       kubernetes.core.helm:
         chart_ref: istio/cni
         chart_version: '{{ istio_ver }}'
         create_namespace: "false"
         release_name: istio-cni
         release_namespace: kube-system
-        context: gateway
+        context: '{{ item }}'
         state: absent
     - name: Install istio/gateway
+      with_items: '{{ contexts }}'
       kubernetes.core.helm:
         chart_ref: istio/gateway
         chart_version: '{{ istio_ver }}'
         create_namespace: "true"
         release_name: istio-gateway
         release_namespace: istio-gateway
-        context: gateway
+        context: '{{ item }}'
         state: present
