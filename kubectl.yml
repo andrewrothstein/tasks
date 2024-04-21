@@ -3,35 +3,41 @@ version: '3'
 tasks:
   ns-label:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       labels: '{{ .labels }}'
     cmds:
       - kubectl label namespace {{ .n | quote }} {{ .labels | quote }} --overwrite
   ns-create:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
     cmds:
       - kubectl create namespace {{ .n | quote }}
     status:
       - kubectl get namespace {{ .n | quote }}
   ns-delete:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
     cmds:
       - kubectl delete namespace {{ .n | quote }}
   apply:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       f: '{{ .f }}'
+      literal_f: '{{ .literal_f }}'
     cmds:
       - |
         kubectl \
           apply \
           {{ if .n }}-n {{ .n | quote }}{{ end }} \
-          -f {{ .f | quote }}
+          -f
+          {{- if .literal_f }} - <<EOF
+        {{ .literal_f }}
+        EOF
+          {{- else }} {{ .f | quote }}
+          {{- end }}
   delete:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       f: '{{ .f }}'
     cmds:
       - |
@@ -41,7 +47,7 @@ tasks:
           -f {{ .f | quote }}
   kapply:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       k: '{{ .k }}'
     cmds:
       - |
@@ -51,7 +57,7 @@ tasks:
           -k {{ .k | quote }}
   kdelete:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       k: '{{ .k }}'
     preconditions:
       - kubectl get namespace {{ .n | quote }}
@@ -63,7 +69,7 @@ tasks:
           -k {{ .k | quote }}
   patch:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       typeofthing: '{{ .typeofthing }}'
       thingname: '{{ .thingname }}'
       ty: '{{ .ty }}'
@@ -80,7 +86,7 @@ tasks:
   wait-for-pod:
     vars:
       for: '{{ .for }}'
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       k: '{{ .k }}'
       v: '{{ .v }}'
     cmds:
@@ -91,12 +97,12 @@ tasks:
             -l '{{ .k }}={{ .v }}'
   wait-for-pod-ready:
     vars:
-      n: '{{ .n }}'
+      n: '{{ .n | default "default" }}'
       k8s_app: '{{ .k8s_app }}'
     deps:
       - task: wait-for-pod
         vars:
           for: condition=ready
-          n: '{{ .n }}'
+          n: '{{ .n | default "default" }}'
           k: k8s-app
           v: '{{ .k8s_app }}'

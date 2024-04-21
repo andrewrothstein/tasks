@@ -1,14 +1,37 @@
 ---
-apiVersion: v1
-kind: Pod
-metadata:
-  name: tmux
-spec:
-  containers:
-    - name: tmux
-      image: ghcr.io/andrewrothstein/ansible-tmux:0.0.0-ubuntu.jammy
-      tty: true
-      command:
-        - bash
-        - -lc
-        - tail -f /dev/null
+version: '3'
+includes:
+  kubectl-exec: kubectl-exec.yml
+  kubectl: kubectl.yml
+tasks:
+  connect:
+    cmds:
+      - task: kubectl-exec
+        vars:
+          selector: tmux
+          ke_cmd: tmux
+          ke_args: attach
+          i: 'true'
+          t: 'true'
+  delete:
+    cmds:
+      - kubectl delete pod tmux --now
+  launch:
+    cmds:
+      - task: kubectl:apply
+        vars:
+          literal_f: |
+            ---
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              name: tmux
+            spec:
+              containers:
+                - name: tmux
+                  image: ghcr.io/andrewrothstein/ansible-tmux:0.0.0-ubuntu.jammy
+                  tty: true
+                  command:
+                    - bash
+                    - -lc
+                    - tmux new-session

@@ -1,24 +1,6 @@
 ---
 version: '3'
-includes:
-  kubectl: kubectl.yml
 tasks:
-  launch-tmux-pod:
-    cmds:
-      - task: kubectl:apply
-        vars:
-          n: '{{ .n | default "default" }}'
-          f: tmux-pod.yml
-  connect-tmux-pod:
-    cmds:
-      - task: default
-        vars:
-          selector: tmux
-          c: tmux
-          ke_cmd: tmux
-          ke_args: new-session
-          i: 'true'
-          t: 'true'
   default:
     vars:
       selector: '{{ .selector }}'
