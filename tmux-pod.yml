@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tmux
+spec:
+  containers:
+    - name: tmux
+      image: ghcr.io/andrewrothstein/ansible-tmux:0.0.0-ubuntu.jammy
+      tty: true
+      command:
+        - bash
+        - -lc
+        - tail -f /dev/null

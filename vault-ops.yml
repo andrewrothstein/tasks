@@ -4,7 +4,8 @@ includes:
   kubectl-exec:
     taskfile: kubectl-exec.yml
     vars:
-      COMMAND: vault
+      ke_cmd: vault
+      n: vault
   argo:
     taskfile: argo.yml
     vars:
@@ -12,14 +13,12 @@ includes:
 tasks:
   status-kk:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      POD: '{{ .POD | default "vault-0" }}'
+      selector: '{{ .selector | default "vault-0" }}'
     cmds:
       - task: kubectl-exec
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: '{{ .POD }}'
-          ARGS: status
+          selector: '{{ .selector }}'
+          ke_args: status
   status-argo:
     cmds:
       - task: argo:submit
@@ -29,61 +28,46 @@ tasks:
       VAULT_ADDR: http://vault.vault.svc:8200
   init:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      POD: '{{ .POD | default "vault-0" }}'
+      selector: '{{ .selector | default "vault-0" }}'
     cmds:
       - task: kubectl-exec
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: '{{ .POD }}'
-          ARGS: operator init -key-shares=1 -key-threshold=1 -format=json
-          OUTPUT: .vault-secrets.json
+          selector: '{{ .selector }}'
+          ke_args: operator init -key-shares=1 -key-threshold=1 -format=json
+          output: .vault-secrets.json
   unseal:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      POD: '{{ .POD | default "vault-0" }}'
+      selector: '{{ .selector | default "vault-0" }}'
     cmds:
       - task: kubectl-exec
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: '{{ .POD }}'
-          ARGS: operator unseal "$(jq -r '.unseal_keys_b64[]' .vault-secrets.json)"
+          selector: '{{ .selector }}'
+          ke_args: operator unseal "$(jq -r '.unseal_keys_b64[]' .vault-secrets.json)"
   unseal-all:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
     cmds:
       - task: unseal
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-0
+          selector: vault-0
       - task: unseal
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-1
+          selector: vault-1
       - task: unseal
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-2
+          selector: vault-2
   join:
     vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
-      POD: '{{ .POD }}'
-      JOIN: '{{ .JOIN | default "http://vault-0.vault-internal:8200" }}'
+      selector: '{{ .selector | default "vault-0" }}'
+      join: '{{ .join | default "http://vault-0.vault-internal:8200" }}'
     cmds:
       - task: kubectl-exec
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: '{{ .POD }}'
-          ARGS: operator raft join {{ .JOIN | quote }}
+          selector: '{{ .selector }}'
+          ke_args: operator raft join {{ .join | quote }}
   join-all:
-    vars:
-      NAMESPACE: '{{ .NAMESPACE | default "vault" }}'
     deps:
       - task: join
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-1
+          selector: vault-1
       - task: join
         vars:
-          NAMESPACE: '{{ .NAMESPACE }}'
-          POD: vault-2
+          selector: vault-2

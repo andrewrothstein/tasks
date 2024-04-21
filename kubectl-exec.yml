@@ -1,20 +1,64 @@
 ---
 version: '3'
+includes:
+  kubectl: kubectl.yml
 tasks:
+  launch-tmux-pod:
+    cmds:
+      - task: kubectl:apply
+        vars:
+          n: '{{ .n | default "default" }}'
+          f: tmux-pod.yml
+  connect-tmux-pod:
+    cmds:
+      - task: default
+        vars:
+          selector: tmux
+          c: tmux
+          ke_cmd: tmux
+          ke_args: new-session
+          i: 'true'
+          t: 'true'
   default:
     vars:
-      NAMESPACE: '{{ .NAMESPACE }}'
-      POD: '{{ .POD }}'
-      COMMAND: '{{ .COMMAND }}'
-      ARGS: '{{ .ARGS }}'
-      OUTPUT: '{{ .OUTPUT }}'
+      selector: '{{ .selector }}'
+      c: '{{ .c | default .container }}'
+      f: '{{ .f | default .filename }}'
+      pod_running_timeout: '{{ .pod_running_timeout }}'
+      q: '{{ .q | default .quiet | default "false" }}'
+      i: '{{ .i | default .stdin | default "false" }}'
+      t: '{{ .t | default .tty | default "false" }}'
+      n: '{{ .n | default .namespace }}'
+      ke_cmd: '{{ .ke_cmd }}'
+      ke_args: '{{ .ke_args }}'
+      output: '{{ .output }}'
     cmds:
-      - |+
+      - |
         kubectl exec \
-          -n {{ .NAMESPACE | quote }} \
-          {{ .POD | quote }} \
+          -n {{ .n | quote }}
+          {{- if .c }} \
+          -c={{ .c | quote }}
+          {{- end }}
+          {{- if .f }} \
+          -f={{ .f | quote }}
+          {{- end }}
+          {{- if .pod_running_timeout }} \
+          --pod-running-timeout={{ .pod_running_timeout | quote }}
+          {{- end }}
+          {{- if eq "true" .q }} \
+          -q
+          {{- end }}
+          {{- if eq "true" .i }} \
+          -i
+          {{- end }}
+          {{- if eq "true" .t }} \
+          -t
+          {{- end }} \
+          {{ .selector | quote }} \
           -- \
-          {{ .COMMAND | quote }}
-          {{- if .ARGS }} \
-          {{ .ARGS }}{{ end }}
-          {{- if .OUTPUT }} > {{ .OUTPUT | quote }}{{ end }}
+          {{ .ke_cmd | quote }}
+          {{- if .ke_args }} \
+          {{ .ke_args }}
+          {{- end }}
+          {{- if .output }} > {{ .output | quote }}
+          {{- end }}
