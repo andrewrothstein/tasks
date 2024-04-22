@@ -1,0 +1,43 @@
+---
+version: '3'
+includes:
+  helm-repo: helm-repo.yml
+  helm: helm.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "milvus" }}'
+      chart: '{{ .chart | default "milvus" }}'
+      chart_ver: '{{ .chart_ver | default "4.0.31" }}'
+      namespace: '{{ .namespace | default "milvus" }}'
+      install: '{{ .install | default "true" }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
+      name: '{{ .name | default "milvus" }}'
+    deps:
+      - task: helm-repo:add
+        vars:
+          n: '{{ .chart_repo_name }}'
+          url: https://milvus-io.github.io/milvus-helm
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: '{{ .install }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          create_namespace: '{{ .create_namespace }}'
+          name: '{{ .name }}'
+          helm_args: -f milvus-standalone-values.yml
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "milvus" }}'
+      name: '{{ .name | default "milvus" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'

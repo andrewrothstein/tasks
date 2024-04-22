@@ -1,0 +1,9 @@
+---
+cluster:
+  enabled: false
+etcd:
+  replicaCount: 1
+pulsar:
+  enabled: false
+minio:
+  mode: standalone
