@@ -1,11 +1,29 @@
 ---
 version: '3'
 includes:
-  ansible-oneshot:
+  install:
     taskfile: ansible-oneshot.yml
     vars:
       r: andrewrothstein.tigerbeetle
 tasks:
-  default:
+  format:
+    vars:
+      cluster: '{{ .cluster | default "0" }}'
+      replica: '{{ .replica | default "0" }}'
+      replica_count: '{{ .replica_count | default "1" }}'
+      f: '{{ .f | default (printf "%s_%s.tigerbeetle" .cluster .replica) }}'
     cmds:
-      - task: ansible-oneshot
+      - |-
+        tigerbeetle \
+          format \
+          --cluster={{ .cluster }} \
+          --replica={{ .replica }} \
+          --replica-count={{ .replica_count }} \
+          {{ .f | quote }}
+    status:
+      - test -f {{ .f | quote }}
+  default:
+#    deps:
+#      - task: install
+    cmds:
+      - task: format

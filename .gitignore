@@ -18,3 +18,4 @@ jaffle_shop/
 logs/
 .dolt/
 .kubeconfigs/
+*.tigerbeetle
