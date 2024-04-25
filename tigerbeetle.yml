@@ -22,8 +22,20 @@ tasks:
           {{ .f | quote }}
     status:
       - test -f {{ .f | quote }}
+  start:
+    vars:
+      cluster: '{{ .cluster | default "0" }}'
+      replica: '{{ .replica | default "0" }}'
+      addresses: '{{ .addresses | default "3000" }}'
+      f: '{{ .f | default (printf "%s_%s.tigerbeetle" .cluster .replica) }}'
+    cmds:
+      - |-
+        tigerbeetle \
+          start \
+          --addresses={{ .addresses | quote }} \
+          {{ .f | quote }}
   default:
 #    deps:
 #      - task: install
     cmds:
-      - task: format
+      - task: start
