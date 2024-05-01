@@ -3,10 +3,19 @@ all:
   hosts:
     localhost:
       ansible_connection: local
-    console:
-      ansible_user: arothste
-      kubeconfig: /etc/rancher/k3s/k3s.yaml
+    proxmox:
+    proxmox-2:
+    proxmox-3:
+    proxmox-4:
   children:
+    proxmox_nodes:
+      hosts:
+        proxmox:
+        proxmox-2:
+        proxmox-3:
+        proxmox-4:
+      vars:
+        ansible_user: root
     k3s:
       hosts:
         console:
