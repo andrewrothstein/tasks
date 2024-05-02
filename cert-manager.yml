@@ -14,7 +14,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: 1.14.4
+      chart_ver: 1.14.5
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
       install: 'true'
@@ -25,7 +25,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: 0.13.0
+      chart_ver: 0.14.0
       chart: cert-manager-approver-policy
       helm_args: -f cert-manager-approver-policy-values.yml
       install: 'true'
@@ -36,7 +36,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: 0.7.1
+      chart_ver: 0.8.0
       chart: cert-manager-csi-driver
       install: 'true'
   trust_manager:
@@ -46,7 +46,7 @@ includes:
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack
-      chart_ver: 0.9.1
+      chart_ver: 0.9.2
       chart: trust-manager
       install: 'true'
   ss:
@@ -64,6 +64,7 @@ tasks:
        - task: jetstack
     cmds:
       - task: kubectl:ns-create
+      - task: trust_manager:upgrade
       - task: cm:upgrade
       - task: approver_policy:upgrade
       - task: kubectl:apply
@@ -80,4 +81,5 @@ tasks:
           f: approver-policy.yml
       - task: approver_policy:delete
       - task: cm:delete
+      - task: trust_manager:delete
       - task: kubectl:ns-delete
