@@ -9,7 +9,8 @@ includes:
   argo:
     taskfile: argo.yml
     vars:
-      n: argo
+      n: vault
+      serviceaccount: workflows
 tasks:
   init:
     cmds:
@@ -26,10 +27,7 @@ tasks:
     cmds:
       - task: argo:submit
         vars:
-          serviceaccount: argo-workflow
           f: argo-templates/vault-status.yml
-    vars:
-      VAULT_ADDR: http://vault.vault.svc:8200
   init:
     vars:
       selector: '{{ .selector | default "vault-0" }}'

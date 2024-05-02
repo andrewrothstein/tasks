@@ -34,11 +34,13 @@ tasks:
       f: '{{ .f }}'
       log: '{{ .log | default "true" }}'
       watch: '{{ .watch | default true }}'
-      serivceaccount: '{{ .serviceaccount | default "argo-workflow" }}'
+      serviceaccount: '{{ .serviceaccount | default "argo-workflow" }}'
     cmds:
       - |-
-        argo submit \
+        argo submit
+          {{- if .n }} \
           -n {{ .n | quote }}
+          {{- end }}
           {{- if .watch }} \
           --watch
           {{- end }}

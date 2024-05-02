@@ -2,10 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  namespace: argo
   generateName: vault-status-
-  labels:
-    workflows.argoproj.io/archive-strategy: "false"
   annotations:
     workflows.argoproj.io/description: |
       probe status of vault
@@ -16,7 +13,7 @@ spec:
       container:
         env:
           - name: VAULT_ADDR
-            value: http://vault.vault.svc:8200
-        image: hashicorp/vault:1.14.2
+            value: http://vault:8200
+        image: hashicorp/vault:1.16.1
         args:
           - status
