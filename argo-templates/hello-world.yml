@@ -1,8 +1,9 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
-  generateName: hello-world-
+  namespace: argo
+  name: hello-world
   labels:
     workflows.argoproj.io/archive-strategy: "false"
   annotations:

@@ -1,8 +1,11 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
-  generateName: vault-status-
+  namespace: vault
+  name: status
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
   annotations:
     workflows.argoproj.io/description: |
       probe status of vault

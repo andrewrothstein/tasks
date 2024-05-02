@@ -20,6 +20,9 @@ tasks:
   upgrade:
     cmds:
       - task: argo-release:upgrade
+      - task: k:apply
+        vars:
+          f: argo-templates
   delete:
     cmds:
       - task: argo-release:delete
@@ -31,17 +34,29 @@ tasks:
   submit:
     vars:
       n: '{{ .n | default "argo" }}'
+      dry_run: '{{ .dry_run | default "false" }}'
+      from: '{{ .from }}'
+      generate_from: '{{ .generate_from }}'
       f: '{{ .f }}'
       log: '{{ .log | default "true" }}'
-      watch: '{{ .watch | default true }}'
-      serviceaccount: '{{ .serviceaccount | default "argo-workflow" }}'
+      watch: '{{ .watch | default "true" }}'
+      serviceaccount: '{{ .serviceaccount | default "workflows" }}'
     cmds:
       - |-
         argo submit
           {{- if .n }} \
           -n {{ .n | quote }}
           {{- end }}
-          {{- if .watch }} \
+          {{- if eq "true" .dry_run }} \
+          --dry-run
+          {{- end }}
+          {{- if .generate_name }} \
+          --generate-name={{ .generate_name | quote }}
+          {{- end }}
+          {{- if .from }} \
+          --from={{ .from | quote }}
+          {{- end }}
+          {{- if eq "true" .watch }} \
           --watch
           {{- end }}
           {{- if eq "true" .log }} \
@@ -49,21 +64,16 @@ tasks:
           {{- end }}
           {{- if .serviceaccount }} \
           --serviceaccount={{ .serviceaccount | quote }}
-          {{- end }} \
+          {{- end }}
+          {{- if .f }} \
           {{ .f | quote }}
+          {{- end }}
   test:
-    vars:
-      n: '{{ .n | default "argo" }}'
-      f: '{{ .f | default "argo-templates/hello-world.yml" }}'
-      log: '{{ .log | default true }}'
-      watch: '{{ .watch | default true }}'
     cmds:
       - task: submit
         vars:
-          n: '{{ .n }}'
-          f: '{{ .f }}'
-          log: '{{ .log }}'
-          watch: '{{ .watch }}'
+          n: argo
+          from: wftmpl/hello-world
   port-forward:
     cmds:
       - kubectl -n argo port-forward deployment/argo-server 2746:2746

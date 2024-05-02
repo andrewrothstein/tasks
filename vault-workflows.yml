@@ -10,24 +10,15 @@ includes:
     taskfile: argo.yml
     vars:
       n: vault
-      serviceaccount: workflows
 tasks:
   init:
     cmds:
       - task: kubectl-exec
-  status-kk:
-    vars:
-      selector: '{{ .selector | default "vault-0" }}'
-    cmds:
-      - task: kubectl-exec
-        vars:
-          selector: '{{ .selector }}'
-          ke_args: status
-  status-argo:
+  status:
     cmds:
       - task: argo:submit
         vars:
-          f: argo-templates/vault-status.yml
+          from: wftmpl/status
   init:
     vars:
       selector: '{{ .selector | default "vault-0" }}'

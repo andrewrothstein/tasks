@@ -21,14 +21,16 @@ tasks:
       - kubectl delete namespace {{ .n | quote }}
   apply:
     vars:
-      n: '{{ .n | default "default" }}'
+      n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
     cmds:
       - |
         kubectl \
-          apply \
-          {{ if .n }}-n {{ .n | quote }}{{ end }} \
+          apply
+          {{- if .n }} \
+          -n {{ .n | quote }}
+          {{- end }} \
           -f
           {{- if .literal_f }} - <<EOF
         {{ .literal_f }}
