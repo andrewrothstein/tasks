@@ -11,6 +11,9 @@ includes:
     vars:
       n: argo
 tasks:
+  init:
+    cmds:
+      - task: kubectl-exec
   status-kk:
     vars:
       selector: '{{ .selector | default "vault-0" }}'
@@ -23,6 +26,7 @@ tasks:
     cmds:
       - task: argo:submit
         vars:
+          serviceaccount: argo-workflow
           f: argo-templates/vault-status.yml
     vars:
       VAULT_ADDR: http://vault.vault.svc:8200

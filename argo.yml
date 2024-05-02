@@ -1,6 +1,7 @@
 ---
 version: '3'
 includes:
+  k: kubectl.yml
   argo-release:
     taskfile: argo-release.yml
     internal: true
@@ -11,6 +12,7 @@ includes:
       namespace: argo
       create_namespace: 'true'
       install: 'true'
+      helm_args: -f argo-workflows-values.yml
 tasks:
   default:
     deps:
@@ -30,15 +32,23 @@ tasks:
     vars:
       n: '{{ .n | default "argo" }}'
       f: '{{ .f }}'
-      log: '{{ .log | default true }}'
+      log: '{{ .log | default "true" }}'
       watch: '{{ .watch | default true }}'
+      serivceaccount: '{{ .serviceaccount | default "argo-workflow" }}'
     cmds:
-      - >-
-        argo submit
-        -n {{ .n | quote }}
-        {{- if .watch }} --watch{{ end }}
-        {{- if .log }} --log{{ end }}
-        {{ .f | quote }}
+      - |-
+        argo submit \
+          -n {{ .n | quote }}
+          {{- if .watch }} \
+          --watch
+          {{- end }}
+          {{- if eq "true" .log }} \
+          --log
+          {{- end }}
+          {{- if .serviceaccount }} \
+          --serviceaccount={{ .serviceaccount | quote }}
+          {{- end }} \
+          {{ .f | quote }}
   test:
     vars:
       n: '{{ .n | default "argo" }}'
