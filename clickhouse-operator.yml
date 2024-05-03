@@ -11,7 +11,7 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "clickhouse-operator" }}'
       chart: '{{ .chart | default "altinity-clickhouse-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.23.4" }}'
+      chart_ver: '{{ .chart_ver | default "0.23.5" }}'
       namespace: '{{ .namespace | default "clickhouse-operator" }}'
       install: '{{ .install | default "true" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
@@ -31,7 +31,7 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
-#          helm_args: -f clickhouse-operator-values.yml
+          helm_args: -f clickhouse-operator-values.yml
   delete:
     vars:
       namespace: '{{ .namespace | default "clickhouse-operator" }}'
