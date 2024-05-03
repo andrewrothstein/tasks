@@ -6,11 +6,11 @@ kafka:
   version: 3.7.0
   pvcSize: 100Gi
   replicas: 3
-  deleteClaim: false
+  deleteClaim: true
 zookeeper:
   pvcSize: 100Gi
   replicas: 3
-  deleteClaim: false
+  deleteClaim: true
 offsets:
   topic:
     replication:
