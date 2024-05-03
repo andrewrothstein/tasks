@@ -6,14 +6,21 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      namespace: strimzi
+      namespace: strimzi-kafka-operator
       create_namespace: 'true'
       install: 'true'
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
       name: strimzi-kafka-operator
-      chart_ver: 0.39.0
-      helm_args: -f strimzi-operator-values.yml
+      chart_ver: 0.40.0
+      helm_args: -f strimzi-kafka-operator-values.yml
+  test-cluster:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      install: 'true'
+      name: strimzi-test-kafka-cluster
+      chart: chart-strimzi-kafka
 tasks:
   default:
     deps:
@@ -23,6 +30,14 @@ tasks:
       - task: repo
     cmds:
       - task: helm:upgrade
+  test:
+    deps:
+      - upgrade
+    cmds:
+      - task: test-cluster:upgrade
+  delete-test:
+    cmds:
+      - task: test-cluster:delete
   delete:
     cmds:
       - task: helm:delete

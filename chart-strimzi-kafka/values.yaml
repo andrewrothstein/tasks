@@ -3,14 +3,14 @@ nameOverride: ""
 fullnameOverride: ""
 
 kafka:
-  version: 3.6.1
+  version: 3.7.0
   pvcSize: 100Gi
   replicas: 3
-  deleteClaim: true
+  deleteClaim: false
 zookeeper:
   pvcSize: 100Gi
   replicas: 3
-  deleteClaim: true
+  deleteClaim: false
 offsets:
   topic:
     replication:
@@ -31,4 +31,4 @@ min:
 inter:
   broker:
     protocol:
-      version: '3.6'
+      version: '3.7'
