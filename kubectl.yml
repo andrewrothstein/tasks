@@ -16,18 +16,20 @@ tasks:
       - kubectl get namespace {{ .n | quote }}
   ns-delete:
     vars:
-      n: '{{ .n | default "default" }}'
+      n: '{{ .n }}'
     cmds:
       - kubectl delete namespace {{ .n | quote }}
-  apply:
+  _apply:
+    internal: true
     vars:
+      verb: '{{ .verb }}'
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
     cmds:
       - |
         kubectl \
-          apply
+          {{ .verb }}
           {{- if .n }} \
           -n {{ .n | quote }}
           {{- end }} \
@@ -37,16 +39,30 @@ tasks:
         EOF
           {{- else }} {{ .f | quote }}
           {{- end }}
+  apply:
+    vars:
+      n: '{{ .n }}'
+      f: '{{ .f }}'
+      literal_f: '{{ .literal_f }}'
+    cmds:
+      - task: _apply
+        vars:
+          verb: apply
+          n: '{{ .n }}'
+          f: '{{ .f }}'
+          literal_f: '{{ .literal_f }}'
   delete:
     vars:
-      n: '{{ .n | default "default" }}'
+      n: '{{ .n }}'
       f: '{{ .f }}'
+      literal_f: '{{ .literal_f }}'
     cmds:
-      - |
-        kubectl \
-          delete \
-          {{ if .n }} -n {{ .n | quote }}{{ end }} \
-          -f {{ .f | quote }}
+      - task: _apply
+        vars:
+          verb: delete
+          n: '{{ .n }}'
+          f: '{{ .f }}'
+          literal_f: '{{ .literal_f }}'
   kapply:
     vars:
       n: '{{ .n | default "default" }}'

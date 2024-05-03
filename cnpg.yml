@@ -3,16 +3,25 @@ version: '3'
 includes:
   helm-repo: helm-repo.yml
   helm: helm.yml
-  cluster:
+  test-cluster:
     taskfile: kubectl.yml
     vars:
       n: cnpg-clusters
-      f: cnpg-cluster.yml
+      literal_f: |
+        ---
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: my-cnpg-cluster
+        spec:
+          instances: 3
+          storage:
+            size: 1Gi
 tasks:
   default:
-    deps:
-      - install
-  install:
+    cmds:
+      - task: upgrade
+  upgrade:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "cnpg" }}'
       chart: '{{ .chart | default "cloudnative-pg" }}'
@@ -36,15 +45,19 @@ tasks:
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
           helm_args: -f cnpg-values.yml
-      - task: cluster:ns-create
-      - task: cluster:apply
+  test:
+    cmds:
+      - task: test-cluster:ns-create
+      - task: test-cluster:apply
+  delete-test:
+    cmds:
+      - task: test-cluster:delete
+      - task: test-cluster:ns-delete
   delete:
     vars:
       namespace: '{{ .namespace | default "gitea" }}'
       name: '{{ .name | default "gitea" }}'
     cmds:
-      - task: cluster:delete
-      - task: cluster:ns-delete
       - task: helm:delete
         vars:
           namespace: '{{ .namespace }}'
