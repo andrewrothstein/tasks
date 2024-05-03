@@ -11,7 +11,7 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "tailscale" }}'
       chart: '{{ .chart | default "tailscale-operator" }}'
-      chart_ver: '{{ .chart_ver | default "1.62.1" }}'
+      chart_ver: '{{ .chart_ver | default "1.64.2" }}'
       namespace: '{{ .namespace | default "tailscale" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       install: '{{ .install | default "true" }}'
