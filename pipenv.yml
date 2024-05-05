@@ -1,0 +1,33 @@
+---
+version: '3'
+includes:
+  pip:
+    internal: true
+    taskfile: python-pip.yml
+tasks:
+  default:
+    cmds:
+      - task: pip:install
+        vars:
+          u: "true"
+          pkg: pipenv
+  install:
+    vars:
+      r: '{{ .r | default .requirements | default "requirements.txt" }}'
+    cmds:
+      - |
+        cd {{ .USER_WORKING_DIR | quote }}
+        if [ -e {{ .r | quote }} ];
+        then
+          pipenv install -r {{ .r | quote }}
+        fi
+  run-python:
+    vars:
+      f: '{{ .f }}'
+    cmds:
+      - |
+        cd {{ .USER_WORKING_DIR }}
+        if [ -e {{ .f | quote }} ];
+        then
+          pipenv run python {{ .f | quote }}
+        fi

@@ -3,15 +3,19 @@ version: '3'
 tasks:
   default:
     vars:
-      python_exe: '{{ .python_exe | default "python" }}'
+      python_exe: '{{ .python_exe | default "python3" }}'
       m: '{{ .m }}'
       python_args: '{{ .python_args }}'
       if: '{{ .if }}'
     cmds:
       - |
-        {{ if .if }}if [ {{ .if }} ];
-        then{{ end }}
+        {{- if .if -}}
+        if [ {{ .if }} ];
+        then
+        {{- end }}
         {{ .python_exe | quote }} \
           -m {{ .m | quote }} \
           {{ .python_args }}
-        {{ if .if }}fi{{ end }}
+        {{- if .if }}
+        fi
+        {{- end }}

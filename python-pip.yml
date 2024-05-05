@@ -13,18 +13,28 @@ tasks:
           pkg: pip
   install:
     vars:
-      upgrade: '{{ .upgrade | default false }}'
+      upgrade: '{{ .upgrade | default "false" }}'
       pkg: '{{ .pkg }}'
       e: '{{ .e }}'
+      u: '{{ .u | default "false" }}'
     cmds:
       - task: py
         vars:
           m: pip
-          python_args: >-
+          python_args: |-
             install
-            {{ if .upgrade }}--upgrade{{ end }}
-            {{ if .e }}-e {{.e }}{{ end }}
-            {{ if .pkg }}{{ .pkg }}{{ end }}
+            {{- if eq "true" .u }} \
+              --user
+            {{- end }}
+            {{- if eq "true" .upgrade }} \
+              --upgrade
+            {{- end }}
+            {{- if .e }} \
+              -e {{.e }}
+            {{ end }}
+            {{- if .pkg }} \
+              {{ .pkg }}
+            {{- end }}
   installr:
     vars:
       requirements: '{{ .requirements | default "requirements.txt" }}'
