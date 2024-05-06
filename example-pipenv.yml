@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  pipenv:
+    internal: true
+    taskfile: pipenv.yml
+    vars:
+      workdir: example-pipenv
+tasks:
+  default:
+    cmds:
+      - task: pipenv:install
+      - task: pipenv:run-python

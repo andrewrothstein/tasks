@@ -13,21 +13,27 @@ tasks:
           pkg: pipenv
   install:
     vars:
+      workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
       r: '{{ .r | default .requirements | default "requirements.txt" }}'
     cmds:
       - |
-        cd {{ .USER_WORKING_DIR | quote }}
+        {{- if .workdir }}
+        cd {{ .workdir | quote }}
+        {{- end }}
         if [ -e {{ .r | quote }} ];
         then
           pipenv install -r {{ .r | quote }}
         fi
   run-python:
     vars:
-      f: '{{ .f }}'
+      workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
+      t: '{{ .t | default .target | default "main.py" }}'
     cmds:
       - |
-        cd {{ .USER_WORKING_DIR }}
-        if [ -e {{ .f | quote }} ];
+        {{- if .workdir }}
+        cd {{ .workdir }}
+        {{- end }}
+        if [ -e {{ .t | quote }} ];
         then
-          pipenv run python {{ .f | quote }}
+          pipenv run python {{ .t | quote }}
         fi
