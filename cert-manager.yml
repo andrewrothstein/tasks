@@ -64,7 +64,6 @@ tasks:
        - task: jetstack
     cmds:
       - task: kubectl:ns-create
-      - task: trust_manager:upgrade
       - task: cm:upgrade
       - task: approver_policy:upgrade
       - task: kubectl:apply
@@ -72,8 +71,10 @@ tasks:
           f: approver-policy.yml
       - task: csi_driver:upgrade
       - task: ss:apply
+      - task: trust_manager:upgrade
   delete:
     cmds:
+      - task: trust_manager:delete
       - task: ss:delete
       - task: csi_driver:delete
       - task: kubectl:delete
@@ -81,5 +82,4 @@ tasks:
           f: approver-policy.yml
       - task: approver_policy:delete
       - task: cm:delete
-      - task: trust_manager:delete
       - task: kubectl:ns-delete
