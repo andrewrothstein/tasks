@@ -2,7 +2,7 @@
 version: '3'
 vars:
   KPACK_MIRROR: https://github.com/buildpacks-community/kpack/releases/download
-  KPACK_VER: 0.13.2
+  KPACK_VER: 0.13.3
 includes:
   kubectl: kubectl.yml
 tasks:

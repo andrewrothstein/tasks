@@ -47,6 +47,7 @@ roles:
   - andrewrothstein.liquibase
   - andrewrothstein.go_dev
   - andrewrothstein.pack
+  - andrewrothstein.kpack
   - andrewrothstein.kn
   - andrewrothstein.kubeseal
   - andrewrothstein.calicoctl
