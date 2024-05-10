@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  repo: capi-operator-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: capi-operator-system
+      create_namespace: 'true'
+      install: 'true'
+      chart_repo_name: capi-operator
+      chart: cluster-api-operator
+      name: capi-operator
+      chart_ver: 0.10.1
+      helm_args: -f capi-operator-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete

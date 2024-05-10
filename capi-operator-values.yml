@@ -1,0 +1,4 @@
+---
+#capi-infrastructure: vcluster
+cert-manager:
+  enabled: false
