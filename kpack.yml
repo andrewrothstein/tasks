@@ -4,22 +4,83 @@ vars:
   KPACK_MIRROR: https://github.com/buildpacks-community/kpack/releases/download
   KPACK_VER: 0.13.3
 includes:
-  kubectl: kubectl.yml
+  k:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: kpack
 tasks:
   default:
     deps:
       - apply
   apply:
+    cmds:
+      - task:install
+  install:
     vars:
       kpack_ver: '{{ .kpack_ver | default .KPACK_VER }}'
     cmds:
-      - task: kubectl:apply
+      - task: k:apply
         vars:
           f: '{{ .KPACK_MIRROR }}/v{{ .kpack_ver }}/release-{{ .kpack_ver }}.yaml'
+  test:
+    cmds:
+      - task: test-serviceaccount
+      - task: test-store
+      - task: test-stack
+  test-store:
+    cmds:
+      - task: k:apply
+        vars:
+          literal_f: |
+            ---
+            apiVersion: kpack.io/v1alpha2
+            kind: ClusterStore
+            metadata:
+              name: default
+            spec:
+              sources:
+                - image: gcr.io/paketo-buildpacks/java
+                - image: gcr.io/paketo-buildpacks/nodejs
+                - image: gcr.io/paketo-buildpacks/dotnet-core
+            ---
+  test-service-account:
+    cmds:
+      - task: k:apply
+        vars:
+          literal_f: |
+            ---
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: tutorial-service-account
+              namespace: default
+            secrets:
+              - name: tutorial-registry-credentials
+            imagePullSecrets:
+              - name: tutorial-registry-credentials
+            ---
+  test-stack:
+    cmds:
+      - task: k:apply
+        vars:
+          literal_f: |
+            ---
+            apiVersion: kpack.io/v1alpha2
+            kind: ClusterStack
+            metadata:
+              name: base
+            spec:
+              id: "io.buildpacks.stacks.jammy"
+              buildImage:
+                image: "paketobuildpacks/build-jammy-base"
+              runImage:
+                image: "paketobuildpacks/run-jammy-base"
+            ---
   delete:
     vars:
       kpack_ver: '{{ .kpack_ver | default .KPACK_VER }}'
     cmds:
-      - task: kubectl:delete
+      - task: k:delete
         vars:
           f: '{{ .KPACK_MIRROR }}/v{{ .kpack_ver }}/release-{{ .kpack_ver }}.yaml'
