@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    internal: true
+    taskfile: helm-repo.yml
+    vars:
+      n: sonarqube
+      url: https://SonarSource.github.io/helm-chart-sonarqube
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
