@@ -6,13 +6,13 @@ includes:
     internal: true
 vars:
   # https://github.com/knative/operator/releases
-  KNATIVE_OPERATOR_DEFAULT_VER: 1.11.2
+  KNATIVE_OPERATOR_DEFAULT_VER: 1.14.0
   # https://github.com/knative/serving/releases
-  KNATIVE_SERVING_DEFAULT_VER: 1.12.3
+  KNATIVE_SERVING_DEFAULT_VER: 1.14.0
   # https://github.com/knative/eventing/releases
-  KNATIVE_EVENTING_DEFAULT_VER: 1.11.8
+  KNATIVE_EVENTING_DEFAULT_VER: 1.14.1
   # https://github.com/knative-extensions/eventing-kafka-broker/releases
-  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.12.1
+  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.14.1
   KNATIVE_MIRROR: https://github.com
 tasks:
   default:
