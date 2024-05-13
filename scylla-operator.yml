@@ -12,7 +12,7 @@ includes:
       name: scylla-operator
       chart_repo_name: scylla
       chart: scylla-operator
-      chart_ver: 1.11.3
+      chart_ver: 1.12.1
   cluster:
     taskfile: kubectl.yml
     vars:
@@ -22,7 +22,7 @@ tasks:
   default:
     deps:
       - upgrade
-  create-cluster:
+  test-cluster:
     cmds:
       - task: cluster:ns-create
       - task: cluster:apply
@@ -35,7 +35,7 @@ tasks:
       - task: repo
     cmds:
       - task: operator:upgrade
-      - task: create-cluster
+      - task: test-cluster
   delete:
     cmds:
       - task: delete-cluster
