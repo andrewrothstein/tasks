@@ -11,7 +11,7 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "minio" }}'
       chart: '{{ .chart | default "tenant" }}'
-      chart_ver: '{{ .chart_ver | default "5.0.14" }}'
+      chart_ver: '{{ .chart_ver | default "5.0.1" }}'
       namespace: '{{ .namespace | default "minio-tenants" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "tenant-1" }}'
@@ -27,6 +27,7 @@ tasks:
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
+          helm_args: -f minio-tenants-values.yml
   delete:
     vars:
       namespace: '{{ .namespace | default "minio-tenants" }}'
