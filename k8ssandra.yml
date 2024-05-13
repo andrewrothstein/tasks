@@ -2,34 +2,40 @@
 version: '3'
 includes:
   repo: k8ssandra-repo.yml
-  operator:
+  cass-operator:
     taskfile: helm.yml
     internal: true
     vars:
-      namespace: k8ssandra-operator
-      name: k8ssandra-operator
+      namespace: cass-operator
+      name: cass-operator
       create_namespace: 'true'
       install: 'true'
       chart_repo_name: k8ssandra
-      chart: k8ssandra-operator
-      chart_ver: 1.13.0
-  kubectl:
+      chart: cass-operator
+      chart_ver: 0.51.0
+  k:
     taskfile: kubectl.yml
     internal: true
     vars:
-      n: k8ssandra-operator
-      f: k8ssandra-kind.yml
+      n: cass-operator
+      f: cass-cluster.yml
 tasks:
   default:
     deps:
       - upgrade
+  test-cluster:
+    cmds:
+      - task: k:apply
   upgrade:
     deps:
       - task: repo
     cmds:
-      - task: operator:upgrade
-      - task: kubectl:apply
+      - task: cass-operator:upgrade
+      - task: test-cluster
+  delete-cluster:
+    cmds:
+      - task: k:delete
   delete:
     cmds:
-      - task: kubectl:delete
-      - task: operator:delete
+      - task: delete-cluster
+      - task: cass-operator:delete
