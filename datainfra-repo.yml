@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    internal: true
+    vars:
+      n: datainfra
+      url: https://charts.datainfra.io
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
