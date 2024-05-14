@@ -1,8 +1,14 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo:
+    internal: true
+    taskfile: ot-helm.yml
+  helm:
+    internal: true
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: ot-helm
   kubectl:
     taskfile: kubectl.yml
     vars:
@@ -14,7 +20,6 @@ tasks:
       - task: apply-instances
   upgrade-operator:
     vars:
-      chart_repo_name: '{{ .chart_repo_name | default "ot-helm" }}'
       chart: '{{ .chart | default "redis-operator" }}'
       chart_ver: '{{ .chart_ver | default "0.15.9" }}'
       namespace: '{{ .namespace | default "ot-operators" }}'
@@ -22,15 +27,11 @@ tasks:
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "redis-operator" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://ot-container-kit.github.io/helm-charts
+      - task: repo
     cmds:
       - task: helm:upgrade
         vars:
           install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           namespace: '{{ .namespace }}'
