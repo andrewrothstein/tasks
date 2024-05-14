@@ -6,6 +6,7 @@ collections:
   - community.kubernetes
 roles:
   - andrewrothstein.sudoers
+  - andrewrothstein.pkg_upgrade
   - andrewrothstein.docker_compose
   - andrewrothstein.k3sup
   - andrewrothstein.k3d
