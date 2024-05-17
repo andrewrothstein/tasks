@@ -1,0 +1,28 @@
+---
+version: '3'
+includes:
+  repo: ngrok.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: ngrok-ingress-controller
+      create_namespace: 'true'
+      install: 'true'
+      chart_repo_name: ngrok
+      chart: kubernetes-ingress-controller
+      name: ngrok-ingress-controller
+      chart_ver: 0.12.4
+      helm_args: -f .ngrok-secrets.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
