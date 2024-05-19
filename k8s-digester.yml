@@ -1,0 +1,29 @@
+---
+version: '3'
+vars:
+  K8S_DIGESTER_VERSION: v0.1.13
+  K8S_DIGESTER_MIRROR: https://github.com/google/k8s-digester.git/manifests/
+includes:
+  k:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: digester-system
+tasks:
+  default:
+    cmds:
+      - task: apply
+  apply:
+    vars:
+      version: '{{ .version | default .K8S_DIGESTER_VERSION }}'
+    deps:
+      - task: k:kapply
+        vars:
+          k: '{{ .K8S_DIGESTER_MIRROR }}?ref={{ .version }}'
+  delete:
+    vars:
+      version: '{{ .version | default .K8S_DIGESTER_VERSION }}'
+    deps:
+      - task: k:kdelete
+        vars:
+          k: '{{ .K8S_DIGESTER_MIRROR }}?ref={{ .version }}'
