@@ -3,7 +3,7 @@ certmanager:
   install: false
 global:
   hosts:
-    domain: gitlab
+    domain: elephant-frog.ts.net
   ingress:
     configureCertmanager: false
     annotations:
