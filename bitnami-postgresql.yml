@@ -9,7 +9,7 @@ tasks:
   upgrade:
     vars:
       chart: '{{ .chart | default "postgresql" }}'
-      chart_ver: '{{ .chart_ver | default "13.2.25" }}'
+      chart_ver: '{{ .chart_ver | default "15.3.3" }}'
       name: '{{ .name | default "postgresql" }}'
       namespace: '{{ .namespace | default "bitnami-postgresql" }}'
       create_namespace: '{{ .create_namespace }}'
