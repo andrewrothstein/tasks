@@ -19,8 +19,8 @@ includes:
 #  elastic: elastic.yml
   elastic: pet.yml
 
-  keda: keda.yml
-#  keda: pet.yml
+#  keda: keda.yml
+  keda: pet.yml
 
 tasks:
   default:
