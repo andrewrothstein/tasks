@@ -45,8 +45,13 @@ nodeImageSHAs:
     1.25.16: sha256:5da57dfc290ac3599e775e63b8b6c49c0c85d3fec771cd7d55b45fae14b38d3b
 
 kindVer: 0.23.0
-k8sVer: 1.30.0
+k8sVer: 1.29.4
 
 #extraMounts:
 #  - hostPath: /var/run/docker.sock
 #    containerPath: /var/run/docker.sock
+
+#containerdConfigPatches:
+#  - |-
+#    [plugins."io.containerd.grpc.v1.cri".registry]
+#      config_path = "/etc/containerd/certs.d"

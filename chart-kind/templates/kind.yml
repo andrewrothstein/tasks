@@ -2,37 +2,35 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
-{{ range $i := until (int $.Values.controlPlaneNodeCount) -}}
-- role: control-plane
-{{- include "kind.node" $.Values | nindent 2 }}
-{{ end -}}
-{{- range $j := until (int $.Values.workloadNodeCount) -}}
-- role: worker
-{{- include "kind.node" $.Values | nindent 2 }}
-{{ end }}
+{{- range $i := until (int $.Values.controlPlaneNodeCount) }}
+  - role: control-plane
+    {{- include "kind.node" $.Values | nindent 4 }}
+{{- end }}
+{{- range $j := until (int $.Values.workloadNodeCount) }}
+  - role: worker
+    {{- include "kind.node" $.Values | nindent 4 }}
+{{- end }}
 networking:
-{{- if $.Values.ipFamily }}
-  ipFamily: {{ $.Values.ipFamily | quote }}
+{{- with $.Values.ipFamily }}
+  ipFamily: {{ . | quote }}
 {{- end }}
-{{- if $.Values.apiServerAddress }}
-  apiServerAddress: {{ $.Values.apiServerAddress | quote }}
+{{- with $.Values.apiServerAddress }}
+  apiServerAddress: {{ . | quote }}
 {{- end }}
-{{- if $.Values.apiServerPort }}
-  apiServerPort: {{ $.Values.apiServerPort }}
+{{- with $.Values.apiServerPort }}
+  apiServerPort: {{ . }}
 {{- end }}
-  disableDefaultCNI: {{ $.Values.disableDefaultCNI }}
-{{- if $.Values.podSubnet }}
-  podSubnet: {{ $.Values.podSubnet | quote }}
+  disableDefaultCNI: {{ $.Values.disableDefaultCNI | default false }}
+{{- with $.Values.podSubnet }}
+  podSubnet: {{ . | quote }}
 {{- end }}
-{{- if $.Values.serviceSubnet }}
-  serviceSubnet: {{ $.Values.serviceSubnet | quote }}
+{{- with $.Values.serviceSubnet }}
+  serviceSubnet: {{ . | quote }}
 {{- end }}
-{{- if $.Values.kubeProxyMode }}
-  kubeProxyMode: {{ $.Values.kubeProxyMode | quote }}
+{{- with $.Values.kubeProxyMode }}
+  kubeProxyMode: {{ . | quote }}
 {{- end }}
-{{ if $.Values.containerdConfigPatches -}}
+{{- with $.Values.containerdConfigPatches }}
 containerdConfigPatches:
-{{- range $p := $.Values.containerdConfigPatches }}
-  - {{ $p | quote }}
-{{ end -}}
+{{- . | toYaml | nindent 2 }}
 {{- end }}
