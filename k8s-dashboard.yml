@@ -12,7 +12,7 @@ includes:
       name: kubernetes-dashboard
       chart_repo_name: kubernetes-dashboard
       chart: kubernetes-dashboard
-      chart_ver: 7.1.2
+      chart_ver: 7.4.0
       helm_args: -f k8s-dashboard-values.yml
 tasks:
   port-forward:
