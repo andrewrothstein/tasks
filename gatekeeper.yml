@@ -1,11 +1,7 @@
 ---
 version: '3'
 includes:
-  repo:
-    taskfile: helm-repo.yml
-    vars:
-      n: gatekeeper
-      url: https://open-policy-agent.github.io/gatekeeper/charts
+  repo: gatekeeper-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -16,14 +12,14 @@ includes:
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.15.1
+      chart_ver: 3.16.2
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     deps:
-      - task: repo:add
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
