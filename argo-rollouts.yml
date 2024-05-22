@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-rollouts
-      chart_ver: 2.35.1
+      chart_ver: 2.35.2
       name: argo-rollouts
       namespace: argo-rollouts
       create_namespace: 'true'
