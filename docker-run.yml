@@ -1,0 +1,57 @@
+---
+version: '3'
+tasks:
+  apply:
+    vars:
+      name: '{{ .name }}'
+      d: '{{ .d | default "false" }}'
+      rm: '{{ .rm | default "true" }}'
+      i: '{{ .i | default "false" }}'
+      t: '{{ .t | default "false" }}'
+      restart: '{{ .restart }}'
+      u: '{{ .u | default .user | default "nobody" }}'
+      net: '{{ .net }}'
+      ip: '{{ .ip }}'
+      privileged: '{{ .privileged | default "false" }}'
+      args: '{{ .args }}'
+      image: '{{ .image }}'
+    cmds:
+      - |
+        docker \
+          run
+          {{- if eq "true" .d }} \
+          -d
+          {{- end }}
+          {{- if eq "true" .rm }} \
+          --rm
+          {{- end }}
+          {{- if eq "true" .i }} \
+          -i
+          {{- end }}
+          {{- if eq "true" .t }} \
+          -t
+          {{- end }}
+          {{- if .name }} \
+          --name={{ .name | quote }}
+          {{- end }}
+          {{- if .restart }} \
+          --restart={{ .restart | quote }}
+          {{- end }}
+          {{- if .u }} \
+          -u={{ .u | quote }}
+          {{- end }}
+          {{- if .net }} \
+          --net={{ .net | quote }}
+          {{- end }}
+          {{- if .ip }} \
+          --ip={{ .ip | quote }}
+          {{- end }}
+          {{- if eq "true" .privileged }} \
+          --privileged
+          {{- end }}
+          {{- if .args }} \
+          {{ .args }}
+          {{- end }}
+          {{- if .image }} \
+          {{ .image | quote }}
+          {{- end }}

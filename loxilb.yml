@@ -16,13 +16,13 @@ includes:
     vars:
       name: loxilb
       restart: unless-stopped
+      u: root
+      net: llbnet
+      ip: 172.30.1.195
+      privileged: 'true'
       args: >-
-        -u root
         --cap-add SYS_ADMIN
-        --privileged
         -v /dev/log:/dev/log
-        --net=llbnet
-        --ip=172.30.1.195
       image: ghcr.io/loxilb-io/loxilb:latest
   kube-loxilb:
     taskfile: kubectl.yml

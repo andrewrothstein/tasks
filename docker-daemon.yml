@@ -1,21 +1,30 @@
 ---
 version: '3'
+includes:
+  docker-run: docker-run.yml
 tasks:
   apply:
     vars:
       name: '{{ .name }}'
       restart: '{{ .restart | default "always" }}'
+      u: '{{ .u | default .user | default "nobody" }}'
+      net: '{{ .net }}'
+      ip: '{{ .ip }}'
+      privileged: '{{ .privileged }}'
       args: '{{ .args }}'
       image: '{{ .image }}'
     cmds:
-      - |
-        docker \
-          run -d \
-          --name={{ .name | quote }} \
-          --restart={{ .restart | quote }}
-          {{- if .args }} \
-          {{ .args }}{{ end }} \
-          {{ .image | quote }}
+      - task: docker-run:apply
+        vars:
+          name: '{{ .name }}'
+          d: 'true'
+          restart: '{{ .restart }}'
+          u: '{{ .u }}'
+          net: '{{ .net }}'
+          ip: '{{ .ip }}'
+          privileged: '{{ .privileged }}'
+          args: '{{ .args }}'
+          image: '{{ .image }}'
     status:
       - |
         docker ps \
