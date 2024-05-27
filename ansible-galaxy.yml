@@ -21,6 +21,7 @@ tasks:
       name: '{{ .name }}'
       branch: '{{ .branch }}'
       token: '{{ .token | default "${ANSIBLE_GALAXY_TOKEN}" }}'
+      infix: '{{ .infix | default "-" }}'
     cmds:
       - |-
         {{ if .branch -}}
@@ -40,7 +41,7 @@ tasks:
               --role-name {{ .name | quote -}}
               {{- end }} \
               {{ .org | quote }} \
-              "ansible-{{ .name }}"
+              "ansible{{ .infix }}{{ .name }}"
         {{- else -}}
         echo "please specify a tag to import with branch=1.2.3"
         {{- end }}
