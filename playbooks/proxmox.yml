@@ -1,0 +1,7 @@
+---
+- name: Install
+  hosts:
+    - proxmox_nodes
+  tasks:
+    - name: Ping
+      ansible.builtin.ping:
