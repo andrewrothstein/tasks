@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
+  repo: gitea-repo.yml
   helm: helm.yml
 tasks:
   default:
@@ -11,16 +11,13 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "gitea-charts" }}'
       chart: '{{ .chart | default "gitea" }}'
-      chart_ver: '{{ .chart_ver | default "10.1.3" }}'
+      chart_ver: '{{ .chart_ver | default "10.1.4" }}'
       namespace: '{{ .namespace | default "gitea" }}'
       install: '{{ .install | default "true" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "gitea" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://dl.gitea.io/charts
+      - task: repo
     cmds:
       - task: helm:upgrade
         vars:
