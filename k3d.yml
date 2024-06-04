@@ -23,17 +23,17 @@ tasks:
       api_port: '{{ .api_port }}'
       config: '{{ .config }}'
       host_alias: '{{ .host_alias }}'
-      host_pid_mode: '{{ .host_pid_mode }}'
+      host_pid_mode: '{{ .host_pid_mode | default "false" }}'
       image: '{{ .image }}'
       k3s_arg: '{{ .k3s_arg | default "--disable=traefik@server:*" }}'
       k3s_node_label: '{{ .k3s_node_label }}'
-      kubeconfig_switch_context: '{{ .kubeconfig_switch_context }}'
-      kubeconfig_update_default: '{{ .kubeconfig_update_default }}'
+      kubeconfig_switch_context: '{{ .kubeconfig_switch_context | default "false" }}'
+      kubeconfig_update_default: '{{ .kubeconfig_update_default | default "false" }}'
       lb_config_override: '{{ .lb_config_override }}'
       network: '{{ .network }}'
-      no_image_volume: '{{ .no_image_volume }}'
-      no_lb: '{{ .no_lb }}'
-      no_rollback: '{{ .no_rollback }}'
+      no_image_volume: '{{ .no_image_volume | default "false" }}'
+      no_lb: '{{ .no_lb | default "false" }}'
+      no_rollback: '{{ .no_rollback | default "false" }}'
       p: '{{ .p }}'
       registry_config: '{{ .registry_config }}'
       registry_create: '{{ .registry_create }}'
@@ -45,65 +45,101 @@ tasks:
       timeout: '{{ .timeout }}'
       token: '{{ .token }}'
       v: '{{ .v }}'
-      wait: '{{ .wait }}'
+      wait: '{{ .wait | default "true" }}'
       timestamps: '{{ .timestamps }}'
       trace: '{{ .trace }}'
       verbose: '{{ .verbose }}'
+      k3d_args: '{{ .k3d_args | default "-e \"HTTP_PROXY@server:*\" -e \"HTTPS_PROXY@server:*\" -e \"NO_PROXY@server:*\"" }}'
     cmds:
       - |
-        k3d cluster create {{ .name | quote }} \
-          {{ if .agents }}--agents {{ .agents }} \
-          {{ end }}
-          {{- if .agents_memory }} --agents-memory {{ .agents_memory | quote }} \
-          {{ end }}
-          {{- if .api_port }} --api-port {{ .api_port | quote }} \
-          {{ end }}
-          {{- if .config }} --config {{ .config | quote }} \
-          {{ end }}
-          {{- if .env }} --env {{ .env | quote }} \
-          {{ end }}
-          {{- if .host_alias }} --host-alias {{ .host_alias | quote }} \
-          {{ end }}
-          {{- if .host_pid_mode }} --host-pid-mode \
-          {{ end }}
-          {{- if .image }} --image {{ .image }} \
-          {{ end }}
-          {{- if .k3s_arg }} --k3s-arg {{ .k3s_arg | quote }} \
-          {{ end }}
-          {{- if .k3s_node_label }} --k3s-node-label {{ .k3s_node_label | quote }} \
-          {{ end }}
-          {{- if .kubeconfig_switch_context }} --kubeconfig-switch-context \
-          {{ end }}
-          {{- if .kubeconfig_update_default }} --kubeconfig-update-default \
-          {{ end }}
-          {{- if .lb_config_override }} --lb-config-override {{.lb_config_override }} \
-          {{ end }}
-          {{- if .no_rollback }} --no-rollback \
-          {{ end }}
-          {{- if .p }} -p {{ .p | quote }} \
-          {{ end }}
-          {{- if .registry_config }} --registry-config {{ .registry_config | quote }} \
-          {{ end }}
-          {{- if .registry_create }} --registry-create {{ .registry_create | quote }} \
-          {{ end }}
-          {{- if .registry_use }} --registry-use {{ .registry_use | quote }} \
-          {{ end }}
-          {{- if .runtime_label }} --runtime-label {{ .runtime_label | quote }} \
-          {{ end }}
-          {{- if .servers }} --servers {{ .servers }} \
-          {{ end }}
-          {{- if .servers_memory }} --servers-memory {{ .servers_memory | quote }} \
-          {{ end }}
-          {{- if .subnet }} --subnet {{ .subnet | quote }} \
-          {{ end }}
-          {{- if .timeout }} --timeout {{ .timeout }} \
-          {{ end }}
-          {{- if .token }} --token {{ .token }} \
-          {{ end }}
-          {{- if .v }} -v {{ .v | quote }} \
-          {{ end }}
-          {{- if .wait }} --wait \
-          {{ end }}
+        k3d cluster create {{ .name | quote }}
+          {{- if .agents }} \
+          --agents {{ .agents }}
+          {{- end }}
+          {{- if .agents_memory }} \
+          --agents-memory {{ .agents_memory | quote }}
+          {{- end }}
+          {{- if .api_port }} \
+          --api-port {{ .api_port | quote }}
+          {{- end }}
+          {{- if .config }} \
+          --config {{ .config | quote }}
+          {{- end }}
+          {{- if .host_alias }} \
+          --host-alias {{ .host_alias | quote }}
+          {{- end }}
+          {{- if eq "true" .host_pid_mode }} \
+          --host-pid-mode
+          {{- end }}
+          {{- if .image }} \
+          --image {{ .image }}
+          {{- end }}
+          {{- if .k3s_arg }} \
+          --k3s-arg {{ .k3s_arg | quote }}
+          {{- end }}
+          {{- if .k3s_node_label }} \
+          --k3s-node-label {{ .k3s_node_label | quote }}
+          {{- end }}
+          {{- if eq "true" .kubeconfig_switch_context }} \
+          --kubeconfig-switch-context
+          {{- end }}
+          {{- if eq "true" .kubeconfig_update_default }} \
+          --kubeconfig-update-default
+          {{- end }}
+          {{- if .lb_config_override }} \
+          --lb-config-override {{.lb_config_override }}
+          {{- end }}
+          {{- if .network }} \
+          --network {{ .network | quote }}
+          {{- end }}
+          {{- if eq "true" .no_image_volume }} \
+          --no-image-volume
+          {{- end }}
+          {{- if eq "true" .no_lb }} \
+          --no-lb
+          {{- end }}
+          {{- if eq "true" .no_rollback }} \
+          --no-rollback
+          {{- end }}
+          {{- if .p }} \
+          -p {{ .p | quote }}
+          {{- end }}
+          {{- if .registry_config }} \
+          --registry-config {{ .registry_config | quote }}
+          {{- end }}
+          {{- if .registry_create }} \
+          --registry-create {{ .registry_create | quote }}
+          {{- end }}
+          {{- if .registry_use }} \
+          --registry-use {{ .registry_use | quote }}
+          {{- end }}
+          {{- if .runtime_label }} \
+          --runtime-label {{ .runtime_label | quote }}
+          {{- end }}
+          {{- if .servers }} \
+          --servers {{ .servers }}
+          {{- end }}
+          {{- if .servers_memory }} \
+          --servers-memory {{ .servers_memory | quote }}
+          {{- end }}
+          {{- if .subnet }} \
+          --subnet {{ .subnet | quote }}
+          {{- end }}
+          {{- if .timeout }} \
+          --timeout {{ .timeout }}
+          {{- end }}
+          {{- if .token }} \
+          --token {{ .token }}
+          {{- end }}
+          {{- if .v }} \
+          -v {{ .v | quote }}
+          {{- end }}
+          {{- if eq "true" .wait }} \
+          --wait
+          {{- end }}
+          {{- if .k3d_args }} \
+          {{ .k3d_args }}
+          {{- end }}
       - task: wait_for_ready
     status:
       - k3d cluster list {{ .name | quote }}
