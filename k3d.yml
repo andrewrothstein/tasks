@@ -15,7 +15,7 @@ tasks:
       - task: kubectl:wait-for-pod-ready
         vars:
           k8s_app: metrics-server
-  up:
+  create:
     vars:
       name: '{{ .name | default "k3s-default" }}'
       agents: '{{ .agents }}'
@@ -140,9 +140,12 @@ tasks:
           {{- if .k3d_args }} \
           {{ .k3d_args }}
           {{- end }}
-      - task: wait_for_ready
     status:
       - k3d cluster list {{ .name | quote }}
+  up:
+    cmds:
+      - task: create
+      - task: wait_for_ready
   list:
     cmds:
       - k3d cluster list
