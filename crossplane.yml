@@ -13,7 +13,7 @@ includes:
       chart_repo_name: crossplane-stable
       chart: crossplane
       chart_ver: 1.16.0
-  crossplane-providers:
+  crossplane-provider:
     taskfile: kubectl.yml
     internal: true
     vars:
@@ -34,30 +34,37 @@ tasks:
       - task: install-azure
       - task: install-azuread
       - task: install-gcp
+      - task: install-vault
   install-aws:
     cmds:
-      - task: crossplane-providers:apply
+      - task: crossplane-provider:apply
         vars:
           f: crossplane/aws-provider.yml
   install-azure:
     cmds:
-      - task: crossplane-providers:apply
+      - task: crossplane-provider:apply
         vars:
           f: crossplane/azure-provider.yml
   install-azuread:
     cmds:
-      - task: crossplane-providers:apply
+      - task: crossplane-provider:apply
         vars:
           f: crossplane/azuread-provider.yml
   install-gcp:
     cmds:
-      - task: crossplane-providers:apply
+      - task: crossplane-provider:apply
         vars:
           f: crossplane/gcp-provider.yml
   install-terraform:
-      - task: crossplane-providers:apply
+    cmds:
+      - task: crossplane-provider:apply
         vars:
           f: crossplane/terraform-provider.yml
+  install-vault:
+    cmds:
+      - task: crossplane-provider:apply
+        vars:
+          f: crossplane/vault-provider.yml
   delete:
     cmds:
       - task: crossplane-helm:delete
