@@ -10,7 +10,7 @@ includes:
       name: cilium
       chart_repo_name: cilium
       chart: cilium
-      chart_ver: 1.15.4
+      chart_ver: 1.15.5
       helm_args: -f cilium-values.yml
 tasks:
   default:
