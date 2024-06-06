@@ -21,7 +21,7 @@ tasks:
   upgrade-operator:
     vars:
       chart: '{{ .chart | default "redis-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.15.9" }}'
+      chart_ver: '{{ .chart_ver | default "0.16.1" }}'
       namespace: '{{ .namespace | default "ot-operators" }}'
       install: '{{ .install | default "true" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
