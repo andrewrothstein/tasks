@@ -3,9 +3,9 @@ version: '3'
 includes:
   pipenv:
     internal: true
-    taskfile: pipenv.yml
+    taskfile: ../pipenv.yml
     vars:
-      workdir: example-pipenv
+      r: requirements.txt
 tasks:
   default:
     cmds:

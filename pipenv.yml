@@ -14,16 +14,39 @@ tasks:
   install:
     vars:
       workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
-      r: '{{ .r | default .requirements | default "requirements.txt" }}'
+      r: '{{ .r | default .requirements }}'
+      t: '{{ .t }}'
+      include_deps: '{{ .include_deps | default "false" }}'
     cmds:
       - |
         {{- if .workdir }}
         cd {{ .workdir | quote }}
         {{- end }}
+
+        {{- if .r }}
+        # install with a requirements file
         if [ -e {{ .r | quote }} ];
         then
-          pipenv install -r {{ .r | quote }}
+          pipenv \
+            install
+            {{- if .r }} \
+            -r {{ .r | quote }}
+            {{- end }}
+            {{- if eq "true" .include_deps }} \
+            --include-deps
+            {{- end }}
         fi
+        {{- end }}
+
+        {{- if .t }}
+        # install a target package
+        pipenv \
+          install
+            {{- if eq "true" .include_deps }} \
+            --include-deps
+            {{- end }} \
+            {{ .t | quote }}
+        {{- end }}
   run-python:
     vars:
       workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
