@@ -4,10 +4,12 @@ includes:
   pipenv:
     internal: true
     taskfile: ../pipenv.yml
-    vars:
-      r: requirements.txt
 tasks:
   default:
     cmds:
       - task: pipenv:install
-      - task: pipenv:run-python
+        vars:
+          install_args: -r requirements.txt
+      - task: pipenv:run
+        vars:
+          run_args: python main.py

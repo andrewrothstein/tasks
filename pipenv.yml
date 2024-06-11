@@ -1,62 +1,30 @@
 ---
 version: '3'
-includes:
-  pip:
-    internal: true
-    taskfile: python-pip.yml
 tasks:
-  default:
-    cmds:
-      - task: pip:install
-        vars:
-          u: "true"
-          pkg: pipenv
   install:
     vars:
       workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
-      r: '{{ .r | default .requirements }}'
-      t: '{{ .t }}'
-      include_deps: '{{ .include_deps | default "false" }}'
+      install_args: '{{ .install_args }}'
     cmds:
       - |
         {{- if .workdir }}
         cd {{ .workdir | quote }}
         {{- end }}
 
-        {{- if .r }}
-        # install with a requirements file
-        if [ -e {{ .r | quote }} ];
-        then
-          pipenv \
-            install
-            {{- if .r }} \
-            -r {{ .r | quote }}
-            {{- end }}
-            {{- if eq "true" .include_deps }} \
-            --include-deps
-            {{- end }}
-        fi
-        {{- end }}
-
-        {{- if .t }}
-        # install a target package
+        {{- if .install_args }}
         pipenv \
-          install
-            {{- if eq "true" .include_deps }} \
-            --include-deps
-            {{- end }} \
-            {{ .t | quote }}
+          install \
+          {{ .install_args }};
         {{- end }}
-  run-python:
+  run:
     vars:
       workdir: '{{ .workdir | default .USER_WORKING_DIR }}'
-      t: '{{ .t | default .target | default "main.py" }}'
+      run_args: '{{ .run_args }}'
     cmds:
       - |
         {{- if .workdir }}
         cd {{ .workdir }}
         {{- end }}
-        if [ -e {{ .t | quote }} ];
-        then
-          pipenv run python {{ .t | quote }}
-        fi
+        {{- if .run_args }}
+        pipenv run {{ .run_args }};
+        {{- end }}

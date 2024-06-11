@@ -1,7 +1,9 @@
 ---
 version: '3'
 includes:
-  pip: python-pip.yml
+  pip:
+    internal: true
+    taskfile: python-pip.yml
 tasks:
   ensurepath:
     cmds:
