@@ -16,13 +16,19 @@ tasks:
   install:
     vars:
       pkg: '{{ .pkg }}'
-      e: '{{ .e | default "" }}'
+      include_deps: '{{ .include_deps | default "false" }}'
+      e: '{{ .e }}'
     cmds:
       - task: pipx
         vars:
           args: |
-            install \
-            {{ if .e }}-e {{ .e }}{{ end }} \
+            install
+            {{- if eq "true" .include_deps }} \
+            --include-deps
+            {{- end }}
+            {{- if .e }} \
+            -e {{ .e }}
+            {{- end }} \
             {{ .pkg }}
   run:
     vars:
