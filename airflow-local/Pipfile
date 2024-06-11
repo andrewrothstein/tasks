@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-apache-airflow = "*"
 apache-airflow-providers-cncf-kubernetes = "*"
 pandas = "*"
+apache-airflow = {extras = ["celery"], version = "*"}
 
 [dev-packages]
 

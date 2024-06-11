@@ -1,4 +1,5 @@
 apache-airflow
+apache-airflow[celery]
 apache-airflow-providers-cncf-kubernetes
 pandas
 

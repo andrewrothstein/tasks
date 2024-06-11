@@ -8,13 +8,44 @@ tasks:
       - task: pipenv:install
         vars:
           install_args: -r requirements.txt
+  standalone:
+    cmds:
+      - task: pipenv:run
+        vars:
+          run_args: airflow standalone
   db-migrate:
     cmds:
       - task: pipenv:run
         vars:
           run_args: airflow db migrate
-  webserver:
+  create-account:
+    vars:
+      role: '{{ .role | default "Admin" }}'
+      username: '{{ .username | default "arothste" }}'
+      email: '{{ .email | default "andrew.rothstein@gmail.com" }}'
+      firstname: '{{ .firstname | default "Drew" }}'
+      lastname: '{{ .lastname | default "Rothstein" }}'
+      password: '{{ .password | default "admin" }}'
     cmds:
       - task: pipenv:run
         vars:
-          run_args: airflow webserver -p 80
+          run_args: >-
+            airflow users create
+            --role {{ .role | quote }}
+            --username {{ .username | quote }}
+            --email {{ .email | quote }}
+            --firstname {{ .firstname | quote }}
+            --lastname {{ .lastname | quote }}
+            --password {{ .password | quote }}
+  webserver:
+    vars:
+      p: '{{ .p | default .port | default "8080" }}'
+    cmds:
+      - task: pipenv:run
+        vars:
+          run_args: airflow webserver {{ if .p }}-p {{ .p | quote }}{{ end }}
+  scheduler:
+    cmds:
+      - task: pipenv:run
+        vars:
+          run_args: airflow scheduler
