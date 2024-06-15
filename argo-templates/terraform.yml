@@ -1,0 +1,93 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: terraform
+spec:
+  entrypoint: pipeline
+  arguments:
+    parameters:
+      - name: repo
+        value: https://github.com/andrewrothstein/tasks.git
+      - name: wdir
+        value: ~/tasks
+      - name: subdir
+        value: tf-dex-aad
+  templates:
+    - name: pipeline
+      steps:
+        -
+          - name: checkout
+            template: git-checkout
+            arguments:
+              parameters:
+                - name: repo
+                - name: wdir
+        -
+          - name: plan
+            template: plan
+            arguments:
+              parameters:
+                - name: wdir
+                - name: subdir
+        -
+          - name: apply
+            template: apply
+            arguments:
+              parameters:
+                - name: wdir
+                - name: subdir
+    - name: git-checkout
+      inputs:
+        parameters:
+          - name: repo
+          - name: wdir
+      container:
+        image: ghcr.io/andrewrothtein/ansible-git:0.0.0-alpine.3.19
+        command: [/bin/sh,-lc]
+        args:
+          - |
+            git clone \
+              {{ inputs.parameters.repo | quote }} \
+              {{ inputs.parameters.wdir | quote }}
+    - name: plan
+      inputs:
+        parameters:
+          - name: wdir
+          - name: subdir
+      container:
+        image: ghcr.io/andrewrothstein/ansible-terraform:0.0.0-alpine.3.19
+        command: [/bin/sh,-lc]
+        args:
+          - |
+            cd {{ inputs.parameters.wdir }}/
+            {{- inputs.parameters.subdir }}
+            terraform init
+            terraform plan -out=tfplan
+            terraform show -no-color tfplan > tfplan.txt
+      outputs:
+        artifacts:
+          - name: plan
+            path: tfplan
+            archive:
+              none: {}
+          - name: plan_txt
+            path: tfplan.txt
+            archive:
+              none: {}
+    - name: apply
+      inputs:
+        artifacts:
+          - name: plan
+            path: tfplan
+        parameters:
+          - name: wdir
+          - name: subdir
+      container:
+        image: hashicorp/terraform:latest
+        command: [/bin/sh,-lc]
+        args:
+          - |
+            cd {{ inputs.parameters.wdir }}/
+            {{- inputs.parameters.subdir }}
+            terraform apply tfplan
