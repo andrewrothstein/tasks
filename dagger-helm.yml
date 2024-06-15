@@ -1,0 +1,23 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: dagger
+      create_namespace: 'true'
+      install: 'true'
+      name: dagger
+      chart_repo_name: oci://registry.dagger.io
+      chart: dagger-helm
+      chart_ver: 0.1.8
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
