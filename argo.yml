@@ -7,7 +7,7 @@ includes:
     internal: true
     vars:
       chart: argo-workflows
-      chart_ver: 0.41.7
+      chart_ver: 0.41.11
       name: argo
       namespace: argo
       create_namespace: 'true'
