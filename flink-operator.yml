@@ -1,0 +1,50 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: flink-operator
+      create_namespace: 'true'
+      install: 'true'
+      name: flink-operator
+      chart: flink-kubernetes-operator
+  k:
+    taskfile: kubectl.yml
+    vars:
+      n: flink-operator
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+    deps:
+      - task: repo:add
+        vars:
+          n: flink-operator-{{ .flink_operator_version }}
+          url: 'https://downloads.apache.org/flink/flink-kubernetes-operator-{{ .flink_operator_version }}/'
+    cmds:
+      - task: helm:upgrade
+        vars:
+          chart_repo_name: flink-operator-{{ .flink_operator_version }}
+  delete:
+    cmds:
+      - task: helm:delete
+  test:
+    vars:
+      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+    cmds:
+      - task: k:apply
+        vars:
+          f: https://raw.githubusercontent.com/apache/flink-kubernetes-operator/release-{{ .flink_operator_version }}/examples/basic.yaml
+  delete-test:
+    vars:
+      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+    cmds:
+      - task: k:delete
+        vars:
+          f: https://raw.githubusercontent.com/apache/flink-kubernetes-operator/release-{{ .flink_operator_version }}/examples/basic.yaml
