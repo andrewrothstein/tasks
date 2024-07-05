@@ -25,7 +25,7 @@ tasks:
       - up
   up:
     cmds:
-      - task: flux:install
+      - task: flux:upgrade
       - task: argoproj:install
       - task: kpack:apply
       - task: tekton-operator:apply
