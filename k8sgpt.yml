@@ -1,0 +1,45 @@
+---
+version: '3'
+includes:
+  repo: k8sgpt-repo.yml
+  k:
+    taskfile: kubectl.yml
+    vars:
+      n: k8sgpt-operator-system
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: k8sgpt-operator-system
+
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name | default "k8sgpt" }}'
+      chart: '{{ .chart | default "k8sgpt-operator" }}'
+      chart_ver: '{{ .chart_ver | default "0.1.6" }}'
+      install: '{{ .install | default "true" }}'
+      name: '{{ .name | default "k8sgpt-operator" }}'
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+        vars:
+          install: '{{ .install }}'
+          chart_repo_name: '{{ .chart_repo_name }}'
+          chart: '{{ .chart }}'
+          chart_ver: '{{ .chart_ver }}'
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
+#          helm_args: -f k8sgpt-operator-values.yml
+  delete:
+    vars:
+      namespace: '{{ .namespace | default "gitea" }}'
+      name: '{{ .name | default "gitea" }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
