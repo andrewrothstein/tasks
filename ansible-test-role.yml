@@ -60,12 +60,14 @@ tasks:
       git_repo: '{{ .git_org }}/{{ .role_name }}'
       dir: '{{ .roles_dir }}/{{ .role_name }}'
     cmds:
-      - git clone {{ .git_repo | quote }} {{ .dir | quote }}
+      - |
+        if [ ! -d {{ .dir | quote }} ];
+        then
+          git clone {{ .git_repo | quote }} {{ .dir | quote }}
+        fi
       - task: sauce
         vars:
           dir: '{{ .dir }}'
-    status:
-      - test -d {{ .dir | quote }}
   local:
     cmds:
       - task: ansible-galaxy:install
