@@ -64,6 +64,8 @@ tasks:
         if [ ! -d {{ .dir | quote }} ];
         then
           git clone {{ .git_repo | quote }} {{ .dir | quote }}
+        else
+          cd {{ .dir }}; git pull
         fi
       - task: sauce
         vars:
