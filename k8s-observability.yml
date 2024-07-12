@@ -1,9 +1,6 @@
 ---
 version: '3'
 includes:
-  metrics-server: metrics-server.yml
-#  metrics-server: pet.yml
-
   k8s-dashboard: k8s-dashboard.yml
 #  k8s-dashboard: pet.yml
 
@@ -28,7 +25,6 @@ tasks:
       - up
   up:
     cmds:
-      - task: metrics-server:upgrade
       - task: k8s-dashboard:upgrade
       - task: open-telemetry-operator:upgrade
       - task: komodor:upgrade
@@ -43,4 +39,3 @@ tasks:
       - task: komodor:delete
       - task: open-telemetry:delete
       - task: k8s-dashboard:delete
-      - task: metrics-server:delete
