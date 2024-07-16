@@ -10,7 +10,7 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 8.0.0
+      chart_ver: 8.1.2
       helm_args: -f gitlab-values.yml
 tasks:
   default:
