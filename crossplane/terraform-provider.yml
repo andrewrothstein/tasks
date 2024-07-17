@@ -4,5 +4,5 @@ kind: Provider
 metadata:
   name: provider-terraform
 spec:
-  # https://marketplace.upbound.io/providers/upbound/provider-terraform/v0.14.0
-  package: xpkg.upbound.io/upbound/provider-terraform:v0.14.0
+  # https://marketplace.upbound.io/providers/upbound/provider-terraform/v0.17.0
+  package: xpkg.upbound.io/upbound/provider-terraform:v0.17.0

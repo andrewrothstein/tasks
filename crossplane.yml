@@ -40,9 +40,19 @@ tasks:
       - task: crossplane-provider:apply
         vars:
           f: crossplane/aws-provider.yml
+  delete-aws:
+    cmds:
+      - task: crossplane-provider:delete
+        vars:
+          f: crossplane/aws-provider.yml
   install-azure:
     cmds:
       - task: crossplane-provider:apply
+        vars:
+          f: crossplane/azure-provider.yml
+  delete-azure:
+    cmds:
+      - task: crossplane-provider:delete
         vars:
           f: crossplane/azure-provider.yml
   install-azuread:
