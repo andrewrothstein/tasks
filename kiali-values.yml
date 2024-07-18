@@ -1,0 +1,10 @@
+---
+cr:
+  create: true
+  namespace: istio-system
+  spec:
+    auth:
+      strategy: anonymous
+    external_services:
+      tracing:
+        enabled: false
