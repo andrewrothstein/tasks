@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
+  helm-repo: komodor-repo.yml
   helm: helm.yml
 tasks:
   default:
@@ -12,14 +12,11 @@ tasks:
       namespace: '{{ .namespace | default "komodorio" }}'
       cluster_name: '{{ .cluster_name | default "kind" }}'
       chart: '{{ .chart | default "komodor-agent" }}'
-      chart_ver: '{{ .chart_ver | default "2.3.0" }}'
+      chart_ver: '{{ .chart_ver | default "2.5.5" }}'
       name: '{{ .name | default "komodor-agent" }}'
       repo_name: '{{ .repo_name | default "komodorio" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ repo_name }}'
-          url: https://helm-charts.komodor.io
+      - task: helm-repo
     cmds:
       - task: helm:upgrade
         vars:
@@ -37,8 +34,9 @@ tasks:
   delete:
     vars:
       name: '{{ .name | default "komodor-agent" }}'
-      namespace: komodorio
+      namespace: '{{ .namespace | default "komodorio" }}'
     cmds:
       - task: helm:delete
         vars:
           name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
