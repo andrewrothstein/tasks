@@ -3,7 +3,7 @@
   vars:
     carvel_apps:
       - name: kapp
-        version: 0.57.1
+        version: 0.63.2
 #    kind_config:
 #      sysctl:
 #        fs.inotify.max_user_watches: 524288
