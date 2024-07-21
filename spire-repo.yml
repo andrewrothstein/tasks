@@ -1,0 +1,14 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: spire
+      url: https://spiffe.github.io/helm-charts-hardened/
+#helm upgrade --install -n spire-server spire-crds spire-crds --create-namespace
+#helm upgrade --install -n spire-server spire spire
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
