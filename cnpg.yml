@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
+  helm-repo: cnpg-repo.yml
   helm: helm.yml
   test-cluster:
     taskfile: kubectl.yml
@@ -25,15 +25,12 @@ tasks:
     vars:
       chart_repo_name: '{{ .chart_repo_name | default "cnpg" }}'
       chart: '{{ .chart | default "cloudnative-pg" }}'
-      chart_ver: '{{ .chart_ver | default "0.21.2" }}'
+      chart_ver: '{{ .chart_ver | default "0.21.5" }}'
       namespace: '{{ .namespace | default "cnpg-system" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "cnpg" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://cloudnative-pg.github.io/charts
+      - task: helm-repo
     cmds:
       - task: helm:upgrade
         vars:

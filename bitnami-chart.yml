@@ -1,11 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo:
-    taskfile: helm-repo.yml
-    vars:
-      n: bitnami
-      url: https://charts.bitnami.com/bitnami
+  helm-repo: bitnami-repo.yml
   helm: helm.yml
 tasks:
   default:
@@ -22,7 +18,7 @@ tasks:
       install: '{{ .install }}'
       helm_args: '{{ .helm_args }}'
     deps:
-      - task: helm-repo:add
+      - task: helm-repo
     cmds:
       - task: helm:upgrade
         vars:

@@ -4,7 +4,7 @@ dotenv:
   - .coderv2-secrets.env
 includes:
   postgresql: bitnami-postgresql.yml
-  repo: helm-repo.yml
+  repo: coderv2-repo.yml
   coderv2-secret: k8s-literal-secret.yml
   coderv2: helm.yml
 tasks:
@@ -16,7 +16,7 @@ tasks:
       name: '{{ .name | default "coder" }}'
       chart_repo_name: '{{ .chart_repo_name | default "coder-v2" }}'
       chart: '{{ .chart | default "coder" }}'
-      chart_ver: '{{ .chart_ver | default "2.9.4" }}'
+      chart_ver: '{{ .chart_ver | default "2.13.1" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       install: '{{ .install | default "true" }}'
       namespace: '{{ .namespace | default "coder" }}'
@@ -33,10 +33,7 @@ tasks:
           admin_password: '{{ .admin_password }}'
           admin_db: '{{ .admin_db }}'
           db_size: '{{ .db_size }}'
-      - task: repo:add
-        vars:
-          n: coder-v2
-          url: https://helm.coder.com/v2
+      - task: repo
       - task: coderv2-secret:create
         vars:
           n: '{{ .namespace }}'
