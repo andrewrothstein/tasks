@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
+  helm-repo: tailscale-repo.yml
   helm: helm.yml
 tasks:
   default:
@@ -9,22 +9,18 @@ tasks:
       - task: upgrade
   upgrade:
     vars:
-      chart_repo_name: '{{ .chart_repo_name | default "tailscale" }}'
       chart: '{{ .chart | default "tailscale-operator" }}'
-      chart_ver: '{{ .chart_ver | default "1.64.2" }}'
+      chart_ver: '{{ .chart_ver | default "1.68.1" }}'
       namespace: '{{ .namespace | default "tailscale" }}'
       create_namespace: '{{ .create_namespace | default "true" }}'
       install: '{{ .install | default "true" }}'
       name: '{{ .name | default "tailscale" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://pkgs.tailscale.com/helmcharts
+      - task: helm-repo
     cmds:
       - task: helm:upgrade
         vars:
-          chart_repo_name: '{{ .chart_repo_name }}'
+          chart_repo_name: tailscale
           chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           namespace: '{{ .namespace }}'
