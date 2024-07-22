@@ -22,7 +22,7 @@ spec:
           releaseName: keycloak
       destination:
         server: '{{ url }}'
-        namespace: keycloak
+        namespace: default
       syncPolicy:
         automated: {}
         syncOptions:

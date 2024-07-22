@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  kubectl: kubectl.yml
+tasks:
+  apply:
+    vars:
+      appset_name: '{{ .appset_name }}'
+    cmds:
+      - task: kubectl:apply
+        vars:
+          f: "appsets/{{ .appset_name }}.yml"
