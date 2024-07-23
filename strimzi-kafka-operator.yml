@@ -12,7 +12,7 @@ includes:
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
       name: strimzi-kafka-operator
-      chart_ver: 0.40.0
+      chart_ver: 0.42.0
       helm_args: -f strimzi-kafka-operator-values.yml
   test-cluster:
     taskfile: helm.yml
