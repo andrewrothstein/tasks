@@ -2,7 +2,7 @@
 version: '3'
 vars:
   kubevirt_ns: kubevirt
-  kubevirt_v: 1.2.0
+  kubevirt_v: 1.3.0
   kubevirt_mirror: https://github.com/kubevirt/kubevirt/releases/download
   kubevirt_typeofthing: kubevirt
   kubevirt_thingname: kubevirt
