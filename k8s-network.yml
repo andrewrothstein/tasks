@@ -1,11 +1,11 @@
 ---
 version: '3'
 includes:
-#  metallb: metallb.yml
-  metallb: pet.yml
+  metallb: metallb.yml
+#  metallb: pet.yml
 
-  tailscale: tailscale.yml
-#  tailscale: pet.yml
+#  tailscale: tailscale.yml
+  tailscale: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
