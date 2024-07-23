@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  k8s-dashboard: k8s-dashboard.yml
-#  k8s-dashboard: pet.yml
+#  k8s-dashboard: k8s-dashboard.yml
+  k8s-dashboard: pet.yml
 
 #  komodor: komodor.yml
   komodor: pet.yml
