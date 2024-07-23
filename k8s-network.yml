@@ -1,8 +1,11 @@
 ---
 version: '3'
 includes:
-  metallb: metallb.yml
-#  metallb: pet.yml
+#  metallb: metallb.yml
+  metallb: pet.yml
+
+  tailscale: tailscale.yml
+#  tailscale: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
@@ -15,8 +18,10 @@ tasks:
   up:
     cmds:
       - task: metallb:upgrade
-      - task: ingress:install
+      - task: tailscale:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
-      - task: metallb:delete
       - task: ingress:delete
+      - task: tailscale:delete
+      - task: metallb:delete
