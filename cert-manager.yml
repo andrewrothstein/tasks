@@ -14,7 +14,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: 1.15.1
+      chart_ver: v1.15.1
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
       install: 'true'
@@ -25,7 +25,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: 0.14.1
+      chart_ver: v0.14.1
       chart: cert-manager-approver-policy
       helm_args: -f cert-manager-approver-policy-values.yml
       install: 'true'
@@ -36,7 +36,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: 0.9.0
+      chart_ver: v0.10.0
       chart: cert-manager-csi-driver
       install: 'true'
   trust_manager:
@@ -46,7 +46,7 @@ includes:
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack
-      chart_ver: 0.11.1
+      chart_ver: v0.12.0
       chart: trust-manager
       install: 'true'
   ss:
@@ -59,6 +59,14 @@ tasks:
   default:
     deps:
       - upgrade
+  check:
+    deps:
+      - task: jetstack
+    cmds:
+      - task: cm:check
+      - task: approver_policy:check
+      - task: csi_driver:check
+      - task: trust_manager:check
   upgrade:
     deps:
        - task: jetstack

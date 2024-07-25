@@ -32,14 +32,16 @@ tasks:
   default:
     deps:
       - upgrade
+  check:
+    deps:
+      - task: vault-secrets-operator:check
+      - task: vault:check
   upgrade:
     deps:
       - task: ss-csi:upgrade
     cmds:
       - task: hashicorp:add
-      - task: vault-secrets-operator:check
       - task: vault-secrets-operator:upgrade
-      - task: vault:check
       - task: vault:upgrade
   delete:
     cmds:
