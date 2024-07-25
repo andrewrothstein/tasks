@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
-      chart_ver: 0.7.1
+      chart_ver: 0.8.0
       create_namespace: 'true'
       install: 'true'
       namespace: vault-secrets-operator
@@ -37,7 +37,9 @@ tasks:
       - task: ss-csi:upgrade
     cmds:
       - task: hashicorp:add
+      - task: vault-secrets-operator:check
       - task: vault-secrets-operator:upgrade
+      - task: vault:check
       - task: vault:upgrade
   delete:
     cmds:
