@@ -1,6 +1,19 @@
 ---
 version: '3'
 tasks:
+  check:
+    vars:
+      chart_repo_name: '{{ .chart_repo_name }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+    cmds:
+      - |
+        latest=$(helm search repo "{{ .chart_repo_name }}/{{ .chart }}" -o json | \
+          jq -r '.[] | .version')
+        if [ {{ .chart_ver | quote }} != "${latest}" ];
+        then
+          echo "please upgrade to ${latest}"
+        fi
   upgrade:
     vars:
       install: '{{ .install | default "true" }}'
