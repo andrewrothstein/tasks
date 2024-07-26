@@ -1,0 +1,30 @@
+---
+version: '3'
+includes:
+  repo: apache-airflow-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      install: 'true'
+      chart_repo_name: apache-airflow
+      chart: airflow
+      chart_ver: 1.15.0
+      namespace: airflow
+      create_namespace: 'true'
+      name: apache-airflow
+      helm_args: -f apache-airflow-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    cmds:
+      - task: helm:check

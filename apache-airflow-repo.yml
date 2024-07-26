@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: apache-airflow
+      url: https://airflow.apache.org
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
