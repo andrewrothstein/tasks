@@ -11,13 +11,13 @@ includes:
       name: awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
-      chart_ver: 2.16.1
+      chart_ver: 2.19.1
       helm_args: -f awx-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
@@ -25,3 +25,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
