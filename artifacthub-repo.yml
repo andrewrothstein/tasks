@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: artifact-hub
+      url: https://artifacthub.github.io/helm-charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
