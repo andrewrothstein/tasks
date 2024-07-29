@@ -9,8 +9,6 @@ includes:
       chart_ver: 2.4.7
       name: argo-events
       namespace: argo-events
-      create_namespace: 'true'
-      install: 'true'
 tasks:
   default:
     deps:
@@ -21,3 +19,6 @@ tasks:
   delete:
     cmds:
       - task: argo-release:delete
+  check:
+    cmds:
+      - task: argo-release:check

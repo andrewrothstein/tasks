@@ -6,11 +6,9 @@ includes:
     internal: true
     vars:
       chart: argo-rollouts
-      chart_ver: 2.37.2
+      chart_ver: 2.37.3
       name: argo-rollouts
       namespace: argo-rollouts
-      create_namespace: 'true'
-      install: 'true'
 tasks:
   default:
     deps:
@@ -21,3 +19,6 @@ tasks:
   delete:
     cmds:
       - task: argo-release:delete
+  check:
+    cmds:
+      - task: argo-release:check

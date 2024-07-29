@@ -9,8 +9,7 @@ includes:
       chart_ver: 7.3.11
       name: argo-cd
       namespace: argocd
-      create_namespace: 'true'
-      install: 'true'
+      helm_args: -f argocd-values.yml
 tasks:
   default:
     deps:
@@ -28,3 +27,6 @@ tasks:
   delete:
     cmds:
       - task: argo-release:delete
+  check:
+    deps:
+      - task: argo-release:check

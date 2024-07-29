@@ -10,8 +10,6 @@ includes:
       chart_ver: 0.41.11
       name: argo
       namespace: argo
-      create_namespace: 'true'
-      install: 'true'
       helm_args: -f argo-workflows-values.yml
 tasks:
   default:
@@ -26,6 +24,9 @@ tasks:
   delete:
     cmds:
       - task: argo-release:delete
+  check:
+    cmds:
+      - task: argo-release:check
   list:
     vars:
       n: '{{ .n | default "argo" }}'
