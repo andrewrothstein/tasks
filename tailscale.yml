@@ -2,38 +2,31 @@
 version: '3'
 includes:
   helm-repo: tailscale-repo.yml
-  helm: helm.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: tailscale
+      chart: tailscale-operator
+      chart_ver: 1.70.0
+      namespace: tailscale
+      create_namespace: 'true'
+      upgrade: 'true'
+      name: tailscale
+      helm_args: -f .tailscale-secrets.yml
 tasks:
   default:
     cmds:
       - task: upgrade
   upgrade:
-    vars:
-      chart: '{{ .chart | default "tailscale-operator" }}'
-      chart_ver: '{{ .chart_ver | default "1.68.1" }}'
-      namespace: '{{ .namespace | default "tailscale" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
-      name: '{{ .name | default "tailscale" }}'
     deps:
       - task: helm-repo
     cmds:
       - task: helm:upgrade
-        vars:
-          chart_repo_name: tailscale
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
-          name: '{{ .name }}'
-          helm_args: -f .tailscale-secrets.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "tailscale" }}'
-      name: '{{ .name | default "tailscale" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - helm-repo
+    cmds:
+      - task: helm:check
