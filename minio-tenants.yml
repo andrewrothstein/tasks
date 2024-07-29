@@ -1,39 +1,33 @@
 ---
 version: '3'
 includes:
-  minio-repo: minio-repo.yml
-  helm: helm.yml
+  repo: minio-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: minio
+      chart: tenant
+      chart_ver: 6.0.1
+      namespace: minio-tenants
+      create_namespace: 'true'
+      install: 'true'
+      name: minio-tenant
+      helm_args: -f minio-tenants-values.yml
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     vars:
-      chart_repo_name: '{{ .chart_repo_name | default "minio" }}'
-      chart: '{{ .chart | default "tenant" }}'
-      chart_ver: '{{ .chart_ver | default "5.0.1" }}'
-      namespace: '{{ .namespace | default "minio-tenants" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "tenant-1" }}'
     deps:
-      - task: minio-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: 'true'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: -f minio-tenants-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "minio-tenants" }}'
-      name: '{{ .name | default "tenant-1" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
