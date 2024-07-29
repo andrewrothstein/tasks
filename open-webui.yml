@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  repo: open-webui-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: open-webui
+      create_namespace: 'true'
+      install: 'true'
+      name: open-webui
+      chart_repo_name: open-webui
+      chart: open-webui
+      chart_ver: 3.1.1
+      helm_args: -f open-webui-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
