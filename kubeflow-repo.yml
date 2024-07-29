@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: kubeflow
+      url: https://kromanow94.github.io/kubeflow-manifests
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

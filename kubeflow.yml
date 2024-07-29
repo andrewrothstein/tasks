@@ -1,0 +1,31 @@
+---
+version: '3'
+includes:
+  repo: kubeflow-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: kubeflow
+      create_namespace: 'true'
+      install: 'true'
+      name: kubeflow
+      chart_repo_name: kubeflow
+      chart: kubeflow
+      chart_ver: 0.2.0
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
