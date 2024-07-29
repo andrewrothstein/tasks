@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: loft-sh
+      url: https://charts.loft.sh
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

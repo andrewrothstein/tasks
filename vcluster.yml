@@ -1,40 +1,36 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo: vcluster-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: loft-sh
+      chart: vcluster
+      chart_ver: 0.19.7
+      namespace: vclusters
+      create_namespace: 'true'
+      install: 'true'
 tasks:
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
   create:
     vars:
-      chart_repo_name: '{{ .chart_repo_name | default "loft-sh" }}'
-      chart: '{{ .chart | default "vcluster" }}'
-      chart_ver: '{{ .chart_ver | default "0.19.5" }}'
-      namespace: '{{ .namespace | default "vclusters" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
       name: '{{ .name | default "my-vcluster" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://charts.loft.sh
+      - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
         vars:
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
           name: '{{ .name }}'
   destroy:
     vars:
-      namespace: '{{ .namespace | default "vclusters" }}'
       name: '{{ .name | default "my-vcluster" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
   create-all:
     cmds:
       - task: create
