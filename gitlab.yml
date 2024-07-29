@@ -21,7 +21,7 @@ includes:
 tasks:
   default:
     deps:
-      - install
+      - upgrade
   upgrade:
     deps:
       - task: helm-repo
