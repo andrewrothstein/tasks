@@ -10,17 +10,31 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 8.1.2
+      chart_ver: 8.2.1
       helm_args: -f gitlab-values.yml
+  secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: gitlab
+      s: gitlab-gitlab-initial-root-password
+      f: password
 tasks:
   default:
     deps:
       - install
-  install:
+  upgrade:
     deps:
       - task: helm-repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
+  initial-root-password:
+    cmds:
+      - task: secret:get
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: helm-repo
+    cmds:
+      - task: helm:check

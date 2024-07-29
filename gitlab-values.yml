@@ -5,12 +5,16 @@ global:
   hosts:
     domain: elephant-frog.ts.net
   ingress:
+    class: tailscale
+    provider: tailscale
     configureCertmanager: false
     annotations:
       'kubernetes.io/tls-acme': true
       'cert-manager.io/cluster-issuer': selfsigned-cluster-issuer
   pages:
     enabled: true
+nginx-ingress:
+  enabled: false
 gitlab:
   webservice:
     ingress:
@@ -28,5 +32,3 @@ minio:
   ingres:
     tls:
       secretName: gitlab-minio-tls
-gitlab-runner:
-  install: false
