@@ -12,13 +12,18 @@ includes:
       name: scylla-operator
       chart_repo_name: scylla
       chart: scylla-operator
-      chart_ver: 1.12.1
+      chart_ver: 1.13.0
   cluster:
     taskfile: kubectl.yml
     vars:
       n: scylla-clusters
       f: scylla-cluster.yml
 tasks:
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: operator:check
   default:
     deps:
       - upgrade
