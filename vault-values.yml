@@ -1,0 +1,14 @@
+---
+server:
+  dev:
+    enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - host: vault.elephant-frog.ts.net
+    tls:
+      - hosts:
+          - vault.elephant-frog.ts.net
+csi:
+  enabled: false

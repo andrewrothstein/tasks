@@ -1,6 +1,0 @@
----
-server:
-  dev:
-    enabled: true
-csi:
-  enabled: true

@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
-      chart_ver: 0.8.0
+      chart_ver: 0.8.1
       create_namespace: 'true'
       install: 'true'
       namespace: vault-secrets-operator
@@ -27,7 +27,7 @@ includes:
       install: 'true'
       namespace: vault
       name: vault
-      helm_args: -f vault-dev-values.yml
+      helm_args: -f vault-values.yml
 tasks:
   default:
     deps:
