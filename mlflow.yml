@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  repo: community-charts-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: community-charts
+      chart: mlflow
+      chart_ver: 0.7.19
+      namespace: mlflow
+      name: mlflow
+      install: 'true'
+      create_namespace: 'true'
+#      helm_args: -f mlflow-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
