@@ -1,8 +1,18 @@
 ---
 version: '3'
 includes:
-  helm-repo: cnpg-repo.yml
-  helm: helm.yml
+  repo: cnpg-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: cnpg
+      chart: cloudnative-pg
+      chart_ver: 0.21.6
+      namespace: cnpg-system
+      create_namespace: 'true'
+      install: 'true'
+      name: cnpg
+      helm_args: -f cnpg-values.yml
   test-cluster:
     taskfile: kubectl.yml
     vars:
@@ -22,26 +32,10 @@ tasks:
     cmds:
       - task: upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "cnpg" }}'
-      chart: '{{ .chart | default "cloudnative-pg" }}'
-      chart_ver: '{{ .chart_ver | default "0.21.5" }}'
-      namespace: '{{ .namespace | default "cnpg-system" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "cnpg" }}'
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: 'true'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: -f cnpg-values.yml
   test:
     cmds:
       - task: test-cluster:ns-create
@@ -51,11 +45,10 @@ tasks:
       - task: test-cluster:delete
       - task: test-cluster:ns-delete
   delete:
-    vars:
-      namespace: '{{ .namespace | default "gitea" }}'
-      name: '{{ .name | default "gitea" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
