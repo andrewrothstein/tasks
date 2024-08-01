@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  hazelcast-repo: hazelcast-repo.yml
+  repo: hazelcast-repo.yml
   kubectl:
     taskfile: kubectl.yml
     internal: true
@@ -14,7 +14,7 @@ includes:
       namespace: hazelcast
       name: operator
       chart_repo_name: hazelcast
-      chart_ver: 5.11.0
+      chart_ver: 5.12.0
       chart: hazelcast-platform-operator
       install: 'true'
       helm_args: -f hazelcast-platform-operator-values.yml
@@ -24,7 +24,7 @@ tasks:
       - upgrade
   upgrade:
     deps:
-       - task: hazelcast-repo
+      - task: repo
     cmds:
       - task: kubectl:ns-create
       - task: platform-operator:upgrade
@@ -35,3 +35,8 @@ tasks:
     cmds:
       - task: platform-operator:delete
       - task: kubectl:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: platform-operator:check

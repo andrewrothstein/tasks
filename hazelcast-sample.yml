@@ -6,4 +6,4 @@ metadata:
 spec:
   clusterSize: 3
   repository: docker.io/hazelcast/hazelcast
-  version: 5.4.0-slim
+  version: 5-slim
