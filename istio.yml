@@ -71,3 +71,8 @@ tasks:
       - task: istiod:delete
       - task: istio-base:delete
       - task: gateway-api:delete
+  check:
+    deps:
+      - repo
+    cmds:
+      - task: istio-base:check
