@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  harbor-repo: harbor-repo.yml
+  repo: harbor-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -12,7 +12,7 @@ includes:
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.14.2
+      chart_ver: 1.15.0
       helm_args: -f harbor-values.yml
 tasks:
   default:
@@ -20,9 +20,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: harbor-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

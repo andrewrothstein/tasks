@@ -1,2 +1,8 @@
 ---
-#externalURL: http://harbor-core.harbor
+externalURL: https://harbor.elephant-frog.ts.net
+expose:
+  ingress:
+    className: tailscale
+    tls: true
+    hosts:
+      core: harbor.elephant-frog.ts.net
