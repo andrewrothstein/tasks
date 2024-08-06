@@ -2,7 +2,7 @@
 version: '3'
 vars:
   KPACK_MIRROR: https://github.com/buildpacks-community/kpack/releases/download
-  KPACK_VER: 0.13.3
+  KPACK_VER: 0.15.0
 includes:
   k:
     internal: true
@@ -15,7 +15,7 @@ tasks:
       - apply
   apply:
     cmds:
-      - task:install
+      - task: install
   install:
     vars:
       kpack_ver: '{{ .kpack_ver | default .KPACK_VER }}'
