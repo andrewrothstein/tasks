@@ -11,7 +11,7 @@ includes:
     internal: true
     taskfile: kubectl.yml
     vars:
-      n: keycloak-operator
+      n: keycloak
 tasks:
   default:
     cmds:
