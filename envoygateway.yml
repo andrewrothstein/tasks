@@ -10,7 +10,7 @@ includes:
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
       chart: gateway-helm
-      chart_ver: v1.0.2
+      chart_ver: v1.1.0
 tasks:
   default:
     deps:
