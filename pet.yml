@@ -11,6 +11,8 @@ tasks:
     cmds: []
   delete:
     cmds: []
+  check:
+    cmds: []
   default:
     deps:
       - up

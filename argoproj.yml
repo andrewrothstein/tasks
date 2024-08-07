@@ -27,3 +27,9 @@ tasks:
       - task: argo-events:delete
       - task: argocd:delete
       - task: argo:delete
+  check:
+    cmds:
+      - task: argo:check
+      - task: argocd:check
+      - task: argo-events:check
+      - task: argo-rollouts:check
