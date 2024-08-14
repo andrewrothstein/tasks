@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: dragonfly-repo.yml
+  repo: dragonfly-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -11,7 +11,7 @@ includes:
       name: dragonfly
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.1.33
+      chart_ver: 1.2.1
       helm_args: -f dragonfly-values.yml
 tasks:
   default:
@@ -19,9 +19,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
