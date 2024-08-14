@@ -1,5 +1,7 @@
 ---
 version: '3'
+vars:
+  default_flink_operator_version: 1.9.0
 includes:
   repo:
     taskfile: helm-repo.yml
@@ -21,7 +23,7 @@ tasks:
       - upgrade
   upgrade:
     vars:
-      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+      flink_operator_version: '{{ .flink_operator_version | default .default_flink_operator_version }}'
     deps:
       - task: repo:add
         vars:
@@ -36,14 +38,14 @@ tasks:
       - task: helm:delete
   test:
     vars:
-      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+      flink_operator_version: '{{ .flink_operator_version | default .default_flink_operator_version }}'
     cmds:
       - task: k:apply
         vars:
           f: https://raw.githubusercontent.com/apache/flink-kubernetes-operator/release-{{ .flink_operator_version }}/examples/basic.yaml
   delete-test:
     vars:
-      flink_operator_version: '{{ .flink_operator_version | default "1.8.0" }}'
+      flink_operator_version: '{{ .flink_operator_version | default .default_flink_operator_version }}'
     cmds:
       - task: k:delete
         vars:
