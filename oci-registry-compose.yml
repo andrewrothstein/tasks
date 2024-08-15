@@ -10,6 +10,7 @@ services:
       - HTTP_PROXY
       - HTTPS_PROXY
       - NO_PROXY
+    restart: always
     volumes:
       - registry_cache:/registry_cache:rw
 networks:
