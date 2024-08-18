@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: minio
       chart: tenant
-      chart_ver: 6.0.1
+      chart_ver: 6.0.2
       namespace: minio-tenants
       create_namespace: 'true'
       install: 'true'
