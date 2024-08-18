@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  crossplane-repo: crossplane-repo.yml
+  repo: crossplane-repo.yml
   crossplane-helm:
     taskfile: helm.yml
     internal: true
@@ -24,9 +24,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: crossplane-repo
+      - task: repo
     cmds:
       - task: crossplane-helm:upgrade
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: crossplane-helm:check
   install-providers:
     deps:
       - task: install-terraform
