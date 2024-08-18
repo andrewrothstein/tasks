@@ -12,7 +12,7 @@ includes:
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.77.6
+      chart_ver: 107.90.8
 tasks:
   default:
     deps:
@@ -25,3 +25,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
