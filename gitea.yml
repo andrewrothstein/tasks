@@ -2,39 +2,31 @@
 version: '3'
 includes:
   repo: gitea-repo.yml
-  helm: helm.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: gitea-charts
+      chart: gitea
+      chart_ver: 10.4.0
+      namespace: gitea
+      install: "true"
+      create_namespace: "true"
+      name: gitea
+      helm_args: -f gitea-values.yml
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "gitea-charts" }}'
-      chart: '{{ .chart | default "gitea" }}'
-      chart_ver: '{{ .chart_ver | default "10.3.0" }}'
-      namespace: '{{ .namespace | default "gitea" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "gitea" }}'
     deps:
       - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: -f gitea-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "gitea" }}'
-      name: '{{ .name | default "gitea" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
