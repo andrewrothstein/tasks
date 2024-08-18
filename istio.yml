@@ -18,15 +18,6 @@ includes:
       chart_repo_name: istio
       chart: base
       chart_ver: '{{ .istio_ver }}'
-  istiod:
-    taskfile: helm.yml
-    vars:
-      install: 'true'
-      namespace: istio-system
-      name: istiod
-      chart_repo_name: istio
-      chart: istiod
-      chart_ver: '{{ .istio_ver }}'
   cni:
     taskfile: helm.yml
     vars:
@@ -35,6 +26,15 @@ includes:
       name: istio-cni
       chart_repo_name: istio
       chart: cni
+      chart_ver: '{{ .istio_ver }}'
+  istiod:
+    taskfile: helm.yml
+    vars:
+      install: 'true'
+      namespace: istio-system
+      name: istiod
+      chart_repo_name: istio
+      chart: istiod
       chart_ver: '{{ .istio_ver }}'
   gateway:
     taskfile: helm.yml
@@ -61,14 +61,14 @@ tasks:
     cmds:
       - task: gateway-api:apply
       - task: istio-base:upgrade
-      - task: istiod:upgrade
       - task: cni:upgrade
+      - task: istiod:upgrade
       - task: gateway:upgrade
   delete:
     cmds:
       - task: gateway:delete
-      - task: cni:delete
       - task: istiod:delete
+      - task: cni:delete
       - task: istio-base:delete
       - task: gateway-api:delete
   check:
