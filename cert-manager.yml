@@ -14,7 +14,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: v1.15.1
+      chart_ver: v1.15.3
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
       install: 'true'
@@ -25,7 +25,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: v0.14.1
+      chart_ver: v0.15.1
       chart: cert-manager-approver-policy
       helm_args: -f cert-manager-approver-policy-values.yml
       install: 'true'
