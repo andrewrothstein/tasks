@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  atlassian-data-center-repo: atlassian-data-center-repo.yml
+  repo: atlassian-data-center-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -12,7 +12,7 @@ includes:
       name: confluence
       chart_repo_name: atlassian-data-center
       chart: confluence
-      chart_ver: '1.18'
+      chart_ver: 1.21.0
 #      helm_args: -f atlassian-data-center-values.yml
 tasks:
   default:
@@ -20,9 +20,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: atlassian-data-center-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
