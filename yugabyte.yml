@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  repo: yugabyte-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: yugabytedb
+      chart: yugabyte
+      chart_ver: 2024.1.1
+      namespace: yugabyte
+      install: "true"
+      create_namespace: "true"
+      name: yugabyte
+#      helm_args: -f yugabyte-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
