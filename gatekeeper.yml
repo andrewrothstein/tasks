@@ -12,7 +12,7 @@ includes:
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.16.2
+      chart_ver: 3.17.0
 tasks:
   default:
     deps:
@@ -25,3 +25,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
