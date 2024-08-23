@@ -12,16 +12,21 @@ includes:
       chart_repo_name: netapp-trident
       chart: trident-operator
       name: trident-operator
-      chart_ver: 100.2402.0
+      chart_ver: 100.2406.1
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
