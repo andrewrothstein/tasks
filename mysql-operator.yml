@@ -12,7 +12,7 @@ includes:
       name: mysql-operator
       chart_repo_name: mysql-operator
       chart: mysql-operator
-      chart_ver: 2.1.1
+      chart_ver: 2.2.1
 #      helm_args: >-
 #        --values=mysql-operator-values.yml
   kk:
@@ -46,3 +46,8 @@ tasks:
       - task: k8s-secret:delete
       - task: kk:ns-delete
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
