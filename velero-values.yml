@@ -1,11 +1,16 @@
 ---
 configuration:
   backupStorageLocation:
-    - name: my-backup-storage-location
+    - name: default
       provider: aws
-      bucket: velero-backup-bucket
+      bucket: velero
+      accessMode: ReadWrite
+      default: true
       config:
         region: us-east-1
+        s3ForcePathStyle: true
+        s3Url: http://minio-hl:9000
+        publicUrl: http://minio-hl:9000
   volumeSnapshotLocation:
     - name: my-volume-snapshot-location
       provider: aws
@@ -13,7 +18,7 @@ configuration:
         region: us-east-1
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero/velero-plugin-for-aws:v1.9.1
+    image: velero/velero-plugin-for-aws:v1.10.1
     volumeMounts:
       - mountPath: /target
         name: plugins
