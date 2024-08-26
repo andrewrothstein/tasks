@@ -2,11 +2,14 @@
 version: '3'
 includes:
   repo: argo-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: argo
-      create_namespace: 'true'
       install: 'true'
 tasks:
   upgrade:
@@ -19,6 +22,12 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+        vars:
+          n: '{{ .namespace }}'
+      - task: kk:ns-label
+        vars:
+          n: '{{ .namespace }}'
       - task: helm:upgrade
         vars:
           chart: '{{ .chart }}'
@@ -35,6 +44,9 @@ tasks:
         vars:
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
+      - task: kk:ns-delete
+        vars:
+          n: '{{ .namespace }}'
   check:
     vars:
       chart: '{{ .chart }}'

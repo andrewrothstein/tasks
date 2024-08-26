@@ -11,7 +11,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: vault
-      labels: istio-injection=enabled
+      labels: istio.io/dataplane-mode=ambient
   vault-secrets-operator:
     taskfile: helm.yml
     vars:
