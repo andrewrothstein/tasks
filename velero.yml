@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: velero-repo.yml
+  repo: velero-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -10,7 +10,7 @@ includes:
       install: 'true'
       chart_repo_name: vmware-tanzu
       chart: velero
-      chart_ver: 6.0.0
+      chart_ver: 7.1.5
       namespace: velero
       name: velero
       helm_args: -f velero-values.yml
@@ -20,9 +20,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
