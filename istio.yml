@@ -18,6 +18,7 @@ includes:
       chart_repo_name: istio
       chart: base
       chart_ver: '{{ .istio_ver }}'
+      helm_args: -f istio-profile-values.yml
   cni:
     taskfile: helm.yml
     vars:
@@ -27,6 +28,7 @@ includes:
       chart_repo_name: istio
       chart: cni
       chart_ver: '{{ .istio_ver }}'
+      helm_args: -f istio-profile-values.yml
   istiod:
     taskfile: helm.yml
     vars:
@@ -36,6 +38,7 @@ includes:
       chart_repo_name: istio
       chart: istiod
       chart_ver: '{{ .istio_ver }}'
+      helm_args: -f istio-profile-values.yml
   gateway:
     taskfile: helm.yml
     vars:

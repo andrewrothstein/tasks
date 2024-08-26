@@ -7,23 +7,23 @@ includes:
   mesh: istio.yml
 #  mesh: pet.yml
 
-  pre-mesh: pre-mesh.yml
-#  pre-mesh: pet.yml
+  post-mesh-1: post-mesh-1.yml
+#  post-mesh-1: pet.yml
 
-  post-mesh: post-mesh.yml
-#  post-mesh: pet.yml
+  post-mesh-2: post-mesh-2.yml
+#  post-mesh-2: pet.yml
 tasks:
   up:
     cmds:
       - task: k8s:up
-      - task: pre-mesh:up
       - task: mesh:up
-      - task: post-mesh:up
+      - task: post-mesh-1:up
+      - task: post-mesh-2:up
   delete:
     cmds:
-#      - task: post-mesh:delete
+#      - task: post-mesh-2:delete
+#      - task: post-mesh-1:delete
 #      - task: mesh:delete
-#      - task: pre-mesh:delete
       - task: k8s:delete
   destroy:
     cmds:
