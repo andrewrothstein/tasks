@@ -16,7 +16,9 @@ includes:
       namespace: velero
       install: 'true'
       name: minio
-      helm_args: --set tenant.name=velero
+      helm_args: >-
+        --set tenant.name=velero
+        --set secrets.name=minio
   velero-repo: velero-repo.yml
   velero-helm:
     taskfile: helm.yml

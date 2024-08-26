@@ -9,8 +9,8 @@ configuration:
       config:
         region: us-east-1
         s3ForcePathStyle: true
-        s3Url: http://minio-hl:9000
-        publicUrl: http://minio-hl:9000
+        s3Url: https://minio
+        publicUrl: https://minio
   volumeSnapshotLocation:
     - name: my-volume-snapshot-location
       provider: aws
@@ -22,3 +22,5 @@ initContainers:
     volumeMounts:
       - mountPath: /target
         name: plugins
+credentials:
+  existingSecret: minio
