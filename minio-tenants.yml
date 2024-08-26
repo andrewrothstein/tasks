@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: minio-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: minio-tenants
+      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
@@ -22,10 +27,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+#      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - tasks: kk:ns-delete
   check:
     deps:
       - task: repo
