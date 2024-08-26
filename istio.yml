@@ -47,6 +47,7 @@ includes:
       chart_repo_name: istio
       chart: ztunnel
       chart_ver: '{{ .istio_ver }}'
+  kiali: kiali.yml
   gateway:
     taskfile: helm.yml
     vars:
@@ -75,10 +76,12 @@ tasks:
       - task: cni:upgrade
       - task: istiod:upgrade
       - task: ztunnel:upgrade
+      - task: kiali:upgrade
       - task: gateway:upgrade
   delete:
     cmds:
       - task: gateway:delete
+      - task: kiali:delete
       - task: ztunnel:delete
       - task: istiod:delete
       - task: cni:delete
