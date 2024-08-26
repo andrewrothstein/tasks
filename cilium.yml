@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  cilium-repo: cilium-repo.yml
+  repo: cilium-repo.yml
   helm:
     taskfile: helm.yml
     vars:
@@ -10,7 +10,7 @@ includes:
       name: cilium
       chart_repo_name: cilium
       chart: cilium
-      chart_ver: 1.15.5
+      chart_ver: 1.16.1
       helm_args: -f cilium-values.yml
 tasks:
   default:
@@ -18,9 +18,14 @@ tasks:
       - install
   install:
     deps:
-      - task: cilium-repo
+      - task: repo
     cmds:
       - task: helm:install
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
