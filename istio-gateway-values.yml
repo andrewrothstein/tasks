@@ -1,5 +1,4 @@
 ---
-profile: ambient
 service:
   annotations:
     'tailscale.com/expose': 'true'
