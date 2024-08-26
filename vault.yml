@@ -7,23 +7,26 @@ includes:
     vars:
       n: hashicorp
       url: https://helm.releases.hashicorp.com
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: vault
+      labels: istio-injection=enabled
   vault-secrets-operator:
     taskfile: helm.yml
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
       chart_ver: 0.8.1
-      create_namespace: 'true'
       install: 'true'
-      namespace: vault-secrets-operator
-      name: vault-secrets-operator
+      namespace: vault
+      name: secrets-operator
   vault:
     taskfile: helm.yml
     vars:
       chart_repo_name: hashicorp
       chart: vault
       chart_ver: 0.28.1
-      create_namespace: 'true'
       install: 'true'
       namespace: vault
       name: vault
@@ -41,6 +44,8 @@ tasks:
       - task: ss-csi:upgrade
     cmds:
       - task: hashicorp:add
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: vault-secrets-operator:upgrade
       - task: vault:upgrade
   delete:
