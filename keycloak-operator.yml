@@ -25,6 +25,9 @@ includes:
           name: keycloak-tls
         spec:
           secretName: keycloak-tls
+          subject:
+            organizationalUnits:
+              - keycloak-operator
           dnsNames:
             - keycloak
             - keycloak.keycloak
