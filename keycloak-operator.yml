@@ -2,16 +2,49 @@
 version: '3'
 vars:
   mirror: https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources
-  default_ver: 25.0.2
+  default_ver: 25.0.4
   crd1: kubernetes/keycloaks.k8s.keycloak.org-v1.yml
   crd2: kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
   operator: kubernetes/kubernetes.yml
+  n: keycloak
 includes:
-  kubectl:
+  keycloak:
     internal: true
     taskfile: kubectl.yml
     vars:
-      n: keycloak
+      labels: istio.io/dataplane-mode=ambient
+  instance:
+    internal: false
+    taskfile: kubectl.yml
+    vars:
+      literal_f: |
+        ---
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: keycloak-tls
+        spec:
+          secretName: keycloak-tls
+          dnsNames:
+            - keycloak
+            - keycloak.keycloak
+          issuerRef:
+            name: selfsigned-cluster-issuer
+            kind: ClusterIssuer
+            group: cert-manager.io
+        ---
+        apiVersion: k8s.keycloak.org/v2alpha1
+        kind: Keycloak
+        metadata:
+          name: keycloak
+        spec:
+          http:
+            httpEnabled: true
+            tlsSecret: keycloak-tls
+          hostname:
+            strict: false
+          proxy:
+            headers: forwarded
 tasks:
   default:
     cmds:
@@ -20,27 +53,28 @@ tasks:
     vars:
       ver: '{{ .ver | default .default_ver }}'
     cmds:
-      - task: kubectl:ns-create
-      - task: kubectl:apply
+      - task: keycloak:ns-create
+      - task: keycloak:ns-label
+      - task: keycloak:apply
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
-      - task: kubectl:apply
+      - task: keycloak:apply
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
-      - task: kubectl:apply
+      - task: keycloak:apply
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
   delete:
     vars:
       ver: '{{ .ver | default .default_ver }}'
     cmds:
-      - task: kubectl:delete
+      - task: keycloak:delete
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
-      - task: kubectl:delete
+      - task: keycloak:delete
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
-      - task: kubectl:delete
+      - task: keycloak:delete
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
-      - task: kubectl:ns-delete
+      - task: keycloak:ns-delete
