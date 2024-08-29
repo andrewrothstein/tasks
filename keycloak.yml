@@ -45,10 +45,10 @@ includes:
           name: keycloak
         spec:
           http:
-            httpEnabled: true
             tlsSecret: keycloak-tls
           hostname:
-            strict: false
+            hostname: https://keycloak.elephant-frog.ts.net
+            strict: true
           proxy:
             headers: forwarded
   instance-gateway:
@@ -68,8 +68,8 @@ includes:
           listeners:
             - name: default
               hostname: '*.elephant-frog.ts.net'
-              port: 80
-              protocol: HTTP
+              port: 443
+              protocol: HTTPS
         ---
         apiVersion: gateway.networking.k8s.io/v1
         kind: HTTPRoute
@@ -83,7 +83,7 @@ includes:
           rules:
             - backendRefs:
                 - name: keycloak-service
-                  port: 8080
+                  port: 8443
 tasks:
   default:
     cmds:
@@ -94,9 +94,7 @@ tasks:
       - task: instance-apply
   delete:
     cmds:
-      - task: instance-tls:delete
-      - task: instance:delete
-      - task: instance-gateway:delete
+      - task: instance-delete
       - task: operator-delete
   instance-apply:
     cmds:
@@ -105,13 +103,14 @@ tasks:
       - task: instance-gateway:apply
   instance-delete:
     deps:
+      - task: instance-gateway:delete
       - task: instance:delete
   operator-apply:
     vars:
       ver: '{{ .ver | default .default_ver }}'
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
+#      - task: kk:ns-label
       - task: kk:apply
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
