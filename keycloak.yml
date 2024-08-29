@@ -8,13 +8,13 @@ vars:
   operator: kubernetes/kubernetes.yml
   n: keycloak
 includes:
-  keycloak:
+  kk:
     internal: true
     taskfile: kubectl.yml
     vars:
       labels: istio.io/dataplane-mode=ambient
   instance:
-    internal: false
+    internal: true
     taskfile: kubectl.yml
     vars:
       literal_f: |
@@ -53,31 +53,45 @@ tasks:
     cmds:
       - task: apply
   apply:
-    vars:
-      ver: '{{ .ver | default .default_ver }}'
     cmds:
-      - task: keycloak:ns-create
-      - task: keycloak:ns-label
-      - task: keycloak:apply
-        vars:
-          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
-      - task: keycloak:apply
-        vars:
-          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
-      - task: keycloak:apply
-        vars:
-          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+      - task: operator-apply
+      - task: instance-apply
   delete:
+    cmds:
+      - task: instance-delete
+      - task: operator-delete
+  instance-apply:
+    deps:
+      - task: instance:apply
+  instance-delete:
+    deps:
+      - task: instance:delete
+  operator-apply:
     vars:
       ver: '{{ .ver | default .default_ver }}'
     cmds:
-      - task: keycloak:delete
-        vars:
-          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
-      - task: keycloak:delete
-        vars:
-          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
-      - task: keycloak:delete
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: kk:apply
         vars:
           f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
-      - task: keycloak:ns-delete
+      - task: kk:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kk:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+  operator-delete:
+    vars:
+      ver: '{{ .ver | default .default_ver }}'
+    cmds:
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
+      - task: kk:ns-delete
