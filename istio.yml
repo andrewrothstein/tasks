@@ -48,18 +48,6 @@ includes:
       chart: ztunnel
       chart_ver: '{{ .istio_ver }}'
   kiali: kiali.yml
-  gateway:
-    taskfile: helm.yml
-    vars:
-      install: 'true'
-      namespace: istio-gateway
-      create_namespace: 'true'
-      name: istio-gateway
-      chart_repo_name: istio
-      chart: gateway
-      chart_ver: '{{ .istio_ver }}'
-      wait: 'false'
-      helm_args: -f istio-gateway-values.yml
 tasks:
   default:
     deps:
@@ -77,10 +65,8 @@ tasks:
       - task: istiod:upgrade
       - task: ztunnel:upgrade
       - task: kiali:upgrade
-      - task: gateway:upgrade
   delete:
     cmds:
-      - task: gateway:delete
       - task: kiali:delete
       - task: ztunnel:delete
       - task: istiod:delete

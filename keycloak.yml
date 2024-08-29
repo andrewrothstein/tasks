@@ -13,8 +13,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       labels: istio.io/dataplane-mode=ambient
-  instance:
-    internal: true
+  instance-tls:
     taskfile: kubectl.yml
     vars:
       literal_f: |
@@ -35,6 +34,10 @@ includes:
             name: selfsigned-cluster-issuer
             kind: ClusterIssuer
             group: cert-manager.io
+  instance:
+    taskfile: kubectl.yml
+    vars:
+      literal_f: |
         ---
         apiVersion: k8s.keycloak.org/v2alpha1
         kind: Keycloak
@@ -48,6 +51,39 @@ includes:
             strict: false
           proxy:
             headers: forwarded
+  instance-gateway:
+    taskfile: kubectl.yml
+    vars:
+      literal_f: |
+        ---
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        metadata:
+          name: keycloak
+          annotations:
+            tailscale.com/expose: 'true'
+            tailscale.com/hostname: keycloak
+        spec:
+          gatewayClassName: istio
+          listeners:
+            - name: default
+              hostname: '*.elephant-frog.ts.net'
+              port: 80
+              protocol: HTTP
+        ---
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: HTTPRoute
+        metadata:
+          name: keycloak
+        spec:
+          parentRefs:
+            - name: keycloak
+          hostnames:
+            - keycloak.elephant-frog.ts.net
+          rules:
+            - backendRefs:
+                - name: keycloak-service
+                  port: 8080
 tasks:
   default:
     cmds:
@@ -58,11 +94,15 @@ tasks:
       - task: instance-apply
   delete:
     cmds:
-      - task: instance-delete
+      - task: instance-tls:delete
+      - task: instance:delete
+      - task: instance-gateway:delete
       - task: operator-delete
   instance-apply:
-    deps:
+    cmds:
+      - task: instance-tls:apply
       - task: instance:apply
+      - task: instance-gateway:apply
   instance-delete:
     deps:
       - task: instance:delete
