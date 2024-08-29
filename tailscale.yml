@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: tailscale
       chart: tailscale-operator
-      chart_ver: 1.70.0
+      chart_ver: 1.72.1
       namespace: tailscale
       create_namespace: 'true'
       upgrade: 'true'
