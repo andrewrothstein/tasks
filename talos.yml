@@ -1,0 +1,167 @@
+---
+version: '3'
+vars:
+  cluster_dir: '{{ .USER_WORKING_DIR }}'
+  cluster_name: talos-bootstrap
+  cluster_endpoint: https://192.168.1.16:6443
+tasks:
+  gen-config:
+    vars:
+      cluster_name: '{{ .cluster_name }}'
+      cluster_endpoint: '{{ .cluster_endpoint }}'
+    cmds:
+      - |-
+        talosctl \
+          gen config \
+          {{ .cluster_name | quote }} \
+          {{ .cluster_endpoint | quote }}
+    status:
+      - test -f "{{ .cluster_dir }}/talosconfig"
+  talosctl:
+    internal: true
+    vars:
+      talosctl_cmd: '{{ .talosctl_cmd }}'
+      insecure: '{{ .insecure | default "false" }}'
+      nodes: '{{ .nodes }}'
+      endpoints: '{{ .endpoints }}'
+      talosconfig: '{{ .talosconfig }}'
+      extraArgs: '{{ .extraArgs }}'
+    cmds:
+      - |-
+        talosctl {{ .talosctl_cmd }}
+        {{- if eq .insecure "true" }} \
+          --insecure
+        {{- end }}
+        {{- if .nodes }} \
+          -n={{ .nodes | quote }}
+        {{- end }}
+        {{- if .endpoints }} \
+          -e={{ .endpoints | quote }}
+        {{- end }}
+        {{- if .talosconfig }} \
+          --talosconfig={{ .talosconfig | quote }}
+        {{- end }}
+        {{- if .extraArgs }}{{ .extraArgs }}{{ end }}
+  bootstrap:
+    vars:
+      nodes: '{{ .nodes }}'
+      endpoints: '{{ .endpoints }}'
+      talosconfig: '{{ .talosconfig }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: bootstrap
+          nodes: '{{ .nodes }}'
+          endpoints: '{{ .endpoints }}'
+          talosconfig: '{{ .talosconfig }}'
+  test-bootstrap:
+    cmds:
+      - task: bootstrap
+        vars:
+          nodes: 192.168.1.16
+          endpoints: 192.168.1.16
+          talosconfig: '{{ .cluster_dir }}/talosconfig'
+  disks:
+    vars:
+      insecure: '{{ .insecure }}'
+      nodes: '{{ .nodes }}'
+      talosconfig: '{{ .talosconfig }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: disks
+          insecure: '{{ .insecure }}'
+          nodes: '{{ .nodes }}'
+          talosconfig: '{{ .talosconfig }}'
+  test-disks:
+    cmds:
+      - task: disks
+        vars:
+          insecure: 'true'
+          nodes: 192.168.1.17
+  kubeconfig:
+    vars:
+      local_path: '{{ .local_path }}'
+      force: '{{ .force | default "false" }}'
+      nodes: '{{ .nodes }}'
+      endpoints: '{{ .endpoints }}'
+      talosconfig: '{{ .talosconfig }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: kubeconfig
+          nodes: '{{ .nodes }}'
+          endpoints: '{{ .endpoints }}'
+          talosconfig: '{{ .talosconfig }}'
+          extraArgs: |-
+            {{- if .local_path }} \
+              {{ .local_path | quote }}
+            {{- end }}
+            {{- if .force }} \
+              --force
+            {{- end }}
+  test-kubeconfig:
+    cmds:
+      - task: kubeconfig
+        vars:
+          nodes: 192.168.1.16
+          endpoints: 192.168.1.16
+          talosconfig: '{{ .cluster_dir }}/talosconfig'
+          force: "true"
+  apply-config:
+    vars:
+      insecure: '{{ .insecure }}'
+      nodes: '{{ .nodes }}'
+      endpoints: '{{ .endpoints }}'
+      file: '{{ .file }}'
+      talosconfig: '{{ .talosconfig }}'
+      mode: '{{ .mode }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: apply-config
+          insecure: '{{ .insecure }}'
+          nodes: '{{ .nodes }}'
+          endpoints: '{{ .endpoints }}'
+          talosconfig: '{{ .talosconfig }}'
+          extraArgs: |-
+            {{- if .file }} \
+              --file={{ .file | quote }}
+            {{- end }}
+            {{- if .mode }} \
+              --mode={{ .mode | quote }}
+            {{- end }}
+  apply-config-insecure:
+    vars:
+      nodes: '{{ .nodes }}'
+      file: '{{ .file }}'
+    cmds:
+      - task: apply-config
+        vars:
+          insecure: "true"
+          nodes: '{{ .nodes }}'
+          file: '{{ .file }}'
+  test-apply-config-insecure:
+    cmds:
+      - task: apply-config
+        vars:
+          insecure: "true"
+          nodes: 192.168.1.16
+          file: '{{ .cluster_dir }}/controlplane.yaml'
+  apply-config-secure:
+    vars:
+      nodes: '{{ .nodes }}'
+      endpoints: '{{ .endpoints }}'
+    cmds:
+      - task: apply-config
+        vars:
+          nodes: '{{ .nodes }}'
+          endpoints: '{{ .endpoints }}'
+          file: '{{ .cluster_dir }}/controlplane.yaml'
+          talosconfig: '{{ .cluster_dir }}/talosconfig'
+  test-apply-config-2:
+    cmds:
+      - task: apply-config-secure
+        vars:
+          nodes: 192.168.1.17
+          endpoints: 192.168.1.16
