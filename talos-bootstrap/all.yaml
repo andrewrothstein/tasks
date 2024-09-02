@@ -1,0 +1,9 @@
+---
+machine:
+  features:
+    hostDNS:
+      enabled: true
+  network:
+    interfaces:
+      - interface: eno1
+        dhcp: true

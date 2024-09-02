@@ -1,0 +1,13 @@
+[
+    {
+        "op": "remove",
+        "path": "/machine/install/disk"
+    },
+    {
+        "op": "replace",
+        "path": "/machine/install/diskSelector",
+        "value": {
+            "model": "SAMSUNG*"
+        }
+    }
+]

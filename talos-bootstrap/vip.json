@@ -1,0 +1,9 @@
+[
+    {
+        "op": "replace",
+        "path": "/machine/network/interfaces/0/vip",
+        "value": {
+            "ip": "192.168.1.15"
+        }
+    }
+]
