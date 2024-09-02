@@ -136,23 +136,22 @@ tasks:
   kubeconfig:
     vars:
       local_path: '{{ .local_path }}'
-      force: '{{ .force | default "false" }}'
+      force: '{{ .force }}'
       nodes: '{{ .nodes }}'
       endpoints: '{{ .endpoints }}'
       talosconfig: '{{ .talosconfig }}'
+      merge: '{{ .merge | default "true" }}'
     cmds:
       - task: talosctl
         vars:
-          talosctl_cmd: kubeconfig
+          talosctl_cmd: kubeconfig{{ if .local_path }} {{ .local_path | quote }}{{ end }}
           nodes: '{{ .nodes }}'
           endpoints: '{{ .endpoints }}'
           talosconfig: '{{ .talosconfig }}'
+          force: '{{ .force }}'
           extraArgs: |-
-            {{- if .local_path }} \
-              {{ .local_path | quote }}
-            {{- end }}
-            {{- if .force }} \
-              --force
+            {{- if eq .merge "true" }} \
+              --merge
             {{- end }}
   test-kubeconfig:
     cmds:
@@ -160,7 +159,7 @@ tasks:
         vars:
           nodes: 192.168.1.16
           endpoints: 192.168.1.16
-          talosconfig: '{{ .cluster_dir }}/talosconfig'
+          talosconfig: '{{ .cluster_talosconfig }}'
           force: "true"
   apply-config:
     vars:
@@ -210,8 +209,8 @@ tasks:
         vars:
           nodes: '{{ .nodes }}'
           endpoints: '{{ .endpoints }}'
-          file: '{{ .cluster_dir }}/controlplane.yaml'
-          talosconfig: '{{ .cluster_dir }}/talosconfig'
+          file: '{{ .cluster_controlplane_yaml }}'
+          talosconfig: '{{ .cluster_talosconfig }}'
   test-apply-config-secure:
     cmds:
       - task: apply-config-secure
