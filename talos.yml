@@ -8,6 +8,7 @@ vars:
   cluster_worker_yaml: '{{ .cluster_dir }}/worker.yaml'
   cluster_talosconfig: '{{ .cluster_dir }}/talosconfig'
   cluster_name: talos-bootstrap
+  cluster_kubeconfig: '{{ .cluster_dir }}/.kube/config'
 tasks:
   talosctl:
     internal: true
@@ -157,10 +158,16 @@ tasks:
     cmds:
       - task: kubeconfig
         vars:
+          local_path: '{{ .cluster_kubeconfig }}'
           nodes: 192.168.1.16
           endpoints: 192.168.1.16
           talosconfig: '{{ .cluster_talosconfig }}'
           force: "true"
+  k9s:
+    cmds:
+      - |
+        export KUBECONFIG={{ .cluster_kubeconfig | quote }}
+        k9s
   apply-config:
     vars:
       insecure: '{{ .insecure }}'
