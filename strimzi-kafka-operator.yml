@@ -8,17 +8,15 @@ includes:
     vars:
       namespace: strimzi-kafka-operator
       create_namespace: 'true'
-      install: 'true'
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
+      chart_ver: 0.43.0
       name: strimzi-kafka-operator
-      chart_ver: 0.42.0
       helm_args: -f strimzi-kafka-operator-values.yml
   test-cluster:
     taskfile: helm.yml
     internal: true
     vars:
-      install: 'true'
       name: strimzi-test-kafka-cluster
       chart: chart-strimzi-kafka
 tasks:
@@ -41,3 +39,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
