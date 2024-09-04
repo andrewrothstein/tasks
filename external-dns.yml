@@ -7,11 +7,10 @@ includes:
     vars:
       namespace: external-dns
       create_namespace: 'true'
-      install: 'true'
       name: external-dns
       chart_repo_name: external-dns
       chart: external-dns
-      chart_ver: 1.14.3
+      chart_ver: 1.14.5
       helm_args: -f external-dns-values.yml
 tasks:
   default:
@@ -25,3 +24,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
