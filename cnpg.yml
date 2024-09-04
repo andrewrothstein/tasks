@@ -7,10 +7,9 @@ includes:
     vars:
       chart_repo_name: cnpg
       chart: cloudnative-pg
-      chart_ver: 0.21.6
+      chart_ver: 0.22.0
       namespace: cnpg-system
       create_namespace: 'true'
-      install: 'true'
       name: cnpg
       helm_args: -f cnpg-values.yml
   test-cluster:
