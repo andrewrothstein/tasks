@@ -3,40 +3,32 @@ version: '3'
 dotenv:
   - .keycloak-secrets.env
 includes:
-  bitnami-chart: bitnami-chart.yml
+  bitnami-chart:
+    taskfile: bitnami-chart.yml
+    vars:
+      chart: keycloak
+      chart_ver: 22.2.1
+      name: bitnami-keycloak
+      namespace: bitnami-keycloak
+      create_namespace: true
 tasks:
   default:
     deps:
       - task: upgrade
   upgrade:
     vars:
-      chart: '{{ .chart | default "keycloak" }}'
-      chart_ver: '{{ .chart_ver | default "18.4.0" }}'
-      name: '{{ .name | default "keycloak" }}'
-      namespace: '{{ .namespace | default "keycloak" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
       admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER}" }}'
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
     cmds:
       - task: bitnami-chart:upgrade
         vars:
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          name: '{{ .name }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
           helm_args: >-
             -f bitnami-keycloak-values.yml
             --set-string auth.adminUser={{ .admin_user | quote }}
             --set-string auth.adminPassword={{ .admin_password | quote }}
   delete:
-    vars:
-      name: '{{ .name }}'
-      namespace: '{{ .namespace }}'
     cmds:
       - task: bitnami-chart:delete
-        vars:
-          name: '{{ .name | default "keycloak" }}'
-          namespace: '{{ .namespace | default "keycloak" }}'
+  check:
+    cmds:
+      - task: bitnami-chart:check
