@@ -3,32 +3,44 @@ version: '3'
 dotenv:
   - .coderv2-secrets.env
 includes:
-  postgresql: bitnami-postgresql.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: coder
+      labels: istio.io/dataplane-mode=ambient
+  coderv2-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: coder
+      s: coder-db-url
+  postgresql:
+    taskfile: bitnami-postgresql.yml
+    vars:
+      namespace: coder
   repo: coderv2-repo.yml
-  coderv2-secret: k8s-literal-secret.yml
-  coderv2: helm.yml
+  coderv2:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: coder-v2
+      chart: coder
+      chart_ver: 2.15.0
+      name: coder
+      namespace: coder
+      helm_args: -f coderv2-values.yml
 tasks:
   default:
     deps:
       - task: upgrade
   upgrade:
     vars:
-      name: '{{ .name | default "coder" }}'
-      chart_repo_name: '{{ .chart_repo_name | default "coder-v2" }}'
-      chart: '{{ .chart | default "coder" }}'
-      chart_ver: '{{ .chart_ver | default "2.13.1" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
-      namespace: '{{ .namespace | default "coder" }}'
       admin_username: '{{ .admin_username | default "coder" }}'
       admin_db: '{{ .admin_db | default "coder" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
+      - task: kk:ns-create
+#      - task: kk:ns-label
       - task: postgresql:upgrade
         vars:
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
           admin_username: '{{ .admin_username }}'
           admin_password: '{{ .admin_password }}'
           admin_db: '{{ .admin_db }}'
@@ -36,32 +48,17 @@ tasks:
       - task: repo
       - task: coderv2-secret:create
         vars:
-          n: '{{ .namespace }}'
-          s: coder-db-url
           args: >-
             --from-literal=url="postgres://{{ .admin_username }}:${POSTGRES_PASSWORD}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
       - task: coderv2:upgrade
         vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          install: '{{ .install }}'
-          helm_args: -f coderv2-values.yml
   delete:
-    vars:
-      name: '{{ .name | default "coder" }}'
-      namespace: '{{ .namespace | default "coder" }}'
     cmds:
       - task: coderv2:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
       - task: coderv2-secret:delete
-        vars:
-          n: '{{ .namespace }}'
-          s: coder-db-url
       - task: postgresql:delete
-        vars:
-          namespace: coder
+      - task: kk:ns-delete
+  check:
+    cmds:
+      - task: postgresql:check
+      - task: coderv2:check

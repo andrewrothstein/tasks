@@ -1,19 +1,21 @@
 ---
 version: '3'
 includes:
-  bitnami-chart: bitnami-chart.yml
+  bitnami-chart:
+    taskfile: bitnami-chart.yml
+    vars:
+      chart: postgresql
+      chart_ver: 15.5.27
 tasks:
   default:
     deps:
       - task: upgrade
   upgrade:
     vars:
-      chart: '{{ .chart | default "postgresql" }}'
-      chart_ver: '{{ .chart_ver | default "15.5.17" }}'
+      chart_ver: '{{ .chart_ver }}'
       name: '{{ .name | default "postgresql" }}'
       namespace: '{{ .namespace | default "bitnami-postgresql" }}'
-      create_namespace: '{{ .create_namespace }}'
-      install: '{{ .install }}'
+      create_namespace: '{{ .create_namespace | default "true" }}'
       admin_username: '{{ .admin_username | default "pgadmin" }}'
       admin_password: '{{ .admin_password | default "${POSTGRES_PASSWORD}" }}'
       admin_db: '{{ .admin_db | default "pgadmin" }}'
@@ -21,12 +23,10 @@ tasks:
     cmds:
       - task: bitnami-chart:upgrade
         vars:
-          chart: '{{ .chart }}'
           chart_ver: '{{ .chart_ver }}'
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
           create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
           helm_args: >-
             --set auth.username={{ .admin_username | quote }}
             --set auth.password={{ .admin_password | quote }}
@@ -41,3 +41,8 @@ tasks:
         vars:
           name: '{{ .name | default "postgresql" }}'
           namespace: '{{ .namespace | default "bitnami-postgresql" }}'
+  check:
+    vars:
+      chart_ver: '{{ .chart_ver }}'
+    cmds:
+      - task: bitnami-chart:check
