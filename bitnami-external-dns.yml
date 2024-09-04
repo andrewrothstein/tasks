@@ -6,8 +6,8 @@ includes:
     vars:
       chart: external-dns
       chart_ver: 8.3.5
-      name: external-dns
-      namespace: external-dns
+      name: bitnami-external-dns
+      namespace: bitnami-external-dns
       create_namespace: "true"
 tasks:
   default:
