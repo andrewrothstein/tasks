@@ -42,6 +42,8 @@ tasks:
           name: '{{ .name }}'
           namespace: '{{ .namespace }}'
   check:
+    deps:
+      - task: repo
     vars:
       chart: '{{ .chart }}'
       chart_ver: '{{ .chart_ver }}'

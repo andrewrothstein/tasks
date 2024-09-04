@@ -1,36 +1,24 @@
 ---
 version: '3'
 includes:
-  bitnami-chart: bitnami-chart.yml
+  bitnami-chart:
+    taskfile: bitnami-chart.yml
+    vars:
+      chart: external-dns
+      chart_ver: 8.3.5
+      name: external-dns
+      namespace: external-dns
+      create_namespace: "true"
 tasks:
   default:
     deps:
       - task: upgrade
   upgrade:
-    vars:
-      chart: '{{ .chart | default "external-dns" }}'
-      chart_ver: '{{ .chart_ver | default "6.33.0" }}'
-      name: '{{ .name | default "external-dns" }}'
-      namespace: '{{ .namespace | default "bitnami-external-dns" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
-      helm_args: '{{ .helm_args }}'
     cmds:
       - task: bitnami-chart:upgrade
-        vars:
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          name: '{{ .name }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
-          helm_args: '{{ .helm_args }}'
   delete:
-    vars:
-      name: '{{ .name | default "external-dns" }}'
-      namespace: '{{ .namespace | default "bitnami-external-dns" }}'
     cmds:
       - task: bitnami-chart:delete
-        vars:
-          name: '{{ .name }}'
-          namespace: '{{ .namespace }}'
+  check:
+    cmds:
+      - task: bitnami-chart:check
