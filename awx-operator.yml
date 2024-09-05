@@ -5,7 +5,6 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      install: "true"
       namespace: awx
       create_namespace: "true"
       name: awx-operator
