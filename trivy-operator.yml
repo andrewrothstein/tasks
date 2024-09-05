@@ -6,13 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      namespace: trivy-system
-      create_namespace: 'true'
-      install: 'true'
       chart_repo_name: aqua
       chart: trivy-operator
+      chart_ver: 0.24.1
+      create_namespace: 'true'
+      namespace: trivy-system
       name: trivy-operator
-      chart_ver: 0.21.1
 tasks:
   default:
     deps:
@@ -25,3 +24,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
