@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  helm-repo: metrics-server-repo.yml
+  repo: metrics-server-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
@@ -20,9 +20,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

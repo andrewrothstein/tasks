@@ -1,8 +1,6 @@
 ---
 version: '3'
 includes:
-  metrics-server: metrics-server.yml
-#  metrics-server: pet.yml
 tasks:
   up:
     vars:
@@ -18,7 +16,6 @@ tasks:
           | kind create cluster \
              -n {{ .n | quote }} \
              --config=-
-      - task: metrics-server:upgrade
     status:
       - kind get kubeconfig -n {{ .n | quote }}
   delete:

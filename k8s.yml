@@ -6,11 +6,17 @@ includes:
 #  k8s: kind+spegel.yml
   k8s: kind+registry.yml
 #  k8s: kind+cilium.yml
+  metrics-server: metrics-server.yml
+#  metrics-server: pet.yml
 #  k8s: k3d.yml
 tasks:
+  kind-up:
+    cmds:
+      - task: k8s:up
   up:
     cmds:
       - task: k8s:up
+      - task: metrics-server:upgrade
   delete:
     cmds:
       - task: kind:delete
