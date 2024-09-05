@@ -1,5 +1,5 @@
 ---
-kubeProxyReplacement: partial
+kubeProxyReplacement: true
 hostServices:
   enabled: false
 externalIPs:
@@ -20,3 +20,8 @@ hubble:
     enabled: true
   ui:
     enabled: true
+# to play nicely with istio ambient
+socketLB:
+  hostNamespaceOnly: true
+cni:
+  exclusive: false
