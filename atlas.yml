@@ -4,13 +4,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      namespace: atlas-operator
-      create_namespace: 'true'
-      install: 'true'
-      name: atlas-operator
       chart_repo_name: oci://ghcr.io/ariga/charts
       chart: atlas-operator
-      chart_ver: 0.4.3
+      chart_ver: 0.5.0
+      create_namespace: 'true'
+      namespace: atlas-operator
+      name: atlas-operator
 tasks:
   default:
     deps:
