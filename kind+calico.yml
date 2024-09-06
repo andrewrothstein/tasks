@@ -9,7 +9,7 @@ tasks:
       - task: kind:up
         vars:
           disableDefaultCNI: true
-      - task: calico:install
+      - task: calico:upgrade
   delete:
     cmds:
       - task: calico:delete

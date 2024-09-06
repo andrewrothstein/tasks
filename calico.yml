@@ -1,27 +1,31 @@
 ---
 version: '3'
 includes:
-  calico-repo: calico-repo.yml
+  repo: calico-repo.yml
   helm:
     taskfile: helm.yml
     vars:
-      namespace: tigera-operator
-      create_namespace: true
-      name: calico
       chart_repo_name: projectcalico
       chart: tigera-operator
-      chart_ver: 3.27.0
-#      helm_args: >-
-#        --values=calico-values.yml
+      chart_ver: 3.28.1
+      create_namespace: 'true'
+      namespace: tigera-operator
+      name: calico
+#      helm_args: -f calico-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
-      - task: calico-repo
+      - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
