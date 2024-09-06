@@ -6,6 +6,8 @@ includes:
 #  k8s: kind+spegel.yml
   k8s: kind+registry.yml
 #  k8s: kind+cilium.yml
+#  k8s: kind+calico.yml
+#  k8s: kind+antrea.yml
   metrics-server: metrics-server.yml
 #  metrics-server: pet.yml
 #  k8s: k3d.yml
