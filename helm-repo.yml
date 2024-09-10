@@ -1,6 +1,9 @@
 ---
 version: '3'
 tasks:
+  up:
+    cmds:
+      - helm repo up
   list:
     cmds:
       - helm repo list
