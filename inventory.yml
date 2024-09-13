@@ -7,7 +7,6 @@ all:
     proxmox-2:
     proxmox-3:
     proxmox-4:
-    proxmox-5:
   children:
     proxmox_nodes:
       hosts:
@@ -15,7 +14,6 @@ all:
         proxmox-2:
         proxmox-3:
         proxmox-4:
-        proxmox-5:
       vars:
         ansible_user: root
     k3s:
