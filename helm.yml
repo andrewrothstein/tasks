@@ -45,10 +45,13 @@ tasks:
           {{- end }}{{ .chart }}"
           {{- if .chart_ver }} \
           --version {{ .chart_ver | quote }}
-          {{- if eq "true" .wait }} --wait --timeout {{ .timeout | quote }}{{ end }}
+          {{- end }}
+          {{- if eq "true" .wait }} \
+          --wait --timeout {{ .timeout | quote }}
           {{- end }}
           {{- if .helm_args }} \
-          {{ .helm_args }}{{ end }}
+          {{ .helm_args }}
+          {{- end }}
   install:
     vars:
       namespace: '{{ .namespace }}'
@@ -75,10 +78,13 @@ tasks:
           {{- .chart -}}
           {{- if .chart_ver }} \
           --version {{ .chart_ver | quote }}
-          {{- if eq "true" .wait }} --wait --timeout {{ .timeout | quote }}{{ end }}
+          {{- end }}
+          {{- if eq "true" .wait }} \
+          --wait --timeout {{ .timeout | quote }}
           {{- end }}
           {{- if .helm_args }} \
-          {{ .helm_args }}{{ end }}
+          {{ .helm_args }}
+          {{- end }}
     status:
       - |
         helm \
