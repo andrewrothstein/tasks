@@ -1,13 +1,12 @@
 ---
 version: '3'
 includes:
-  clastix: clastix.yml
+  repo: clastix.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       create_namespace: 'true'
-      install: 'true'
       namespace: capsule-system
       name: capsule
       chart_repo_name: clastix
@@ -19,9 +18,14 @@ tasks:
       - upgrade
   upgrade:
     deps:
-      - task: clastix
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
