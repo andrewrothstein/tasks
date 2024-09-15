@@ -6,13 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: 'true'
-      install: 'true'
       namespace: grafana
-      name: grafana-agent-operator
+      create_namespace: 'true'
+      name: alloy
       chart_repo_name: grafana
-      chart: grafana-agent-operator
-      chart_ver: 0.3.19
+      chart: alloy
+      chart_ver: 0.7.0
 tasks:
   default:
     deps:
@@ -25,3 +24,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

@@ -1,17 +1,31 @@
 ---
 version: '3'
 includes:
-  agent_operator: grafana-agent-operator.yml
-  agent: grafana-agent.yml
+  repo: grafana-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: grafana
+      create_namespace: 'true'
+      name: grafana
+      chart_repo_name: grafana
+      chart: grafana
+      chart_ver: 8.5.1
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
     cmds:
-      - task: agent_operator:install
-      - task: agent:install
+      - task: helm:upgrade
   delete:
     cmds:
-      - task: agent:delete
-      - task: agent_operator:delete
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
