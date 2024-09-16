@@ -3,6 +3,9 @@ version: '3'
 vars:
   kubevirt_mirror: https://github.com/kubevirt/kubevirt/releases/download
   kubevirt_v: 1.3.1
+  kubevirt_releases: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}'
+  kubevirt_operator_yaml: '{{ .kubevirt_releases }}/kubevirt-operator.yaml'
+  kubevirt_cr_yaml: '{{ .kubevirt_releases }}/kubevirt-cr.yaml'
 includes:
   kubectl:
     internal: true
@@ -22,12 +25,12 @@ tasks:
     cmds:
       - task: kubectl:apply
         vars:
-          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
+          f: '{{ .kubevirt_operator_yaml }}'
   apply_crs:
     cmds:
       - task: kubectl:apply
         vars:
-          f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
+          f: '{{ .kubevirt_cr_yaml }}'
   apply:
     cmds:
       - task: kubectl:ns-create
