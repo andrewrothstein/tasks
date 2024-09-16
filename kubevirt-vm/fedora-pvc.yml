@@ -6,7 +6,7 @@ metadata:
   labels:
     app: containerized-data-importer
   annotations:
-    cdi.kubevirt.io/storage.import.endpoint: https://ftp-chi.osuosl.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.raw.xz
+    cdi.kubevirt.io/storage.import.endpoint: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/40.20240825.3.0/x86_64/fedora-coreos-40.20240825.3.0-metal.x86_64.raw.xz
 spec:
   accessModes:
   - ReadWriteOnce
