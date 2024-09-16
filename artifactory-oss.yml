@@ -6,13 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      install: 'true'
       create_namespace: 'true'
       namespace: artifactory
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.90.8
+      chart_ver: 107.90.10
 tasks:
   default:
     deps:
