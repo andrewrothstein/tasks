@@ -1,43 +1,30 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo: pravega-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: pravega
+      chart: zookeeper-operator
+      chart_ver: 0.2.15
+      create_namespace: 'true'
+      namespace: zookeeper-operator
+      name: zookeeper-operator
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "pravega" }}'
-      chart: '{{ .chart | default "zookeeper-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.2.15" }}'
-      namespace: '{{ .namespace | default "zookeeper-operator" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "zookeeper-operator" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://charts.pravega.io
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-#          helm_args: -f zookeeper-operator-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "zookeeper-operator" }}'
-      name: '{{ .name | default "zookeeper-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
