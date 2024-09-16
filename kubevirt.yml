@@ -1,44 +1,38 @@
 ---
 version: '3'
 vars:
-  kubevirt_ns: kubevirt
-  kubevirt_v: 1.3.0
   kubevirt_mirror: https://github.com/kubevirt/kubevirt/releases/download
-  kubevirt_typeofthing: kubevirt
-  kubevirt_thingname: kubevirt
+  kubevirt_v: 1.3.1
 includes:
   kubectl:
     internal: true
     taskfile: kubectl.yml
     vars:
-      n: '{{ .kubevirt_ns }}'
+      n: kubevirt
 tasks:
   enable_nested_virtualization:
     cmds:
       - task: kubectl:patch
         vars:
-          typeofthing: '{{.kubevirt_typeofthing }}'
-          thingname: '{{ .kubevirt_thingname }}'
+          typeofthing: kubevirt
+          thingname: kubevirt
           ty: merge
           patch: '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
   apply_operator:
-    deps:
-      - task: kubectl:ns-create
     cmds:
       - task: kubectl:apply
         vars:
           f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-operator.yaml'
-  apply_crds:
-    deps:
-      - task: apply_operator
+  apply_crs:
     cmds:
       - task: kubectl:apply
         vars:
           f: '{{ .kubevirt_mirror }}/v{{ .kubevirt_v }}/kubevirt-cr.yaml'
   apply:
-    deps:
-      - apply_crds
     cmds:
+      - task: kubectl:ns-create
+      - task: apply_operator
+      - task: apply_crs
       - task: enable_nested_virtualization
   delete:
     cmds:
