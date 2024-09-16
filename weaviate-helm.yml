@@ -6,13 +6,12 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      install: 'true'
       create_namespace: 'true'
       namespace: weaviate
       name: weaviate
       chart_repo_name: weaviate
       chart: weaviate
-      chart_ver: 16.8.7
+      chart_ver: 17.2.1
 #      helm_args: -f weaviate-values.yml
 tasks:
   default:
@@ -26,3 +25,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
