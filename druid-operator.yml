@@ -2,39 +2,29 @@
 version: '3'
 includes:
   repo: datainfra-repo.yml
-  helm: helm.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: datainfra
+      chart: druid-operator
+      chart_ver: 0.3.7
+      create_namespace: 'true'
+      namespace: druid-operator
+      name: druid-operator
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "datainfra" }}'
-      chart: '{{ .chart | default "druid-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.3.6" }}'
-      namespace: '{{ .namespace | default "druid-operator" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
-      name: '{{ .name | default "druid-operator" }}'
     deps:
       - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-#          helm_args: -f druid-operator-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "druid-operator" }}'
-      name: '{{ .name | default "druid-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
