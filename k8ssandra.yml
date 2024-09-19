@@ -12,7 +12,7 @@ includes:
       install: 'true'
       chart_repo_name: k8ssandra
       chart: cass-operator
-      chart_ver: 0.53.1
+      chart_ver: 0.53.5
   k:
     taskfile: kubectl.yml
     internal: true
