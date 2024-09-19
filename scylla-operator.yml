@@ -12,7 +12,7 @@ includes:
       name: scylla-operator
       chart_repo_name: scylla
       chart: scylla-operator
-      chart_ver: 1.13.0
+      chart_ver: v1.13.0
   cluster:
     taskfile: kubectl.yml
     vars:
