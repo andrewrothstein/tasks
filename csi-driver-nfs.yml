@@ -11,7 +11,7 @@ includes:
       chart_repo_name: csi-driver-nfs
       chart: csi-driver-nfs
       name: csi-driver-nfs
-      chart_ver: v4.2.0
+      chart_ver: v4.9.0
 tasks:
   default:
     deps:
@@ -24,3 +24,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
