@@ -1,43 +1,31 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo: clickhouse-operator-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: clickhouse-operator
+      chart: altinity-clickhouse-operator
+      chart_ver: 0.23.7
+      create_namespace: 'true'
+      namespace: clickhouse-operator
+      name: clickhouse-operator
+      helm_args: -f clickhouse-operator-values.yml
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "clickhouse-operator" }}'
-      chart: '{{ .chart | default "altinity-clickhouse-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.23.5" }}'
-      namespace: '{{ .namespace | default "clickhouse-operator" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "clickhouse-operator" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://docs.altinity.com/clickhouse-operator
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: -f clickhouse-operator-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "clickhouse-operator" }}'
-      name: '{{ .name | default "clickhouse-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
