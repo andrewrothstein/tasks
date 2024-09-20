@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  istio_ver: 1.23.1
+  istio_ver: 1.23.2
 includes:
   gateway-api:
     taskfile: kubectl.yml
