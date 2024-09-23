@@ -2,7 +2,7 @@
 workflow:
   serviceAccount:
     create: true
-    name: "workflows"
+    name: workflows
   rbac:
     create: true
 controller:

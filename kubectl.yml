@@ -5,8 +5,18 @@ tasks:
     vars:
       n: '{{ .n | default "default" }}'
       labels: '{{ .labels }}'
+      overwrite: '{{ .overwrite | default "true" }}'
     cmds:
-      - kubectl label namespace {{ .n | quote }} {{ .labels | quote }} --overwrite
+      - |
+        {{- if .labels }}
+        kubectl label namespace {{ .n | quote }} \
+          {{ .labels | quote }}
+          {{- if eq .overwrite "true" }} \
+          --overwrite
+          {{- end }}
+        {{- else }}
+        # no labels to apply to {{ .n | quote }}
+        {{- end }}
   ns-create:
     vars:
       n: '{{ .n | default "default" }}'

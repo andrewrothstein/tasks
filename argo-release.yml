@@ -4,8 +4,6 @@ includes:
   repo: argo-repo.yml
   kk:
     taskfile: kubectl.yml
-    vars:
-      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
@@ -19,6 +17,7 @@ tasks:
       name: '{{ .name }}'
       namespace: '{{ .namespace }}'
       helm_args: '{{ .helm_args }}'
+      labels: '{{ .labels }}'
     deps:
       - task: repo
     cmds:
@@ -28,6 +27,7 @@ tasks:
       - task: kk:ns-label
         vars:
           n: '{{ .namespace }}'
+          labels: '{{ .labels }}'
       - task: helm:upgrade
         vars:
           chart: '{{ .chart }}'
