@@ -2,39 +2,30 @@
 version: '3'
 includes:
   repo: jaeger-repo.yml
-  helm: helm.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: jaegertracing
+      chart: jaeger-operator
+      chart_ver: 2.56.0
+      create_namespace: 'true'
+      namespace: jaeger
+      name: jaeger
+      helm_args: -f jaeger-values.yml
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "jaegertracing" }}'
-      chart: '{{ .chart | default "jaeger-operator" }}'
-      chart_ver: '{{ .chart_ver | default "2.54.0" }}'
-      namespace: '{{ .namespace | default "jaeger" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "jaeger" }}'
     deps:
       - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-          helm_args: -f jaeger-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "jaeger" }}'
-      name: '{{ .name | default "jaeger" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
