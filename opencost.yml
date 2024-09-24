@@ -1,43 +1,31 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo: opencost-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: opencost
+      chart: opencost
+      chart_ver: 1.42.0
+      create_namespace: 'true'
+      namespace: opencost
+      name: opencost
+#      helm_args: -f opencost-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "opencost" }}'
-      chart: '{{ .chart | default "opencost" }}'
-      chart_ver: '{{ .chart_ver | default "1.33.1" }}'
-      namespace: '{{ .namespace | default "opencost" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "opencost" }}'
+      - upgrade
+  upgrade:
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://opencost.github.io/opencost-helm-chart
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-#          helm_args: -f opencost-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "opencost" }}'
-      name: '{{ .name | default "opencost" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

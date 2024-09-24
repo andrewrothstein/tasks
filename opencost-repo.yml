@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: opencost
+      url: https://opencost.github.io/opencost-helm-chart
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
