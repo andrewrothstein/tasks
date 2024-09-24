@@ -1,45 +1,33 @@
 ---
 version: '3'
 includes:
-  helm-repo: helm-repo.yml
-  helm: helm.yml
+  repo: kubeshark-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: kubeshark
+      chart: kubeshark
+      chart_ver: 52.3.82
+      create_namespace: 'true'
+      namespace: kubeshark
+      name: kubeshark
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      chart_repo_name: '{{ .chart_repo_name | default "kubeshark" }}'
-      chart: '{{ .chart | default "kubeshark" }}'
-      chart_ver: '{{ .chart_ver | default "52.1.66" }}'
-      namespace: '{{ .namespace | default "kubeshark" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      install: '{{ .install | default "true" }}'
-      name: '{{ .name | default "kubeshark" }}'
     deps:
-      - task: helm-repo:add
-        vars:
-          n: '{{ .chart_repo_name }}'
-          url: https://helm.kubeshark.co
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          chart_repo_name: '{{ .chart_repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          install: '{{ .install }}'
-          name: '{{ .name }}'
   delete:
-    vars:
-      namespace: '{{ .namespace | default "kubeshark" }}'
-      name: '{{ .name | default "kubeshark" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
   tap:
     cmds:
       - kubeshark tap
