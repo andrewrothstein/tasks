@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: nats
+      url: https://nats-io.github.io/k8s/helm/charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
