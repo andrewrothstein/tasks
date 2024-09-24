@@ -1,27 +1,31 @@
 ---
 version: '3'
 includes:
-  helm-repo: elastic-repo.yml
+  repo: elastic-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: 'true'
-      install: 'true'
-      namespace: elastic-system
-      name: elastic-operator
       chart_repo_name: elastic
       chart: eck-operator
-      chart_ver: 2.11.1
+      chart_ver: 2.14.0
+      create_namespace: 'true'
+      namespace: elastic-system
+      name: elastic-operator
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
