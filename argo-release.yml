@@ -8,7 +8,6 @@ includes:
     taskfile: helm.yml
     vars:
       chart_repo_name: argo
-      install: 'true'
 tasks:
   upgrade:
     vars:
