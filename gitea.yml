@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: gitea-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: gitea
+#      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -9,8 +14,6 @@ includes:
       chart: gitea
       chart_ver: 10.4.1
       namespace: gitea
-      install: "true"
-      create_namespace: "true"
       name: gitea
       helm_args: -f gitea-values.yml
 tasks:
@@ -21,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
