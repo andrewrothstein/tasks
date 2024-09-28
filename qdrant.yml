@@ -1,0 +1,38 @@
+---
+version: '3'
+includes:
+  repo: qdrant-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: qdrant
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: qdrant
+      chart: qdrant
+      chart_ver: 1.11.5
+      namespace: qdrant
+      name: qdrant
+$      helm_args: -f qdrant-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

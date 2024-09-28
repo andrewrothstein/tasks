@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: qdrant
+      url: https://qdrant.github.io/qdrant-helm
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add
