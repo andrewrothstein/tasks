@@ -6,7 +6,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: gitea
-#      labels: 'istio.io/dataplane-mode=ambient'
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -16,6 +16,13 @@ includes:
       namespace: gitea
       name: gitea
       helm_args: -f gitea-values.yml
+  pg:
+    taskfile: cnpg-instance.yml
+    vars:
+      n: gitea
+      name: gitea-pg
+      replicas: 3
+      size: '10Gi'
 tasks:
   default:
     deps:
@@ -26,6 +33,7 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: pg:apply
       - task: helm:upgrade
   delete:
     cmds:

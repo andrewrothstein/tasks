@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: cnpg-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: cnpg-system
+      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
@@ -9,23 +14,15 @@ includes:
       chart: cloudnative-pg
       chart_ver: 0.22.0
       namespace: cnpg-system
-      create_namespace: 'true'
       name: cnpg
       helm_args: -f cnpg-values.yml
-  test-cluster:
-    taskfile: kubectl.yml
+  test-instance:
+    taskfile: cnpg-instance.yml
     vars:
       n: cnpg-clusters
-      literal_f: |
-        ---
-        apiVersion: postgresql.cnpg.io/v1
-        kind: Cluster
-        metadata:
-          name: my-cnpg-cluster
-        spec:
-          instances: 3
-          storage:
-            size: 1Gi
+      labels: istio.io/dataplane-mode=ambient
+      name: test-cluster-1
+      size: 3
 tasks:
   default:
     cmds:
@@ -34,11 +31,12 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   test:
     cmds:
-      - task: test-cluster:ns-create
-      - task: test-cluster:apply
+      - task: test-instance:create
   delete-test:
     cmds:
       - task: test-cluster:delete
@@ -46,6 +44,7 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:delete
   check:
     deps:
       - task: repo

@@ -1,0 +1,49 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    internal: true
+tasks:
+  apply:
+    vars:
+      n: '{{ .n }}'
+      name: '{{ .name }}'
+      replicas: '{{ .replicas }}'
+      size: '{{ .size }}'
+    cmds:
+      - task: kk:apply
+        vars:
+          n: '{{ .n }}'
+          name: '{{ .name }}'
+          replicas: '{{ .replicas }}'
+          size: '{{ .size }}'
+          literal_f: |
+            ---
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+            metadata:
+              name: {{ .name | default "my-cnpg-cluster" | quote }}
+            spec:
+              instances: {{ .replicas | default 1 }}
+              storage:
+                size: {{ .size | default "1Gi" | quote }}
+  create:
+    vars:
+      n: '{{ .n }}'
+      labels: '{{ .labels }}'
+      name: '{{ .name }}'
+      replicas: '{{ .replicas }}'
+    cmds:
+      - task: kk:ns-create
+        vars:
+          n: '{{ .n }}'
+      - task: kk:ns-label
+        vars:
+          n: '{{ .n }}'
+          labels: '{{ .labels }}'
+      - task: apply
+        vars:
+          n: '{{ .n }}'
+          name: '{{ .name }}'
+          replicas: '{{ .replicas }}'
