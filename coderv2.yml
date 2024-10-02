@@ -23,7 +23,7 @@ includes:
     vars:
       chart_repo_name: coder-v2
       chart: coder
-      chart_ver: 2.15.0
+      chart_ver: 2.16.0
       name: coder
       namespace: coder
       helm_args: -f coderv2-values.yml

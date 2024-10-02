@@ -5,7 +5,7 @@ includes:
     taskfile: bitnami-chart.yml
     vars:
       chart: postgresql
-      chart_ver: 15.5.27
+      chart_ver: 16.0.0
 tasks:
   default:
     deps:
