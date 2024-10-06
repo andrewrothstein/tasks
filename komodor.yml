@@ -1,42 +1,34 @@
 ---
 version: '3'
 includes:
-  helm-repo: komodor-repo.yml
-  helm: helm.yml
+  repo: komodor-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: komodorio
+      chart: komodor-agent
+      chart_ver: 2.5.7
+      create_namespace: 'true'
+      namespace: komodorio
+      name: komodor-agent
+      helm_args: >-
+        --set clusterName=kind
+        -f komodor-values.yml
+        -f .komodor-secrets.yml
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
-    vars:
-      namespace: '{{ .namespace | default "komodorio" }}'
-      cluster_name: '{{ .cluster_name | default "kind" }}'
-      chart: '{{ .chart | default "komodor-agent" }}'
-      chart_ver: '{{ .chart_ver | default "2.5.5" }}'
-      name: '{{ .name | default "komodor-agent" }}'
-      repo_name: '{{ .repo_name | default "komodorio" }}'
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
       - task: helm:upgrade
-        vars:
-          install: 'true'
-          create_namespace: 'true'
-          namespace: '{{ .namespace }}'
-          chart_repo_name: '{{ .repo_name }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          name: '{{ .name }}'
-          helm_args: >-
-            --set clusterName={{ .cluster_name | quote }}
-            -f komodor-values.yml
-            -f .komodor-secrets.yml
   delete:
-    vars:
-      name: '{{ .name | default "komodor-agent" }}'
-      namespace: '{{ .namespace | default "komodorio" }}'
     cmds:
       - task: helm:delete
-        vars:
-          name: '{{ .name }}'
-          namespace: '{{ .namespace }}'
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
