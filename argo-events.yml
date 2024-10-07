@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-events
-      chart_ver: 2.4.7
+      chart_ver: 2.4.8
       name: argo-events
       namespace: argo-events
       labels: 'istio.io/dataplane-mode=ambient'
