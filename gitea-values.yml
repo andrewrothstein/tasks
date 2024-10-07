@@ -2,7 +2,7 @@
 redis-cluster:
   enabled: false
 postgresql:
-  enabled: true
+  enabled: false
 postgresql-ha:
   enabled: false
 
@@ -13,7 +13,6 @@ gitea:
   config:
     database:
       DB_TYPE: postgres
-      HOST: gitea-pg
     session:
       PROVIDER: db
     cache:
@@ -23,6 +22,27 @@ gitea:
     indexer:
       ISSUE_INDEXER_TYPE: bleve
       REPO_INDEXER_ENABLED: true
+  additionalConfigFromEnvs:
+    - name: GITEA__DATABASE__NAME
+      valueFrom:
+        secretKeyRef:
+          name: gitea-pg-app
+          key: dbname
+    - name: GITEA__DATABASE__HOST
+      valueFrom:
+        secretKeyRef:
+          name: gitea-pg-app
+          key: host
+    - name: GITEA__DATABASE__USER
+      valueFrom:
+        secretKeyRef:
+          name: gitea-pg-app
+          key: user
+    - name: GITEA__DATABASE__PASSWD
+      valueFrom:
+        secretKeyRef:
+          name: gitea-pg-app
+          key: password
 service:
   http:
     annotations:

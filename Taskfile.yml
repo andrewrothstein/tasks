@@ -12,6 +12,10 @@ includes:
 
   post-mesh-2: post-mesh-2.yml
 #  post-mesh-2: pet.yml
+
+  working: working.yml
+#  working: pet.yml
+
 tasks:
   up:
     cmds:
@@ -19,6 +23,7 @@ tasks:
       - task: mesh:up
       - task: post-mesh-1:up
       - task: post-mesh-2:up
+      - task: working:up
   delete:
     cmds:
 #      - task: post-mesh-2:delete

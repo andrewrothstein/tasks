@@ -23,7 +23,16 @@ includes:
       name: gitea-pg
       replicas: 3
       size: '10Gi'
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: gitea
+      s: gitea-pg-app
+      f: password
 tasks:
+  pg-secret:
+    cmds:
+      - task: pg-secret:get
   default:
     deps:
       - upgrade

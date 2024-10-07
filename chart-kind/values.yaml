@@ -56,7 +56,7 @@ nodeImageSHAs:
     1.25.16: sha256:6110314339b3b44d10da7d27881849a87e092124afab5956f2e10ecdb463b025
 
 kindVer: 0.24.0
-k8sVer: 1.29.8
+k8sVer: 1.30.4
 
 #extraMounts:
 #  - hostPath: /var/run/docker.sock
