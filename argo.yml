@@ -11,6 +11,7 @@ includes:
       name: argo
       namespace: argo
       helm_args: -f argo-workflows-values.yml
+      labels: 'istio.io/dataplane-mode=ambient'
 tasks:
   default:
     deps:

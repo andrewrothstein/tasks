@@ -9,6 +9,7 @@ includes:
       chart_ver: 2.4.7
       name: argo-events
       namespace: argo-events
+      labels: 'istio.io/dataplane-mode=ambient'
 tasks:
   default:
     deps:

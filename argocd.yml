@@ -10,7 +10,7 @@ includes:
       name: argo-cd
       namespace: argocd
       helm_args: -f argocd-values.yml
-#      labels: 'istio.io/dataplane-mode=ambient'
+      labels: 'istio.io/dataplane-mode=ambient'
 tasks:
   default:
     deps:

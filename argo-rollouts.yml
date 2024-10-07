@@ -9,6 +9,7 @@ includes:
       chart_ver: 2.37.5
       name: argo-rollouts
       namespace: argo-rollouts
+      labels: 'istio.io/dataplane-mode=ambient'
 tasks:
   default:
     deps:
