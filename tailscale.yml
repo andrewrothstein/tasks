@@ -7,10 +7,9 @@ includes:
     vars:
       chart_repo_name: tailscale
       chart: tailscale-operator
-      chart_ver: 1.72.1
+      chart_ver: 1.74.1
       namespace: tailscale
       create_namespace: 'true'
-      upgrade: 'true'
       name: tailscale
       helm_args: -f .tailscale-secrets.yml
 tasks:
