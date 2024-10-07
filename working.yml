@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  cnpg: cnpg.yml
+  gitea: gitea.yml
+tasks:
+  default:
+    deps:
+      - task: up
+  up:
+    cmds:
+      - task: cnpg
+      - task: gitea
