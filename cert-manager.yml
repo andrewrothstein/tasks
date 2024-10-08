@@ -7,6 +7,7 @@ includes:
     internal: true
     vars:
       n: cert-manager
+      labels: 'istio.io/dataplane-mode=ambient'
   cm:
     taskfile: helm.yml
     internal: true
@@ -14,10 +15,9 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: v1.15.3
+      chart_ver: v1.16.0
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
-      install: 'true'
   approver_policy:
     taskfile: helm.yml
     internal: true
@@ -25,10 +25,9 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: v0.15.1
+      chart_ver: v0.15.2
       chart: cert-manager-approver-policy
       helm_args: -f cert-manager-approver-policy-values.yml
-      install: 'true'
   csi_driver:
     taskfile: helm.yml
     internal: true
@@ -36,9 +35,8 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: v0.10.0
+      chart_ver: v0.10.1
       chart: cert-manager-csi-driver
-      install: 'true'
   trust_manager:
     taskfile: helm.yml
     internal: true
@@ -48,7 +46,6 @@ includes:
       chart_repo_name: jetstack
       chart_ver: v0.12.0
       chart: trust-manager
-      install: 'true'
   ss:
     taskfile: kubectl.yml
     internal: true
@@ -72,6 +69,7 @@ tasks:
        - task: jetstack
     cmds:
       - task: kubectl:ns-create
+      - task: kubectl:ns-label
       - task: cm:upgrade
       - task: approver_policy:upgrade
       - task: kubectl:apply
