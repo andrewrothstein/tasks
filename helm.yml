@@ -14,6 +14,8 @@ tasks:
         if [ {{ .chart_ver | quote }} != "${latest}" ];
         then
           echo "please upgrade ${fq_chart} from {{ .chart_ver }} to ${latest}"
+        else
+          echo "${fq_chart} at latest (${latest})"
         fi
   upgrade:
     vars:
