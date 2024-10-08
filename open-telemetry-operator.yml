@@ -2,16 +2,19 @@
 version: '3'
 includes:
   repo: open-telemetry-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: otel-operator
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       namespace: otel-operator
-      create_namespace: 'true'
-      install: 'true'
       name: otel-operator
       chart_repo_name: open-telemetry
       chart: opentelemetry-operator
-      chart_ver: 0.50.0
+      chart_ver: 0.70.0
       helm_args: -f open-telemetry-operator-values.yml
 tasks:
   default:
@@ -21,7 +24,15 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
