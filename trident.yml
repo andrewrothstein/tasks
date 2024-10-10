@@ -2,13 +2,15 @@
 version: '3'
 includes:
   repo: trident-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: trident-operator
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       namespace: trident-operator
-      create_namespace: 'true'
-      install: 'true'
       chart_repo_name: netapp-trident
       chart: trident-operator
       name: trident-operator
@@ -21,10 +23,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
