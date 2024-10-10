@@ -2,7 +2,7 @@
 opencost:
   prometheus:
     external:
-      url: http://prometheus-kube-prometheus-stack-prometheus.default.svc.cluster.local:9090
+      url: http://prometheus-kube-prometheus-stack-prometheus.kube-prometheus-stack.svc.cluster.local:9090
 
 service:
   annotations:
