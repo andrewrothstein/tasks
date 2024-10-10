@@ -15,6 +15,7 @@ includes:
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
       chart_ver: 65.1.1
+      helm_args: -f kube-prometheus-stack-values.yml
 tasks:
   default:
     deps:

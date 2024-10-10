@@ -1,0 +1,42 @@
+---
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        app.kubernetes.io/name: opencost
+    additionalScrapeConfigs:
+      - job_name: opencost
+        honor_labels: true
+        scrape_interval: 1m
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: http
+        static_configs:
+          - targets: ['opencost.opencost:9003']
+
+grafana:
+  additionalDataSources:
+    - name: prometheus
+      type: prometheus
+      url: http://prometheus-operated:9090
+      access: proxy
+      isDefault: false
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'opencost'
+          orgId: 1
+          folder: 'OpenCost'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/opencost
+
+  dashboards:
+    opencost:
+      opencost-dashboard:
+        url: https://raw.githubusercontent.com/opencost/opencost/develop/grafana/opencost-dashboard.json
+        datasource: prometheus

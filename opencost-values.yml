@@ -1,0 +1,18 @@
+---
+opencost:
+  prometheus:
+    external:
+      url: http://prometheus-kube-prometheus-stack-prometheus.default.svc.cluster.local:9090
+
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9003"
+
+serviceMonitor:
+  enabled: true
+  labels:
+    app.kubernetes.io/name: opencost
+
+ui:
+  enabled: true
