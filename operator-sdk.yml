@@ -3,7 +3,13 @@ version: '3'
 tasks:
   default:
     cmds:
+      - task: install
+  install:
+    deps:
       - task: olm-install
+  delete:
+    deps:
+      - task: olm-uninstall
   olm-install:
     vars:
       timeout: '{{ .timeout | default "10m0s" }}'
