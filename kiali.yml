@@ -7,13 +7,11 @@ includes:
     vars:
       chart_repo_name: kiali
       chart: kiali-operator
-      chart_ver: 1.89.3
+      chart_ver: 1.89.7
       namespace: kiali-operator
-      install: 'true'
       create_namespace: 'true'
       name: kiali
       helm_args: -f kiali-values.yml
-
 tasks:
   default:
     deps:
