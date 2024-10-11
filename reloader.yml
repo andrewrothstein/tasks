@@ -7,11 +7,10 @@ includes:
     vars:
       namespace: reloader
       create_namespace: 'true'
-      install: 'true'
       name: reloader
       chart_repo_name: stakater
       chart: reloader
-      chart_ver: 1.0.97
+      chart_ver: 1.1.0
 tasks:
   default:
     deps:
@@ -24,3 +23,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
