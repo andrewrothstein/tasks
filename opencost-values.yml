@@ -1,8 +1,11 @@
 ---
 opencost:
   prometheus:
-    external:
-      url: http://prometheus-kube-prometheus-stack-prometheus.kube-prometheus-stack.svc.cluster.local:9090
+    internal:
+      enabled: true
+      serviceName: kube-prometheus-stack-prometheus
+      namespaceName: kube-prometheus-stack
+      port: 9090
 
 service:
   annotations:
