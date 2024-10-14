@@ -1,15 +1,26 @@
 ---
 version: '3'
 includes:
-#  cnpg: cnpg.yml
-#  gitea: gitea.yml
+  cnpg: cnpg.yml
+  gitea: gitea.yml
   opencost: opencost.yml
+  minio-operator: minio-operator.yml
+  velero: velero.yml
 tasks:
   default:
     deps:
       - task: up
+  gitea-up:
+    cmds:
+      - task: cnpg
+      - task: gitea
+  opencost-up:
+    cmds:
+      - task: opencost
+  velero-up:
+    cmds:
+      - task: minio-operator
+      - task: velero
   up:
     cmds:
-#      - task: cnpg
-#      - task: gitea
-      - task: opencost
+      - task: velero-up

@@ -14,10 +14,9 @@ includes:
     vars:
       chart_repo_name: minio
       chart: operator
-      chart_ver: 6.0.2
+      chart_ver: 6.0.4
       namespace: minio-operator
       name: operator
-      install: 'true'
       helm_args: -f minio-operator-values.yml
 tasks:
   default:
@@ -28,7 +27,7 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-#      - task: kk:ns-label
+      - task: kk:ns-label
       - task: helm:upgrade
   admin-jwt:
     vars:
