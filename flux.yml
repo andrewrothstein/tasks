@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: fluxcd-community
       chart: flux2
-      chart_ver: 2.13.0
+      chart_ver: 2.14.0
       namespace: flux-system
       install: "true"
       create_namespace: "true"
