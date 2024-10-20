@@ -13,8 +13,8 @@ includes:
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
 
-#  elastic: elastic.yml
-  elastic: pet.yml
+  elastic: elastic.yml
+#  elastic: pet.yml
 
 #  keda: keda.yml
   keda: pet.yml
