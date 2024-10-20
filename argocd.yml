@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-cd
-      chart_ver: 7.6.8
+      chart_ver: 7.6.12
       name: argo-cd
       namespace: argocd
       helm_args: -f argocd-values.yml
