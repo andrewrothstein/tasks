@@ -23,7 +23,6 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
-      install: 'true'
       chart_repo_name: vmware-tanzu
       chart: velero
       chart_ver: 7.2.1
