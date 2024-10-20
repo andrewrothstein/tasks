@@ -1,15 +1,19 @@
 ---
 version: '3'
 includes:
-  helm-repo: tailscale-repo.yml
+  repo: tailscale-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: tailscale
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: tailscale
       chart: tailscale-operator
-      chart_ver: 1.74.1
+      chart_ver: 1.76.1
       namespace: tailscale
-      create_namespace: 'true'
       name: tailscale
       helm_args: -f .tailscale-secrets.yml
 tasks:
@@ -18,14 +22,17 @@ tasks:
       - task: upgrade
   upgrade:
     deps:
-      - task: helm-repo
+      - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
-      - helm-repo
+      - repo
     cmds:
       - task: helm:check
