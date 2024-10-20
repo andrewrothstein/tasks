@@ -2,18 +2,12 @@
 version: '3'
 includes:
   eck: eck.yml
-  elasticsearch:
+  elk:
     taskfile: kubectl.yml
     vars:
       n: elk
       labels: 'istio.io/dataplane-mode=ambient'
-      f: elasticsearch.yml
-  kibana:
-    taskfile: kubectl.yml
-    vars:
-      n: elk
-      labels: 'istio.io/dataplane-mode=ambient'
-      f: kibana.yml
+      f: elk.yml
 tasks:
   default:
     deps:
@@ -22,18 +16,13 @@ tasks:
     deps:
       - task: eck:upgrade
     cmds:
-      - task: elasticsearch:ns-create
-      - task: elasticsearch:apply
-      - task: kibana:ns-create
-      - task: kibana:apply
-        vars:
-          f: kibana.yml
+      - task: elk:ns-create
+      - task: elk:ns-label
+      - task: elk:apply
   delete:
     cmds:
-      - task: elasticsearch:delete
-      - task: elasticsearch:ns-delete
-      - task: kibana:delete
-      - task: kibana:ns-delete
+      - task: elk:delete
+      - task: elk:ns-delete
       - task: eck:delete
   check:
     deps:
