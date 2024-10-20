@@ -2,12 +2,16 @@
 version: '3'
 includes:
   repo: strimzi-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: strimzi-kafka-operator
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       namespace: strimzi-kafka-operator
-      create_namespace: 'true'
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
       chart_ver: 0.43.0
@@ -27,6 +31,8 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   test:
     deps:
@@ -39,6 +45,7 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
