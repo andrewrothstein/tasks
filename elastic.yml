@@ -6,11 +6,13 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: elk
+      labels: 'istio.io/dataplane-mode=ambient'
       f: elasticsearch.yml
   kibana:
     taskfile: kubectl.yml
     vars:
       n: elk
+      labels: 'istio.io/dataplane-mode=ambient'
       f: kibana.yml
 tasks:
   default:
@@ -33,3 +35,6 @@ tasks:
       - task: kibana:delete
       - task: kibana:ns-delete
       - task: eck:delete
+  check:
+    deps:
+      - task: eck:check

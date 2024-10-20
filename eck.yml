@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: elastic-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: elastic-system
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
@@ -9,7 +14,6 @@ includes:
       chart_repo_name: elastic
       chart: eck-operator
       chart_ver: 2.14.0
-      create_namespace: 'true'
       namespace: elastic-system
       name: elastic-operator
 tasks:
@@ -20,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
