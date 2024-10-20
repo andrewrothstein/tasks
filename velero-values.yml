@@ -23,4 +23,4 @@ initContainers:
       - mountPath: /target
         name: plugins
 credentials:
-  existingSecret: minio
+  existingSecret: velero-minio-root

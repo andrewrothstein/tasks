@@ -5,6 +5,11 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: velero
+  secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: velero
+      s: minio-root
   minio-repo: minio-repo.yml
   minio-helm:
     taskfile: helm.yml
@@ -14,10 +19,8 @@ includes:
       chart: tenant
       chart_ver: 6.0.4
       namespace: velero
-      name: minio
-      helm_args: >-
-        --set tenant.name=velero
-        --set tenant.configSecret.name=minio
+      name: velero-minio
+      helm_args: -f velero-minio-values.yml
   velero-repo: velero-repo.yml
   velero-helm:
     taskfile: helm.yml
@@ -33,6 +36,9 @@ tasks:
   default:
     deps:
       - upgrade
+  minio-helm-upgrade:
+    cmds:
+      - task: minio-helm:upgrade
   upgrade:
     deps:
       - task: minio-repo
@@ -41,7 +47,10 @@ tasks:
       - task: kk:ns-create
 #      - task: kk:ns-label
       - task: minio-helm:upgrade
-      - task: velero-helm:upgrade
+#      - task: velero-helm:upgrade
+  velero-delete:
+    cmds:
+      - task: velero-helm:delete
   delete:
     cmds:
       - task: velero-helm:delete
