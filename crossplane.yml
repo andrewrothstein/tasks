@@ -2,17 +2,20 @@
 version: '3'
 includes:
   repo: crossplane-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: crossplane-system
+#      labels: istio.io/dataplane-mode=ambient
   crossplane-helm:
     taskfile: helm.yml
     internal: true
     vars:
       namespace: crossplane-system
-      install: 'true'
-      create_namespace: 'true'
       name: crossplane
       chart_repo_name: crossplane-stable
       chart: crossplane
-      chart_ver: 1.17.0
+      chart_ver: 1.17.1
   crossplane-provider:
     taskfile: kubectl.yml
     internal: true
@@ -26,6 +29,8 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: crossplane-helm:upgrade
   check:
     deps:
@@ -83,3 +88,4 @@ tasks:
   delete:
     cmds:
       - task: crossplane-helm:delete
+      - task: kk:ns-delete
