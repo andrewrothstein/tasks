@@ -2,16 +2,19 @@
 version: '3'
 includes:
   repo: open-webui-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: open-webui
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       namespace: open-webui
-      create_namespace: 'true'
-      install: 'true'
       name: open-webui
       chart_repo_name: open-webui
       chart: open-webui
-      chart_ver: 3.1.16
+      chart_ver: 3.3.2
       helm_args: -f open-webui-values.yml
 tasks:
   default:
@@ -21,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
