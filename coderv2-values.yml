@@ -8,3 +8,10 @@ coder:
           key: url
     - name: CODER_AUTO_IMPORT_TEMPLATES
       value: kubernetes
+  ingress:
+    enable: true
+    className: tailscale
+    host: coder.elephant-frog.ts.net
+    tls:
+      enable: true
+

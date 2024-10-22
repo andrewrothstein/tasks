@@ -7,7 +7,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: coder
-      labels: istio.io/dataplane-mode=ambient
+#      labels: istio.io/dataplane-mode=ambient
   coderv2-secret:
     taskfile: k8s-literal-secret.yml
     vars:
@@ -38,7 +38,7 @@ tasks:
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
       - task: kk:ns-create
-#      - task: kk:ns-label
+      - task: kk:ns-label
       - task: postgresql:upgrade
         vars:
           admin_username: '{{ .admin_username }}'
