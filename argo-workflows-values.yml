@@ -9,4 +9,12 @@ controller:
   workflowNamespaces:
     - argo
     - vault
-
+server:
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - argo.elephant-frog.ts.net
+    tls:
+      - hosts:
+          - argo.elephant-frog.ts.net
