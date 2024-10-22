@@ -6,7 +6,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: tailscale
-      labels: 'istio.io/dataplane-mode=ambient'
+#      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
