@@ -10,5 +10,17 @@ server:
     tls:
       - hosts:
           - vault.elephant-frog.ts.net
+  postStart:
+    - /bin/sh
+    - -c
+    - |
+      sleep 5
+      vault auth enable kubernetes
+      # Configure kubernetes auth method
+      vault write auth/kubernetes/config \
+        kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
+        token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+        kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+        disable_local_ca_jwt=true
 csi:
   enabled: false

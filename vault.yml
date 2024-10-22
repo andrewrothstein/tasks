@@ -1,5 +1,7 @@
 ---
 version: '3'
+dotenv:
+  - .vault-secrets.yml
 includes:
   ss-csi: secrets-store-csi-driver.yml
   hashicorp:
@@ -10,7 +12,7 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
-      n: vault
+      n: vault-system
       labels: istio.io/dataplane-mode=ambient
   vault-secrets-operator:
     taskfile: helm.yml
@@ -18,7 +20,7 @@ includes:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
       chart_ver: 0.9.0
-      namespace: vault
+      namespace: vault-system
       name: secrets-operator
   vault:
     taskfile: helm.yml
@@ -26,10 +28,15 @@ includes:
       chart_repo_name: hashicorp
       chart: vault
       chart_ver: 0.28.1
-      namespace: vault
+      namespace: vault-system
       name: vault
-      helm_args: -f vault-values.yml
+      helm_args: >-
+        -f vault-values.yml
+        --set server.dev.devRootToken="${VAULT_ROOT_TOKEN:-root}"
 tasks:
+  test-var:
+    cmds:
+      - echo ${VAULT_ROOT_TOKEN}
   default:
     deps:
       - upgrade
@@ -37,6 +44,9 @@ tasks:
     deps:
       - task: vault-secrets-operator:check
       - task: vault:check
+  vault-upgrade:
+    cmds:
+      - task: vault:upgrade
   upgrade:
     deps:
       - task: ss-csi:upgrade
@@ -46,6 +56,9 @@ tasks:
       - task: kk:ns-label
       - task: vault-secrets-operator:upgrade
       - task: vault:upgrade
+  vault-delete:
+    cmds:
+      - task: vault:delete
   delete:
     cmds:
       - task: vault:delete
