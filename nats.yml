@@ -2,13 +2,17 @@
 version: '3'
 includes:
   repo: nats-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: nats
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: nats
       chart: nats
-      chart_ver: 1.2.4
-      create_namespace: 'true'
+      chart_ver: 1.2.6
       namespace: nats
       name: nats
 #      helm_args: -f nats-values.yml
@@ -20,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
