@@ -1,35 +1,23 @@
 ---
 version: '3'
 includes:
-  helm: helm.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart: oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
+      chart_ver: 0.8.1
+      create_namespace: "true"
+      namespace: pulumi-kubernetes-operator
+      name: pulumi-kubernetes-operator
+#      helm_args: -f pulumi-kubernetes-operator-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
-    vars:
-      chart: '{{ .chart | default "oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.7.2" }}'
-      namespace: '{{ .namespace | default "pulumi-kubernetes-operator" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "pulumi-kubernetes-operator" }}'
+      - upgrade
+  upgrade:
     cmds:
       - task: helm:upgrade
         vars:
-          install: '{{ .install }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
-#          helm_args: -f pulumi-kubernetes-operator-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "pulumi-kubernetes-operator" }}'
-      name: '{{ .name | default "pulumi-kubernetes-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
