@@ -21,18 +21,32 @@ includes:
       chart_ver: '{{ .SOLR_VER }}'
       namespace: solr-operator
       name: solr-operator
+  cluster:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: apache-solr
+      chart: solr
+      chart_ver: '{{ .SOLR_VER }}'
+      namespace: solr-clusters
+      create_namespace: 'true'
+      name: solr-cluster
 tasks:
   default:
     deps:
       - upgrade
+  create:
+    deps:
+      - task: crds:create
   upgrade:
     deps:
       - task: repo
     cmds:
-      - task: crds:create
       - task: kk:ns-create
       - task: kk:ns-label
       - task: helm:upgrade
+  test:
+    cmds:
+      - task: cluster:upgrade
   delete:
     cmds:
       - task: helm:delete
