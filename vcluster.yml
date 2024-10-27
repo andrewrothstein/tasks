@@ -7,10 +7,9 @@ includes:
     vars:
       chart_repo_name: loft-sh
       chart: vcluster
-      chart_ver: 0.20.1
+      chart_ver: 0.20.2
       namespace: vclusters
       create_namespace: 'true'
-      install: 'true'
 tasks:
   check:
     deps:
