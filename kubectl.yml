@@ -49,6 +49,18 @@ tasks:
         EOF
           {{- else }} {{ .f | quote }}
           {{- end }}
+  create:
+    vars:
+      n: '{{ .n }}'
+      f: '{{ .f }}'
+      literal_f: '{{ .literal_f }}'
+    cmds:
+      - task: _apply
+        vars:
+          verb: create
+          n: '{{ .n }}'
+          f: '{{ .f }}'
+          literal_f: '{{ .literal_f }}'
   apply:
     vars:
       n: '{{ .n }}'

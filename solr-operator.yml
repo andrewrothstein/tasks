@@ -1,14 +1,24 @@
 ---
 version: '3'
+vars:
+  SOLR_VER: 0.8.1
 includes:
   repo: solr-repo.yml
+  crds:
+    taskfile: kubectl.yml
+    vars:
+      f: https://solr.apache.org/operator/downloads/crds/v{{ .SOLR_VER }}/all-with-dependencies.yaml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: solr-operator
+#      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: apache-solr
       chart: solr-operator
-      chart_ver: 0.8.1
-      create_namespace: 'true'
+      chart_ver: '{{ .SOLR_VER }}'
       namespace: solr-operator
       name: solr-operator
 tasks:
@@ -19,10 +29,15 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: crds:create
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
+      - task: crds:delete
   check:
     deps:
       - task: repo
