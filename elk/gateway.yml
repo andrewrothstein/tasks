@@ -1,0 +1,15 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: elk-gateway
+spec:
+  gatewayClassName: istio
+  listeners:
+  - name: http
+    hostname: "elk.elephant-frog.ts.net"
+    port: 443
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: Same

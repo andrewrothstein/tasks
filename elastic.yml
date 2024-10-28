@@ -8,6 +8,16 @@ includes:
       n: elk
       labels: 'istio.io/dataplane-mode=ambient'
       k: elk
+  elastic-secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: elk
+      s: elasticsearch-es-elastic-user
+  kibana-secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: elk
+      s: kibana-kibana-user
 tasks:
   default:
     deps:
@@ -21,9 +31,22 @@ tasks:
       - task: elk:kapply
   delete:
     cmds:
-      - task: elk:delete
+      - task: elk:kdelete
       - task: elk:ns-delete
-      - task: eck:kdelete
+      - task: eck:delete
   check:
     deps:
       - task: eck:check
+  elastic-creds:
+    cmds:
+      - task: elastic-secrets:get
+        vars:
+          f: elastic
+  kibana-creds:
+    cmds:
+      - task: kibana-secrets:get
+        vars:
+          f: name
+      - task: kibana-secrets:get
+        vars:
+          f: token
