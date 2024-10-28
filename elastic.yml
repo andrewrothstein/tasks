@@ -7,7 +7,7 @@ includes:
     vars:
       n: elk
       labels: 'istio.io/dataplane-mode=ambient'
-      f: elk.yml
+      k: elk
 tasks:
   default:
     deps:
@@ -18,12 +18,12 @@ tasks:
     cmds:
       - task: elk:ns-create
       - task: elk:ns-label
-      - task: elk:apply
+      - task: elk:kapply
   delete:
     cmds:
       - task: elk:delete
       - task: elk:ns-delete
-      - task: eck:delete
+      - task: eck:kdelete
   check:
     deps:
       - task: eck:check
