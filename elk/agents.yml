@@ -1,0 +1,45 @@
+---
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: fleet-server
+spec:
+  version: 8.15.3
+  kibanaRef:
+    name: kibana
+  elasticsearchRefs:
+    - name: elasticsearch
+  mode: fleet
+  fleetServerEnabled: true
+  policyID: eck-fleet-server
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+---
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: elastic-agent
+spec:
+  version: 8.15.3
+  kibanaRef:
+    name: kibana
+  fleetServerRef:
+    name: fleet-server
+  mode: fleet
+  policyID: eck-agent
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        volumes:
+          - name: agent-data
+            emptyDir: {}
