@@ -11,6 +11,8 @@ tasks:
     cmds: []
   delete:
     cmds: []
+  test-secrets:
+    cmds: []
   check:
     cmds: []
   default:
