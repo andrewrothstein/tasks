@@ -1,39 +1,55 @@
 ---
 version: '3'
+env:
+  MINIO_SCHEME: http
+  MINIO_ADDRESS: 127.0.0.1:9000
+  MINIO_CONSOLE_ADDRESS: 127.0.0.1:9090
+  MINIO_ROOT_USER: minioadmin
 dotenv:
-  - minio-local.env
-  - .minio-local-secrets.env
+  - .env
 includes:
   mc:
     taskfile: mc.yml
     vars:
       alias: local-minio
 tasks:
+  test-secrets:
+    cmds:
+      - test $MINIO_LOCAL_ROOT_PASSWORD
   default:
     deps:
       - task: start
   start:
     vars:
       address: '{{ .address }}'
-      anonymous: '{{ .anonymous | default true }}'
+      anonymous: '{{ .anonymous | default "true" }}'
       console_address: '{{ .console_address }}'
       certs_dir: '{{ .certs_dir }}'
-      dirs: '{{ .dirs }}'
+      dirs: '{{ .dirs | default "${HOME}/.minio-data" }}'
+    deps:
+      - task: test-secrets
     cmds:
       - |
-        minio server \
-          {{ if .address }}--address {{ .address | quote }}{{- end }}
-          {{- if .anonymous }}--anonymous {{ end }}
-          {{- if .console_address }} --console-address {{ .console_address | quote }}{{- end }}
-          {{- if .certs_dir }} --certs-dir {{ .certs_dir | quote }}{{ end }} \
-          {{ if .dirs }}
-          {{- .dirs -}}
-          {{- else -}}
-          "{{ .HOME }}/.minio-data"
-          {{- end }}
+        MINIO_ROOT_PASSWORD="${MINIO_LOCAL_ROOT_PASSWORD}" \
+        minio server
+        {{- if .address }} \
+          --address {{ .address | quote }}
+        {{- end }}
+        {{- if eq "true" .anonymous }} \
+          --anonymous
+        {{- end }}
+        {{- if .console_address }} \
+          --console-address {{ .console_address | quote }}
+        {{- end }}
+        {{- if .certs_dir }} \
+          --certs-dir {{ .certs_dir | quote }}
+        {{- end }} \
+          {{ .dirs }}
   mc-login:
     deps:
       - task: mc:alias-set
+        vars:
+          password: $MINIO_LOCAL_ROOT_PASSWORD
   mc-ls:
     deps:
       - task: mc:ls
