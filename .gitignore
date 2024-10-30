@@ -19,3 +19,4 @@ logs/
 .dolt/
 .kubeconfigs/
 *.tigerbeetle
+.env

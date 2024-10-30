@@ -1,10 +1,8 @@
 ---
 version: '3'
-dotenv:
-  - .vault-secrets.yml
 includes:
   ss-csi: secrets-store-csi-driver.yml
-  hashicorp:
+  repo:
     taskfile: helm-repo.yml
     vars:
       n: hashicorp
@@ -51,7 +49,7 @@ tasks:
     deps:
       - task: ss-csi:upgrade
     cmds:
-      - task: hashicorp:add
+      - task: repo:add
       - task: kk:ns-create
       - task: kk:ns-label
       - task: vault-secrets-operator:upgrade
