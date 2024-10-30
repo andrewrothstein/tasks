@@ -30,11 +30,11 @@ includes:
       name: vault
       helm_args: >-
         -f vault-values.yml
-        --set server.dev.devRootToken="${VAULT_ROOT_TOKEN:-root}"
+        --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"
 tasks:
-  test-var:
+  test-secrets:
     cmds:
-      - echo ${VAULT_ROOT_TOKEN}
+      - test ${VAULT_ROOT_TOKEN}
   default:
     deps:
       - upgrade
@@ -43,6 +43,8 @@ tasks:
       - task: vault-secrets-operator:check
       - task: vault:check
   vault-upgrade:
+    deps:
+      - task: test-secrets
     cmds:
       - task: vault:upgrade
   upgrade:
