@@ -16,8 +16,8 @@ includes:
       namespace: tailscale
       name: tailscale
       helm_args: >-
-        --set oath.clientId="${TAILSCALE_OPERATOR_CLIENT_ID}"
-        --set oath.clientSecret="${TAILSCALE_OPERATOR_CLIENT_SECRET}"
+        --set oauth.clientId="${TAILSCALE_OPERATOR_CLIENT_ID}"
+        --set oauth.clientSecret="${TAILSCALE_OPERATOR_CLIENT_SECRET}"
 tasks:
   default:
     cmds:
