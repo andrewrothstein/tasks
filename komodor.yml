@@ -14,15 +14,19 @@ includes:
       helm_args: >-
         --set clusterName=kind
         -f komodor-values.yml
-        -f .komodor-secrets.yml
+        --set apiKey="${KOMODOR_API_KEY}"
 tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    cmds:
+      - test ${KOMODOR_API_KEY}
   upgrade:
     deps:
       - task: repo
     cmds:
+      - task: test-secrets
       - task: helm:upgrade
   delete:
     cmds:
