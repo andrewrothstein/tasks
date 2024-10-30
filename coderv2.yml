@@ -41,6 +41,9 @@ tasks:
       admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
+      - task: test-secrets
+        vars:
+          admin_password: '{{ .admin_password }}'
       - task: kk:ns-create
       - task: kk:ns-label
       - task: postgresql:upgrade
@@ -50,7 +53,6 @@ tasks:
           admin_db: '{{ .admin_db }}'
           db_size: '{{ .db_size }}'
       - task: repo
-      - test {{ .admin_password }}
       - task: coderv2-secret:create
         vars:
           args: >-
