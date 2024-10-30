@@ -8,7 +8,7 @@ workflow:
 controller:
   workflowNamespaces:
     - argo
-    - vault
+    - vault-system
 server:
   ingress:
     enabled: true
