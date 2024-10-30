@@ -3,6 +3,7 @@ version: '3'
 dotenv:
   - .env
 includes:
+  ansible-test-role: ansible-test-role.yml
   ansible-galaxy: ansible-galaxy.yml
 
   k8s: k8s.yml
