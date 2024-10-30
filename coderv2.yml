@@ -1,7 +1,5 @@
 ---
 version: '3'
-dotenv:
-  - .coderv2-secrets.env
 includes:
   kk:
     taskfile: kubectl.yml
@@ -28,6 +26,11 @@ includes:
       namespace: coder
       helm_args: -f coderv2-values.yml
 tasks:
+  test-secrets:
+    vars:
+      admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
+    cmds:
+      - test {{ .admin_password }}
   default:
     deps:
       - task: upgrade
@@ -35,6 +38,7 @@ tasks:
     vars:
       admin_username: '{{ .admin_username | default "coder" }}'
       admin_db: '{{ .admin_db | default "coder" }}'
+      admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
       db_size: '{{ .db_size | default "10gi" }}'
     cmds:
       - task: kk:ns-create
@@ -46,10 +50,11 @@ tasks:
           admin_db: '{{ .admin_db }}'
           db_size: '{{ .db_size }}'
       - task: repo
+      - test {{ .admin_password }}
       - task: coderv2-secret:create
         vars:
           args: >-
-            --from-literal=url="postgres://{{ .admin_username }}:${POSTGRES_PASSWORD}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
+            --from-literal=url="postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
       - task: coderv2:upgrade
         vars:
   delete:

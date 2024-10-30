@@ -20,6 +20,8 @@ tasks:
       admin_password: '{{ .admin_password | default "${POSTGRES_PASSWORD}" }}'
       admin_db: '{{ .admin_db | default "pgadmin" }}'
       db_size: '{{ .db_size | default "10gi" }}'
+    deps:
+      - test {{ .admin_password }}
     cmds:
       - task: bitnami-chart:upgrade
         vars:
