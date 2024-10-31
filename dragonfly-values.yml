@@ -33,6 +33,14 @@ dfdaemon:
     verbose: true
     pprofPort: 18066
 manager:
+  ingress:
+    enable: true
+    className: tailscale
+    hosts:
+      - dragonfly-manager.elephant-frog.ts.net
+    tls:
+      - hosts:
+          - dragonfly-manager.elephant-frog.ts.net
   replicas: 1
   metrics:
     enable: true

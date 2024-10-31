@@ -13,8 +13,8 @@ includes:
   k8s-cicd: k8s-cicd.yml
   k8s-virtualization: k8s-virtualization.yml
 
-#  dragonfly: dragonfly.yml
-  dragonfly: pet.yml
+  dragonfly: dragonfly.yml
+#  dragonfly: pet.yml
 
 #  knative: knative.yml
   knative: pet.yml
@@ -38,9 +38,9 @@ tasks:
       - task: k8s-dns:up
       - task: k8s-cicd:up
       - task: k8s-virtualization:up
-      - task: dragonfly:install
+      - task: dragonfly:upgrade
       - task: knative:install
-      - task: coderv2:install
+      - task: coderv2:upgrade
   delete:
     cmds:
       - task: coderv2:delete
@@ -66,5 +66,4 @@ tasks:
       - task: k8s-cicd:check
       - task: k8s-virtualization:check
       - task: dragonfly:check
-      - task: knative:check
       - task: coderv2:check

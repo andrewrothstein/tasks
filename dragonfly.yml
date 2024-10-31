@@ -3,19 +3,20 @@ version: '3'
 includes:
   repo: dragonfly-repo.yml
   kk:
+    aliases: [kdragonfly]
     taskfile: kubectl.yml
     vars:
       n: dragonfly-system
-      labels: istio.io/dataplane-mode=ambient
+      k: dragonfly
+#      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
-      install: 'true'
-      namespace: dragonfly-system
-      name: dragonfly
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.2.3
+      chart_ver: 1.2.21
+      namespace: dragonfly-system
+      name: dragonfly
       helm_args: -f dragonfly-values.yml
 tasks:
   default:
@@ -26,12 +27,14 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-#      - task: kk:ns-label
+      - task: kk:ns-label
       - task: helm:upgrade
+#      - task: kdragonfly:kapply
   delete:
     cmds:
+      - task: kdragonfly:kdelete
       - task: helm:delete
-      - task: kk:ns-delete
+#      - task: kk:ns-delete
   check:
     deps:
       - task: repo
