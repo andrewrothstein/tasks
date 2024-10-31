@@ -13,8 +13,8 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
   kubevirt-vms: pet.yml
 
-#  crossplane: crossplane.yml
-  crossplane: pet.yml
+  crossplane: crossplane.yml
+#  crossplane: pet.yml
 
 tasks:
   default:
@@ -22,12 +22,11 @@ tasks:
       - up
   up:
     cmds:
-
-      - task: vclusters:apply
+      - task: vclusters:install
       - task: kubevirt:apply
       - task: kubevirt-cdi:apply
       - task: kubevirt-vms:apply
-      - task: crossplane:install
+      - task: crossplane:upgrade
   delete:
     cmds:
       - task: crossplane:delete
@@ -35,3 +34,7 @@ tasks:
       - task: kubevirt-cdi:delete
       - task: kubevirt:delete
       - task: vclusters:delete
+  check:
+    cmds:
+      - task: vclusters:check
+      - task: crossplane:check

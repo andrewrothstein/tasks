@@ -54,4 +54,7 @@ tasks:
           name: padm
   default:
     cmds:
+      - task: install
+  install:
+    cmds:
       - task: create-all
