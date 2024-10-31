@@ -26,7 +26,7 @@ tasks:
   up:
     cmds:
       - task: flux:upgrade
-      - task: argoproj:install
+      - task: argoproj:upgrade
       - task: kpack:apply
       - task: tekton-operator:apply
       - task: tekton-pipelines:apply
@@ -39,3 +39,7 @@ tasks:
       - task: kpack:delete
       - task: argoproj:delete
       - task: flux:delete
+  check:
+    cmds:
+      - task: flux:check
+      - task: argoproj:check

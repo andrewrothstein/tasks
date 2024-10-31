@@ -15,8 +15,8 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     cmds:
       - task: argo:upgrade
       - task: argocd:upgrade
