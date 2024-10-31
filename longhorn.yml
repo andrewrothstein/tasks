@@ -6,7 +6,7 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: longhorn-system
-      create_namespace: true
+      create_namespace: 'true'
       name: longhorn
       chart_repo_name: longhorn
       chart: longhorn
@@ -14,12 +14,15 @@ includes:
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo

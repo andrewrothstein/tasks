@@ -14,3 +14,6 @@ tasks:
   delete:
     cmds:
       - task: trivy-operator:delete
+  check:
+    cmds:
+      - task: trivy-operator:check

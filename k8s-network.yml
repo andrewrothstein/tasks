@@ -25,3 +25,8 @@ tasks:
       - task: ingress:delete
       - task: tailscale:delete
       - task: metallb:delete
+  check:
+    cmds:
+      - task: metallb:check
+      - task: tailscale:check
+      - task: ingress:check

@@ -6,14 +6,14 @@ includes:
 #  longhorn: longhorn.yml
   longhorn: pet.yml
 
-#  csi-driver-nfs: csi-driver-nfs.yml
-  csi-driver-nfs: pet.yml
+  csi-driver-nfs: csi-driver-nfs.yml
+#  csi-driver-nfs: pet.yml
 
 #  trident: trident.yml
   trident: pet.yml
 
-#  minio: minio.yml
-  minio: pet.yml
+#  minio-operator: minio-operator.yml
+  minio-operator: pet.yml
 
 #  velero: velero.yml
   velero: pet.yml
@@ -27,17 +27,25 @@ tasks:
       - up
   up:
     cmds:
-      - task: rook:install
-      - task: longhorn:install
-      - task: csi-driver-nfs:install
-      - task: trident:install
-      - task: minio:install
-      - task: velero:install
+      - task: rook:upgrade
+      - task: longhorn:upgrade
+      - task: csi-driver-nfs:upgrade
+      - task: trident:upgrade
+      - task: minio-operator:upgrade
+      - task: velero:upgrade
   delete:
     cmds:
       - task: velero:delete
-      - task: minio:delete
+      - task: minio-operator:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
       - task: longhorn:delete
       - task: rook:delete
+  check:
+    cmds:
+      - task: rook:check
+      - task: longhorn:check
+      - task: csi-driver-nfs:check
+      - task: trident:check
+      - task: minio-operator:check
+      - task: velero:check

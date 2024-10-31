@@ -55,3 +55,16 @@ tasks:
       - task: k8s-security:delete
       - task: operator-sdk:delete
       - task: k8s-digester:delete
+  check:
+    cmds:
+      - task: k8s-security:check
+      - task: k8s-secrets:check
+      - task: k8s-network:check
+      - task: k8s-storage:check
+      - task: k8s-observability:check
+      - task: k8s-dns:check
+      - task: k8s-cicd:check
+      - task: k8s-virtualization:check
+      - task: dragonfly:check
+      - task: knative:check
+      - task: coderv2:check

@@ -28,7 +28,7 @@ includes:
     vars:
       chart_repo_name: vmware-tanzu
       chart: velero
-      chart_ver: 7.2.1
+      chart_ver: 7.2.2
       namespace: velero
       name: velero
       helm_args: -f velero-values.yml
@@ -45,9 +45,9 @@ tasks:
       - task: velero-repo
     cmds:
       - task: kk:ns-create
-#      - task: kk:ns-label
+      - task: kk:ns-label
       - task: minio-helm:upgrade
-#      - task: velero-helm:upgrade
+      - task: velero-helm:upgrade
   velero-delete:
     cmds:
       - task: velero-helm:delete
