@@ -12,9 +12,13 @@ tasks:
       - up
   up:
     cmds:
-      - task: coredns:install
-      - task: external-dns:install
+      - task: coredns:upgrade
+      - task: external-dns:upgrade
   delete:
     cmds:
       - task: external-dns:delete
       - task: coredns:delete
+  check:
+    cmds:
+      - task: coredns:check
+      - task: external-dns:check

@@ -5,13 +5,12 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
-      namespace: coredns
-      create_namespace: 'true'
-      install: 'true'
-      name: coredns
       chart_repo_name: coredns
       chart: coredns
-      chart_ver: 1.29.0
+      chart_ver: 1.36.1
+      namespace: coredns
+      create_namespace: 'true'
+      name: coredns
       helm_args: -f coredns-etcd.yml
 tasks:
   default:
@@ -25,3 +24,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
