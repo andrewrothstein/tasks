@@ -4,8 +4,8 @@ includes:
 #  k8s-dashboard: k8s-dashboard.yml
   k8s-dashboard: pet.yml
 
-#  komodor: komodor.yml
-  komodor: pet.yml
+  komodor: komodor.yml
+#  komodor: pet.yml
 
 #  open-telemetry-operator: open-telemetry-operator.yml
   open-telemetry-operator: pet.yml
@@ -13,11 +13,11 @@ includes:
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
 
-  elastic: elastic.yml
-#  elastic: pet.yml
+#  elastic: elastic.yml
+  elastic: pet.yml
 
-  keda: keda.yml
-#  keda: pet.yml
+#  keda: keda.yml
+  keda: pet.yml
 
 tasks:
   default:

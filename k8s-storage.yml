@@ -6,8 +6,8 @@ includes:
 #  longhorn: longhorn.yml
   longhorn: pet.yml
 
-  csi-driver-nfs: csi-driver-nfs.yml
-#  csi-driver-nfs: pet.yml
+#  csi-driver-nfs: csi-driver-nfs.yml
+  csi-driver-nfs: pet.yml
 
 #  trident: trident.yml
   trident: pet.yml

@@ -26,8 +26,8 @@ tasks:
       - task: gatekeeper:upgrade
       - task: pinniped-supervisor:install
       - task: pinniped-concierge:install
-      - task: gitea:install
-      - task: gitlab:install
+      - task: gitea:upgrade
+      - task: gitlab:upgrade
   delete:
     cmds:
       - task: gitlab:delete
@@ -35,3 +35,10 @@ tasks:
       - task: pinniped-concierge:delete
       - task: pinniped-supervisor:delete
       - task: gatekeeper:delete
+  check:
+    cmds:
+      - task: gatekeeper:check
+      - task: pinniped-supervisor:install
+      - task: pinniped-concierge:install
+      - task: gitea:check
+      - task: gitlab:check

@@ -16,19 +16,23 @@ tasks:
   test-secrets:
     vars:
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
+      pg_password: '{{ .pg_password | default "${KEYCLOAK_POSTGRESQL_PASSWORD}" }}'
     cmds:
       - test {{ .admin_password | quote }}
+      - test {{ .pg_password | quote }}
   upgrade:
     vars:
       admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER:-admin}" }}'
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
+      pg_password: '{{ .pg_password | default "${KEYCLOAK_POSTGRESQL_PASSWORD}" }}'
     cmds:
       - task: bitnami-chart:upgrade
         vars:
-          helm_args: >-
-            -f bitnami-keycloak-values.yml
-            --set-string auth.adminUser={{ .admin_user | quote }}
-            --set-string auth.adminPassword={{ .admin_password | quote }}
+          helm_args: |
+            -f bitnami-keycloak-values.yml \
+              --set-string auth.adminUser={{ .admin_user | quote }} \
+              --set-string auth.adminPassword={{ .admin_password | quote }} \
+              --set-string postgresql.auth.password={{ .pg_password | quote }}
   delete:
     cmds:
       - task: bitnami-chart:delete

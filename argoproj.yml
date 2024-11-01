@@ -7,8 +7,8 @@ includes:
 #  argocd: pet.yml
   argocd: argocd.yml
 
-#  argo-events: pet.yml
-  argo-events: argo-events.yml
+  argo-events: pet.yml
+#  argo-events: argo-events.yml
 
   argo-rollouts: pet.yml
 #  argo-rollouts: argo-rollouts.yml

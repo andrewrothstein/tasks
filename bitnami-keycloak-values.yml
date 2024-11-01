@@ -3,6 +3,73 @@
 ingress:
   enabled: true
   ingressClassName: tailscale
-  hostname: keycloak.elephant-frog.ts.net
-  tls: true
-  path: /
+  annotations:
+    tailscale.com/expose: "true"
+    tailscale.com/hostname: "keycloak"
+  paths:
+    - path: /
+      pathType: Prefix
+
+production: false
+proxy: edge
+
+## Disable TLS
+https:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 8080
+
+extraEnvVars:
+  - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+    value: "true"
+  - name: KC_PROXY
+    value: "edge"
+  - name: KC_HTTP_ENABLED
+    value: "true"
+  - name: KEYCLOAK_PRODUCTION
+    value: "false"
+  - name: KC_HTTP_PORT
+    value: "8080"
+
+# Database configuration
+postgresql:
+  enabled: true
+  auth:
+    username: bn_keycloak
+    database: bitnami_keycloak
+
+# Resource limits for development
+resources:
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+
+# Probes configuration
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 60
+  successThreshold: 1
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 300
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1

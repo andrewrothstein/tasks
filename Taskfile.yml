@@ -32,9 +32,7 @@ tasks:
       - task: working:up
   delete:
     cmds:
-#      - task: post-mesh-2:delete
-#      - task: post-mesh-1:delete
-#      - task: mesh:delete
+      - task: post-mesh-1:k8s-network:tailscale:cluster-evacuate
       - task: k8s:delete
   destroy:
     cmds:

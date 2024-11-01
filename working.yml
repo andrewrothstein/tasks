@@ -23,4 +23,4 @@ tasks:
       - task: velero
   up:
     cmds:
-      - task: velero-up
+#      - task: velero-up
