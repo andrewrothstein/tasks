@@ -1,13 +1,11 @@
 ---
 version: '3'
-dotenv:
-  - .keycloak-secrets.env
 includes:
   bitnami-chart:
     taskfile: bitnami-chart.yml
     vars:
       chart: keycloak
-      chart_ver: 22.2.1
+      chart_ver: 24.0.3
       name: bitnami-keycloak
       namespace: bitnami-keycloak
       create_namespace: true
@@ -15,9 +13,14 @@ tasks:
   default:
     deps:
       - task: upgrade
+  test-secrets:
+    vars:
+      admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
+    cmds:
+      - test {{ .admin_password | quote }}
   upgrade:
     vars:
-      admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER}" }}'
+      admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER:-admin}" }}'
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
     cmds:
       - task: bitnami-chart:upgrade

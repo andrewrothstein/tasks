@@ -42,3 +42,10 @@ tasks:
   default:
     deps:
       - up
+  check:
+    cmds:
+      - helm repo up
+      - task: k8s:check
+      - task: mesh:check
+      - task: post-mesh-1:check
+      - task: post-mesh-2:check

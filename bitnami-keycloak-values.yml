@@ -1,5 +1,8 @@
+
 ---
 ingress:
   enabled: true
-  annotations:
-    tailscale.com/expose: 'true'
+  ingressClassName: tailscale
+  hostname: keycloak.elephant-frog.ts.net
+  tls: true
+  path: /

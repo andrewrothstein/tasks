@@ -29,3 +29,7 @@ tasks:
   default:
     deps:
       - up
+  check:
+    cmds:
+      - task: k8s:check
+      - task: metrics-server:check

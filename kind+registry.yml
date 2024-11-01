@@ -5,6 +5,8 @@ includes:
   kind: kind.yml
   docker-network: docker-network.yml
 tasks:
+  check:
+    cmds: []
   up:
     vars:
       disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
