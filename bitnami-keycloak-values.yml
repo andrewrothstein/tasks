@@ -3,12 +3,18 @@
 ingress:
   enabled: true
   ingressClassName: tailscale
-  annotations:
-    tailscale.com/expose: "true"
-    tailscale.com/hostname: "keycloak"
+  hostname: keycloak.elephant-frog.ts.net
+  tls: true
+  extraTls:
+    - hosts:
+        - keycloak.elephant-frog.ts.net
   paths:
     - path: /
       pathType: Prefix
+      backend:
+        name: bitnami-keycloak
+        port:
+          name: http
 
 production: false
 proxy: edge
