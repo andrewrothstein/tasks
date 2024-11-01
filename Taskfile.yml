@@ -9,6 +9,9 @@ includes:
   k8s: k8s.yml
 #  k8s: pet.yml
 
+  tailscale: tailscale.yml
+#  tailscale: pet.yml
+
   mesh: istio.yml
 #  mesh: pet.yml
 
@@ -26,13 +29,14 @@ tasks:
   up:
     cmds:
       - task: k8s:up
+      - task: tailscale:upgrade
       - task: mesh:up
       - task: post-mesh-1:up
       - task: post-mesh-2:up
       - task: working:up
   delete:
     cmds:
-      - task: post-mesh-1:k8s-network:tailscale:cluster-evacuate
+      - task: tailscale:cluster-evacuate
       - task: k8s:delete
   destroy:
     cmds:
@@ -44,6 +48,7 @@ tasks:
     cmds:
       - helm repo up
       - task: k8s:check
+      - task: tailscale:check
       - task: mesh:check
       - task: post-mesh-1:check
       - task: post-mesh-2:check

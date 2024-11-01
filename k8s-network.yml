@@ -4,9 +4,6 @@ includes:
   metallb: metallb.yml
 #  metallb: pet.yml
 
-  tailscale: tailscale.yml
-#  tailscale: pet.yml
-
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
 
@@ -18,15 +15,12 @@ tasks:
   up:
     cmds:
       - task: metallb:upgrade
-      - task: tailscale:upgrade
       - task: ingress:upgrade
   delete:
     cmds:
       - task: ingress:delete
-      - task: tailscale:delete
       - task: metallb:delete
   check:
     cmds:
       - task: metallb:check
-      - task: tailscale:check
       - task: ingress:check

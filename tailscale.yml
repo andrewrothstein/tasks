@@ -47,18 +47,11 @@ tasks:
       - repo
     cmds:
       - task: helm:check
-  cluster-evacuate-kubectl:
-    cmds:
-      - |
-        kubectl get ingress -A -o json | \
-          jq '.items[] | select(.spec.ingressClassName == "tailscale") | .metadata | [.namespace, .name] | join(" ")' -r | \
-          xargs -I {} sh -c 'kubectl delete ingress -n $(echo "{}" | cut -d" " -f1) $(echo "{}" | cut -d" " -f2)'
-  cluster-evacuate-python:
-    cmds:
+  cluster-evacuate:
+    deps:
       - task: py-k8s-tools:run
         vars:
           run_args: python ingress-cleanup.py
-  cluster-evacuate:
-    deps:
-      - task: cluster-evacuate-python
-      - task: delete
+      - sleep 30
+      - task: helm:delete
+      - sleep 30
