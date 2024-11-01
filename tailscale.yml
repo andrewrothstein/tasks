@@ -48,7 +48,7 @@ tasks:
     cmds:
       - task: helm:check
   cluster-evacuate:
-    deps:
+    cmds:
       - task: py-k8s-tools:run
         vars:
           run_args: python ingress-cleanup.py
