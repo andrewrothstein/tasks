@@ -48,10 +48,12 @@ tasks:
     cmds:
       - task: helm:check
   cluster-evacuate:
+    vars:
+      sleep_time: '{{ .sleep_time | default 15 }}'
     cmds:
       - task: py-k8s-tools:run
         vars:
           run_args: python ingress-cleanup.py
-      - sleep 30
+      - sleep {{ .sleep_time }}
       - task: helm:delete
-      - sleep 30
+      - sleep {{ .sleep_time }}
