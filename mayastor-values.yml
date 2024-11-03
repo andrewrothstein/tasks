@@ -1,0 +1,46 @@
+---
+mayastor:
+  csi:
+    enable: true
+    node:
+      kubeletDir: /var/lib/kubelet
+
+  resources:
+    mayastor:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    csi:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+  etcd:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+
+  pool:
+    create: true
+    pools:
+      - name: loop-pool
+        disks:
+          - /dev/loop0
+          - /dev/loop1
+          - /dev/loop2
+          - /dev/loop3
+        type: mirror
+        labels:
+          openebs.io/created-by: mayastor
+          cluster.role: san-sim
