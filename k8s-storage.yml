@@ -21,6 +21,9 @@ includes:
 #  rook: rook.yml
   rook: pet.yml
 
+#  openebs: openebs.yml
+  openebs: pet.yml
+
 tasks:
   default:
     deps:
@@ -29,6 +32,7 @@ tasks:
     cmds:
       - task: rook:upgrade
       - task: longhorn:upgrade
+      - task: openebs:upgrade
       - task: csi-driver-nfs:upgrade
       - task: trident:upgrade
       - task: minio-operator:upgrade
@@ -39,6 +43,7 @@ tasks:
       - task: minio-operator:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
+      - task: openebs:delete
       - task: longhorn:delete
       - task: rook:delete
   check:
