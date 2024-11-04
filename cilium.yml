@@ -6,21 +6,20 @@ includes:
     taskfile: helm.yml
     vars:
       namespace: kube-system
-      create_namespace: false
       name: cilium
       chart_repo_name: cilium
       chart: cilium
-      chart_ver: 1.16.1
+      chart_ver: 1.16.3
       helm_args: -f cilium-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete

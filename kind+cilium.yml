@@ -9,7 +9,7 @@ tasks:
       - task: kind:up
         vars:
           disableDefaultCNI: true
-      - task: cilium:install
+      - task: cilium:upgrade
   delete:
     cmds:
       - task: cilium:delete
