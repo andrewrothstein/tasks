@@ -16,11 +16,6 @@ includes:
       chart_repo_name: crossplane-stable
       chart: crossplane
       chart_ver: 1.17.2
-  crossplane-provider:
-    taskfile: kubectl.yml
-    internal: true
-    vars:
-      n: crossplane-stable
 tasks:
   default:
     deps:
@@ -37,54 +32,6 @@ tasks:
       - task: repo
     cmds:
       - task: crossplane-helm:check
-  install-providers:
-    deps:
-      - task: install-terraform
-      - task: install-aws
-      - task: install-azure
-      - task: install-azuread
-      - task: install-gcp
-      - task: install-vault
-  install-aws:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/aws-provider.yml
-  delete-aws:
-    cmds:
-      - task: crossplane-provider:delete
-        vars:
-          f: crossplane/aws-provider.yml
-  install-azure:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/azure-provider.yml
-  delete-azure:
-    cmds:
-      - task: crossplane-provider:delete
-        vars:
-          f: crossplane/azure-provider.yml
-  install-azuread:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/azuread-provider.yml
-  install-gcp:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/gcp-provider.yml
-  install-terraform:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/terraform-provider.yml
-  install-vault:
-    cmds:
-      - task: crossplane-provider:apply
-        vars:
-          f: crossplane/vault-provider.yml
   delete:
     cmds:
       - task: crossplane-helm:delete

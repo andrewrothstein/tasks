@@ -1,8 +1,0 @@
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-azuread
-spec:
-  # https://marketplace.upbound.io/providers/upbound/provider-azuread
-  package: xpkg.upbound.io/upbound/provider-azuread:v1.4.0

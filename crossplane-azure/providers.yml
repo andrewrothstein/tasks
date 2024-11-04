@@ -5,4 +5,4 @@ metadata:
   name: provider-azure
 spec:
   # https://marketplace.upbound.io/providers/upbound/provider-family-azure
-  package: xpkg.upbound.io/upbound/provider-family-azure:v1.5.0
+  package: xpkg.upbound.io/upbound/provider-family-azure:v1.7.0

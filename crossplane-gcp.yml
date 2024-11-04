@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: crossplane-gcp
+      k: crossplane-gcp
+tasks:
+  default:
+    deps:
+      - task: kapply
+  kapply:
+    cmds:
+      - task: kk:ns-create
+      - task: kk:kapply
+  delete:
+    cmds:
+      - task: kk:kdelete

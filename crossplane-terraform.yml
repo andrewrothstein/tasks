@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: crossplane-terraform
+      k: crossplane-terraform
+tasks:
+  default:
+    deps:
+      - task: kapply
+  kapply:
+    cmds:
+      - task: kk:ns-create
+      - task: kk:kapply
+  delete:
+    cmds:
+      - task: kk:kdelete
