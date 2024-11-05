@@ -1,5 +1,0 @@
----
-AWX:
-  enabled: true
-  spec:
-    service_type: clusterip
