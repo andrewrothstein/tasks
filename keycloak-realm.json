@@ -1,0 +1,129 @@
+{
+    "realm": "elephant-frog-ts-net",
+    "enabled": true,
+    "sslRequired": "external",
+    "registrationAllowed": false,
+    "loginWithEmailAllowed": true,
+    "duplicateEmailsAllowed": false,
+    "resetPasswordAllowed": true,
+    "editUsernameAllowed": false,
+    "bruteForceProtected": true,
+    "permanentLockout": false,
+    "maxFailureWaitSeconds": 900,
+    "minimumQuickLoginWaitSeconds": 60,
+    "waitIncrementSeconds": 60,
+    "quickLoginCheckMilliSeconds": 1000,
+    "maxDeltaTimeSeconds": 43200,
+    "failureFactor": 30,
+    "defaultRoles": ["offline_access", "uma_authorization"],
+    "requiredCredentials": ["password"],
+    "passwordPolicy": "length(8) and upperCase(1) and lowerCase(1) and digits(1)",
+    "otpPolicyType": "totp",
+    "otpPolicyAlgorithm": "HmacSHA1",
+    "otpPolicyInitialCounter": 0,
+    "otpPolicyDigits": 6,
+    "otpPolicyLookAheadWindow": 1,
+    "otpPolicyPeriod": 30,
+    "clients": [
+        {
+            "clientId": "awx",
+            "enabled": true,
+            "clientAuthenticatorType": "client-secret",
+            "redirectUris": ["https://awx.elephant-frog.ts.net/*"],
+            "webOrigins": ["https://awx.elephant-frog.ts.net"],
+            "publicClient": false,
+            "protocol": "openid-connect",
+            "attributes": {
+                "saml.assertion.signature": "false",
+                "access.token.lifespan": "300"
+            }
+        },
+        {
+            "clientId": "vault",
+            "enabled": true,
+            "clientAuthenticatorType": "client-secret",
+            "redirectUris": ["https://vault.elephant-frog.ts.net/*"],
+            "webOrigins": ["https://vault.elephant-frog.ts.net"],
+            "publicClient": false,
+            "protocol": "openid-connect",
+            "attributes": {
+                "saml.assertion.signature": "false",
+                "access.token.lifespan": "300"
+            }
+        },
+        {
+            "clientId": "argocd",
+            "enabled": true,
+            "clientAuthenticatorType": "client-secret",
+            "redirectUris": ["https://argocd.elephant-frog.ts.net/*"],
+            "webOrigins": ["https://argocd.elephant-frog.ts.net"],
+            "publicClient": false,
+            "protocol": "openid-connect",
+            "attributes": {
+                "saml.assertion.signature": "false",
+                "access.token.lifespan": "300"
+            }
+        },
+        {
+            "clientId": "argo",
+            "enabled": true,
+            "clientAuthenticatorType": "client-secret",
+            "redirectUris": ["https://argo.elephant-frog.ts.net/*"],
+            "webOrigins": ["https://argo.elephant-frog.ts.net"],
+            "publicClient": false,
+            "protocol": "openid-connect",
+            "attributes": {
+                "saml.assertion.signature": "false",
+                "access.token.lifespan": "300"
+            }
+        }
+    ],
+    "roles": {
+        "realm": [
+            {
+                "name": "user",
+                "description": "User role"
+            },
+            {
+                "name": "admin",
+                "description": "Administrator role"
+            }
+        ]
+    },
+    "users": [
+        {
+            "username": "arothste",
+            "enabled": true,
+            "emailVerified": true,
+            "firstName": "Andrew",
+            "lastName": "Rothstein",
+            "email": "andrew.rothstein@gmail.com",
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "initial-password",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": ["admin"],
+            "clientRoles": {
+                "example-client": ["manage-account"]
+            },
+            "attributes": {
+                "locale": ["en"]
+            }
+        }
+    ],
+    "scopeMappings": [],
+    "clientScopeMappings": {},
+    "groups": [
+        {
+            "name": "users",
+            "path": "/users",
+            "attributes": {},
+            "realmRoles": ["user"],
+            "clientRoles": {},
+            "subGroups": []
+        }
+    ]
+}

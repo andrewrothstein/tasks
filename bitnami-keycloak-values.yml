@@ -38,6 +38,17 @@ extraEnvVars:
     value: "false"
   - name: KC_HTTP_PORT
     value: "8080"
+#  - name: KEYCLOAK_EXTRA_ARGS
+#    value: '--import-realm'
+
+#volumes:
+#  - name: keycloak-realm-to-import
+#    configMap:
+#      name: keycloak-realm-to-import
+
+#volumeMounts:
+#  - name: keycloak-realm-to-import
+#    mountPath: /opt/bitnami/keycloak/data/import
 
 # Database configuration
 postgresql:
