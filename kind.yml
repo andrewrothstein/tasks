@@ -23,3 +23,5 @@ tasks:
       n: '{{ .n | default "kind" }}'
     cmds:
       - kind delete clusters {{ .n | quote }}
+  check:
+    cmds: []

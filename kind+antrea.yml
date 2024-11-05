@@ -14,3 +14,7 @@ tasks:
     cmds:
       - task: antrea:delete
       - task: kind:delete
+  check:
+    cmds:
+      - task: kind:check
+      - task: antrea:check

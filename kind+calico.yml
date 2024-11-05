@@ -14,3 +14,7 @@ tasks:
     cmds:
       - task: calico:delete
       - task: kind:delete
+  check:
+    cmds:
+      - task: kind:check
+      - task: calico:check

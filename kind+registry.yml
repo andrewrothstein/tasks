@@ -54,3 +54,5 @@ tasks:
     cmds:
       - task: kind:delete
       - task: docker-registry:delete
+  check:
+    cmds: []

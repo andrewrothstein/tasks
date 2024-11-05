@@ -18,3 +18,5 @@ tasks:
       - task: kk:apply
   delete:
       - task: kk:delete
+  check:
+    cmds: []

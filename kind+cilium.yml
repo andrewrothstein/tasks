@@ -14,3 +14,7 @@ tasks:
     cmds:
       - task: cilium:delete
       - task: kind:delete
+  check:
+    cmds:
+      - task: cilium:check
+      - task: kind:check
