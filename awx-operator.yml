@@ -16,10 +16,20 @@ includes:
       chart: awx-operator
       chart_ver: 2.19.1
       helm_args: -f awx-operator-values.yml
+  admin-password:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: awx-operator
+      s: awx-admin-password
 tasks:
   default:
     deps:
       - upgrade
+  show-admin-password:
+    cmds:
+      - task: admin-password:get
+        vars:
+          f: password
   upgrade:
     deps:
       - task: repo
