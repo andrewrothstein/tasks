@@ -2,10 +2,14 @@
 version: '3'
 includes:
   repo: awx-operator-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: awx-operator
+      k: awx
   helm:
     taskfile: helm.yml
     vars:
-      create_namespace: 'true'
       namespace: awx-operator
       name: awx-operator
       chart_repo_name: awx-operator
@@ -20,9 +24,12 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
       - task: helm:upgrade
+      - task: kk:kapply
   delete:
     cmds:
+      - task: kk:kdelete
       - task: helm:delete
   check:
     deps:
