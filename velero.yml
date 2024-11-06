@@ -5,15 +5,14 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: velero
-  secrets:
+  minio-root-secret:
     taskfile: k8s-literal-secret.yml
     vars:
       n: velero
       s: minio-root
   minio-repo: minio-repo.yml
-  minio-helm:
+  minio-tenant:
     taskfile: helm.yml
-    internal: true
     vars:
       chart_repo_name: minio
       chart: tenant
@@ -24,7 +23,6 @@ includes:
   velero-repo: velero-repo.yml
   velero-helm:
     taskfile: helm.yml
-    internal: true
     vars:
       chart_repo_name: vmware-tanzu
       chart: velero
@@ -36,9 +34,16 @@ tasks:
   default:
     deps:
       - upgrade
-  minio-helm-upgrade:
+  import-minio-root-secret:
     cmds:
-      - task: minio-helm:upgrade
+      - task: minio-root-secret:create
+        vars:
+          args: >-
+            --from-literal "accessKey=${AWS_ACCESS_KEY}"
+            --from-literal "secretKey=${AWS_SECRET_KEY}"
+  minio-tenant-upgrade:
+    cmds:
+      - task: minio-tenant:upgrade
   upgrade:
     deps:
       - task: minio-repo
@@ -46,7 +51,7 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
-      - task: minio-helm:upgrade
+      - task: minio-tenant:upgrade
       - task: velero-helm:upgrade
   velero-delete:
     cmds:
@@ -54,12 +59,12 @@ tasks:
   delete:
     cmds:
       - task: velero-helm:delete
-      - task: minio-helm:delete
+      - task: minio-tenant:delete
       - task: kk:ns-delete
   check:
     deps:
       - task: minio-repo
       - task: velero-repo
     cmds:
-      - task: minio-helm:check
+      - task: minio-tenant:check
       - task: velero-helm:check
