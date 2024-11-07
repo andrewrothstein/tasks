@@ -1,0 +1,12 @@
+---
+version: '3'
+tasks:
+  helm-template:
+    cmds:
+      - helm template test . -f values.yaml
+  helm-upgrade:
+    cmds:
+      - helm upgrade --install -n istio-system tailscale-ingress .
+  default:
+    cmds:
+      - task: helm-template

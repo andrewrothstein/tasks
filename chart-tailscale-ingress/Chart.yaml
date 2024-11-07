@@ -1,0 +1,22 @@
+---
+apiVersion: v2
+name: tailscale-ingress
+description: |
+  A Helm chart for deploying Ingress objects
+  that work with tailscale-operator
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"
+
+#dependencies:
+#  - condition: redis.enabled
+#    name: redis
+#    repository: oci://registry-1.docker.io/bitnamicharts
+#    version: ~20
+#  - conditions: postgresql.enabled
+#    name: postgresql
+#    repository: oci://registry-1.docker.io/bitnamicharts
+#    version: ~16

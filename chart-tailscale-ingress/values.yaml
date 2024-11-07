@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: istio-system
+    name: kiali
+    tls: true
+    host: kiali
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: kiali
+      port:
+        number: 20001

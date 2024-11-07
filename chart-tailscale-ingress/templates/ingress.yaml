@@ -1,0 +1,36 @@
+{{- $fullname := include "tailscale-ingress.fullname" . }}
+{{- $labels := include "tailscale-ingress.labels" . }}
+{{- range $i := .Values.ingresses }}
+{{- $name := $i.name }}
+{{- if .enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullname }}-{{ $name }}
+  labels:
+    {{- $labels | nindent 4 }}
+  {{- with .annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .ingressClassName | default "tailscale" }}
+  {{- if .tls }}
+  tls:
+    - hosts:
+        - {{ $i.host | quote }}
+  {{- end }}
+  rules:
+    - host: {{ $i.host | quote }}
+      http:
+        paths:
+          - path: {{ $i.path }}
+            {{- with $i.pathType }}
+            pathType: {{ . }}
+            {{- end }}
+            backend:
+              service:
+                {{- toYaml $i.service | nindent 16 }}
+{{- end }}
+{{- end }}
