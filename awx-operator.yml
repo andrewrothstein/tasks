@@ -6,7 +6,6 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: awx-operator
-      k: awx
   helm:
     taskfile: helm.yml
     vars:
@@ -16,6 +15,13 @@ includes:
       chart: awx-operator
       chart_ver: 2.19.1
       helm_args: -f awx-operator-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: awx-operator
+      name: tailscale-ingress
+      helm_args: -f awx-tailscale-ingress-values.yml
   admin-password:
     taskfile: k8s-literal-secret.yml
     vars:
@@ -36,10 +42,10 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: helm:upgrade
-      - task: kk:kapply
+      - task: ingress:upgrade
   delete:
     cmds:
-      - task: kk:kdelete
+      - task: ingress:kdelete
       - task: helm:delete
   check:
     deps:
