@@ -5,23 +5,24 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: velero
-  minio-root-secret:
-    taskfile: k8s-literal-secret.yml
+  minio-tenant:
+    taskfile: minio-tenant.yml
     vars:
       n: velero
-      s: minio-root
-  minio-repo: minio-repo.yml
-  minio-tenant:
-    taskfile: helm.yml
-    vars:
-      chart_repo_name: minio
-      chart: tenant
-      chart_ver: 6.0.4
+      s: velero-minio-root
+      accessKey: "${VELERO_MINIO_ACCESS_KEY}"
+      secretKey: "${VELERO_MINIO_SECRET_KEY}"
       namespace: velero
       name: velero-minio
       helm_args: -f velero-minio-values.yml
-  velero-repo: velero-repo.yml
-  velero-helm:
+  # different form from the velero-minio-root secret
+  velero-minio-credentials:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: velero
+      s: velero-minio-credentials
+  repo: velero-repo.yml
+  helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: vmware-tanzu
@@ -34,37 +35,37 @@ tasks:
   default:
     deps:
       - upgrade
-  import-minio-root-secret:
+  create-velero-minio-credentials:
+    vars:
+      credentials_file: '{{ .credentials_file | default ".velero-minio-credentials" }}'
     cmds:
-      - task: minio-root-secret:create
+      - |
+        envsubst > {{ .credentials_file | quote }} <<HERE
+        [default]
+        aws_access_key_id=${VELERO_MINIO_ACCESS_KEY}
+        aws_secret_access_key=${VELERO_MINIO_SECRET_KEY}
+        HERE
+      - task: velero-minio-credentials:create
         vars:
           args: >-
-            --from-literal "accessKey=${AWS_ACCESS_KEY}"
-            --from-literal "secretKey=${AWS_SECRET_KEY}"
-  minio-tenant-upgrade:
-    cmds:
-      - task: minio-tenant:upgrade
+            --from-literal=cloud="$(cat {{ .credentials_file }})"
   upgrade:
     deps:
-      - task: minio-repo
-      - task: velero-repo
+      - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
       - task: minio-tenant:upgrade
-      - task: velero-helm:upgrade
-  velero-delete:
-    cmds:
-      - task: velero-helm:delete
+      - task: create-velero-minio-credentials
+      - task: helm:upgrade
   delete:
     cmds:
-      - task: velero-helm:delete
+      - task: helm:delete
       - task: minio-tenant:delete
       - task: kk:ns-delete
   check:
     deps:
-      - task: minio-repo
-      - task: velero-repo
+      - task: repo
     cmds:
       - task: minio-tenant:check
-      - task: velero-helm:check
+      - task: helm:check

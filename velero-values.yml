@@ -9,8 +9,8 @@ configuration:
       config:
         region: us-east-1
         s3ForcePathStyle: true
-        s3Url: https://minio
-        publicUrl: https://minio
+        s3Url: https://minio.velero.svc.cluster.local
+        publicUrl: https://minio.velero.svc.cluster.local
   volumeSnapshotLocation:
     - name: my-volume-snapshot-location
       provider: aws
@@ -18,9 +18,9 @@ configuration:
         region: us-east-1
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero/velero-plugin-for-aws:v1.10.1
+    image: velero/velero-plugin-for-aws:v1.11.0
     volumeMounts:
       - mountPath: /target
         name: plugins
 credentials:
-  existingSecret: velero-minio-root
+  existingSecret: velero-minio-credentials

@@ -1,5 +1,7 @@
 ---
 tenant:
-  name: velero-minio
-  configSecret:
-    name: velero-minio-root
+  pools:
+    - name: velero-pool
+      servers: 1
+      volumesPerServer: 1
+      size: 10Gi
