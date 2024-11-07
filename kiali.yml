@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: kiali
       chart: kiali-operator
-      chart_ver: 1.89.7
+      chart_ver: 2.0.0
       namespace: kiali-operator
       create_namespace: 'true'
       name: kiali
