@@ -9,8 +9,8 @@ configuration:
       config:
         region: us-east-1
         s3ForcePathStyle: true
-        s3Url: https://minio.velero.svc.cluster.local
-        publicUrl: https://minio.velero.svc.cluster.local
+        s3Url: http://minio.velero.svc.cluster.local
+        publicUrl: http://minio.velero.svc.cluster.local
   volumeSnapshotLocation:
     - name: my-volume-snapshot-location
       provider: aws

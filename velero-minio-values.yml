@@ -1,5 +1,7 @@
 ---
 tenant:
+  certificate:
+    requestAutoCert: false
   pools:
     - name: velero-pool
       servers: 1

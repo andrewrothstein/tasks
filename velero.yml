@@ -5,6 +5,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: velero
+      labels: 'istio.io/dataplane-mode=ambient'
   minio-tenant:
     taskfile: minio-tenant.yml
     vars:
