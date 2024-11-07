@@ -12,6 +12,13 @@ includes:
       create_namespace: 'true'
       name: kiali
       helm_args: -f kiali-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: istio-system
+      name: tailscale-ingress
+      helm_args: -f kiali-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -22,6 +29,7 @@ tasks:
       - task: repo
     cmds:
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
       - task: helm:delete
