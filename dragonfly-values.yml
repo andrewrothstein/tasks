@@ -19,6 +19,8 @@ scheduler:
   config:
     verbose: true
     pprofPort: 18066
+seedClient:
+  replicas: 1
 seedPeer:
   replicas: 1
   metrics:
@@ -33,14 +35,6 @@ dfdaemon:
     verbose: true
     pprofPort: 18066
 manager:
-  ingress:
-    enable: true
-    className: tailscale
-    hosts:
-      - dragonfly-manager.elephant-frog.ts.net
-    tls:
-      - hosts:
-          - dragonfly-manager.elephant-frog.ts.net
   replicas: 1
   metrics:
     enable: true
@@ -49,3 +43,6 @@ manager:
     pprofPort: 18066
 jaegar:
   enable: true
+redis:
+  replica:
+    replicaCount: 1
