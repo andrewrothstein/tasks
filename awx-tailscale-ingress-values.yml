@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: awx-operator
+    name: awx-web
+    tls: true
+    host: awx
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: awx-service
+      port:
+        number: 80
