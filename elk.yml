@@ -6,8 +6,15 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: elk
-      labels: 'istio.io/dataplane-mode=ambient'
+#      labels: 'istio.io/dataplane-mode=ambient'
       k: elk
+  tailscale-ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: elk
+      name: tailscale-ingress
+      helm_args: -f elk-tailscale-ingress-values.yml
   elastic-secrets:
     taskfile: k8s-literal-secret.yml
     vars:
@@ -29,8 +36,10 @@ tasks:
       - task: elk:ns-create
       - task: elk:ns-label
       - task: elk:kapply
+      - task: tailscale-ingress:upgrade
   delete:
     cmds:
+      - task: tailscale-ingress:delete
       - task: elk:kdelete
       - task: elk:ns-delete
       - task: eck:delete

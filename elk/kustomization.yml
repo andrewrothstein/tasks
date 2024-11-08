@@ -6,6 +6,3 @@ resources:
   - elasticsearch.yml
   - agents.yml
   - kibana.yml
-  - ingress.yml
-#  - gatway.yml
-#namespace: elk

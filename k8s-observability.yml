@@ -13,8 +13,8 @@ includes:
   kube-prometheus-stack: kube-prometheus-stack.yml
 #  kube-prometheus-stack: pet.yml
 
-#  elastic: elastic.yml
-  elastic: pet.yml
+#  elk: elk.yml
+  elk: pet.yml
 
 #  keda: keda.yml
   keda: pet.yml
@@ -29,12 +29,12 @@ tasks:
       - task: open-telemetry-operator:upgrade
       - task: komodor:upgrade
       - task: kube-prometheus-stack:upgrade
-      - task: elastic:upgrade
+      - task: elk:upgrade
       - task: keda:upgrade
   delete:
     cmds:
       - task: keda:delete
-      - task: elastic:delete
+      - task: elk:delete
       - task: kube-prometheus-stack:delete
       - task: komodor:delete
       - task: open-telemetry-operator:delete
@@ -45,5 +45,5 @@ tasks:
       - task: open-telemetry-operator:check
       - task: komodor:check
       - task: kube-prometheus-stack:check
-      - task: elastic:check
+      - task: elk:check
       - task: keda:check
