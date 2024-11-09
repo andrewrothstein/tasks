@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: elk
+    name: kibana
+    tls: true
+    host: kibana
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: kibana-kb-http
+      port:
+        number: 5601
