@@ -19,6 +19,9 @@ includes:
 #  gitlab: gitlab.yml
   gitlab: pet.yml
 
+  harbor: harbor.yml
+#  harbor: pet.yml
+
 tasks:
   default:
     deps:
@@ -31,8 +34,10 @@ tasks:
       - task: awx:upgrade
       - task: gitea:upgrade
       - task: gitlab:upgrade
+      - task: harbor:upgrade
   delete:
     cmds:
+      - task: harbor:delete
       - task: gitlab:delete
       - task: gitea:delete
       - task: awx:delete
@@ -45,3 +50,4 @@ tasks:
       - task: awx:check
       - task: gitea:check
       - task: gitlab:check
+      - task: harbor:check
