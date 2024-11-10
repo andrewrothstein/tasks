@@ -2,7 +2,6 @@
 version: '3'
 vars:
   istio_ver: 1.23.3
-  gateway-api: gateway-api.yml
 includes:
   repo: istio-repo.yml
   istio-base:
@@ -51,7 +50,6 @@ tasks:
     deps:
       - repo
     cmds:
-      - task: gateway-api:apply
       - task: istio-base:upgrade
       - task: cni:upgrade
       - task: istiod:upgrade
@@ -62,7 +60,6 @@ tasks:
       - task: istiod:delete
       - task: cni:delete
       - task: istio-base:delete
-      - task: gateway-api:delete
   check:
     deps:
       - repo
