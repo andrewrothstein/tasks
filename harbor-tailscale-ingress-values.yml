@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: harbor
+    name: harbor-registry
+    tls: true
+    host: registry
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: harbor-registry
+      port:
+        number: 5000
