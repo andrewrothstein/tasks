@@ -1,0 +1,14 @@
+---
+version: '3'
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+  apply:
+    cmds:
+      - task: kk:apply
+  delete:
+    cmds:
+      - task: kk:delete
+  check:
+    cmds: []

@@ -1,7 +1,6 @@
 ---
 version: '3'
 includes:
-  eck: eck.yml
   elk:
     taskfile: kubectl.yml
     vars:
@@ -30,8 +29,6 @@ tasks:
     deps:
       - upgrade
   upgrade:
-    deps:
-      - task: eck:upgrade
     cmds:
       - task: elk:ns-create
       - task: elk:ns-label
@@ -42,10 +39,8 @@ tasks:
       - task: tailscale-ingress:delete
       - task: elk:kdelete
       - task: elk:ns-delete
-      - task: eck:delete
   check:
-    deps:
-      - task: eck:check
+    cmds: []
   elastic-creds:
     cmds:
       - task: elastic-secrets:get

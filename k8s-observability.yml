@@ -19,6 +19,15 @@ includes:
 #  keda: keda.yml
   keda: pet.yml
 
+  eck: eck.yml
+#  eck: pet.yml
+
+  jaeger: jaeger.yml
+#  jaeger: pet.yml
+
+  kiali: kiali.yml
+#  kiali: pet.yml
+
 tasks:
   default:
     deps:
@@ -29,12 +38,18 @@ tasks:
       - task: open-telemetry-operator:upgrade
       - task: komodor:upgrade
       - task: kube-prometheus-stack:upgrade
+      - task: eck:upgrade
       - task: elk:upgrade
       - task: keda:upgrade
+      - task: kiali:upgrade
+      - task: jaeger:upgrade
   delete:
     cmds:
+      - task: jaeger:delete
+      - task: kiali:upgrade
       - task: keda:delete
       - task: elk:delete
+      - task: eck:delete
       - task: kube-prometheus-stack:delete
       - task: komodor:delete
       - task: open-telemetry-operator:delete
@@ -45,5 +60,8 @@ tasks:
       - task: open-telemetry-operator:check
       - task: komodor:check
       - task: kube-prometheus-stack:check
+      - task: eck:check
       - task: elk:check
       - task: keda:check
+      - task: kiali:check
+      - task: jaeger:check

@@ -2,11 +2,8 @@
 version: '3'
 vars:
   istio_ver: 1.23.3
+  gateway-api: gateway-api.yml
 includes:
-  gateway-api:
-    taskfile: kubectl.yml
-    vars:
-      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
   repo: istio-repo.yml
   istio-base:
     taskfile: helm.yml
@@ -43,7 +40,6 @@ includes:
       chart_repo_name: istio
       chart: ztunnel
       chart_ver: '{{ .istio_ver }}'
-  kiali: kiali.yml
 tasks:
   default:
     deps:
@@ -60,10 +56,8 @@ tasks:
       - task: cni:upgrade
       - task: istiod:upgrade
       - task: ztunnel:upgrade
-      - task: kiali:upgrade
   delete:
     cmds:
-      - task: kiali:delete
       - task: ztunnel:delete
       - task: istiod:delete
       - task: cni:delete
@@ -73,4 +67,5 @@ tasks:
     deps:
       - repo
     cmds:
+      - task: gateway-api:check
       - task: istio-base:check

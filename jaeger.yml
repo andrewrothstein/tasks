@@ -1,14 +1,19 @@
 ---
 version: '3'
 includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: jaeger
+#      labels: 'istio.io/dataplane-mode=ambient'
+      k: jaeger
   repo: jaeger-repo.yml
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: jaegertracing
-      chart: jaeger-operator
-      chart_ver: 2.56.0
-      create_namespace: 'true'
+      chart: jaeger
+      chart_ver: 3.3.2
       namespace: jaeger
       name: jaeger
       helm_args: -f jaeger-values.yml
@@ -20,10 +25,15 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: kk:kapply
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:kdelete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo

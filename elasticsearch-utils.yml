@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  elastic-secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      s: elasticsearch-es-elastic-user
+tasks:
+  creds:
+    vars:
+      n: '{{ .n }}'
+    cmds:
+      - task: elastic-secrets:get
+        vars:
+          n: '{{ .n }}'
+          f: elastic
