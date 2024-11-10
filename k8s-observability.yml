@@ -40,14 +40,14 @@ tasks:
       - task: kube-prometheus-stack:upgrade
       - task: eck:upgrade
       - task: elk:upgrade
+      - task: jaeger:upgrade
       - task: keda:upgrade
       - task: kiali:upgrade
-      - task: jaeger:upgrade
   delete:
     cmds:
-      - task: jaeger:delete
       - task: kiali:upgrade
       - task: keda:delete
+      - task: jaeger:delete
       - task: elk:delete
       - task: eck:delete
       - task: kube-prometheus-stack:delete
@@ -62,6 +62,6 @@ tasks:
       - task: kube-prometheus-stack:check
       - task: eck:check
       - task: elk:check
+      - task: jaeger:check
       - task: keda:check
       - task: kiali:check
-      - task: jaeger:check
