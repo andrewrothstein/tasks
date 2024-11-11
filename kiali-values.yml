@@ -1,4 +1,5 @@
 ---
+# https://kiali.io/docs/configuration/kialis.kiali.io/
 cr:
   create: true
   namespace: istio-system
@@ -6,7 +7,23 @@ cr:
     auth:
       strategy: anonymous
     external_services:
-      tracing:
-        enabled: false
       prometheus:
         url: "http://kube-prometheus-stack-prometheus.kube-prometheus-stack.svc:9090"
+      grafana:
+        enabled: true
+        internal_url: "http://kube-prometheus-stack-grafana.kube-prometheus-stack.svc"
+        dashboards:
+          - name: "Istio Service Dashboard"
+            variables:
+              namespace: istio-system
+          - name: "Istio Workload Dashboard"
+            variables:
+              namespace: istio-system
+          - name: "Istio Mesh Dashboard"
+          - name: "Istio Control Plane Dashboard"
+          - name: "Istio Performance Dashboard"
+          - name: "Istio Wasm Extension Dashboard"
+      tracing:
+        enabled: true
+        external_url: "jaeger-query.jaeger.svc"
+        grpc_port: 16685
