@@ -25,7 +25,7 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault
-      chart_ver: 0.28.1
+      chart_ver: 0.29.0
       namespace: vault-system
       name: vault
       helm_args: >-
