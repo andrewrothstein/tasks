@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  istio_ver: 1.23.3
+  istio_ver: 1.24.0
 includes:
   repo: istio-repo.yml
   istio-base:
@@ -42,11 +42,11 @@ includes:
 tasks:
   default:
     deps:
-      - task: install
+      - task: upgrade
   up:
     deps:
-      - task: install
-  install:
+      - task: upgrade
+  upgrade:
     deps:
       - repo
     cmds:
@@ -64,5 +64,4 @@ tasks:
     deps:
       - repo
     cmds:
-      - task: gateway-api:check
       - task: istio-base:check
