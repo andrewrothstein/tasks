@@ -7,9 +7,9 @@ includes:
     vars:
       chart_repo_name: kiali
       chart: kiali-operator
-      chart_ver: 2.0.0
-      namespace: kiali-operator
+      chart_ver: 2.1.0
       create_namespace: 'true'
+      namespace: kiali-operator
       name: kiali
       helm_args: -f kiali-values.yml
   ingress:
