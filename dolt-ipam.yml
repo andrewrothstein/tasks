@@ -1,0 +1,15 @@
+---
+version: '3'
+includes:
+  d:
+    taskfile: dolt.yml
+    vars:
+      password: "dolt123"
+      db_dir: "${HOME}/.dolt"
+tasks:
+  init:
+    cmds:
+      - task: d:init
+  serve:
+    cmds:
+      - task: d:sql-server

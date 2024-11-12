@@ -3,45 +3,70 @@ version: '3'
 tasks:
   _config:
     vars:
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
       add: '{{ .add | default "true" }}'
       global: '{{ .global | default "true" }}'
       key: '{{ .key }}'
       value: '{{ .value }}'
     cmds:
-      - >-
+      - |-
+        cd {{ .db_dir | quote }};
         dolt config
-        {{ if eq .global "true" }}--global{{ end }}
-        {{ if eq .add "true" }}--add{{ end }}
-        {{ .key | quote }}
-        {{ .value | quote }}
-  config:
+          {{- if eq .global "true" }} \
+          --global
+          {{- end }}
+          {{- if eq .add "true" }} \
+          --add
+          {{- end }} \
+          {{ .key | quote }} \
+          {{ .value | quote }}
+  configure:
     vars:
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
       user_email: '{{ .user_email | default "andrew.rothstein@gmail.com" }}'
       user_name: '{{ .user_name | default "Andrew Rothstein" }}'
       default_branch: '{{ .default_branch | default "main" }}'
     cmds:
       - task: _config
         vars:
+          db_dir: '{{ .db_dir }}'
           key: user.email
           value: '{{ .user_email }}'
       - task: _config
         vars:
+          db_dir: '{{ .db_dir }}'
           key: user.name
           value: '{{ .user_name }}'
       - task: _config
         vars:
+          db_dir: '{{ .db_dir }}'
           key: init.defaultBranch
           value: '{{ .default_branch }}'
   status:
     vars:
       db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
     cmds:
-      - cd {{ .db_dir | quote }}; dolt status
-  init:
+      - |-
+        cd {{ .db_dir | quote }};
+        dolt status
+  clean:
     vars:
       db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
     cmds:
-      - cd {{ .db_dir | quote }}; dolt init
+      - |-
+        rm -rf {{ .db_dir | quote }};
+  init:
+    vars:
+      db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
+      user_email: '{{ .user_email | default "andrew.rothstein@gmail.com" }}'
+      user_name: '{{ .user_name | default "Andrew Rothstein" }}'
+    cmds:
+      - |-
+        mkdir -p {{ .db_dir | quote }};
+        cd {{ .db_dir | quote }};
+        dolt init \
+          --name={{ .user_name | quote }} \
+          --email={{ .user_email | quote }}
     status:
       - cd {{ .db_dir | quote }}; dolt status
   sql-server:
@@ -50,17 +75,31 @@ tasks:
       H: '{{ .host | default .H | default "localhost" }}'
       P: '{{ .port | default .P | default 3306 }}'
       u: '{{ .user | default .u | default "root" }}'
-      p: '{{ .password | default .p | default "" }}'
+      p: '{{ .password | default .p | default "${DOLT_ROOT_PASSWORD:-''}" }}'
       t: '{{ .timeout | default .t | default 28800000 }}'
       r: '{{ .readonly | default .r | default "false" }}'
       db_dir: '{{ .db_dir | default .USER_WORKING_DIR }}'
     cmds:
-      - >-
+      - test {{ .p | quote }}
+      - test {{ .db_dir | quote }}
+      - |-
         cd {{ .db_dir | quote }};
         dolt sql-server
-        {{ if .config }}--config={{ .config | quote }}{{ end }}
-        {{ if .H }}-H {{ .H | quote }}{{ end }}
-        {{ if .P }}-P {{ .P | quote }}{{ end }}
-        {{ if .u }}-u {{ .u | quote }}{{ end }}
-        {{ if .p }}-p {{ .p | quote }}{{ end }}
-        {{ if ne .r "false" }}-r{{ end }}
+        {{- if .config }} \
+          --config={{ .config | quote }}
+        {{- end }}
+        {{- if .H }} \
+          -H {{ .H | quote }}
+        {{- end }}
+        {{- if .P }} \
+          -P {{ .P | quote }}
+        {{- end }}
+        {{- if .u }} \
+          -u {{ .u | quote }}
+        {{- end }}
+        {{- if .p }}
+          -p {{ .p | quote }}
+        {{- end }}
+        {{- if ne .r "false" }} \
+          -r
+        {{- end }}
