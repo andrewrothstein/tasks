@@ -65,9 +65,14 @@ nodeImageSHAs:
 kindVer: 0.25.0
 k8sVer: 1.30.6
 
-#extraMounts:
-#  - hostPath: /var/run/docker.sock
-#    containerPath: /var/run/docker.sock
+extraMounts:
+  # for fun with docker in containers
+  - hostPath: /var/run/docker.sock
+    containerPath: /var/run/docker.sock
+  # for openebs
+  - hostPath: /run/udev
+    containerPath: /run/udev
+    propagation: HostToContainer
 
 #containerdConfigPatches:
 #  - |-
