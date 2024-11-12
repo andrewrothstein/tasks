@@ -1,9 +1,6 @@
 ---
 version: '3'
 includes:
-  k8s-digester: k8s-digester.yml
-  operator-sdk: pet.yml
-#  operator-sdk: operator-sdk.yml
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-network: k8s-network.yml
@@ -12,6 +9,12 @@ includes:
   k8s-dns: k8s-dns.yml
   k8s-cicd: k8s-cicd.yml
   k8s-virtualization: k8s-virtualization.yml
+
+  k8s-digester: k8s-digester.yml
+#  k8s-digester: pet.yml
+
+#  operator-sdk: operator-sdk.yml
+  operator-sdk: pet.yml
 
   dragonfly: dragonfly.yml
 #  dragonfly: pet.yml
