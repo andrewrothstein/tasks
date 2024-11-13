@@ -11,7 +11,7 @@ includes:
       namespace: coredns
       create_namespace: 'true'
       name: coredns
-      helm_args: -f coredns-etcd.yml
+      helm_args: -f coredns-values.yml
 tasks:
   default:
     deps:

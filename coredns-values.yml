@@ -1,4 +1,5 @@
 ---
+# use etcd backend
 isClusterService: false
 autoscaler:
   enabled: true
