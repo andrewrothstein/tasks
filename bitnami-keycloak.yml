@@ -1,6 +1,11 @@
 ---
 version: '3'
 includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: bitnami-keycloak
+#      labels: 'istio.io/dataplane-mode=ambient'
   bitnami-chart:
     taskfile: bitnami-chart.yml
     vars:
@@ -8,7 +13,6 @@ includes:
       chart_ver: 24.1.0
       name: bitnami-keycloak
       namespace: bitnami-keycloak
-      create_namespace: true
 tasks:
   default:
     deps:
@@ -26,6 +30,9 @@ tasks:
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
       pg_password: '{{ .pg_password | default "${KEYCLOAK_POSTGRESQL_PASSWORD}" }}'
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
       - task: bitnami-chart:upgrade
         vars:
           helm_args: |
@@ -36,6 +43,7 @@ tasks:
   delete:
     cmds:
       - task: bitnami-chart:delete
+      - task: kk:ns-delete
   check:
     cmds:
       - task: bitnami-chart:check
