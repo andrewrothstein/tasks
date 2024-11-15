@@ -2,14 +2,13 @@
 version: '3'
 tasks:
   up:
+    vars:
+      n: '{{ .n }}'
     cmds:
-      - helm repo up
+      - helm repo up{{ if .n }} {{ .n | quote }}{{ end }}
   list:
     cmds:
       - helm repo list
-  update:
-    cmds:
-      - helm repo update
   search:
     vars:
       n: '{{ .n }}'
