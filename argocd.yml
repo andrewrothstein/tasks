@@ -6,25 +6,33 @@ includes:
     internal: true
     vars:
       chart: argo-cd
-      chart_ver: 7.7.1
+      chart_ver: 7.7.3
       name: argo-cd
       namespace: argocd
-      helm_args: -f argocd-values.yml
       labels: 'istio.io/dataplane-mode=ambient'
 tasks:
   default:
     deps:
       - upgrade
-  initial-password:
+  test-secret:
     vars:
-      n: '{{ .n }}'
+      adminSecret: '{{ .adminSecret | default "${ARGOCD_ADMIN_PASSWORD}" }}'
     cmds:
-      - |-
-        argocd admin initial-password \
-          -n {{ .n | default "argocd" | quote }}
+      - test {{ .adminSecret | quote }}
   upgrade:
+    vars:
+      adminSecret: '{{ .adminSecret | default "${ARGOCD_ADMIN_PASSWORD}" }}'
     cmds:
+      - task: test-secret
+        vars:
+          adminSecret: '{{ .adminSecret }}'
       - task: argo-release:upgrade
+        vars:
+          helm_args: |-
+            \
+              -f argocd-values.yml \
+              --set configs.secret.argocdServerAdminPassword=\
+                $(htpasswd -nbBC 10 "" {{ .adminSecret | quote }} | tr -d ':\n' | sed 's/$2y/$2a/')
   delete:
     cmds:
       - task: argo-release:delete
