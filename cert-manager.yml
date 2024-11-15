@@ -1,7 +1,7 @@
 ---
 version: '3'
 includes:
-  jetstack: jetstack.yml
+  repo: jetstack.yml
   kubectl:
     taskfile: kubectl.yml
     internal: true
@@ -58,7 +58,7 @@ tasks:
       - upgrade
   check:
     deps:
-      - task: jetstack
+      - task: repo
     cmds:
       - task: cm:check
       - task: approver_policy:check
