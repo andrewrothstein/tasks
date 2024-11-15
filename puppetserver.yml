@@ -1,0 +1,37 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: puppetserver
+#      labels: 'istio.io/dataplane-mode=ambient'
+  repo: puppet.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: puppet
+      chart: puppetserver
+      chart_ver: 9.5.2
+      namespace: puppetserver
+      name: puppetserver
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
