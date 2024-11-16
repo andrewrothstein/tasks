@@ -5,7 +5,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: artifactory
-#      labels: 'istio.io/dataplane-mode=ambient'
+      labels: 'istio.io/dataplane-mode=ambient'
   repo: jfrog-repo.yml
   helm:
     taskfile: helm.yml
