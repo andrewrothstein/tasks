@@ -13,7 +13,7 @@ includes:
     vars:
       chart_repo_name: elastic
       chart: eck-operator
-      chart_ver: 2.14.0
+      chart_ver: 2.15.0
       namespace: elastic-system
       name: elastic-operator
 tasks:
