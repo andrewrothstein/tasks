@@ -1,24 +1,30 @@
 ---
 version: '3'
 includes:
-#  trivy-operator: trivy-operator.yml
-  trivy-operator: pet.yml
+  keycloak-operator: keycloak-operator.yml
+#  keycloak-operator: pet.yml
 
   keycloak: bitnami-keycloak.yml
 #  keycloak: pet.yml
+
+#  trivy-operator: trivy-operator.yml
+  trivy-operator: pet.yml
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: keycloak-operator:apply
       - task: keycloak:upgrade
       - task: trivy-operator:upgrade
   delete:
     cmds:
       - task: trivy-operator:delete
       - task: keycloak:delete
+      - task: keycloak-operator:delete
   check:
     cmds:
+      - task: keycloak-operator:check
       - task: keycloak:check
       - task: trivy-operator:check

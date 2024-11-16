@@ -1,0 +1,50 @@
+---
+version: '3'
+vars:
+  mirror: https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources
+  default_ver: 26.0.5
+  crd1: kubernetes/keycloaks.k8s.keycloak.org-v1.yml
+  crd2: kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
+  operator: kubernetes/kubernetes.yml
+  n: keycloak-operator
+includes:
+  kk:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      labels: istio.io/dataplane-mode=ambient
+tasks:
+  default:
+    cmds:
+      - task: apply
+  apply:
+    vars:
+      ver: '{{ .ver | default .default_ver }}'
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: kk:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
+      - task: kk:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kk:apply
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+  delete:
+    vars:
+      ver: '{{ .ver | default .default_ver }}'
+    cmds:
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .operator }}'
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd2 }}'
+      - task: kk:delete
+        vars:
+          f: '{{ .mirror }}/{{ .ver }}/{{ .crd1 }}'
+      - task: kk:ns-delete
+  check:
+    cmds: []
