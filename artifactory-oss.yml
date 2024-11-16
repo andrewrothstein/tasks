@@ -5,7 +5,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: artifactory
-      labels: 'istio.io/dataplane-mode=ambient'
+#      labels: 'istio.io/dataplane-mode=ambient'
   repo: jfrog-repo.yml
   helm:
     taskfile: helm.yml
@@ -67,8 +67,8 @@ tasks:
           helm_args: |-
             -f artifactory-values.yml \
               --set artifactory.postgresql.postgresqlPassword={{ .pgAdminPassword | quote }} \
-              --set artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
-              --set artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
+              --set artifactory.artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
+              --set artifactory.artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
               --set artifactory.artifactory.admin.password={{ .adminPassword | quote }}
   delete:
     cmds:
