@@ -29,10 +29,8 @@ tasks:
       - task: argo-release:upgrade
         vars:
           helm_args: |-
-            \
-              -f argocd-values.yml \
-              --set configs.secret.argocdServerAdminPassword=\
-                $(htpasswd -nbBC 10 "" {{ .adminSecret | quote }} | tr -d ':\n' | sed 's/$2y/$2a/')
+            -f argocd-values.yml \
+              --set configs.secret.argocdServerAdminPassword=$(htpasswd -nbBC 10 "" {{ .adminSecret | quote }} | tr -d ':\n' | sed 's/$2y/$2a/')
   delete:
     cmds:
       - task: argo-release:delete
