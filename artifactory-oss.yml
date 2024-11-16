@@ -1,29 +1,79 @@
 ---
 version: '3'
 includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: artifactory
+      labels: 'istio.io/dataplane-mode=ambient'
   repo: jfrog-repo.yml
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: 'true'
       namespace: artifactory
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.90.10
+      chart_ver: 107.98.8
+  secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: artifactory
 tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    vars:
+      pgAdminPassword: '{{ .pgAdminPassword | default "${ARTIFACTORY_POSTGRESQL_ADMIN_PASSWORD}" }}'
+      masterKey: '{{ .masterKey | default "${ARTIFACTORY_MASTER_KEY}" }}'
+      joinKey: '{{ .joinKey | default "${ARTIFACTORY_JOIN_KEY}" }}'
+      adminPassword: '{{ .adminPassword | default "${ARTIFACTORY_ADMIN_PASSWORD}" }}'
+    cmds:
+      - test {{ .pgAdminPassword | quote }}
+      - test {{ .masterKey | quote }}
+      - test {{ .joinKey | quote }}
+      - test {{ .adminPassword | quote }}
   upgrade:
+    vars:
+      pgAdminPassword: '{{ .pgAdminPassword | default "${ARTIFACTORY_POSTGRESQL_ADMIN_PASSWORD}" }}'
+      masterKey: '{{ .masterKey | default "${ARTIFACTORY_MASTER_KEY}" }}'
+      masterKeySecretName: '{{ .masterKeySecretName | default "master-key" }}'
+      joinKey: '{{ .joinKey | default "${ARTIFACTORY_JOIN_KEY}" }}'
+      joinKeySecretName: '{{ .joinKeySecretName | default "join-key" }}'
+      adminPassword: '{{ .adminPassword | default "${ARTIFACTORY_ADMIN_PASSWORD}" }}'
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          pgAdminPassword: '{{ .pgAdminPassword }}'
+          masterKey: '{{ .masterKey }}'
+          joinKey: '{{ .joinKey }}'
+          adminPassword: '{{ .adminPassword }}'
+      - task: secrets:create
+        vars:
+          s: '{{ .masterKeySecretName }}'
+          args: --from-literal master-key={{ .masterKey | quote }}
+      - task: secrets:create
+        vars:
+          s: '{{ .joinKeySecretName }}'
+          args: --from-literal join-key={{ .joinKey | quote }}
       - task: helm:upgrade
+        vars:
+          helm_args: |-
+            -f artifactory-values.yml \
+              --set artifactory.postgresql.postgresqlPassword={{ .pgAdminPassword | quote }} \
+              --set artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
+              --set artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
+              --set artifactory.artifactory.admin.password={{ .adminPassword | quote }}
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo

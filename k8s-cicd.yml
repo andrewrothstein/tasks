@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+  artifactory: artifactory-oss.yml
+#  artifactory: pet.yml
+
 #  flux: flux.yml
   flux: pet.yml
 
@@ -25,6 +28,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: artifactory:upgrade
       - task: flux:upgrade
       - task: argoproj:upgrade
       - task: kpack:apply
@@ -39,7 +43,9 @@ tasks:
       - task: kpack:delete
       - task: argoproj:delete
       - task: flux:delete
+      - task: artifactory:delete
   check:
     cmds:
+      - task: artifactory:check
       - task: flux:check
       - task: argoproj:check

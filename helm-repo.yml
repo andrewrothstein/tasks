@@ -21,6 +21,8 @@ tasks:
     cmds:
       - helm repo add {{ .n | quote }} {{ .url | quote }}
       - task: update
+        vars:
+          n: '{{ .n }}'
     status:
       - |
         helm \
