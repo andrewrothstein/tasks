@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - ansible.builtin.include_role:
+        name: githubixx.ansible_role_wireguard
+      become: true
+      become_user: root
+      tags:
+        - wireguard

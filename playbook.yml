@@ -1,5 +1,5 @@
 ---
-- hosts: ansible-managed
+- hosts: all
   vars:
     carvel_apps:
       - name: kapp
@@ -16,9 +16,6 @@
       tags:
         - init
         - pkg_upgrade
-    - role: githubixx.ansible_role_wireguard
-      tags:
-        - wireguard
     - role: andrewrothstein.doppler
       tags:
         - secrets
