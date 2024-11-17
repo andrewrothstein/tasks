@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: cyberark
+      url: https://cyberark.github.io/helm-charts
+tasks:
+  default:
+    deps:
+      - task: add

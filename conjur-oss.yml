@@ -1,0 +1,51 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: conjur-oss
+      labels: 'istio.io/dataplane-mode=ambient'
+  repo: cyberark.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: conjur-oss
+      name: conjur-oss
+      chart_repo_name: cyberark
+      chart: conjur-oss
+      chart_ver: 2.0.7
+tasks:
+  default:
+    deps:
+      - upgrade
+  test-secrets:
+    vars:
+      dataKey: '{{ .dataKey | default "${CONJUR_OSS_DATA_KEY}" }}'
+    cmds:
+      - test {{ .dataKey | quote }}
+  upgrade:
+    vars:
+      dataKey: '{{ .dataKey | default "${CONJUR_OSS_DATA_KEY}" }}'
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          dataKey: '{{ .dataKey }}'
+      - task: helm:upgrade
+        vars:
+          helm_args: |-
+            --set dataKey={{ .dataKey | quote }}
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
