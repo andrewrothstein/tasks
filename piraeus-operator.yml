@@ -1,0 +1,34 @@
+---
+version: '3'
+vars:
+  PIRAEUS_OPERATOR_DEFAULT_VER: v2.7.0
+  PIRAEUS_OPERATOR_MIRROR: https://github.com/piraeusdatastore/piraeus-operator/config/default
+includes:
+  kk:
+    internal: true
+    taskfile: kubectl.yml
+    vars:
+      n: piraeus-datastore
+      server_side: "true"
+tasks:
+  default:
+    cmds:
+      - task: apply
+  apply:
+    vars:
+      mirror: '{{ .mirror | default .PIRAEUS_OPERATOR_MIRROR }}'
+      ver: '{{ .ver | default .PIRAEUS_OPERATOR_DEFAULT_VER }}'
+    cmds:
+      - task: kk:kapply
+        vars:
+          k: '{{ .mirror }}?ref={{ .ver }}'
+  delete:
+    vars:
+      mirror: '{{ .mirror | default .PIRAEUS_OPERATOR_MIRROR }}'
+      ver: '{{ .ver | default .PIRAEUS_OPERATOR_DEFAULT_VER }}'
+    cmds:
+      - task: kk:kdelete
+        vars:
+          k: '{{ .mirror }}/?ref={{ .ver }}'
+  check:
+    cmds: []

@@ -12,8 +12,8 @@ includes:
 #  trident: trident.yml
   trident: pet.yml
 
-#  minio-operator: minio-operator.yml
-  minio-operator: pet.yml
+  minio-operator: minio-operator.yml
+#  minio-operator: pet.yml
 
 #  velero: velero.yml
   velero: pet.yml
@@ -24,6 +24,8 @@ includes:
 #  openebs: openebs.yml
   openebs: pet.yml
 
+  piraeus-operator: piraeus-operator.yml
+#  piraeus-operator: pet.yml
 tasks:
   default:
     deps:
@@ -33,6 +35,7 @@ tasks:
       - task: rook:upgrade
       - task: longhorn:upgrade
       - task: openebs:upgrade
+      - task: piraeus-operator:apply
       - task: csi-driver-nfs:upgrade
       - task: trident:upgrade
       - task: minio-operator:upgrade
@@ -43,6 +46,7 @@ tasks:
       - task: minio-operator:delete
       - task: trident:delete
       - task: csi-driver-nfs:delete
+      - task: piraeus-operator:delete
       - task: openebs:delete
       - task: longhorn:delete
       - task: rook:delete
@@ -50,6 +54,7 @@ tasks:
     cmds:
       - task: rook:check
       - task: longhorn:check
+      - task: piraeus-operator:check
       - task: csi-driver-nfs:check
       - task: trident:check
       - task: minio-operator:check

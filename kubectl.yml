@@ -89,12 +89,19 @@ tasks:
     vars:
       n: '{{ .n | default "default" }}'
       k: '{{ .k }}'
+      server_side: '{{ .server_side | default "false" }}'
     cmds:
-      - |
-        kubectl \
-          apply \
-          {{ if .n }} -n {{ .n | quote }}{{ end }} \
+      - |-
+        kubectl apply
+          {{- if .n }} \
+          -n {{ .n | quote }}
+          {{- end }}
+          {{- if .k }} \
           -k {{ .k | quote }}
+          {{- end }}
+          {{- if eq "true" .server_side }} \
+          --server-side
+          {{- end }}
   kdelete:
     vars:
       n: '{{ .n | default "default" }}'
