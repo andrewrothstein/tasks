@@ -1,0 +1,51 @@
+---
+version: '3'
+pulumi: pulumi.yml
+tasks:
+  login:
+    vars:
+      h: '{{ .h | default .help }}'
+      url: '{{ .url }}'
+      l: '{{ .l | default .local | default "false" }}'
+      # global flags
+      C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
+      e: '{{ .e | default .emoji }}'
+      Q: '{{ .Q | default .fully_qualified_stack_names }}'
+      logflow: '{{ .logflow }}'
+      logtostderr: '{{ .logtostderr }}'
+      memprofilerate: '{{ .memprofilerate }}'
+      non_interactive: '{{ .non_interactive }}'
+      s: '{{ .s | default .stack }}'
+      tracing: '{{ .tracing }}'
+      v: '{{ .v | default .verbose }}'
+    cmds:
+      - task: pulumi
+        vars:
+          pulumi_command: login{{ if .url }} {{ .url | quote }}{{ end }}
+          pulumi_args: |-
+            {{- if .h }} \
+              -h
+            {{- end }}
+            {{- if eq .l "true" }} \
+              -l
+            {{- end }}
+          C: '{{ .C }}'
+          e: '{{ .e }}'
+          Q: '{{ .Q }}'
+          logflow: '{{ .logflow }}'
+          logtostderr: '{{ .logtostderr }}'
+          memprofilerate: '{{ .memprofilerate }}'
+          non_interactive: '{{ .non_interactive }}'
+          s: '{{ .s }}'
+          tracing: '{{ .tracing }}'
+          v: '{{ .v }}'
+  login-help:
+    cmds:
+      - task: login
+        vars:
+          h: "true"
+  login-local:
+    cmds:
+      - task: login
+        vars:
+          local: "true"

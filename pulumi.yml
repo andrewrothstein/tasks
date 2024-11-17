@@ -1,141 +1,12 @@
 ---
 version: '3'
 tasks:
-  _pulumi:
+  default:
     vars:
       pulumi_command: '{{ .pulumi_command }}'
       pulumi_args: '{{ .pulumi_args }}'
-    cmds:
-      - |-
-        pulumi {{ .pulumi_command }}
-        {{- if .pulumi_args }}
-        {{- .pulumi_args }}
-        {{- end }}
-  login:
-    vars:
-      h: '{{ .h | default .help }}'
-      l: '{{ .l | default .local | default "false" }}'
-      C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
-    cmds:
-      - task: _pulumi
-        vars:
-          pulumi_command: login
-          pulumi_args: |-
-            {{- if .h }} \
-              -h
-            {{- end }}
-            {{- if .C }} \
-              -C {{ .C | quote }}
-            {{- end }}
-            {{- if eq .l "true" }} \
-              -l
-            {{- end }}
-  login-help:
-    cmds:
-      - task: login
-        vars:
-          h: "true"
-  login-local:
-    cmds:
-      - task: login
-        vars:
-          local: "true"
-  new:
-    vars:
-      template: '{{ .template }}'
-      url: '{{ .url }}'
-      d: '{{ .d | default .description }}'
-      dir: '{{ .dir }}'
-      f: '{{ .f | default .force | default "false" }}'
-      g: '{{ .g | default .generate_only | default "false" }}'
-      h: '{{ .h | default .help }}'
-      language: '{{ .language }}'
-      l: '{{ .l | default .list_templates | default "false" }}'
-      n: '{{ .n | default .name }}'
-      o: '{{ .o | default .offline | default "false" }}'
-      runtime_options: '{{ .runtime_options }}'
-      secrets_provider: '{{ .secrets_provider }}'
-      s: '{{ .s | default .stack }}'
-      y: '{{ .y | default .yes | default "false" }}'
-    cmds:
-      - task: _pulumi
-        vars:
-          pulumi_command: >-
-            new
-            {{ if .template }}
-            {{- .template | quote }}
-            {{- end }}
-            {{ if .url }}
-            {{- .url | quote }}
-            {{- end }}
-          pulumi_args: |-
-            {{- if .h }} \
-              -h
-            {{- end }}
-            {{- if eq "true" .l }} \
-              -l
-            {{- end }}
-            {{- if .dir }} \
-              --dir {{ .dir | quote }}
-            {{- end }}
-            {{- if eq "true" .f }} \
-              -f
-            {{- end }}
-            {{- if eq "true" .g }} \
-              -g
-            {{- end }}
-            {{- if .n }} \
-              -n {{ .n | quote }}
-            {{- end }}
-            {{- if .d }} \
-              -d {{ .d | quote }}
-            {{- end }}
-            {{- if .language }} \
-              --language {{ .language | quote }}
-            {{- end }}
-            {{- if .s }} \
-              -s {{ .s | quote }}
-            {{- end }}
-            {{- if eq "true" .y }} \
-              -y
-            {{- end }}
-  new-help:
-    cmds:
-      - task: new
-        vars:
-          h: "true"
-  new-list-templates:
-    cmds:
-      - task: new
-        vars:
-          l: "true"
-  new-kubernetes-azure-python:
-    vars:
-      dir: pulumi/aks
-    cmds:
-      - task: new
-        vars:
-          dir: '{{ .dir }}'
-          template: kubernetes-azure-python
-          y: "true"
-    status:
-      - test -d {{ .dir }}
-  test-stack-ls:
-    cmds:
-      - task: stack-ls
-        vars:
-          C: pulumi/aks
-  stack-ls:
-    vars:
-      # flags
-      a: '{{ .a | default .all }}'
-      h: '{{ .h | default .help }}'
-      j: '{{ .j | default .json }}'
-      o: '{{ .o | default .organization }}'
-      p: '{{ .p | default .project }}'
-      t: '{{ .t | default .tag }}'
       # global flags
-      C: '{{ .C | default .USER_WORKING_DIR }}'
+      C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
       e: '{{ .e | default .emoji }}'
       Q: '{{ .Q | default .fully_qualified_stack_names }}'
       logflow: '{{ .logflow }}'
@@ -146,72 +17,38 @@ tasks:
       tracing: '{{ .tracing }}'
       v: '{{ .v | default .verbose }}'
     cmds:
-      - task: _pulumi
-        vars:
-          pulumi_command: stack ls
-          pulumi_args: |-
-            {{- if .a }} \
-              -a
-            {{- end }}
-            {{- if .h }} \
-              -h
-            {{- end }}
-            {{- if .j }} \
-              -j
-            {{- end }}
-            {{- if .o }} \
-              -o {{ .o | quote }}
-            {{- end }}
-            {{- if .p }} \
-              -p {{ .p | quote }}
-            {{- end }}
-            {{- if .t }} \
-              -t {{ .t | quote }}
-            {{- end }}
-            {{- if .C }} \
-              -C {{ .C | quote }}
-            {{- end }}
-            {{- if .e }} \
-              -e
-            {{- end }}
-            {{- if .logflow }} \
-              --logflow
-            {{- end }}
-            {{- if .logtostderr }} \
-              --logtostderr
-            {{- end }}
-            {{- if .memprofilerate }} \
-              --memprofilerate {{ .memprofilerate | int }}
-            {{- end }}
-            {{- if .non_interactive }} \
-              --non-interactive
-            {{- end }}
-            {{- if .s }} \
-              -s {{ .s | quote }}
-            {{- end }}
-            {{- if .tracing }} \
-              --tracing {{ .tracing | quote }}
-            {{- end }}
-            {{- if .v }} \
-              -v {{ .v | int }}
-            {{- end }}
-  stack-init:
-    vars:
-      C: '{{ .C | default .USER_WORKING_DIR }}'
-      s: '{{ .s | default .stack_name }}'
-      o: '{{ .o | default .organization }}'
-    cmds:
       - |-
-        pulumi stack init {{ .s }}
+        pulumi {{ .pulumi_command }}
+        {{- if .pulumi_args }}
+        {{- .pulumi_args }}
+        {{- end }}
         {{- if .C }} \
           -C {{ .C | quote }}
         {{- end }}
-  test-stack-init:
-    cmds:
-      - task: stack-init
-        vars:
-          C: pulumi/aks
-          s: test-aks
+        {{- if .e }} \
+          -e
+        {{- end }}
+        {{- if .logflow }} \
+          --logflow
+        {{- end }}
+        {{- if .logtostderr }} \
+          --logtostderr
+        {{- end }}
+        {{- if .memprofilerate }} \
+          --memprofilerate {{ .memprofilerate | int }}
+        {{- end }}
+        {{- if .non_interactive }} \
+          --non-interactive
+        {{- end }}
+        {{- if .s }} \
+          -s {{ .s | quote }}
+        {{- end }}
+        {{- if .tracing }} \
+          --tracing {{ .tracing | quote }}
+        {{- end }}
+        {{- if .v }} \
+          -v {{ .v | int }}
+        {{- end }}
   up:
     vars:
       template: '{{ .template }}'

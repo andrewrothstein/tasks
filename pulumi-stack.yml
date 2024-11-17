@@ -1,0 +1,51 @@
+---
+version: '3'
+includes:
+  pulumi: pulumi.yml
+tasks:
+  ls:
+    vars:
+      # flags
+      a: '{{ .a | default .all }}'
+      h: '{{ .h | default .help }}'
+      j: '{{ .j | default .json }}'
+      o: '{{ .o | default .organization }}'
+      p: '{{ .p | default .project }}'
+      t: '{{ .t | default .tag }}'
+    cmds:
+      - task: pulumi
+        vars:
+          pulumi_command: stack ls
+          pulumi_args: |-
+            {{- if .a }} \
+              -a
+            {{- end }}
+            {{- if .h }} \
+              -h
+            {{- end }}
+            {{- if .j }} \
+              -j
+            {{- end }}
+            {{- if .o }} \
+              -o {{ .o | quote }}
+            {{- end }}
+            {{- if .p }} \
+              -p {{ .p | quote }}
+            {{- end }}
+            {{- if .t }} \
+              -t {{ .t | quote }}
+            {{- end }}
+  init:
+    vars:
+      C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
+      s: '{{ .s | default .stack_name }}'
+      o: '{{ .o | default .organization }}'
+    cmds:
+      - task: pulumi
+        vars:
+          pulumi_command: stack init {{ .s }}
+          pulumi_args: |-
+            {{- if .o }} \
+              -o {{ .o | quote }}
+            {{- end }}
+          C: '{{ .C }}'

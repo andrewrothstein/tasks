@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  stack:
+    taskfile: pulumi-stack.yml
+  vars:
+    C: pulumi/aks
+tasks:
+  test-ls:
+    cmds:
+      - task: stack:ls
+  test-init:
+    cmds:
+      - task: stack:init
+        vars:
+          s: test-aks

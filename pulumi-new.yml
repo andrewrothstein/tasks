@@ -1,0 +1,85 @@
+---
+version: '3'
+inludes:
+  pulumi: pulumi.yml
+tasks:
+  default:
+    vars:
+      template: '{{ .template }}'
+      url: '{{ .url }}'
+      d: '{{ .d | default .description }}'
+      dir: '{{ .dir }}'
+      f: '{{ .f | default .force | default "false" }}'
+      g: '{{ .g | default .generate_only | default "false" }}'
+      h: '{{ .h | default .help }}'
+      language: '{{ .language }}'
+      l: '{{ .l | default .list_templates | default "false" }}'
+      n: '{{ .n | default .name }}'
+      o: '{{ .o | default .offline | default "false" }}'
+      runtime_options: '{{ .runtime_options }}'
+      secrets_provider: '{{ .secrets_provider }}'
+      y: '{{ .y | default .yes | default "false" }}'
+    cmds:
+      - task: pulumi
+        vars:
+          pulumi_command: >-
+            new
+            {{ if .template }}
+            {{- .template | quote }}
+            {{- end }}
+            {{ if .url }}
+            {{- .url | quote }}
+            {{- end }}
+          pulumi_args: |-
+            {{- if .h }} \
+              -h
+            {{- end }}
+            {{- if eq "true" .l }} \
+              -l
+            {{- end }}
+            {{- if .dir }} \
+              --dir {{ .dir | quote }}
+            {{- end }}
+            {{- if eq "true" .f }} \
+              -f
+            {{- end }}
+            {{- if eq "true" .g }} \
+              -g
+            {{- end }}
+            {{- if .n }} \
+              -n {{ .n | quote }}
+            {{- end }}
+            {{- if .d }} \
+              -d {{ .d | quote }}
+            {{- end }}
+            {{- if .language }} \
+              --language {{ .language | quote }}
+            {{- end }}
+            {{- if .s }} \
+              -s {{ .s | quote }}
+            {{- end }}
+            {{- if eq "true" .y }} \
+              -y
+            {{- end }}
+          s: '{{ .s }}'
+  help:
+    cmds:
+      - task: default
+        vars:
+          h: "true"
+  list-templates:
+    cmds:
+      - task: default
+        vars:
+          l: "true"
+  new-kubernetes-azure-python:
+    vars:
+      dir: pulumi/aks
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          template: kubernetes-azure-python
+          y: "true"
+    status:
+      - test -d {{ .dir }}
