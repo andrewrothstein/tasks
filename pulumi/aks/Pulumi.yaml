@@ -1,0 +1,11 @@
+name: aks
+description: A Python program to deploy a Kubernetes cluster on Azure
+runtime:
+  name: python
+  options:
+    toolchain: pip
+    virtualenv: venv
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: kubernetes-azure-python
