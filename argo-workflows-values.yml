@@ -14,7 +14,7 @@ server:
     enabled: true
     ingressClassName: tailscale
     hosts:
-      - argo.elephant-frog.ts.net
+      - argo
     tls:
       - hosts:
-          - argo.elephant-frog.ts.net
+          - argo
