@@ -25,6 +25,7 @@ includes:
 #  working: pet.yml
 
   doppler: doppler.yml
+  pulumi: pulumi.yml
 tasks:
   up:
     cmds:

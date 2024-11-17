@@ -1,6 +1,17 @@
 ---
 version: '3'
 tasks:
+  login:
+    vars:
+      local: '{{ .local | default "false" }}'
+    cmds:
+      - |-
+        pulumi login
+          {{- if eq .local "true" }} \
+          --local
+          {{- end }}
   login-local:
     cmds:
-      - pulumi login --local
+      - task: login
+        vars:
+          local: "true"
