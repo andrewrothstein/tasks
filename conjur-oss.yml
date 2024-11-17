@@ -39,7 +39,8 @@ tasks:
       - task: helm:upgrade
         vars:
           helm_args: |-
-            --set dataKey={{ .dataKey | quote }}
+            -f conjur-oss-values.yml \
+              --set dataKey={{ .dataKey | quote }}
   delete:
     cmds:
       - task: helm:delete
