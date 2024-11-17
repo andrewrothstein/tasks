@@ -1,0 +1,6 @@
+---
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: '2dfa15ee-a4b6-11ef-a018-6baeb12db8bb'
+spec: {}
