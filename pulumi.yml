@@ -8,8 +8,8 @@ tasks:
     cmds:
       - |-
         pulumi {{ .pulumi_command }}
-        {{- if .pulumi_args }} \
-        {{ .pulumi_args }}
+        {{- if .pulumi_args }}
+        {{- .pulumi_args }}
         {{- end }}
   login:
     vars:
@@ -121,8 +121,10 @@ tasks:
     status:
       - test -d {{ .dir }}
   test-stack-ls:
-    vars:
-      C: pulumi/aks
+    cmds:
+      - task: stack-ls
+        vars:
+          C: pulumi/aks
   stack-ls:
     vars:
       # flags
@@ -148,7 +150,6 @@ tasks:
         vars:
           pulumi_command: stack ls
           pulumi_args: |-
-            {{- /* flags */ }}
             {{- if .a }} \
               -a
             {{- end }}
@@ -167,7 +168,6 @@ tasks:
             {{- if .t }} \
               -t {{ .t | quote }}
             {{- end }}
-            {{- /* global flags */ }}
             {{- if .C }} \
               -C {{ .C | quote }}
             {{- end }}
@@ -192,6 +192,58 @@ tasks:
             {{- if .tracing }} \
               --tracing {{ .tracing | quote }}
             {{- end }}
-            {{- if .v } \
+            {{- if .v }} \
               -v {{ .v | int }}
             {{- end }}
+  stack-init:
+    vars:
+      C: '{{ .C | default .USER_WORKING_DIR }}'
+      s: '{{ .s | default .stack_name }}'
+      o: '{{ .o | default .organization }}'
+    cmds:
+      - |-
+        pulumi stack init {{ .s }}
+        {{- if .C }} \
+          -C {{ .C | quote }}
+        {{- end }}
+  test-stack-init:
+    cmds:
+      - task: stack-init
+        vars:
+          C: pulumi/aks
+          s: test-aks
+  up:
+    vars:
+      template: '{{ .template }}'
+      url: '{{ .url }}'
+      m: '{{ .m | default .message }}'
+      C: '{{ .C | default .USER_WORKING_DIR }}'
+      s: '{{ .s | default .stack }}'
+      y: '{{ .y | default .yes }}'
+    cmds:
+      - task: _pulumi
+        vars:
+          pulumi_command: >-
+            up
+            {{ if .template }}{{ .template | quote }}{{ end }}
+            {{ if .url }}{{ .url | quote }}{{ end }}
+          pulumi_args: |-
+            {{- if .m }} \
+              -m {{ .m | quote }}
+            {{- end }}
+            {{- if .C }} \
+              -C {{ .C | quote}}
+            {{- end }}
+            {{- if .s }} \
+              -s {{ .s | quote }}
+            {{- end }}
+            {{- if eq "true" .y }} \
+              -y
+            {{- end }}
+  test-up:
+    cmds:
+      - task: up
+        vars:
+          C: pulumi/aks
+          s: test-aks
+          y: "true"

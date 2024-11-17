@@ -1,6 +1,0 @@
-config:
-  aks:kubernetesVersion: 1.26.3
-  aks:nodeVmSize: Standard_DS2_v2
-  aks:numWorkerNodes: "3"
-  aks:prefixForDns: pulumi
-  azure-native:location: westus2
