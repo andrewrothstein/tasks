@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: ansible-managed
   vars:
     carvel_apps:
       - name: kapp
@@ -9,67 +9,233 @@
 #        fs.inotify.max_user_watches: 524288
 #        fs.inotify.max_user_instances: 512
   roles:
-    - andrewrothstein.sudoers
-    - andrewrothstein.doppler
-    - andrewrothstein.pkg_upgrade
-    - andrewrothstein.docker_compose
-    - andrewrothstein.k3sup
-    - andrewrothstein.k3d
-    - andrewrothstein.kind
-    - andrewrothstein.kubectl
-    - andrewrothstein.kubelogin
-    - andrewrothstein.istio
-    - andrewrothstein.gh
-    - andrewrothstein.git
-    - andrewrothstein.jq
-    - andrewrothstein.task
-    - andrewrothstein.pinniped
-    - andrewrothstein.carvel
-    - andrewrothstein.argocd
-    - andrewrothstein.argo
-    - andrewrothstein.kubefwd
-    - andrewrothstein.kubeshark
-    - andrewrothstein.kubernetes_helm
-    - andrewrothstein.helmfile
-    - andrewrothstein.gator
-    - andrewrothstein.opa
-    - andrewrothstein.k9s
-    - andrewrothstein.cluster_api
-    - andrewrothstein.vcluster
-    - andrewrothstein.kubevirt
-    - andrewrothstein.flux
-    - andrewrothstein.cilium
-    - andrewrothstein.minio
-    - andrewrothstein.vault
-    - andrewrothstein.velero
-    - andrewrothstein.jq
-    - andrewrothstein.terraform
-    - andrewrothstein.terragrunt
-    - andrewrothstein.packer
-    - andrewrothstein.vault
-    - andrewrothstein.consul
-    - andrewrothstein.nomad
-    - andrewrothstein.dolt
-    - andrewrothstein.liquibase
-    - andrewrothstein.go_dev
-    - andrewrothstein.pack
-    - andrewrothstein.kpack
-    - andrewrothstein.kn
-    - andrewrothstein.kubeseal
-    - andrewrothstein.calicoctl
-    - andrewrothstein.operator_sdk
-    - andrewrothstein.olm
-    - andrewrothstein.trident
-    - andrewrothstein.trivy
-    - andrewrothstein.synopsysctl
-    - andrewrothstein.juicefs
-    - andrewrothstein.keycloak
-    - andrewrothstein.tea
-    - andrewrothstein.tkn
-    - andrewrothstein.up
-    - andrewrothstein.jaeger
-    - andrewrothstein.coder
-    - andrewrothstein.dragonfly2
-    - andrewrothstein.flink
-    - andrewrothstein.talos
-    - andrewrothstein.htpasswd_deps
+    - role: andrewrothstein.sudoers
+      tags:
+        - init
+    - role: andrewrothstein.pkg_upgrade
+      tags:
+        - init
+        - pkg_upgrade
+    - role: githubixx.ansible_role_wireguard
+      tags:
+        - wireguard
+    - role: andrewrothstein.doppler
+      tags:
+        - secrets
+    - role: andrewrothstein.docker_compose
+      tags:
+        - docker
+    - role: andrewrothstein.k3sup
+      tags:
+        - k8s
+        - k3s
+    - role: andrewrothstein.k3d
+      tags:
+        - k8s
+        - docker
+    - role: andrewrothstein.kind
+      tags:
+        - k8s
+        - docker
+        - kind
+    - role: andrewrothstein.kubectl
+      tags:
+        - k8s
+    - role: andrewrothstein.kubelogin
+      tags:
+        - k8s
+    - role: andrewrothstein.istio
+      tags:
+        - k8s
+        - istio
+        - servicemesh
+    - role: andrewrothstein.gh
+      tags:
+        - secrets
+        - git
+        - github
+    - role: andrewrothstein.git
+      tags:
+        - git
+        - vcs
+    - role: andrewrothstein.jq
+      tags:
+        - cli
+    - role: andrewrothstein.task
+      tags:
+        - cli
+    - role: andrewrothstein.pinniped
+      tags:
+        - secrets
+    - role: andrewrothstein.carvel
+      tags:
+        - cicd
+    - role: andrewrothstein.argocd
+      tags:
+        - cicd
+    - role: andrewrothstein.argo
+      tags:
+        - cicd
+        - dags
+    - role: andrewrothstein.kubefwd
+      tags:
+        - k8s
+    - role: andrewrothstein.kubeshark
+      tags:
+        - k8s
+    - role: andrewrothstein.kubernetes_helm
+      tags:
+        - k8s
+        - helm
+    - role: andrewrothstein.helmfile
+      tags:
+        - k8s
+        - helm
+        - helmfile
+    - role: andrewrothstein.gator
+      tags:
+        - k8s
+        - policyascode
+    - role: andrewrothstein.opa
+      tags:
+        - policyascode
+    - role: andrewrothstein.k9s
+      tags:
+        - k8s
+    - role: andrewrothstein.cluster_api
+      tags:
+        - k8s
+    - role: andrewrothstein.vcluster
+      tags:
+        - k8s
+    - role: andrewrothstein.kubevirt
+      tags:
+        - k8s
+        - vms
+    - role: andrewrothstein.flux
+      tags:
+        - k8s
+        - cicd
+    - role: andrewrothstein.cilium
+      tags:
+        - k8s
+        - sdn
+        - vpn
+        - servicemesh
+    - role: andrewrothstein.minio
+      tags:
+        - s3
+        - minio
+    - role: andrewrothstein.vault
+      tags:
+        - secrets
+    - role: andrewrothstein.velero
+      tags:
+        - backup
+        - velero
+        - storage
+    - role: andrewrothstein.terraform
+      tags:
+        - cicd
+        - cloud
+    - role: andrewrothstein.terragrunt
+      tags:
+        - cicd
+        - cloud
+    - role: andrewrothstein.packer
+      tags:
+        - cicd
+        - cloud
+    - role: andrewrothstein.consul
+      tags:
+        - serivcemesh
+    - role: andrewrothstein.nomad
+      tags:
+        - nomad
+    - role: andrewrothstein.dolt
+      tags:
+        - sql
+    - role: andrewrothstein.liquibase
+      tags:
+        - sql
+    - role: andrewrothstein.go_dev
+      tags:
+        - dev
+        - cicd
+    - role: andrewrothstein.pack
+      tags:
+        - cicd
+    - role: andrewrothstein.kpack
+      tags:
+        - cicd
+        - k8s
+    - role: andrewrothstein.kn
+      tags:
+        - serverless
+    - role: andrewrothstein.kubeseal
+      tags:
+        - k8s
+        - secrets
+    - role: andrewrothstein.calicoctl
+      tags:
+        - k8s
+        - cni
+    - role: andrewrothstein.operator_sdk
+      tags:
+        - dev
+    - role: andrewrothstein.olm
+      tags:
+        - k8s
+    - role: andrewrothstein.trident
+      tags:
+        - k8s
+        - storage
+    - role: andrewrothstein.trivy
+      tags:
+        - k8s
+        - cicd
+        - scanners
+    - role: andrewrothstein.juicefs
+      tags:
+        - storage
+    - role: andrewrothstein.keycloak
+      tags:
+        - security
+    - role: andrewrothstein.tea
+      tags:
+        - git
+        - gitea
+    - role: andrewrothstein.tkn
+      tags:
+        - tekton
+        - cicd
+        - dags
+    - role: andrewrothstein.up
+      tags:
+        - cicd
+        - cloud
+        - crossplane
+    - role: andrewrothstein.jaeger
+      tags:
+        - observability
+        - tracing
+        - ops
+    - role: andrewrothstein.coder
+      tags:
+        - k8s
+        - dev
+    - role: andrewrothstein.dragonfly2
+      tags:
+        - k8s
+        - storage
+        - registry
+    - role: andrewrothstein.flink
+      tags:
+        - data
+        - streaming
+    - role: andrewrothstein.talos
+      tags:
+        - k8s
+    - role: andrewrothstein.htpasswd_deps
+      tags:
+        - secrets
