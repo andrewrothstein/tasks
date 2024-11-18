@@ -39,13 +39,19 @@ tasks:
     vars:
       C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
       s: '{{ .s | default .stack_name }}'
-      o: '{{ .o | default .organization }}'
+      org_name: '{{ .org_name }}'
+      secrets_provider: '{{ .secrets_provider }}'
     cmds:
       - task: pulumi
         vars:
-          pulumi_command: stack init {{ .s }}
+          pulumi_command: >-
+            stack
+            init
+            {{ if .org_name }}{{ .org_name }}/
+            {{- end }}
+            {{- .s }}
           pulumi_args: |-
-            {{- if .o }} \
-              -o {{ .o | quote }}
+            {{- if .secrets_provider }} \
+              --secrets-provider {{ .secrets_provider | quote }}
             {{- end }}
           C: '{{ .C }}'
