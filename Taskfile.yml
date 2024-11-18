@@ -26,7 +26,7 @@ includes:
 
   doppler: doppler.yml
 
-  pulumi-aks: pulumi-aks.yml
+#  pulumi-aks: pulumi-aks.yml
 tasks:
   up:
     cmds:
