@@ -58,7 +58,7 @@ tasks:
       s: '{{ .s | default .stack }}'
       y: '{{ .y | default .yes }}'
     cmds:
-      - task: _pulumi
+      - task: default
         vars:
           pulumi_command: >-
             up
