@@ -21,3 +21,5 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    cmds: []

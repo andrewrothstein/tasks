@@ -22,6 +22,9 @@ includes:
 #  tekton-operator: tekton-operator.yml
   tekton-operator: pet.yml
 
+  pulumi-kubernetes-operator: pulumi-kubernetes-operator.yml
+#  pulumi-kubernetes-operator: pet.yaml
+
 tasks:
   default:
     deps:
@@ -35,8 +38,10 @@ tasks:
       - task: tekton-operator:apply
       - task: tekton-pipelines:apply
       - task: tekton-triggers:apply
+      - task: pulumi-kubernetes-operator:upgrade
   delete:
     cmds:
+      - task: pulumi-kubernetes-operator:delete
       - task: tekton-triggers:delete
       - task: tekton-pipelines:delete
       - task: tekton-operator:delete
@@ -49,3 +54,4 @@ tasks:
       - task: artifactory:check
       - task: flux:check
       - task: argoproj:check
+      - task: pulumi-kubernetes-operator:check
