@@ -15,9 +15,9 @@ includes:
       chart_ver: 1.76.6
       namespace: tailscale
       name: tailscale
-      helm_args: >-
-        --set oauth.clientId="${TAILSCALE_OPERATOR_CLIENT_ID}"
-        --set oauth.clientSecret="${TAILSCALE_OPERATOR_CLIENT_SECRET}"
+      helm_args: |-
+        --set oauth.clientId="${TAILSCALE_OPERATOR_CLIENT_ID}" \
+          --set oauth.clientSecret="${TAILSCALE_OPERATOR_CLIENT_SECRET}"
   py-k8s-tools:
     taskfile: pipenv.yml
     vars:
