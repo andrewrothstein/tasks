@@ -2,6 +2,8 @@
 version: '3'
 tasks:
   up:
+    aliases:
+      - update
     vars:
       n: '{{ .n }}'
     cmds:

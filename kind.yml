@@ -6,12 +6,19 @@ tasks:
       n: '{{ .n | default "kind" }}'
       f: '{{ .f }}'
       disableDefaultCNI: '{{ .disableDefaultCNI | default "false" }}'
+      kubeProxyMode: '{{ .kubeProxyMode }}'
     cmds:
       - |
-        helm template chart-kind \
-          {{ if .f }}-f {{ .f | quote }} \
-          {{ end -}}
-          --set disableDefaultCNI={{ .disableDefaultCNI | quote }} \
+        helm template chart-kind
+          {{- if .f }} \
+          -f {{ .f | quote }}
+          {{- end }}
+          {{- if .disableDefaultCNI }} \
+          --set disableDefaultCNI={{ .disableDefaultCNI | quote }}
+          {{- end }}
+          {{- if .kubeProxyMode }} \
+          --set kubeProxyMode={{ .kubeProxyMode | quote }}
+          {{- end }} \
           | kind create cluster \
              -n {{ .n | quote }} \
              --config=-

@@ -10,6 +10,7 @@ tasks:
   up:
     vars:
       disableDefaultCNI: '{{ .disableDefaultCNI | default false }}'
+      kubeProxyMode: '{{ .kubeProxyMode }}'
     cmds:
       - task: docker-network:create
         vars:
@@ -19,6 +20,7 @@ tasks:
         vars:
           f: chart-kind/registry-values.yaml
           disableDefaultCNI: '{{ .disableDefaultCNI }}'
+          kubeProxyMode: '{{ .kubeProxyMode }}'
       - |+
         REGISTRY_ROOT_DIR="/etc/containerd/certs.d"
         for node in $(kind get nodes); do

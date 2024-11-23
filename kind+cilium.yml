@@ -9,6 +9,7 @@ tasks:
       - task: kind:up
         vars:
           disableDefaultCNI: true
+          kubeProxyMode: none
       - task: cilium:upgrade
   delete:
     cmds:

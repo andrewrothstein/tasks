@@ -14,9 +14,9 @@ tasks:
           jq -r '.[] | select(.name=={{ .fq_chart | quote }}) | .version')
         if [ {{ .chart_ver | quote }} != "${latest}" ];
         then
-          echo "please upgrade {{ .fq_chart | quote }} from {{ .chart_ver }} to ${latest}"
+          echo "please upgrade {{ .fq_chart }} from {{ .chart_ver }} to ${latest}"
         else
-          echo "{{ .fq_chart | quote }} at latest (${latest})"
+          echo "{{ .fq_chart }} at latest (${latest})"
         fi
   upgrade:
     vars:
