@@ -6,16 +6,17 @@ tasks:
       chart_repo_name: '{{ .chart_repo_name }}'
       chart: '{{ .chart }}'
       chart_ver: '{{ .chart_ver }}'
+      fq_chart: '{{ .chart_repo_name }}/{{ .chart }}'
     cmds:
       - |
-        fq_chart="{{ .chart_repo_name }}/{{ .chart }}"
-        latest=$(helm search repo "${fq_chart}" -o json | \
-          jq -r '. | first | .version')
+        latest=$(helm search repo \
+          {{ .fq_chart | quote }} -o json | \
+          jq -r '.[] | select(.name=={{ .fq_chart | quote }}) | .version')
         if [ {{ .chart_ver | quote }} != "${latest}" ];
         then
-          echo "please upgrade ${fq_chart} from {{ .chart_ver }} to ${latest}"
+          echo "please upgrade {{ .fq_chart | quote }} from {{ .chart_ver }} to ${latest}"
         else
-          echo "${fq_chart} at latest (${latest})"
+          echo "{{ .fq_chart | quote }} at latest (${latest})"
         fi
   upgrade:
     vars:
