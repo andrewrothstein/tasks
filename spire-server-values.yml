@@ -1,0 +1,11 @@
+---
+global:
+  spire:
+    recommendations:
+      enabled: true
+    clusterName: kind
+    trustDomain: k8s.nj.drewfus.org
+    caSubject:
+      country: US
+      organization: Drewfus
+      commonName: k8s.nj.drewfus.org

@@ -5,7 +5,7 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
-      n: spire-server
+      n: spire-mgmt
       labels: 'istio.io/dataplane-mode=ambient'
   spire-crds:
     taskfile: helm.yml
@@ -13,32 +13,38 @@ includes:
       chart_repo_name: spire
       chart: spire-crds
       chart_ver: 0.5.0
-      name: crds
+      namespace: spire-mgmt
+      name: spire-crds
   spire:
     taskfile: helm.yml
     vars:
       chart_repo_name: spire
       chart: spire
       chart_ver: 0.24.1
-      namespace: spire-server
+      namespace: spire-mgmt
       name: spire
 tasks:
   default:
     deps:
-      - task: up
+      - task: upgrade
   upgrade:
     deps:
       - task: repo
     cmds:
-      - task: spire-crds:upgrade
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: spire-crds:upgrade
       - task: spire:upgrade
+        vars:
+          helm_args: |-
+            -f spire-server-values.yml \
+              --set global.spire.namespaces.system.name=spire-mgmt \
+              --set global.spire.namespaces.server.name=spire-mgmt
   delete:
     cmds:
       - task: spire:delete
-      - task: kk:ns-delete
       - task: spire-crds:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
