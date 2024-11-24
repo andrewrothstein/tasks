@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  repo: debezium-repo.yml
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: debezium
+      chart: debezium-operator
+#      chart_ver: 2.1.0
+      create_namespace: 'true'
+      namespace: debezium-operator
+      name: debezium-operator
+#      helm_args: -f debezium-operator-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
