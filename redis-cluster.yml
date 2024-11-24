@@ -1,0 +1,24 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: redis-cluster
+      labels: 'istio.io/dataplane-mode=ambient'
+      k: redis-cluster
+tasks:
+  default:
+    cmds:
+      - task: apply
+  apply:
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: kk:kapply
+  delete:
+    cmds:
+      - task: kk:kdelete
+      - task: kk:ns-delete
+  check:
+    cmds: []

@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  operator: redis-operator.yml
+  standalone: redis-standalone.yml
+#  standalone: pet.yml
+  cluster: redis-cluster.yml
+#  cluster: pet.yml
+tasks:
+  default:
+    cmds:
+      - task: up
+  up:
+    cmds:
+      - task: operator:upgrade
+      - task: standalone:apply
+      - task: cluster:apply
+  delete:
+    cmds:
+      - task: cluster:delete
+      - task: standalone:delete
+      - task: operator:delete
+  check:
+    cmds:
+      - task: operator:check

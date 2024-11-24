@@ -1,16 +1,17 @@
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
-kind: Redis
+kind: RedisCluster
 metadata:
-  name: redis-standalone
+  name: redis-cluster
 spec:
-  # redisConfig:
-  #   additionalRedisConfig: redis-external-config
+  clusterSize: 3
+  clusterVersion: v7
+  persistenceEnabled: true
   podSecurityContext:
     runAsUser: 1000
     fsGroup: 1000
   kubernetesConfig:
-    image: quay.io/opstree/redis:v7.0.12
+    image: quay.io/opstree/redis:v7.2.6
     imagePullPolicy: IfNotPresent
     resources:
       requests:
@@ -26,7 +27,7 @@ spec:
         #   - name: regcred
   redisExporter:
     enabled: false
-    image: quay.io/opstree/redis-exporter:v1.44.0
+    image: quay.io/opstree/redis-exporter:v1.48.0
     imagePullPolicy: Always
     resources:
       requests:
@@ -49,6 +50,12 @@ spec:
         #     secretKeyRef:
         #       name: mysecret
         #       key: username
+        #  redisLeader:
+        #    redisConfig:
+        #      additionalRedisConfig: redis-external-config
+        #  redisFollower:
+        #    redisConfig:
+        #      additionalRedisConfig: redis-external-config
   storage:
     volumeClaimTemplate:
       spec:
@@ -57,9 +64,15 @@ spec:
         resources:
           requests:
             storage: 1Gi
+    nodeConfVolume: true
+    nodeConfVolumeClaimTemplate:
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
             # nodeSelector:
             #   kubernetes.io/hostname: minikube
-            # podSecurityContext: {}
             # priorityClassName:
-            # affinity:
+            # Affinity:
             # Tolerations: []

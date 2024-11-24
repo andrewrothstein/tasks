@@ -31,6 +31,8 @@ includes:
 #  coderv2: coderv2.yml
   coderv2: pet.yml
 
+  redis: redis.yml
+
 tasks:
   default:
     deps:
@@ -52,8 +54,10 @@ tasks:
       - task: dragonfly:upgrade
       - task: knative:install
       - task: coderv2:upgrade
+      - task: redis:up
   delete:
     cmds:
+      - task: redis:delete
       - task: coderv2:delete
       - task: knative:delete
       - task: dragonfly:delete
@@ -83,3 +87,4 @@ tasks:
       - task: debezium-operator:check
       - task: dragonfly:check
       - task: coderv2:check
+      - task: redis:check

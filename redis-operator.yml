@@ -1,67 +1,37 @@
 ---
 version: '3'
 includes:
-  repo:
-    internal: true
-    taskfile: ot-helm.yml
+  repo: ot-helm.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: ot-operators
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
-    internal: true
     taskfile: helm.yml
     vars:
       chart_repo_name: ot-helm
-  kubectl:
-    taskfile: kubectl.yml
-    vars:
-      n: redis-instances
+      chart: redis-operator
+      chart_ver: 0.18.5
+      namespace: ot-operators
+      name: redis-operator
 tasks:
   default:
     cmds:
-      - task: upgrade-operator
-      - task: apply-instances
-  upgrade-operator:
-    vars:
-      chart: '{{ .chart | default "redis-operator" }}'
-      chart_ver: '{{ .chart_ver | default "0.16.1" }}'
-      namespace: '{{ .namespace | default "ot-operators" }}'
-      install: '{{ .install | default "true" }}'
-      create_namespace: '{{ .create_namespace | default "true" }}'
-      name: '{{ .name | default "redis-operator" }}'
+      - task: upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
-        vars:
-          install: '{{ .install }}'
-          chart: '{{ .chart }}'
-          chart_ver: '{{ .chart_ver }}'
-          namespace: '{{ .namespace }}'
-          create_namespace: '{{ .create_namespace }}'
-          name: '{{ .name }}'
+#        vars:
 #          helm_args: -f redis-operator-values.yml
   delete:
-    vars:
-      namespace: '{{ .namespace | default "ot-operators" }}'
-      name: '{{ .name | default "redis-operator" }}'
     cmds:
       - task: helm:delete
-        vars:
-          namespace: '{{ .namespace }}'
-          name: '{{ .name }}'
-  apply-instances:
+      - task: kk:ns-delete
+  check:
     cmds:
-      - task: kubectl:ns-create
-      - task: kubectl:apply
-        vars:
-          f: redis-standalone.yaml
-      - task: kubectl:apply
-        vars:
-          f: redis-cluster.yaml
-  delete-instances:
-    cmds:
-      - task: kubectl:delete
-        vars:
-          f: redis-cluster.yaml
-      - task: kubectl:delete
-        vars:
-          f: redis-standalone.yaml
-      - task: kubectl:ns-delete
+      - task: helm:check
