@@ -2,17 +2,20 @@
 version: '3'
 includes:
   repo: artifacthub-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: artifact-hub
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: artifact-hub
       chart: artifact-hub
-      chart_ver: 1.19.0
+      chart_ver: 1.20.0
       namespace: artifact-hub
-      install: 'true'
-      create_namespace: 'true'
       name: artifact-hub
-#      helm_args: -f artifact-hub-values.yml
+      helm_args: -f artifacthub-values.yml
 tasks:
   default:
     deps:
@@ -21,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo

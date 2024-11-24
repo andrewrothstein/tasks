@@ -1,0 +1,8 @@
+---
+hub:
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    tls:
+      - hosts:
+          - artifacthub

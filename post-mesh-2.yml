@@ -22,6 +22,9 @@ includes:
   harbor: harbor.yml
 #  harbor: pet.yml
 
+#  artifacthub: artifacthub.yml
+  artifacthub: pet.yml
+
 tasks:
   default:
     deps:
@@ -35,8 +38,10 @@ tasks:
       - task: gitea:upgrade
       - task: gitlab:upgrade
       - task: harbor:upgrade
+      - task: artifacthub:upgrade
   delete:
     cmds:
+      - task: artifacthub:delete
       - task: harbor:delete
       - task: gitlab:delete
       - task: gitea:delete
@@ -51,3 +56,5 @@ tasks:
       - task: gitea:check
       - task: gitlab:check
       - task: harbor:check
+      - task: artifacthub:check
+
