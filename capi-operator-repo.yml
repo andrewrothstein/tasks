@@ -1,13 +1,13 @@
 ---
 version: '3'
 includes:
-  helm-repo:
-    internal: true
+  repo:
     taskfile: helm-repo.yml
+    flatten: true
     vars:
       n: capi-operator
       url: https://kubernetes-sigs.github.io/cluster-api-operator
 tasks:
   default:
     deps:
-      - task: helm-repo:add
+      - task: add

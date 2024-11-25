@@ -25,6 +25,9 @@ includes:
 #  artifacthub: artifacthub.yml
   artifacthub: pet.yml
 
+  capi-operator: capi-operator.yml
+#  capi-operator: pet.yml
+
 tasks:
   default:
     deps:
@@ -39,8 +42,10 @@ tasks:
       - task: gitlab:upgrade
       - task: harbor:upgrade
       - task: artifacthub:upgrade
+      - task: capi-operator:upgrade
   delete:
     cmds:
+      - task: capi-operator:delete
       - task: artifacthub:delete
       - task: harbor:delete
       - task: gitlab:delete
@@ -57,4 +62,4 @@ tasks:
       - task: gitlab:check
       - task: harbor:check
       - task: artifacthub:check
-
+      - task: capi-operator:check
