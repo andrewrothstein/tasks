@@ -1,9 +1,7 @@
 ---
 version: '3'
 includes:
-  repo:
-    internal: true
-    taskfile: keda-repo.yml
+  repo: keda-repo.yml
   kk:
     taskfile: kubectl.yml
     vars:
