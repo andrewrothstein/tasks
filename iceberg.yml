@@ -1,0 +1,27 @@
+---
+version: '3'
+includes:
+  docker-compose:
+    taskfile: docker-compose.yml
+    vars:
+      p: iceberg
+      f: iceberg-compose.yml
+tasks:
+  default:
+    deps:
+      - apply
+  apply:
+    cmds:
+      - task: docker-compose:apply
+  restart:
+    cmds:
+      - task: docker-compose:restart
+  delete:
+    cmds:
+      - task: docker-compose:delete
+  logs:
+    cmds:
+      - task: docker-compose:logs
+  top:
+    cmds:
+      - task: docker-compose:top
