@@ -16,8 +16,8 @@ includes:
 #  elk: elk.yml
   elk: pet.yml
 
-#  keda: keda.yml
-  keda: pet.yml
+  keda: keda.yml
+#  keda: pet.yml
 
   eck: eck.yml
 #  eck: pet.yml

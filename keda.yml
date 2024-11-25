@@ -4,17 +4,20 @@ includes:
   repo:
     internal: true
     taskfile: keda-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: keda
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      install: 'true'
-      create_namespace: 'true'
       namespace: keda
       name: keda
       chart_repo_name: kedacore
       chart: keda
-      chart_ver: 2.15.2
+      chart_ver: 2.16.0
       helm_args: -f keda-values.yml
 tasks:
   default:
@@ -24,10 +27,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
