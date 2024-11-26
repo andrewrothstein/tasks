@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: taskmedia
+      url: https://helm.task.media
+tasks:
+  default:
+    deps:
+      - task: add
