@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: wireguard
+      url: https://bryopsida.github.io/wireguard-chart
+tasks:
+  default:
+    deps:
+      - task: add
