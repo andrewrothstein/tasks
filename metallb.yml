@@ -7,7 +7,7 @@ includes:
     internal: true
     vars:
       n: metallb-system
-      f: metallb-kind.yml
+      k: metallb-kind
   metallb:
     taskfile: helm.yml
     internal: true
@@ -17,7 +17,6 @@ includes:
       chart_repo_name: metallb
       chart_ver: 0.14.8
       chart: metallb
-      install: 'true'
       helm_args: -f metallb-values.yml
 tasks:
   default:
@@ -26,13 +25,13 @@ tasks:
   upgrade:
     deps:
       - task: repo
-      - task: kubectl:ns-create
     cmds:
+      - task: kubectl:ns-create
       - task: metallb:upgrade
-      - task: kubectl:apply
+      - task: kubectl:kapply
   delete:
     cmds:
-      - task: kubectl:delete
+      - task: kubectl:kdelete
       - task: metallb:delete
       - task: kubectl:ns-delete
   check:
