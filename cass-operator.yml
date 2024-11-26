@@ -1,0 +1,44 @@
+---
+version: '3'
+includes:
+  repo: k8ssandra-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: cass-operator
+      labels: 'istio.io/dataplane-mode=ambient'
+      k: cassandra-cluster
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: cass-operator
+      name: cass-operator
+      chart_repo_name: k8ssandra
+      chart: cass-operator
+      chart_ver: 0.54.0
+tasks:
+  default:
+    deps:
+      - upgrade
+  test-cluster:
+    cmds:
+      - task: kk:kapply
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete-cluster:
+    cmds:
+      - task: kk:kdelete
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

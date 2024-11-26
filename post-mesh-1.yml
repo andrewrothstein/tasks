@@ -9,6 +9,7 @@ includes:
   k8s-dns: k8s-dns.yml
   k8s-cicd: k8s-cicd.yml
   k8s-virtualization: k8s-virtualization.yml
+  k8s-database: k8s-database.yml
 
   strimzi-kafka-operator: strimzi-kafka-operator.yml
 #  strimzi-kafka-operator: pet.yml
@@ -49,6 +50,7 @@ tasks:
       - task: k8s-dns:up
       - task: k8s-cicd:up
       - task: k8s-virtualization:up
+      - task: k8s-database:up
       - task: strimzi-kafka-operator:upgrade
       - task: debezium-operator:upgrade
       - task: dragonfly:upgrade
@@ -63,6 +65,7 @@ tasks:
       - task: dragonfly:delete
       - task: debezium-operator:delete
       - task: strimzi-kafka-operator:delete
+      - task: k8s-database:delete
       - task: k8s-virtualization:delete
       - task: k8s-cicd:delete
       - task: k8s-observability:delete
@@ -83,6 +86,7 @@ tasks:
       - task: k8s-dns:check
       - task: k8s-cicd:check
       - task: k8s-virtualization:check
+      - task: k8s-database:check
       - task: strimzi-kafka-operator:check
       - task: debezium-operator:check
       - task: dragonfly:check

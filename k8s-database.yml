@@ -4,8 +4,11 @@ includes:
 #  postgresql: bitnami-postgresql.yml
   postgresql: pet.yml
 
-#  k8ssandra: k8ssandra.yml
-  k8ssandra: pet.yml
+  cass-operator: cass-operator.yml
+#  cass-operator: pet.yml
+
+  cnpg: cnpg.yml
+#  cnpg: pet.yml
 
 tasks:
   default:
@@ -13,9 +16,16 @@ tasks:
       - up
   up:
     cmds:
-      - task: k8ssandra:upgrade
+      - task: cass-operator:upgrade
       - task: postgresql:upgrade
+      - task: cnpg:upgrade
   delete:
     cmds:
-      - task: k8ssandra:delete
+      - task: cnpg:delete
+      - task: cass-operator:delete
       - task: postgresql:delete
+  check:
+    cmds:
+      - task: cass-operator:check
+      - task: postgresql:check
+      - task: cnpg:check
