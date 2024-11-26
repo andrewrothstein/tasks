@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: blue-agent
+      url: https://clemlesne.github.io/blue-agent
+tasks:
+  default:
+    deps:
+      - task: add

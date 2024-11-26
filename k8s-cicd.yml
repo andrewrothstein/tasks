@@ -25,8 +25,11 @@ includes:
   pulumi-kubernetes-operator: pulumi-kubernetes-operator.yml
 #  pulumi-kubernetes-operator: pet.yaml
 
-  prefect: prefect.yml
-#  prefect: pet.yml
+#  prefect: prefect.yml
+  prefect: pet.yml
+
+#  blue-agent: blue-agent.yml
+  blue-agent: pet.yml
 
 tasks:
   default:
@@ -43,8 +46,10 @@ tasks:
       - task: tekton-triggers:apply
       - task: pulumi-kubernetes-operator:upgrade
       - task: prefect:upgrade
+      - task: blue-agent:upgrade
   delete:
     cmds:
+      - task: blue-agent:delete
       - task: prefect:delete
       - task: pulumi-kubernetes-operator:delete
       - task: tekton-triggers:delete
@@ -61,3 +66,4 @@ tasks:
       - task: argoproj:check
       - task: pulumi-kubernetes-operator:check
       - task: prefect:check
+      - task: blue-agent:check

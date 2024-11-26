@@ -1,0 +1,4 @@
+---
+pipelines:
+  organizationURL: https://dev.azure.com/drewrothstein
+  poolName: blue-agent

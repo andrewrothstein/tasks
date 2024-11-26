@@ -1,0 +1,52 @@
+---
+version: '3'
+includes:
+  repo: blue-agent-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: blue-agent
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: blue-agent
+      name: blue-agent
+      chart_repo_name: blue-agent
+      chart: blue-agent
+      chart_ver: 9.0.2
+tasks:
+  test-secrets:
+    vars:
+      ado_pat: '{{ .ado_pat | default "${ADO_PAT}" }}'
+    cmds:
+      - test {{ .ado_pat | quote }}
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    vars:
+      ado_pat: '{{ .ado_pat | default "${ADO_PAT}" }}'
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          ado_path: '{{ .ado_pat }}'
+      - task: helm:upgrade
+        vars:
+          helm_args: >-
+            -f blue-agent-values.yml
+            --set pipelines.personalAccessToken={{ .ado_pat | quote }}
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
