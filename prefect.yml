@@ -1,23 +1,21 @@
 ---
 version: '3'
 includes:
-  prefect-repo: prefect-repo.yml
-  kubectl:
+  repo: prefect-repo.yml
+  kk:
     taskfile: kubectl.yml
-    internal: true
     vars:
       n: prefect
+      labels: 'istio.io/dataplane-mode=ambient'
   server:
     taskfile: helm.yml
-    internal: true
     vars:
       namespace: prefect
       name: prefect-server
       chart_repo_name: prefect
-      chart_ver: 2024.4.11235848
+      chart_ver: 2024.11.21014951
       chart: prefect-server
-      install: 'true'
-#      helm_args: -f prefect-server-values.yml
+      helm_args: -f prefect-server-values.yml
   worker:
     taskfile: helm.yml
     internal: true
@@ -25,19 +23,19 @@ includes:
       namespace: prefect
       name: prefect-worker
       chart_repo_name: prefect
-      chart_ver: 2024.4.11235848
+      chart_ver: 2024.11.21014951
       chart: prefect-worker
       helm_args: -f prefect-worker-values.yml
-      install: 'true'
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     deps:
-       - task: prefect-repo
+       - task: repo
     cmds:
-      - task: kubectl:ns-create
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: server:upgrade
       - task: worker:upgrade
   delete:
@@ -45,3 +43,9 @@ tasks:
       - task: worker:delete
       - task: server:delete
       - task: kubectl:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: server:check
+      - task: worker:check

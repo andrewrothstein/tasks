@@ -1,0 +1,6 @@
+---
+ingress:
+  enabled: true
+  className: tailscale
+  host:
+    hostname: prefect.elephant-frog.ts.net
