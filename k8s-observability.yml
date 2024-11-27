@@ -22,8 +22,8 @@ includes:
   eck: eck.yml
 #  eck: pet.yml
 
-  jaeger: jaeger.yml
-#  jaeger: pet.yml
+#  jaeger: jaeger.yml
+  jaeger: pet.yml
 
   kiali: kiali.yml
 #  kiali: pet.yml

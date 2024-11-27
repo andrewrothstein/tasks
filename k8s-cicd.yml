@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  artifactory: artifactory-oss.yml
-#  artifactory: pet.yml
+#  artifactory: artifactory-oss.yml
+  artifactory: pet.yml
 
 #  flux: flux.yml
   flux: pet.yml

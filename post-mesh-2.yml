@@ -19,14 +19,14 @@ includes:
 #  gitlab: gitlab.yml
   gitlab: pet.yml
 
-  harbor: harbor.yml
-#  harbor: pet.yml
+#  harbor: harbor.yml
+  harbor: pet.yml
 
 #  artifacthub: artifacthub.yml
   artifacthub: pet.yml
 
-  capi-operator: capi-operator.yml
-#  capi-operator: pet.yml
+#  capi-operator: capi-operator.yml
+  capi-operator: pet.yml
 
 tasks:
   default:

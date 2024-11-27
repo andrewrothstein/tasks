@@ -24,8 +24,8 @@ includes:
 #  openebs: openebs.yml
   openebs: pet.yml
 
-  piraeus-operator: piraeus-operator.yml
-#  piraeus-operator: pet.yml
+#  piraeus-operator: piraeus-operator.yml
+  piraeus-operator: pet.yml
 tasks:
   default:
     deps:
