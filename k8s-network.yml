@@ -7,7 +7,8 @@ includes:
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
 
-
+  envoygateway: envoygateway.yml
+#  envoygateway: pet.yml
 tasks:
   default:
     deps:
@@ -16,11 +17,14 @@ tasks:
     cmds:
       - task: metallb:upgrade
       - task: ingress:upgrade
+      - task: envoygateway:upgrade
   delete:
     cmds:
+      - task: envoygateway:delete
       - task: ingress:delete
       - task: metallb:delete
   check:
     cmds:
       - task: metallb:check
       - task: ingress:check
+      - task: envoygateway:check

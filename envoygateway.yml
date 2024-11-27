@@ -1,23 +1,31 @@
 ---
 version: '3'
 includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: envoy-gateway-system
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       namespace: envoy-gateway-system
-      create_namespace: 'true'
-      install: 'true'
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
       chart: gateway-helm
-      chart_ver: v1.1.0
+      chart_ver: v1.2.1
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    cmds: []

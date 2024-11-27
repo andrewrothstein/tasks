@@ -1,9 +1,9 @@
 ---
 version: '3'
 includes:
+  k8s-network: k8s-network.yml
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
-  k8s-network: k8s-network.yml
   k8s-storage: k8s-storage.yml
   k8s-observability: k8s-observability.yml
   k8s-dns: k8s-dns.yml
@@ -13,9 +13,6 @@ includes:
 
   strimzi-kafka-operator: strimzi-kafka-operator.yml
 #  strimzi-kafka-operator: pet.yml
-
-#  debezium-operator: debezium-operator.yml
-  debezium-operator: pet.yml
 
   k8s-digester: k8s-digester.yml
 #  k8s-digester: pet.yml
@@ -32,19 +29,17 @@ includes:
 #  coderv2: coderv2.yml
   coderv2: pet.yml
 
-  redis: redis.yml
-
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: k8s-network:up
       - task: k8s-digester:apply
       - task: operator-sdk:install
       - task: k8s-security:up
       - task: k8s-secrets:up
-      - task: k8s-network:up
       - task: k8s-storage:up
       - task: k8s-observability:up
       - task: k8s-dns:up
@@ -52,18 +47,14 @@ tasks:
       - task: k8s-virtualization:up
       - task: k8s-database:up
       - task: strimzi-kafka-operator:upgrade
-      - task: debezium-operator:upgrade
       - task: dragonfly:upgrade
       - task: knative:install
       - task: coderv2:upgrade
-      - task: redis:up
   delete:
     cmds:
-      - task: redis:delete
       - task: coderv2:delete
       - task: knative:delete
       - task: dragonfly:delete
-      - task: debezium-operator:delete
       - task: strimzi-kafka-operator:delete
       - task: k8s-database:delete
       - task: k8s-virtualization:delete
@@ -71,16 +62,16 @@ tasks:
       - task: k8s-observability:delete
       - task: k8s-dns:delete
       - task: k8s-storage:delete
-      - task: k8s-network:delete
       - task: k8s-secrets:delete
       - task: k8s-security:delete
       - task: operator-sdk:delete
       - task: k8s-digester:delete
+      - task: k8s-network:delete
   check:
     cmds:
+      - task: k8s-network:check
       - task: k8s-security:check
       - task: k8s-secrets:check
-      - task: k8s-network:check
       - task: k8s-storage:check
       - task: k8s-observability:check
       - task: k8s-dns:check
@@ -88,7 +79,5 @@ tasks:
       - task: k8s-virtualization:check
       - task: k8s-database:check
       - task: strimzi-kafka-operator:check
-      - task: debezium-operator:check
       - task: dragonfly:check
       - task: coderv2:check
-      - task: redis:check

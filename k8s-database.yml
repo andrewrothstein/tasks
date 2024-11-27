@@ -10,6 +10,12 @@ includes:
   cnpg: cnpg.yml
 #  cnpg: pet.yml
 
+  redis: redis.yml
+#  redis: pet.yml
+
+#  debezium-operator: debezium-operator.yml
+  debezium-operator: pet.yml
+
 tasks:
   default:
     deps:
@@ -19,8 +25,12 @@ tasks:
       - task: cass-operator:upgrade
       - task: postgresql:upgrade
       - task: cnpg:upgrade
+      - task: redis:up
+      - task: debezium-operator:upgrade
   delete:
     cmds:
+      - task: debezium-operator:delete
+      - task: redis:delete
       - task: cnpg:delete
       - task: cass-operator:delete
       - task: postgresql:delete
@@ -29,3 +39,5 @@ tasks:
       - task: cass-operator:check
       - task: postgresql:check
       - task: cnpg:check
+      - task: redis:check
+      - task: debezium-operator:check
