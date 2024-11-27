@@ -3,14 +3,19 @@ version: '3'
 dotenv:
   - .env
 includes:
+  # utilities
   ansible-test-role: ansible-test-role.yml
   ansible-galaxy: ansible-galaxy.yml
+  doppler: doppler.yml
+  helm-repo: helm-repo.yml
 
   k8s: k8s.yml
 #  k8s: pet.yml
 
   tailscale: tailscale.yml
 #  tailscale: pet.yml
+
+  gateway-api: gateway-api.yml
 
   mesh: istio.yml
 #  mesh: pet.yml
@@ -21,21 +26,15 @@ includes:
   post-mesh-2: post-mesh-2.yml
 #  post-mesh-2: pet.yml
 
-  working: working.yml
-#  working: pet.yml
-
-  doppler: doppler.yml
-
-#  pulumi-aks: pulumi-aks.yml
 tasks:
   up:
     cmds:
       - task: k8s:up
+      - task: gateway-api:apply
       - task: tailscale:upgrade
       - task: mesh:up
       - task: post-mesh-1:up
       - task: post-mesh-2:up
-      - task: working:up
   delete:
     cmds:
       - task: tailscale:cluster-evacuate
@@ -48,8 +47,9 @@ tasks:
       - up
   check:
     cmds:
-      - helm repo up
+      - task: helm-repo:up
       - task: k8s:check
+      - task: gateway-api:check
       - task: tailscale:check
       - task: mesh:check
       - task: post-mesh-1:check
