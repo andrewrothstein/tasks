@@ -9,6 +9,8 @@ includes:
 
   envoygateway: envoygateway.yml
 #  envoygateway: pet.yml
+
+  gloo-gateway: gloo-gateway.yml
 tasks:
   default:
     deps:
@@ -18,8 +20,10 @@ tasks:
       - task: metallb:upgrade
       - task: ingress:upgrade
       - task: envoygateway:upgrade
+      - task: gloo-gateway:upgrade
   delete:
     cmds:
+      - task: gloo-gateway:delete
       - task: envoygateway:delete
       - task: ingress:delete
       - task: metallb:delete
@@ -28,3 +32,4 @@ tasks:
       - task: metallb:check
       - task: ingress:check
       - task: envoygateway:check
+      - task: gloo-gateway:check
