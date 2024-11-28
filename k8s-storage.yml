@@ -9,6 +9,9 @@ includes:
   csi-driver-nfs: csi-driver-nfs.yml
 #  csi-driver-nfs: pet.yml
 
+  csi-driver-smb: csi-driver-smb.yml
+#  csi-driver-smb: pet.yml
+
 #  trident: trident.yml
   trident: pet.yml
 

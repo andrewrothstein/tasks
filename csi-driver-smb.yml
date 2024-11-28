@@ -1,0 +1,30 @@
+---
+version: '3'
+includes:
+  repo: csi-driver-smb-repo.yml
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      chart_repo_name: csi-driver-smb
+      chart: csi-driver-smb
+      chart_ver: v1.16.0
+      namespace: kube-system
+      name: csi-driver-smb
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
