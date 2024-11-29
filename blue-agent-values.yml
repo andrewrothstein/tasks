@@ -2,3 +2,7 @@
 pipelines:
   organizationURL: https://dev.azure.com/drewrothstein
   poolName: blue-agent
+  cache:
+    type: standard
+  tmpdir:
+    type: standard
