@@ -1,0 +1,12 @@
+---
+server:
+  dev:
+    enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - host: openbao
+    tls:
+      - hosts:
+          - openbao

@@ -1,0 +1,41 @@
+---
+version: '3'
+includes:
+  repo: openbao-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: openbao
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: openbao
+      name: openbao
+      chart_repo_name: openbao
+      chart: openbao
+      chart_ver: 0.6.0
+      helm_args: >-
+        -f openbao-values.yml
+        --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
