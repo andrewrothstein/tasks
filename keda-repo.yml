@@ -1,13 +1,13 @@
 ---
 version: '3'
 includes:
-  helm-repo:
+  repo:
     taskfile: helm-repo.yml
-    internal: true
+    flatten: true
     vars:
       n: kedacore
       url: https://kedacore.github.io/charts
 tasks:
   default:
     deps:
-      - task: helm-repo:add
+      - task: add
