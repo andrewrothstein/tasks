@@ -10,6 +10,7 @@ vars:
   cluster_talosconfig: '{{ .cluster_dir }}/talosconfig'
   cluster_name: talos-bootstrap
   cluster_kubeconfig: '{{ .cluster_dir }}/.kube/config'
+  cluster_nodes: 192.168.1.16,192.168.1.17,192.168.1.18,192.168.1.19,192.168.1.20
 tasks:
   talosctl:
     internal: true
@@ -145,7 +146,7 @@ tasks:
       local_path: '{{ .local_path }}'
       force: '{{ .force }}'
       nodes: '{{ .nodes }}'
-      endpoints: '{{ .endpoints }}'
+      endpoints: '{{ .endpoints | default .cluster_endpoints }}'
       talosconfig: '{{ .talosconfig }}'
       merge: '{{ .merge | default "true" }}'
     cmds:
@@ -289,4 +290,27 @@ tasks:
       - task: apply-config-worker
         vars:
           nodes: 192.168.1.20
-
+  upgrade:
+    vars:
+      endpoints: '{{ .endpoints | default .cluster_endpoints }}'
+      nodes: '{{ .nodes | default .cluster_nodes }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: upgrade
+          endpoints: '{{ .endpoints }}'
+          nodes: '{{ .nodes }}'
+          talosconfig: '{{ .talosconfig }}'
+  reboot:
+    vars:
+      endpoints: '{{ .endpoints | default .cluster_endpoints }}'
+      nodes: '{{ .nodes }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
+    cmds:
+      - task: talosctl
+        vars:
+          talosctl_cmd: reboot
+          endpoints: '{{ .endpoints }}'
+          nodes: '{{ .nodes }}'
+          talosconfig: '{{ .talosconfig }}'
