@@ -13,8 +13,8 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
   kubevirt-vms: pet.yml
 
-#  crossplane: crossplane.yml
-  crossplane: pet.yml
+  crossplane: crossplane.yml
+#  crossplane: pet.yml
 
 tasks:
   default:
