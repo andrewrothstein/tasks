@@ -4,16 +4,27 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
-      n: crossplane-azure
+      n: crossplane-system
       k: crossplane-azure
+  secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: crossplane-system
+      s: azure-secret
 tasks:
   default:
     deps:
-      - task: kapply
-  kapply:
+      - task: upgrade
+  upgrade:
     cmds:
-      - task: kk:ns-create
+      - task: secret:create
+        vars:
+          args: >-
+            --from-literal=creds="${AZURE_CREDENTIALS}"
       - task: kk:kapply
   delete:
     cmds:
       - task: kk:kdelete
+      - task: secret:delete
+  check:
+    cmds: []

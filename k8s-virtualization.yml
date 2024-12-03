@@ -16,6 +16,9 @@ includes:
   crossplane: crossplane.yml
 #  crossplane: pet.yml
 
+  crossplane-azure: crossplane-azure.yml
+#  crossplane-azure: pet.yml
+
 tasks:
   default:
     deps:
@@ -27,8 +30,10 @@ tasks:
       - task: kubevirt-cdi:apply
       - task: kubevirt-vms:apply
       - task: crossplane:upgrade
+      - task: crossplane-azure:upgrade
   delete:
     cmds:
+      - task: crossplane-azure:delete
       - task: crossplane:delete
       - task: kubevirt-vms:delete
       - task: kubevirt-cdi:delete
@@ -37,4 +42,5 @@ tasks:
   check:
     cmds:
       - task: vclusters:check
+      - task: crossplane:check
       - task: crossplane:check
