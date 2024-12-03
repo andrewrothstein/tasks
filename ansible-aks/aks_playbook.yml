@@ -1,0 +1,83 @@
+---
+- hosts: localhost
+  connection: local
+  collections:
+    - azure.azcollection
+  vars:
+    azure_subscription_id: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    resource_group_name: ansible-aks-rg
+    cluster_name: cluster-1
+    dns_prefix: ansible-aks-1
+    location: eastus
+
+    # Advanced Configurations
+    cluster_tags:
+      Environment: Production
+      Project: Tasks
+      ManagedBy: Ansible
+
+  tasks:
+    - name: Ensure Resource Group Exists
+      azure_rm_resourcegroup:
+        name: "{{ resource_group_name }}"
+        location: "{{ location }}"
+        state: present
+        tags: "{{ cluster_tags }}"
+
+    - name: Create AKS Cluster
+      azure_rm_aks:
+        name: "{{ cluster_name }}"
+        dns_prefix: "{{ dns_prefix }}"
+        resource_group: "{{ resource_group_name }}"
+        location: "{{ location }}"
+        kubernetes_version: 1.30.1
+
+        # Network Profile
+        network_profile:
+          network_plugin: azure
+          service_cidr: 10.0.0.0/16
+          dns_service_ip: 10.0.0.10
+          pod_cidr: 172.17.0.1/16
+
+        agent_pool_profiles:
+          - name: "default"
+            vm_size: "Standard_D4s_v3"
+            count: 1
+            min_count: 1
+            max_count: 3
+            os_disk_size_gb: 128
+            type: "VirtualMachineScaleSets"
+            availability_zones: [1,2,3]
+            mode: "System"
+            enable_auto_scaling: true
+          - name: "workload"
+            vm_size: "Standard_D8s_v3"
+            count: 0
+            min_count: 0  # Autoscale to zero
+            max_count: 3
+            os_disk_size_gb: 128
+            type: "VirtualMachineScaleSets"
+            availability_zones: [1,2,3]
+            mode: "User"
+            enable_auto_scaling: true
+
+        # SSH Key
+        linux_profile:
+          admin_username: azureuser
+          ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        enable_rbac: true
+        tags: "{{ cluster_tags }}"
+        state: present
+
+#    - name: Get AKS Credentials
+#      azure_rm_aks_info:
+#        name: "{{ cluster_name }}"
+#        resource_group: "{{ resource_group_name }}"
+#      register: aks_credentials
+
+#    - name: Store Kubeconfig
+#      copy:
+#        content: "{{ aks_credentials.kubeconfigs[0].kubeconfig }}"
+#        dest: "~/.kube/config"
+#        mode: '0600'
+#      when: aks_credentials.kubeconfigs is defined

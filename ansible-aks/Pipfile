@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+azure-mgmt-compute = "*"
+azure-mgmt-network = "*"
+azure-cli = "*"
+azure-identity = "*"
+azure-mgmt-containerservice = "*"
+ansible = "*"
+azure-storage-blob = "*"
+azure-mgmt-automation = "*"
+azure-mgmt-notificationhubs = "*"
+azure-mgmt-datafactory = "*"
+msgraph-core = "*"
+msgraph-sdk = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

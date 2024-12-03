@@ -1,0 +1,22 @@
+---
+- hosts: aks_nodes
+  become: true
+  vars:
+    ansible_ssh_private_key_file: '{{ ansible_env.HOME }}/.ssh/id_rsa'
+    ansible_user: azureuser  # Default user for AKS nodes
+  tasks:
+    - name: Ensure required packages are installed
+      package:
+        name:
+          - htop
+          - net-tools
+        state: present
+        update_cache: true
+
+    - name: Check system resources
+      shell: free -h
+      register: memory_output
+
+    - name: Display memory information
+      debug:
+        var: memory_output.stdout_lines
