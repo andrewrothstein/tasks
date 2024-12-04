@@ -31,6 +31,9 @@ includes:
 #  blue-agent: blue-agent.yml
   blue-agent: pet.yml
 
+#  fleet: fleet.yml
+  fleet: pet.yml
+
 tasks:
   default:
     deps:
@@ -47,8 +50,10 @@ tasks:
       - task: pulumi-kubernetes-operator:upgrade
       - task: prefect:upgrade
       - task: blue-agent:upgrade
+      - task: fleet:upgrade
   delete:
     cmds:
+      - task: fleet:delete
       - task: blue-agent:delete
       - task: prefect:delete
       - task: pulumi-kubernetes-operator:delete
@@ -67,3 +72,4 @@ tasks:
       - task: pulumi-kubernetes-operator:check
       - task: prefect:check
       - task: blue-agent:check
+      - task: fleet:check
