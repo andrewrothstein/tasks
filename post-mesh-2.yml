@@ -25,8 +25,8 @@ includes:
 #  artifacthub: artifacthub.yml
   artifacthub: pet.yml
 
-#  capi-operator: capi-operator.yml
-  capi-operator: pet.yml
+  capi-operator: capi-operator.yml
+#  capi-operator: pet.yml
 
 tasks:
   default:
