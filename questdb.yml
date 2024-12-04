@@ -1,27 +1,38 @@
 ---
 version: '3'
 includes:
-  questdb-repo: questdb-repo.yml
+  repo: questdb-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: questdb
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: 'true'
-      install: 'true'
       namespace: questdb
       name: questdb
       chart_repo_name: questdb
       chart: questdb
-      chart_ver: 0.39.0
+      chart_ver: 0.42.0
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     deps:
-      - task: questdb-repo
+      - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

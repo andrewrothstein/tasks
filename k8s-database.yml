@@ -19,6 +19,9 @@ includes:
 #  yugabyte: yugabyte.yml
   yugabyte: pet.yml
 
+#  questdb: questdb.yml
+  questdb: pet.yml
+
 tasks:
   default:
     deps:
@@ -31,8 +34,10 @@ tasks:
       - task: redis:up
       - task: debezium-operator:upgrade
       - task: yugabyte:upgrade
+      - task: questdb:upgrade
   delete:
     cmds:
+      - task: questdb:delete
       - task: yugabyte:delete
       - task: debezium-operator:delete
       - task: redis:delete
@@ -47,3 +52,4 @@ tasks:
       - task: redis:check
       - task: debezium-operator:check
       - task: yugabyte:check
+      - task: questdb:check
