@@ -16,8 +16,8 @@ includes:
   crossplane: crossplane.yml
 #  crossplane: pet.yml
 
-  crossplane-azure: crossplane-azure.yml
-#  crossplane-azure: pet.yml
+#  crossplane-azure: crossplane-azure.yml
+  crossplane-azure: pet.yml
 
 tasks:
   default:
