@@ -10,9 +10,9 @@ vars:
   # https://github.com/knative/serving/releases
   KNATIVE_SERVING_DEFAULT_VER: 1.16.0
   # https://github.com/knative/eventing/releases
-  KNATIVE_EVENTING_DEFAULT_VER: 1.16.0
+  KNATIVE_EVENTING_DEFAULT_VER: 1.16.3
   # https://github.com/knative-extensions/eventing-kafka-broker/releases
-  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.16.0
+  KNATIVE_EVENTING_KAFKA_BROKER_DEFAULT_VER: 1.16.1
   KNATIVE_MIRROR: https://github.com
 tasks:
   default:
