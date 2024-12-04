@@ -16,6 +16,9 @@ includes:
 #  debezium-operator: debezium-operator.yml
   debezium-operator: pet.yml
 
+#  yugabyte: yugabyte.yml
+  yugabyte: pet.yml
+
 tasks:
   default:
     deps:
@@ -27,8 +30,10 @@ tasks:
       - task: cnpg:upgrade
       - task: redis:up
       - task: debezium-operator:upgrade
+      - task: yugabyte:upgrade
   delete:
     cmds:
+      - task: yugabyte:delete
       - task: debezium-operator:delete
       - task: redis:delete
       - task: cnpg:delete
@@ -41,3 +46,4 @@ tasks:
       - task: cnpg:check
       - task: redis:check
       - task: debezium-operator:check
+      - task: yugabyte:check
