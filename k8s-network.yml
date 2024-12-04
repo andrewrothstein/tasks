@@ -4,8 +4,8 @@ includes:
   metallb: metallb.yml
 #  metallb: pet.yml
 
-  ngrok-ingress-controller: ngrok-ingress-controller.yml
-#  ngrok-ingress-controller: pet.yml
+  ngrok-operator: ngrok-operator.yml
+#  ngrok-operator: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
@@ -21,7 +21,7 @@ tasks:
   up:
     cmds:
       - task: metallb:upgrade
-      - task: ngrok-ingress-controller:upgrade
+      - task: ngrok-operator:upgrade
       - task: ingress:upgrade
       - task: envoygateway:upgrade
       - task: gloo-gateway:upgrade
@@ -30,12 +30,12 @@ tasks:
       - task: gloo-gateway:delete
       - task: envoygateway:delete
       - task: ingress:delete
-      - task: ngrok-ingress-controller:delete
+      - task: ngrok-operator:delete
       - task: metallb:delete
   check:
     cmds:
       - task: metallb:check
       - task: ingress:check
-      - task: ngrok-ingress-controller:check
+      - task: ngrok-operator:check
       - task: envoygateway:check
       - task: gloo-gateway:check

@@ -5,20 +5,21 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
-      n: ngrok-ingress-controller
+      n: ngrok-operator
       labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       chart_repo_name: ngrok
-      chart: kubernetes-ingress-controller
-      namespace: ngrok-ingress-controller
-      name: ngrok-ingress-controller
-      chart_ver: 0.15.0
+      chart: ngrok-operator
+      namespace: ngrok-operator
+      name: ngrok-operator
+      chart_ver: 0.16.4
       helm_args: >-
         --set credentials.apiKey="${NGROK_API_KEY}"
         --set credentials.authtoken="${NGROK_AUTHTOKEN}"
+        --set gateway.enabled=true
 tasks:
   default:
     deps:
