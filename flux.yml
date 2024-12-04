@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: flux-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: flux-system
+#      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -9,8 +14,6 @@ includes:
       chart: flux2
       chart_ver: 2.14.0
       namespace: flux-system
-      install: "true"
-      create_namespace: "true"
       name: flux
 #      helm_args: -f flux-values.yml
 tasks:
@@ -22,10 +25,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
