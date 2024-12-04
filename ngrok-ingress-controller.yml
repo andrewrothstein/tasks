@@ -2,18 +2,23 @@
 version: '3'
 includes:
   repo: ngrok.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: ngrok-ingress-controller
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      namespace: ngrok-ingress-controller
-      create_namespace: 'true'
-      install: 'true'
       chart_repo_name: ngrok
       chart: kubernetes-ingress-controller
+      namespace: ngrok-ingress-controller
       name: ngrok-ingress-controller
-      chart_ver: 0.12.4
-      helm_args: -f .ngrok-secrets.yml
+      chart_ver: 0.15.0
+      helm_args: >-
+        --set credentials.apiKey="${NGROK_API_KEY}"
+        --set credentials.authtoken="${NGROK_AUTHTOKEN}"
 tasks:
   default:
     deps:
@@ -22,7 +27,15 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
