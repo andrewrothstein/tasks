@@ -4,7 +4,6 @@ includes:
   repo: jetstack.yml
   kk:
     taskfile: kubectl.yml
-    internal: true
     vars:
       n: cert-manager
       labels: 'istio.io/dataplane-mode=ambient'
@@ -19,7 +18,6 @@ includes:
         --from-literal=tls.key="${CA_KEY}"
   cm:
     taskfile: helm.yml
-    internal: true
     vars:
       namespace: cert-manager
       name: cert-manager
@@ -29,7 +27,6 @@ includes:
       helm_args: -f cert-manager-values.yml
   approver_policy:
     taskfile: helm.yml
-    internal: true
     vars:
       namespace: cert-manager
       name: cert-manager-approver-policy
@@ -39,7 +36,6 @@ includes:
       helm_args: -f cert-manager-approver-policy-values.yml
   csi_driver:
     taskfile: helm.yml
-    internal: true
     vars:
       namespace: cert-manager
       name: cert-manager-csi-driver
@@ -48,13 +44,13 @@ includes:
       chart: cert-manager-csi-driver
   trust_manager:
     taskfile: helm.yml
-    internal: true
     vars:
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack
-      chart_ver: v0.13.0
+      chart_ver: v0.14.0
       chart: trust-manager
+      helm_args: -f trust-manager-values.yml
 tasks:
   default:
     deps:

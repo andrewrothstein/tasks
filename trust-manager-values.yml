@@ -1,0 +1,6 @@
+---
+app:
+  webhook:
+    tls:
+      approverPolicy:
+        enabled: true

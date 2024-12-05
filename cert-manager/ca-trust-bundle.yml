@@ -1,0 +1,26 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: drewfus.org  # The bundle name will also be used for the target
+spec:
+  sources:
+  - useDefaultCAs: true
+  - secret:
+      name: ca-key-pair
+      key: tls.crt
+  target:
+    # Sync the bundle to a ConfigMap called `my-org.com` in every namespace which
+    # has the label "linkerd.io/inject=enabled"
+    # All ConfigMaps will include a PEM-formatted bundle, here named "root-certs.pem"
+    # and in this case we also request binary formatted bundles in JKS and PKCS#12 formats,
+    # here named "bundle.jks" and "bundle.p12".
+    configMap:
+      key: "root-certs.pem"
+    additionalFormats:
+      jks:
+        key: "bundle.jks"
+      pkcs12:
+        key: "bundle.p12"
+#    namespaceSelector:
+#      matchLabels:
+#        trust.cert-manager.io/inject: "enabled"

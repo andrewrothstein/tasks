@@ -5,3 +5,4 @@ resources:
   - approver-policy.yml
   - selfsigned-cluster-issuer.yml
   - ca-cluster-issuer.yml
+  - ca-trust-bundle.yml
