@@ -236,3 +236,6 @@
     - role: andrewrothstein.htpasswd_deps
       tags:
         - secrets
+    - role: andrewrothstein.mkcert
+      tags:
+        - secrets

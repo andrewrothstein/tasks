@@ -72,3 +72,4 @@ roles:
   - andrewrothstein.flink
   - andrewrothstein.talos
   - andrewrothstein.htpasswd_deps
+  - andrewrothstein.mkcert
