@@ -2,12 +2,21 @@
 version: '3'
 includes:
   repo: jetstack.yml
-  kubectl:
+  kk:
     taskfile: kubectl.yml
     internal: true
     vars:
       n: cert-manager
       labels: 'istio.io/dataplane-mode=ambient'
+      k: cert-manager
+  ca-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: cert-manager
+      s: ca-key-pair
+      args: >-
+        --from-literal=tls.crt="${CA_CERT}"
+        --from-literal=tls.key="${CA_KEY}"
   cm:
     taskfile: helm.yml
     internal: true
@@ -46,12 +55,6 @@ includes:
       chart_repo_name: jetstack
       chart_ver: v0.13.0
       chart: trust-manager
-  ss:
-    taskfile: kubectl.yml
-    internal: true
-    vars:
-      n: cert-manager
-      f: cert-manager-selfsigned-cluster-issuer.yml
 tasks:
   default:
     deps:
@@ -66,26 +69,22 @@ tasks:
       - task: trust_manager:check
   upgrade:
     deps:
-       - task: repo
+      - task: repo
     cmds:
-      - task: kubectl:ns-create
-      - task: kubectl:ns-label
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: ca-secret:create
       - task: cm:upgrade
       - task: approver_policy:upgrade
-      - task: kubectl:apply
-        vars:
-          f: approver-policy.yml
       - task: csi_driver:upgrade
-      - task: ss:apply
       - task: trust_manager:upgrade
+      - task: kk:kapply
   delete:
     cmds:
+      - task: kk:kdelete
       - task: trust_manager:delete
-      - task: ss:delete
       - task: csi_driver:delete
-      - task: kubectl:delete
-        vars:
-          f: approver-policy.yml
       - task: approver_policy:delete
       - task: cm:delete
-      - task: kubectl:ns-delete
+      - task: ca-secret:delete
+      - task: kk:ns-delete
