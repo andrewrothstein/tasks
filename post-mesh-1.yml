@@ -11,8 +11,8 @@ includes:
   k8s-virtualization: k8s-virtualization.yml
   k8s-database: k8s-database.yml
 
-#  strimzi-kafka-operator: strimzi-kafka-operator.yml
-  strimzi-kafka-operator: pet.yml
+  strimzi-kafka-operator: strimzi-kafka-operator.yml
+#  strimzi-kafka-operator: pet.yml
 
   k8s-digester: k8s-digester.yml
 #  k8s-digester: pet.yml
