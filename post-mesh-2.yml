@@ -28,6 +28,9 @@ includes:
   capi-operator: capi-operator.yml
 #  capi-operator: pet.yml
 
+  open-webui: open-webui.yml
+#  open-webui: pet.yml
+
 tasks:
   default:
     deps:
@@ -43,8 +46,10 @@ tasks:
       - task: harbor:upgrade
       - task: artifacthub:upgrade
       - task: capi-operator:upgrade
+      - task: open-webui:upgrade
   delete:
     cmds:
+      - task: open-webuid:delete
       - task: capi-operator:delete
       - task: artifacthub:delete
       - task: harbor:delete
@@ -63,3 +68,4 @@ tasks:
       - task: harbor:check
       - task: artifacthub:check
       - task: capi-operator:check
+      - task: open-webui:check
