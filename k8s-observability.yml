@@ -28,7 +28,10 @@ includes:
   kiali: kiali.yml
 #  kiali: pet.yml
 
-tasks:
+  grafana: grafana.yml
+#  grafana: pet.yml
+
+1tasks:
   default:
     deps:
       - up
@@ -43,9 +46,11 @@ tasks:
       - task: jaeger:upgrade
       - task: keda:upgrade
       - task: kiali:upgrade
+      - task: grafana:upgrade
   delete:
     cmds:
-      - task: kiali:upgrade
+      - task: grafana:delete
+      - task: kiali:delete
       - task: keda:delete
       - task: jaeger:delete
       - task: elk:delete
@@ -65,3 +70,4 @@ tasks:
       - task: jaeger:check
       - task: keda:check
       - task: kiali:check
+      - task: grafana:check
