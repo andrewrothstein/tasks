@@ -1,0 +1,22 @@
+---
+version: '3'
+tasks:
+  list:
+    vars:
+      vcluster_namespace: '{{ .vcluster_namespace }}'
+    cmds:
+      - |-
+        vcluster list
+        {{- if .vcluster_namespace }} \
+          --namespace {{ .vcluster_namespace | quote }}
+        {{- end }}
+  connect:
+    vars:
+      vcluster_name: '{{ .vcluster_name }}'
+      vcluster_namespace: '{{ .vcluster_namespace }}'
+    cmds:
+      - |-
+        vcluster connect {{ .vcluster_name | quote }}
+        {{- if .vcluster_namespace }} \
+          -n {{ .vcluster_namespace | quote }}
+        {{- end }}

@@ -3,6 +3,10 @@
 version: '3'
 includes:
   repo: vcluster-repo.yml
+  vcluster-cli:
+    taskfile: vcluster-cli.yml
+    vars:
+      vcluster_namespace: preprod-vclusters
   kk:
     taskfile: kubectl.yml
     vars:
@@ -60,6 +64,7 @@ tasks:
       - task: kk:ns-create
       - task: kk:ns-label
       - task: upgrade-all-parallel
+      - task: vcluster-cli:list
   delete-all-parallel:
     internal: true
     deps:

@@ -2,10 +2,11 @@
 version: '3'
 includes:
   capi: cluster_api.yml
+  vcluster-cli: vcluster-cli.yml
 tasks:
   list:
     cmds:
-      - vcluster list
+      - task: vcluster-cli:list
   init:
     internal: true
     cmds:
@@ -95,15 +96,6 @@ tasks:
           v: '{{ .v }}'
           control_plane_machine_count: '{{ .control_plane_machine_count }}'
           worker_machine_count: '{{ .worker_machine_count }}'
-  connect:
-    vars:
-      name: '{{ .name }}'
-      n: '{{ .n }}'
-    cmds:
-      - >-
-        vcluster
-        connect {{ .name | quote }}
-        -n {{ .n | default "default" | quote }}
   apply:
     deps:
       - task: init
