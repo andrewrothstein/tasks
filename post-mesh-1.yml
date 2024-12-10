@@ -23,8 +23,8 @@ includes:
 #  dragonfly: dragonfly.yml
   dragonfly: pet.yml
 
-#  knative: knative.yml
-  knative: pet.yml
+  knative: knative.yml
+#  knative: pet.yml
 
 #  coderv2: coderv2.yml
   coderv2: pet.yml
@@ -48,7 +48,7 @@ tasks:
       - task: k8s-database:up
       - task: strimzi-kafka-operator:upgrade
       - task: dragonfly:upgrade
-      - task: knative:install
+      - task: knative:apply
       - task: coderv2:upgrade
   delete:
     cmds:
