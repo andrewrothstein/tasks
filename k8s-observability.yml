@@ -31,6 +31,9 @@ includes:
   grafana: grafana.yml
 #  grafana: pet.yml
 
+  datadog: datadog.yml
+#  datadog: pet.yml
+
 1tasks:
   default:
     deps:
@@ -47,8 +50,10 @@ includes:
       - task: keda:upgrade
       - task: kiali:upgrade
       - task: grafana:upgrade
+      - task: datadog:upgrade
   delete:
     cmds:
+      - task: datadog:delete
       - task: grafana:delete
       - task: kiali:delete
       - task: keda:delete
@@ -71,3 +76,4 @@ includes:
       - task: keda:check
       - task: kiali:check
       - task: grafana:check
+      - task: datadog:check

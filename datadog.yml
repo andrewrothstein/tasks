@@ -2,6 +2,16 @@
 version: '3'
 includes:
   repo: datadog-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: datadog
+      labels: 'istio.io/dataplane-mode=ambient'
+  datadog-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: datadog
+      s: datadog-secret
   helm:
     taskfile: helm.yml
     internal: true
@@ -10,20 +20,40 @@ includes:
       name: datadog
       chart_repo_name: datadog
       chart: datadog
-      chart_ver: 3.19.1
-      create_namespace: true
+      chart_ver: 3.83.0
       helm_args: >-
         -f datadog-values.yml
-        -f .datadog-secrets.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  test-secrets:
+    vars:
+      api_key: '{{ .api_key | default "${DATADOG_API_KEY}" }}'
+    cmds:
+      - test {{ .api_key | quote }}
+  upgrade:
+    vars:
+      api_key: '{{ .api_key | default "${DATADOG_API_KEY}" }}'
     deps:
       - task: repo
     cmds:
-      - task: helm:install
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          api_key: '{{ .api_key }}'
+      - task: datadog-secret:create
+        vars:
+          args: >-
+            --from-literal=api-key={{ .api_key | quote }}
+      - task: helm:upgrade
   delete:
     cmds:
+      - task: kk:ns-delete
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

@@ -1,4 +1,6 @@
 ---
-clusterAgent:
-  replicas: 2
-  createPodDisruptionBudget: true
+datadog:
+  apiKeyExistingSecret: datadog-secret
+  logs:
+    enabled: true
+    containerCollectAll: true
