@@ -37,9 +37,17 @@ tasks:
   default:
     cmds:
       - task: upgrade
-  upgrade-all:
+  upgrade-all-parallel:
     internal: true
     deps:
+      - task: padm:upgrade
+      - task: psh:upgrade
+      - task: pac:upgrade
+      - task: dev:upgrade
+      - task: tst:upgrade
+  upgrade-all-sequential:
+    internal: true
+    cmds:
       - task: padm:upgrade
       - task: psh:upgrade
       - task: pac:upgrade
@@ -51,8 +59,8 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
-      - task: upgrade-all
-  delete-all:
+      - task: upgrade-all-parallel
+  delete-all-parallel:
     internal: true
     deps:
       - task: tst:delete
@@ -60,7 +68,15 @@ tasks:
       - task: pac:delete
       - task: psh:delete
       - task: padm:delete
+  delete-all-sequential:
+    internal: true
+    cmds:
+      - task: tst:delete
+      - task: dev:delete
+      - task: pac:delete
+      - task: psh:delete
+      - task: padm:delete
   delete:
     cmds:
-      - task: delete-all
+      - task: delete-all-parallel
       - task: kk:ns-delete
