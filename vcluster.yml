@@ -7,54 +7,33 @@ includes:
     vars:
       chart_repo_name: loft-sh
       chart: vcluster
-      chart_ver: 0.21.0
-      namespace: vclusters
-      create_namespace: 'true'
+      chart_ver: 0.21.2
 tasks:
+  default:
+    cmds:
+      - task: repo
   check:
     deps:
       - task: repo
     cmds:
       - task: helm:check
-  create:
+  upgrade:
     vars:
-      name: '{{ .name | default "my-vcluster" }}'
+      vcluster_namespace: '{{ .vcluster_namespace }}'
+      vcluster_name: '{{ .vcluster_name }}'
     deps:
       - task: repo
     cmds:
       - task: helm:upgrade
         vars:
-          name: '{{ .name }}'
-  destroy:
+          namespace: '{{ .vcluster_namespace }}'
+          name: '{{ .vcluster_name }}'
+  delete:
     vars:
-      name: '{{ .name | default "my-vcluster" }}'
+      vcluster_namespace: '{{ .vcluster_namespace }}'
+      vcluster_name: '{{ .vcluster_name }}'
     cmds:
       - task: helm:delete
-  create-all:
-    cmds:
-      - task: create
         vars:
-          name: padm
-      - task: create
-        vars:
-          name: dev
-      - task: create
-        vars:
-          name: qa
-  destroy-all:
-    cmds:
-      - task: destroy
-        vars:
-          name: qa
-      - task: destroy
-        vars:
-          name: dev
-      - task: destroy
-        vars:
-          name: padm
-  default:
-    cmds:
-      - task: install
-  install:
-    cmds:
-      - task: create-all
+          namespace: '{{ .vcluster_namespace }}'
+          name: '{{ .vcluster_name }}'

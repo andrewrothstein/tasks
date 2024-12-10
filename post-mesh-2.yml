@@ -25,9 +25,6 @@ includes:
 #  artifacthub: artifacthub.yml
   artifacthub: pet.yml
 
-  capi-operator: capi-operator.yml
-#  capi-operator: pet.yml
-
   open-webui: open-webui.yml
 #  open-webui: pet.yml
 
@@ -45,12 +42,10 @@ tasks:
       - task: gitlab:upgrade
       - task: harbor:upgrade
       - task: artifacthub:upgrade
-      - task: capi-operator:upgrade
       - task: open-webui:upgrade
   delete:
     cmds:
       - task: open-webuid:delete
-      - task: capi-operator:delete
       - task: artifacthub:delete
       - task: harbor:delete
       - task: gitlab:delete
@@ -67,5 +62,4 @@ tasks:
       - task: gitlab:check
       - task: harbor:check
       - task: artifacthub:check
-      - task: capi-operator:check
       - task: open-webui:check

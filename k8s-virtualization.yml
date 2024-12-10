@@ -1,8 +1,11 @@
 ---
 version: '3'
 includes:
-#  vclusters: vcluster.yml
-  vclusters: pet.yml
+#  preprod-vclusters: preprod-vclusters.yml
+  preprod-vclusters: pet.yml
+
+  capi-operator: capi-operator.yml
+#  capi-operator: pet.yml
 
 #  kubevirt: kubevirt.yml
   kubevirt: pet.yml
@@ -25,7 +28,8 @@ tasks:
       - up
   up:
     cmds:
-      - task: vclusters:install
+      - task: preprod-vclusters:upgrade
+      - task: capi-operator:upgrade
       - task: kubevirt:apply
       - task: kubevirt-cdi:apply
       - task: kubevirt-vms:apply
@@ -38,9 +42,10 @@ tasks:
       - task: kubevirt-vms:delete
       - task: kubevirt-cdi:delete
       - task: kubevirt:delete
-      - task: vclusters:delete
+      - task: capi-operator:delete
+      - task: preprod-vclusters:delete
   check:
     cmds:
-      - task: vclusters:check
-      - task: crossplane:check
+      - task: preprod-vclusters:check
+      - task: capi-operator:check
       - task: crossplane:check

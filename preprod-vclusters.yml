@@ -1,0 +1,66 @@
+
+---
+version: '3'
+includes:
+  repo: vcluster-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: preprod-vclusters
+      labels: 'istio.io/dataplane-mode=ambient'
+  padm:
+    taskfile: vcluster.yml
+    vars:
+      vcluster_namespace: preprod-vclusters
+      vcluster_name: padm
+  psh:
+    taskfile: vcluster.yml
+    vars:
+      vcluster_namespace: preprod-vclusters
+      vcluster_name: psh
+  pac:
+    taskfile: vcluster.yml
+    vars:
+      vcluster_namespace: preprod-vclusters
+      vcluster_name: pac
+  dev:
+    taskfile: vcluster.yml
+    vars:
+      vcluster_namespace: preprod-vclusters
+      vcluster_name: dev
+  tst:
+    vcluster_namespace: preprod-vclusters
+    taskfile: vcluster.yml
+    vars:
+      vcluster_name: tst
+tasks:
+  default:
+    cmds:
+      - task: upgrade
+  upgrade-all:
+    internal: true
+    deps:
+      - task: padm:upgrade
+      - task: psh:upgrade
+      - task: pac:upgrade
+      - task: dev:upgrade
+      - task: tst:upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: upgrade-all
+  delete-all:
+    internal: true
+    deps:
+      - task: tst:delete
+      - task: dev:delete
+      - task: pac:delete
+      - task: psh:delete
+      - task: padm:delete
+  delete:
+    cmds:
+      - task: delete-all
+      - task: kk:ns-delete
