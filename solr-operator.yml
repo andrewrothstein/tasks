@@ -4,10 +4,6 @@ vars:
   SOLR_VER: 0.8.1
 includes:
   repo: solr-repo.yml
-  crds:
-    taskfile: kubectl.yml
-    vars:
-      f: https://solr.apache.org/operator/downloads/crds/v{{ .SOLR_VER }}/all-with-dependencies.yaml
   kk:
     taskfile: kubectl.yml
     vars:
@@ -34,15 +30,32 @@ tasks:
   default:
     deps:
       - upgrade
-  create:
-    deps:
-      - task: crds:create
+  _crds:
+    internal: true
+    vars:
+      verb: '{{ .verb | default "apply" }}'
+    cmds:
+      - |
+        wget -q "https://solr.apache.org/operator/downloads/crds/v{{ .SOLR_VER }}/all.yaml" -O - | \
+          yq eval-all 'del(.. | select(has("description")).description)' | \
+          kubectl {{ .verb }} -f -
+  crds-upgrade:
+    cmds:
+      - task: _crds
+        vars:
+          verb: apply
+  crds-delete:
+    cmds:
+      - task: _crds
+        vars:
+          verb: delete
   upgrade:
     deps:
       - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: crds-upgrade
       - task: helm:upgrade
   test:
     cmds:
@@ -51,7 +64,7 @@ tasks:
     cmds:
       - task: helm:delete
       - task: kk:ns-delete
-      - task: crds:delete
+      - task: crds-delete
   check:
     deps:
       - task: repo
