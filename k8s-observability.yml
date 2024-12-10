@@ -34,7 +34,7 @@ includes:
   datadog: datadog.yml
 #  datadog: pet.yml
 
-1tasks:
+tasks:
   default:
     deps:
       - up
