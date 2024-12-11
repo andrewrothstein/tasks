@@ -1,7 +1,12 @@
 ---
 version: '3'
 includes:
-  kk:
+  operator:
+    taskfile: kubectl.yml
+    internal: true
+    vars:
+      k: knative-operator
+  crs:
     taskfile: kubectl.yml
     internal: true
     vars:
@@ -12,7 +17,9 @@ tasks:
       - apply
   apply:
     cmds:
-      - task: kk:kapply
+      - task: operator:kapply
+      - task: crs:kapply
   delete:
     cmds:
-      - task: kk:kdelete
+      - task: crs:kdelete
+      - task: operator:kdelete
