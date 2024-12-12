@@ -1,9 +1,6 @@
 ---
 version: '3'
 includes:
-#  awx: awx-operator.yml
-  awx: pet.yml
-
 #  gatekeeper: gatekeeper.yml
   gatekeeper: pet.yml
 
@@ -37,7 +34,6 @@ tasks:
       - task: gatekeeper:upgrade
       - task: pinniped-supervisor:install
       - task: pinniped-concierge:install
-      - task: awx:upgrade
       - task: gitea:upgrade
       - task: gitlab:upgrade
       - task: harbor:upgrade
@@ -50,14 +46,12 @@ tasks:
       - task: harbor:delete
       - task: gitlab:delete
       - task: gitea:delete
-      - task: awx:delete
       - task: pinniped-concierge:delete
       - task: pinniped-supervisor:delete
       - task: gatekeeper:delete
   check:
     cmds:
       - task: gatekeeper:check
-      - task: awx:check
       - task: gitea:check
       - task: gitlab:check
       - task: harbor:check

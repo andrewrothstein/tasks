@@ -6,7 +6,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: gitlab
-#      labels: 'istio.io/dataplane-mode=ambient'
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -14,28 +14,36 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 8.5.1
+      chart_ver: 8.6.2
       helm_args: -f gitlab-values.yml
-  secret:
+  root-password:
     taskfile: k8s-literal-secret.yml
     vars:
       n: gitlab
-      s: gitlab-gitlab-initial-root-password
-      f: password
+      s: gitlab-root-password
 tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    vars:
+      gitlab_root_password: '{{ .gitlab_root_password | default "${GITLAB_ROOT_PASSWORD}" }}'
+    cmds:
+      - test {{ .gitlab_root_password | quote }}
   upgrade:
+    vars:
+      gitlab_root_password: '{{ .gitlab_root_password | default "${GITLAB_ROOT_PASSWORD}" }}'
     deps:
       - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: test-secrets
+      - task: root-password:create
+        vars:
+          args: >-
+            --from-literal=password={{ .gitlab_root_password | quote }}
       - task: helm:upgrade
-  initial-root-password:
-    cmds:
-      - task: secret:get
   delete:
     cmds:
       - task: helm:delete

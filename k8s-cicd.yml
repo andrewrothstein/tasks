@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  awx: awx-operator.yml
+  awx: pet.yml
+
 #  artifactory: artifactory-oss.yml
   artifactory: pet.yml
 
@@ -40,6 +43,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: awx:upgrade
       - task: artifactory:upgrade
       - task: flux:upgrade
       - task: argoproj:upgrade
@@ -64,8 +68,10 @@ tasks:
       - task: argoproj:delete
       - task: flux:delete
       - task: artifactory:delete
+      - task: awx:delete
   check:
     cmds:
+      - task: awx:check
       - task: artifactory:check
       - task: flux:check
       - task: argoproj:check

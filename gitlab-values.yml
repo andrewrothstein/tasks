@@ -8,27 +8,17 @@ global:
     class: tailscale
     provider: tailscale
     configureCertmanager: false
-    annotations:
-      'kubernetes.io/tls-acme': true
-      'cert-manager.io/cluster-issuer': selfsigned-cluster-issuer
+  initialRootPassword:
+    secret: gitlab-root-password
+    key: password
   pages:
-    enabled: true
+    enabled: false
 nginx-ingress:
   enabled: false
 gitlab:
-  webservice:
-    ingress:
-      tls:
-        secretName: gitlab-gitlab-tls
   kas:
     ingress:
-      tls:
-        secretName: gitlab-kas-tls
-registry:
-  ingress:
-    tls:
-      secretName: gitlab-registry-tls
+      enabled: false
 minio:
-  ingres:
-    tls:
-      secretName: gitlab-minio-tls
+  ingress:
+    enabled: false
