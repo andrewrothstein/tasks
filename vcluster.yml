@@ -2,6 +2,10 @@
 version: '3'
 includes:
   repo: vcluster-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -19,21 +23,30 @@ tasks:
       - task: helm:check
   upgrade:
     vars:
-      vcluster_namespace: '{{ .vcluster_namespace }}'
+      vcluster_namespace: 'vcluster-{{ .vcluster_name }}'
       vcluster_name: '{{ .vcluster_name }}'
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+        vars:
+          n: '{{ .vcluster_namespace }}'
+      - task: kk:ns-label
+        vars:
+          n: '{{ .vcluster_namespace }}'
       - task: helm:upgrade
         vars:
           namespace: '{{ .vcluster_namespace }}'
           name: '{{ .vcluster_name }}'
   delete:
     vars:
-      vcluster_namespace: '{{ .vcluster_namespace }}'
+      vcluster_namespace: 'vcluster-{{ .vcluster_name }}'
       vcluster_name: '{{ .vcluster_name }}'
     cmds:
       - task: helm:delete
         vars:
           namespace: '{{ .vcluster_namespace }}'
           name: '{{ .vcluster_name }}'
+      - task: kk:ns-delete
+        vars:
+          n: '{{ .vcluster_namespace }}'

@@ -5,35 +5,23 @@ includes:
   repo: vcluster-repo.yml
   vcluster-cli:
     taskfile: vcluster-cli.yml
-    vars:
-      vcluster_namespace: preprod-vclusters
-  kk:
-    taskfile: kubectl.yml
-    vars:
-      n: preprod-vclusters
-      labels: 'istio.io/dataplane-mode=ambient'
   padm:
     taskfile: vcluster.yml
     vars:
-      vcluster_namespace: preprod-vclusters
       vcluster_name: padm
   psh:
     taskfile: vcluster.yml
     vars:
-      vcluster_namespace: preprod-vclusters
       vcluster_name: psh
   pac:
     taskfile: vcluster.yml
     vars:
-      vcluster_namespace: preprod-vclusters
       vcluster_name: pac
   dev:
     taskfile: vcluster.yml
     vars:
-      vcluster_namespace: preprod-vclusters
       vcluster_name: dev
   tst:
-    vcluster_namespace: preprod-vclusters
     taskfile: vcluster.yml
     vars:
       vcluster_name: tst
@@ -61,8 +49,6 @@ tasks:
     deps:
       - task: repo
     cmds:
-      - task: kk:ns-create
-      - task: kk:ns-label
       - task: upgrade-all-parallel
       - task: vcluster-cli:list
   delete-all-parallel:
@@ -84,4 +70,4 @@ tasks:
   delete:
     cmds:
       - task: delete-all-parallel
-      - task: kk:ns-delete
+      - task: vcluster-cli:list
