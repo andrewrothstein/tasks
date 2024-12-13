@@ -2,6 +2,8 @@
 version: '3'
 includes:
   k8s-network: k8s-network.yml
+  k8s-digester: k8s-digester.yml
+#  k8s-digester: pet.yml
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
@@ -11,17 +13,8 @@ includes:
   k8s-virtualization: k8s-virtualization.yml
   k8s-database: k8s-database.yml
 
-  strimzi-kafka-operator: strimzi-kafka-operator.yml
-#  strimzi-kafka-operator: pet.yml
-
-  k8s-digester: k8s-digester.yml
-#  k8s-digester: pet.yml
-
 #  operator-sdk: operator-sdk.yml
   operator-sdk: pet.yml
-
-#  dragonfly: dragonfly.yml
-  dragonfly: pet.yml
 
   knative: knative.yml
 #  knative: pet.yml
@@ -46,16 +39,12 @@ tasks:
       - task: k8s-cicd:up
       - task: k8s-virtualization:up
       - task: k8s-database:up
-      - task: strimzi-kafka-operator:upgrade
-      - task: dragonfly:upgrade
       - task: knative:apply
       - task: coderv2:upgrade
   delete:
     cmds:
       - task: coderv2:delete
       - task: knative:delete
-      - task: dragonfly:delete
-      - task: strimzi-kafka-operator:delete
       - task: k8s-database:delete
       - task: k8s-virtualization:delete
       - task: k8s-cicd:delete
@@ -78,6 +67,4 @@ tasks:
       - task: k8s-cicd:check
       - task: k8s-virtualization:check
       - task: k8s-database:check
-      - task: strimzi-kafka-operator:check
-      - task: dragonfly:check
       - task: coderv2:check

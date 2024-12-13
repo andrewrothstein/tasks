@@ -39,6 +39,9 @@ manager:
   metrics:
     enable: true
   config:
+    auth:
+      jwt:
+        realm: Drewfus
     verbose: true
     pprofPort: 18066
 jaegar:

@@ -6,16 +6,16 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: dragonfly-system
+# failed on 13-DEC-2024
 #      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.2.22
+      chart_ver: 1.2.26
       namespace: dragonfly-system
       name: dragonfly
-      helm_args: -f dragonfly-values.yml
   tailscale-ingress:
     taskfile: helm.yml
     vars:
@@ -27,13 +27,27 @@ tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    vars:
+      dragonfly_jwt_key: '{{ .dragonfly_jwt_key | default "${DRAGONFLY_JWT_KEY}" }}'
+    cmds:
+      - test {{ .dragonfly_jwt_key | quote }}
   upgrade:
+    vars:
+      dragonfly_jwt_key: '{{ .dragonfly_jwt_key | default "${DRAGONFLY_JWT_KEY}" }}'
     deps:
       - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          dragonfly_jwt_key: '{{ .dragonfly_jwt_key }}'
       - task: helm:upgrade
+        vars:
+          helm_args: >-
+            -f dragonfly-values.yml
+            --set manager.config.auth.jwt.key={{ .dragonfly_jwt_key | quote }}
       - task: tailscale-ingress:upgrade
   delete:
     cmds:

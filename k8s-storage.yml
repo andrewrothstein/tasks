@@ -3,6 +3,9 @@ version: '3'
 
 includes:
 
+#  rook: rook.yml
+  rook: pet.yml
+
 #  longhorn: longhorn.yml
   longhorn: pet.yml
 
@@ -21,14 +24,18 @@ includes:
 #  velero: velero.yml
   velero: pet.yml
 
-#  rook: rook.yml
-  rook: pet.yml
-
 #  openebs: openebs.yml
   openebs: pet.yml
 
 #  piraeus-operator: piraeus-operator.yml
   piraeus-operator: pet.yml
+
+  strimzi-kafka-operator: strimzi-kafka-operator.yml
+#  strimzi-kafka-operator: pet.yml
+
+  dragonfly: dragonfly.yml
+#  dragonfly: pet.yml
+
 tasks:
   default:
     deps:
@@ -37,28 +44,36 @@ tasks:
     cmds:
       - task: rook:upgrade
       - task: longhorn:upgrade
-      - task: openebs:upgrade
-      - task: piraeus-operator:apply
       - task: csi-driver-nfs:upgrade
+      - task: csi-driver-smb:upgrade
       - task: trident:upgrade
       - task: minio-operator:upgrade
       - task: velero:upgrade
+      - task: openebs:upgrade
+      - task: piraeus-operator:apply
+      - task: strimzi-kafka-operator:upgrade
+      - task: dragonfly:upgrade
   delete:
     cmds:
+      - task: dragonfly:delete
+      - task: strimzi-kafka-operator:delete
+      - task: piraeus-operator:delete
+      - task: openebs:delete
       - task: velero:delete
       - task: minio-operator:delete
       - task: trident:delete
+      - task: csi-driver-smb:delete
       - task: csi-driver-nfs:delete
-      - task: piraeus-operator:delete
-      - task: openebs:delete
       - task: longhorn:delete
       - task: rook:delete
   check:
     cmds:
       - task: rook:check
       - task: longhorn:check
-      - task: piraeus-operator:check
       - task: csi-driver-nfs:check
       - task: trident:check
       - task: minio-operator:check
       - task: velero:check
+      - task: piraeus-operator:check
+      - task: strimzi-kafka-operator:check
+      - task: dragonfly:check
