@@ -2,7 +2,7 @@
 version: '3'
 vars:
   cluster_dir: '{{ .USER_WORKING_DIR }}'
-  cluster_vip_endpoint: https://192.168.1.15
+  cluster_vip_endpoint: 192.168.1.15
   cluster_endpoint: 192.168.1.16
   cluster_endpoints: 192.168.1.16,192.168.1.17,192.168.1.18
   cluster_secrets_yaml: '{{ .cluster_dir }}/secrets.yaml'
@@ -84,7 +84,7 @@ tasks:
           talosctl_cmd: >-
             gen config
             {{ .cluster_name | quote }}
-            {{ .cluster_vip_endpoint }}
+            https://{{ .cluster_vip_endpoint }}
           force: '{{ .force }}'
           extraArgs: |-
             {{- if .with_docs }} \
@@ -127,11 +127,11 @@ tasks:
           endpoints: '{{ .endpoints }}'
   kubeconfig:
     vars:
-      local_path: '{{ .local_path }}'
-      force: '{{ .force }}'
-      nodes: '{{ .nodes }}'
+      local_path: '{{ .local_path | default .cluster_kubeconfig }}'
+      force: '{{ .force | default "true" }}'
+      nodes: '{{ .nodes | default .cluster_endpoint }}'
       endpoints: '{{ .endpoints | default .cluster_endpoints }}'
-      talosconfig: '{{ .talosconfig }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
       merge: '{{ .merge | default "true" }}'
     cmds:
       - task: talosctl
@@ -149,7 +149,6 @@ tasks:
     cmds:
       - task: kubeconfig
         vars:
-          local_path: '{{ .cluster_kubeconfig }}'
           nodes: 192.168.1.16
           talosconfig: '{{ .cluster_talosconfig }}'
           force: "true"
