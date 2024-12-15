@@ -1,6 +1,0 @@
----
-machine:
-  network:
-    interfaces:
-      - interface: eno1
-        dhcp: true

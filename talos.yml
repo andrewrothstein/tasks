@@ -2,6 +2,7 @@
 version: '3'
 vars:
   cluster_dir: '{{ .USER_WORKING_DIR }}'
+  cluster_vip_endpoint: https://192.168.1.15
   cluster_endpoint: 192.168.1.16
   cluster_endpoints: 192.168.1.16,192.168.1.17,192.168.1.18
   cluster_secrets_yaml: '{{ .cluster_dir }}/secrets.yaml'
@@ -10,7 +11,13 @@ vars:
   cluster_talosconfig: '{{ .cluster_dir }}/talosconfig'
   cluster_name: talos-bootstrap
   cluster_kubeconfig: '{{ .cluster_dir }}/.kube/config'
-  cluster_nodes: 192.168.1.16,192.168.1.17,192.168.1.18,192.168.1.19,192.168.1.20
+  cluster_control_nodes: 192.168.1.16,192.168.1.17,192.168.1.18
+  cluster_worker_nodes: 192.168.1.19,192.168.1.20
+  cluster_nodes: '{{ .cluster_control_nodes }},{{ .cluster_worker_nodes }}'
+  cluster_patches: >-
+    --config-patch=@all.yaml
+    --config-patch=@network-eth0.yaml
+    --config-patch-control-plane=@vip.json
 tasks:
   talosctl:
     internal: true
@@ -63,22 +70,21 @@ tasks:
     status:
       - test -f {{ .output_file | quote }}
   gen-config:
-    internal: true
     vars:
       cluster_name: '{{ .cluster_name }}'
       cluster_endpoint: '{{ .cluster_endpoint }}'
-      with_secrets: '{{ .with_secrets }}'
+      with_secrets: '{{ .with_secrets | default .cluster_secrets_yaml }}'
       with_docs: '{{ .with_docs | default "false" }}'
       with_examples: '{{ .with_examples | default "false" }}'
-      patches: '{{ .patches }}'
-      force: '{{ .force }}'
+      patches: '{{ .patches | default .cluster_patches }}'
+      force: '{{ .force | default "true" }}'
     cmds:
       - task: talosctl
         vars:
           talosctl_cmd: >-
             gen config
             {{ .cluster_name | quote }}
-            {{ .cluster_endpoint | quote }}
+            {{ .cluster_vip_endpoint }}
           force: '{{ .force }}'
           extraArgs: |-
             {{- if .with_docs }} \
@@ -93,22 +99,11 @@ tasks:
             {{- if .with_secrets }} \
               --with-secrets {{ .with_secrets | quote }}
             {{- end }}
-  test-gen-config:
-    cmds:
-      - task: gen-config
-        vars:
-          force: "true"
-          patches: >-
-            --config-patch=@all.yaml
-            --config-patch=@network-eno1.yaml
-            --config-patch=@samsung-disk.json
-            --config-patch-control-plane=@vip.json
-          with_secrets: '{{ .cluster_secrets_yaml }}'
   bootstrap:
     vars:
-      nodes: '{{ .nodes }}'
-      endpoints: '{{ .endpoints }}'
-      talosconfig: '{{ .talosconfig }}'
+      nodes: '{{ .nodes | default .cluster_endpoint }}'
+      endpoints: '{{ .endpoints | default .cluster_endpoint }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
     cmds:
       - task: talosctl
         vars:
@@ -116,18 +111,12 @@ tasks:
           nodes: '{{ .nodes }}'
           endpoints: '{{ .endpoints }}'
           talosconfig: '{{ .talosconfig }}'
-  test-bootstrap:
-    cmds:
-      - task: bootstrap
-        vars:
-          nodes: 192.168.1.16
-          endpoints: 192.168.1.16
-          talosconfig: '{{ .cluster_talosconfig }}'
   disks:
     vars:
-      insecure: '{{ .insecure }}'
-      nodes: '{{ .nodes }}'
-      talosconfig: '{{ .talosconfig }}'
+      insecure: '{{ .insecure | default "false" }}'
+      nodes: '{{ .nodes | default .cluster_nodes }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
+      endpoints: '{{ .endpoints | default .cluster_endpoints }}'
     cmds:
       - task: talosctl
         vars:
@@ -135,12 +124,7 @@ tasks:
           insecure: '{{ .insecure }}'
           nodes: '{{ .nodes }}'
           talosconfig: '{{ .talosconfig }}'
-  test-disks:
-    cmds:
-      - task: disks
-        vars:
-          insecure: "true"
-          nodes: 192.168.1.19
+          endpoints: '{{ .endpoints }}'
   kubeconfig:
     vars:
       local_path: '{{ .local_path }}'
@@ -175,12 +159,13 @@ tasks:
         export KUBECONFIG={{ .cluster_kubeconfig | quote }}
         k9s
   apply-config:
+    internal: true
     vars:
       insecure: '{{ .insecure }}'
       nodes: '{{ .nodes }}'
-      endpoints: '{{ .endpoints }}'
+      endpoints: '{{ .endpoints | default .cluster_endpoints }}'
       file: '{{ .file }}'
-      talosconfig: '{{ .talosconfig }}'
+      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
       mode: '{{ .mode }}'
       patches: '{{ .patches }}'
     cmds:
@@ -189,7 +174,7 @@ tasks:
           talosctl_cmd: apply-config
           insecure: '{{ .insecure }}'
           nodes: '{{ .nodes }}'
-          endpoints: '{{ .endpoints | default .cluster_endpoint }}'
+          endpoints: '{{ .endpoints }}'
           talosconfig: '{{ .talosconfig }}'
           extraArgs: |-
             {{- if .file }} \
@@ -201,95 +186,26 @@ tasks:
             {{- if .patches }} \
             {{ .patches }}
             {{- end }}
-  apply-config-insecure:
-    vars:
-      nodes: '{{ .nodes }}'
-      file: '{{ .file }}'
-      patches: '{{ .patches }}'
-    cmds:
-      - task: apply-config
-        vars:
-          insecure: "true"
-          nodes: '{{ .nodes }}'
-          file: '{{ .file }}'
-          patches: '{{ .patches }}'
-  test-apply-config-controlplane-insecure:
-    cmds:
-      - task: apply-config-insecure
-        vars:
-          nodes: 192.168.1.16,192.168.1.17,192.168.1.18
-          file: '{{ .cluster_controlplane_yaml }}'
-  test-apply-config-worker-special-insecure:
-    cmds:
-      - task: apply-config-insecure
-        vars:
-          nodes: 192.168.1.19
-          file: '{{ .cluster_worker_yaml }}'
-          patches: >-
-            --config-patch=@network-eth0.yaml
-            --config-patch=@sandisk.json
-  test-apply-config-worker-insecure:
-    cmds:
-      - task: apply-config-insecure
-        vars:
-          nodes: 192.168.1.20
-          file: '{{ .cluster_worker_yaml }}'
-  test-apply-config-worker-19-insecure:
-    cmds:
-      - task: apply-config-insecure
-        vars:
-          nodes: 192.168.1.19
-          file: '{{ .cluster_worker_yaml }}'
-          patches: |-
-            \
-              --config-patch=@network-eth0.yaml \
-              --config-patch=@sandisk.json
   apply-config-controlplane:
     vars:
-      nodes: '{{ .nodes }}'
-      endpoints: '{{ .endpoints }}'
+      insecure: '{{ .insecure }}'
+      nodes: '{{ .nodes | default .cluster_control_nodes }}'
     cmds:
       - task: apply-config
         vars:
+          insecure: '{{ .insecure }}'
           nodes: '{{ .nodes }}'
-          endpoints: '{{ .endpoints }}'
           file: '{{ .cluster_controlplane_yaml }}'
-          talosconfig: '{{ .cluster_talosconfig }}'
-  test-apply-config-controlplane:
-    cmds:
-      - task: apply-config-controlplane
-        vars:
-          nodes: 192.168.1.16,192.168.1.17,192.168.1.18
-          endpoints: 192.168.1.16
   apply-config-worker:
     vars:
-      nodes: '{{ .nodes }}'
-      endpoints: '{{ .endpoints }}'
-      file: '{{ .file | default .cluster_worker_yaml }}'
-      patches: '{{ .patches }}'
-      talosconfig: '{{ .talosconfig | default .cluster_talosconfig }}'
+      insecure: '{{ .insecure }}'
+      nodes: '{{ .nodes | default .cluster_worker_nodes }}'
     cmds:
       - task: apply-config
         vars:
+          insecure: '{{ .insecure }}'
           nodes: '{{ .nodes }}'
-          endpoints: '{{ .endpoints }}'
-          file: '{{ .file }}'
-          patches: '{{ .patches }}'
-          talosconfig: '{{ .talosconfig }}'
-  apply-config-worker-19:
-    cmds:
-      - task: apply-config-worker
-        vars:
-          nodes: 192.168.1.19
-          patches: |-
-            \
-              --config-patch=@network-eth0.yaml \
-              --config-patch=@sandisk.json
-  apply-config-workers:
-    cmds:
-      - task: apply-config-worker
-        vars:
-          nodes: 192.168.1.20
+          file: '{{ .cluster_worker_yaml }}'
   upgrade:
     vars:
       endpoints: '{{ .endpoints | default .cluster_endpoints }}'
