@@ -7,67 +7,125 @@ tasks:
     cmds:
       - |
         {{ .TERRAFORM_EXE | quote }} --version
+  _terraform:
+    internal: true
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
+      terraform_args: '{{ .terraform_args }}'
+    cmds:
+      - |
+        {{ .TERRAFORM_EXE | quote }}
+        {{- if .CHDIR }} \
+          -chdir={{ .CHDIR | quote }}
+        {{- end }}
+        {{- if .terraform_args }} \
+        {{ .terraform_args }}
+        {{- end }}
   init:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       BACKEND_CONFIG_ARGS: '{{ .BACKEND_CONFIG_ARGS }}'
     cmds:
-      - |
-        {{ .TERRAFORM_EXE | quote }} \
-          -chdir={{ .CHDIR | quote }} \
-          init \
-          -input=false
-          {{- if .BACKEND_CONFIG_ARGS }} \
-          {{ .BACKEND_CONFIG_ARGS }}
-          {{- end }}
+      - task: _terraform
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          terraform_args: |
+            init \
+            -input=false
+            {{- if .BACKEND_CONFIG_ARGS }} \
+            {{ .BACKEND_CONFIG_ARGS }}
+            {{- end }}
   validate:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       VALIDATE_JSON_OUTPUT: '{{ .VALIDATE_JSON_OUTPUT | default "tf-validate.json" }}'
     cmds:
-      - |
-        {{ .TERRAFORM_EXE | quote }} \
-        -chdir={{ .CHDIR | quote }} \
-        validate \
-        -no-color \
-        -json \
-          | tee {{ .VALIDATE_JSON_OUTPUT | quote }}
+      - task: _terraform
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          terraform_args: |
+            validate \
+            -no-color \
+            -json | \
+              tee {{ .VALIDATE_JSON_OUTPUT | quote }}
   plan:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
-      TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
+      input: '{{ .input | default "false" }}'
+      tfvars: '{{ .tfvars }}'
+      out: '{{ .out | default "tfplan" }}'
     cmds:
-      - |
-        {{ .TERRAFORM_EXE | quote }} \
-        -chdir={{ .CHDIR | quote }} \
-        plan \
-        -input=false \
-        -out={{ .TFPLAN | quote }}
+      - task: _terraform
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          terraform_args: |
+            plan
+            {{- if .tfvars }} \
+            {{ .tfvars }}
+            {{- end }}
+            {{- if .input }} \
+            -input={{ .input | quote }}
+            {{- end }}
+            {{- if .out }} \
+            -out={{ .out | quote }}
+            {{- end }}
+  _apply:
+    internal: true
+    vars:
+      TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
+      CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
+      auto_approve: '{{ .auto_approve | default "false" }}'
+      input: '{{ .input }}'
+      destroy: '{{ .destroy | default "false" }}'
+      tfplan: '{{ .tfplan }}'
+    cmds:
+      - task: _terraform
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          terraform_args: |
+            apply
+            {{- if eq "true" .auto_approve }} \
+            -auto-approve
+            {{- end }}
+            {{- if .input }} \
+            -input={{ .input | quote }}
+            {{- end }}
+            {{- if eq "true" .destroy }} \
+            -destroy
+            {{- end }}
+            {{- if .tfplan }} \
+            {{ .tfplan | quote }}
+            {{- end }}
   apply:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
       TFPLAN: '{{ .TFPLAN | default "tfplan" }}'
     cmds:
-      - |
-        {{ .TERRAFORM_EXE | quote }} \
-          -chdir={{ .CHDIR | quote }} \
-          apply \
-          -auto-approve \
-          -input=false \
-          {{ .TFPLAN | quote }}
+      - task: _apply
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          auto_approve: 'true'
+          input: 'false'
+          tfplan: '{{ .TFPLAN }}'
   destroy:
     vars:
       TERRAFORM_EXE: '{{ .TERRAFORM_EXE | default "terraform" }}'
       CHDIR: '{{ .CHDIR | default .USER_WORKING_DIR }}'
     cmds:
-      - |
-        {{ .TERRAFORM_EXE | quote }} \
-          -chdir={{ .CHDIR | quote }} \
-          apply \
-          -auto-approve \
-          -destroy \
-          -input=false
+      - task: _apply
+        vars:
+          TERRAFORM_EXE: '{{ .TERRAFORM_EXE }}'
+          CHDIR: '{{ .CHDIR }}'
+          auto_approve: 'true'
+          input: 'false'
+          destroy: 'true'
