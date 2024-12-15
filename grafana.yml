@@ -22,7 +22,7 @@ includes:
       name: grafana
       chart_repo_name: grafana
       chart: grafana
-      chart_ver: 8.6.4
+      chart_ver: 8.8.1
 tasks:
   default:
     deps:
