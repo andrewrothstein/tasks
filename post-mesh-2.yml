@@ -25,6 +25,8 @@ includes:
   open-webui: open-webui.yml
 #  open-webui: pet.yml
 
+  opencost: opencost.yml
+#  opencost: pet.yml
 tasks:
   default:
     deps:
@@ -39,8 +41,10 @@ tasks:
       - task: harbor:upgrade
       - task: artifacthub:upgrade
       - task: open-webui:upgrade
+      - task: opencost:upgrade
   delete:
     cmds:
+      - task: opencost:delete
       - task: open-webuid:delete
       - task: artifacthub:delete
       - task: harbor:delete
@@ -57,3 +61,4 @@ tasks:
       - task: harbor:check
       - task: artifacthub:check
       - task: open-webui:check
+      - task: opencost:check

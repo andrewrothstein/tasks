@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: opencost
+    name: opencost-ui
+    tls: true
+    host: opencost
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: opencost
+      port:
+        name: http-ui

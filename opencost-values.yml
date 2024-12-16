@@ -6,16 +6,15 @@ opencost:
       serviceName: kube-prometheus-stack-prometheus
       namespaceName: kube-prometheus-stack
       port: 9090
-
+  ui:
+    enabled: true
+  metrics:
+    serviceMonitor:
+      enabled: true
+      labels:
+        app.kubernetes.io/name: opencost
 service:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9003"
 
-serviceMonitor:
-  enabled: true
-  labels:
-    app.kubernetes.io/name: opencost
-
-ui:
-  enabled: true
