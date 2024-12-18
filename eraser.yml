@@ -1,0 +1,39 @@
+---
+version: '3'
+includes:
+  repo: eraser-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: eraser-system
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: eraser-system
+      name: eraser
+      chart_repo_name: eraser
+      chart: eraser
+      chart_ver: 1.3.1
+      helm_args: -f eraser-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

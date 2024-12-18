@@ -4,6 +4,10 @@ includes:
   k8s-network: k8s-network.yml
   k8s-digester: k8s-digester.yml
 #  k8s-digester: pet.yml
+
+#  eraser: eraser.yml
+  eraser: pet.yml
+
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
@@ -30,6 +34,7 @@ tasks:
     cmds:
       - task: k8s-network:up
       - task: k8s-digester:apply
+      - task: eraser:upgrade
       - task: operator-sdk:install
       - task: k8s-security:up
       - task: k8s-secrets:up
@@ -54,11 +59,13 @@ tasks:
       - task: k8s-secrets:delete
       - task: k8s-security:delete
       - task: operator-sdk:delete
+      - task: eraser:delete
       - task: k8s-digester:delete
       - task: k8s-network:delete
   check:
     cmds:
       - task: k8s-network:check
+      - task: eraser:check
       - task: k8s-security:check
       - task: k8s-secrets:check
       - task: k8s-storage:check

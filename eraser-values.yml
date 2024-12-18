@@ -1,0 +1,5 @@
+---
+runtimeConfig:
+  components:
+    scanner:
+      enabled: false
