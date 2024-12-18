@@ -8,11 +8,10 @@ includes:
     vars:
       namespace: gatekeeper-system
       create_namespace: 'true'
-      install: 'true'
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.17.1
+      chart_ver: 3.18.1
 tasks:
   default:
     deps:
