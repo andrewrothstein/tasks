@@ -10,17 +10,17 @@ includes:
 #  pinniped-concierge: pinniped-concierge.yml
   pinniped-concierge: pet.yml
 
-  gitea: gitea.yml
-#  gitea: pet.yml
+#  gitea: gitea.yml
+  gitea: pet.yml
 
-  gitlab: gitlab.yml
-#  gitlab: pet.yml
+#  gitlab: gitlab.yml
+  gitlab: pet.yml
 
-  harbor: harbor.yml
-#  harbor: pet.yml
+#  harbor: harbor.yml
+  harbor: pet.yml
 
-  artifacthub: artifacthub.yml
-#  artifacthub: pet.yml
+#  artifacthub: artifacthub.yml
+  artifacthub: pet.yml
 
   open-webui: open-webui.yml
 #  open-webui: pet.yml
