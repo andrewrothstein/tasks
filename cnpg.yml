@@ -17,12 +17,14 @@ includes:
       name: cnpg
       helm_args: -f cnpg-values.yml
   test-instance:
-    taskfile: cnpg-instance.yml
+    taskfile: helm.yml
     vars:
-      n: cnpg-clusters
-      labels: istio.io/dataplane-mode=ambient
-      name: test-cluster-1
-      size: 3
+      chart: chart-cnpg-instance
+      namespace: cnpg-system
+      name: test-cnpg-instance
+      helm_args: >-
+        --set instances=3
+        --set size=10Gi
 tasks:
   default:
     cmds:
