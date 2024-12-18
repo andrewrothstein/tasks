@@ -1,0 +1,9 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "chart-cnpg-instance.fullname" $ }}
+spec:
+  instances: {{ .Values.instances | default 1 }}
+  storage:
+    size: {{ .Values.size | default "1Gi" | quote }}

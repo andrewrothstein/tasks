@@ -17,17 +17,26 @@ includes:
       name: gitea
       helm_args: -f gitea-values.yml
   pg:
-    taskfile: cnpg-instance.yml
+    taskfile: helm.yml
     vars:
-      n: gitea
+      namespace: gitea
       name: gitea-pg
-      replicas: 3
-      size: '10Gi'
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set size=10Gi
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: gitea
+      name: gitea
+      helm_args: -f gitea-tailscale-ingress-values.yml
   pg-secret:
     taskfile: k8s-literal-secret.yml
     vars:
       n: gitea
-      s: gitea-pg-app
+      s: gitea-pg-chart-cnpg-instance-app
       f: password
 tasks:
   pg-secret:
@@ -42,11 +51,14 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
-      - task: pg:apply
+      - task: pg:upgrade
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
+      - task: pg:delete
       - task: kk:ns-delete
   check:
     deps:

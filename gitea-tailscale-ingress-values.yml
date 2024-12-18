@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: gitea
+    name: gitea-http
+    tls: true
+    host: gitea
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: gitea-http
+      port:
+        name: http

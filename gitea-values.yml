@@ -26,31 +26,27 @@ gitea:
     - name: GITEA__DATABASE__NAME
       valueFrom:
         secretKeyRef:
-          name: gitea-pg-app
+          name: gitea-pg-chart-cnpg-instance-app
           key: dbname
     - name: GITEA__DATABASE__HOST
       valueFrom:
         secretKeyRef:
-          name: gitea-pg-app
+          name: gitea-pg-chart-cnpg-instance-app
           key: host
     - name: GITEA__DATABASE__USER
       valueFrom:
         secretKeyRef:
-          name: gitea-pg-app
+          name: gitea-pg-chart-cnpg-instance-app
           key: user
     - name: GITEA__DATABASE__PASSWD
       valueFrom:
         secretKeyRef:
-          name: gitea-pg-app
+          name: gitea-pg-chart-cnpg-instance-app
           key: password
 service:
   http:
-    annotations:
-      tailscale.com/expose: 'true'
     port: 3000
-    type: LoadBalancer
+    type: ClusterIP
   ssh:
-    annotations:
-      tailscale.com/expose: 'true'
     port: 22
-    type: LoadBalancer
+    type: ClusterIP
