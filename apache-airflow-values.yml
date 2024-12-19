@@ -5,3 +5,10 @@ createUserJob:
 migrateDatabaseJob:
   useHelmHooks: false
   applyCustomEnv: false
+webserver:
+  defaultUser:
+    username: admin
+    role: Admin
+    email: andrew.rothstein@gmail.com
+    firstName: Drew
+    lastName: Rothstein

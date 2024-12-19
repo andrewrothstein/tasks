@@ -15,7 +15,6 @@ includes:
       chart_ver: 1.15.0
       namespace: airflow
       name: apache-airflow
-      helm_args: -f apache-airflow-values.yml
   ingress:
     taskfile: helm.yml
     vars:
@@ -27,13 +26,33 @@ tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    vars:
+      admin_password: '{{ .admin_password | default "${AIRFLOW_ADMIN_PASSWORD}" }}'
+      webserver_secret_key: '{{ .webserver_secret_key | default "${AIRFLOW_WEBSERVER_SECRET_KEY}" }}'
+    cmds:
+      - test {{ .admin_password | quote }}
+      - test {{ .webserver_secret_key | quote }}
   upgrade:
+    vars:
+      admin_password: '{{ .admin_password | default "${AIRFLOW_ADMIN_PASSWORD}" }}'
+      webserver_secret_key: '{{ .webserver_secret_key | default "${AIRFLOW_WEBSERVER_SECRET_KEY}" }}'
     deps:
       - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          admin_password: '{{ .admin_password }}'
+          webserver_secret_key: '{{ .webserver_secret_key }}'
       - task: helm:upgrade
+        vars:
+          helm_args: |-
+            \
+              -f apache-airflow-values.yml \
+              --set webserver.defaultUser.password={{ .admin_password | quote }} \
+              --set webserverSecretKey={{ .webserver_secret_key | quote }}
       - task: ingress:upgrade
   delete:
     cmds:
