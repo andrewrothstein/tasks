@@ -2,6 +2,10 @@
 version: '3'
 includes:
   k8s-network: k8s-network.yml
+
+  capsule: capsule.yml
+#  capsule: pet.yml
+
   k8s-digester: k8s-digester.yml
 #  k8s-digester: pet.yml
 
@@ -33,6 +37,7 @@ tasks:
   up:
     cmds:
       - task: k8s-network:up
+      - task: capsule:upgrade
       - task: k8s-digester:apply
       - task: eraser:upgrade
       - task: operator-sdk:install
@@ -61,10 +66,12 @@ tasks:
       - task: operator-sdk:delete
       - task: eraser:delete
       - task: k8s-digester:delete
+      - task: capsule:delete
       - task: k8s-network:delete
   check:
     cmds:
       - task: k8s-network:check
+      - task: capsule:check
       - task: eraser:check
       - task: k8s-security:check
       - task: k8s-secrets:check
