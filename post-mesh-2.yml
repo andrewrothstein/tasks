@@ -30,6 +30,9 @@ includes:
 
   airflow: apache-airflow.yml
 #  airflow: pet.yml
+
+  kubeai: kubeai.yml
+#  kubeai: pet.yml
 tasks:
   default:
     deps:
@@ -46,8 +49,10 @@ tasks:
       - task: open-webui:upgrade
       - task: opencost:upgrade
       - task: airflow:upgrade
+      - task: kubeai:upgrade
   delete:
     cmds:
+      - task: kubeai:delete
       - task: airflow:delete
       - task: opencost:delete
       - task: open-webuid:delete
@@ -68,3 +73,4 @@ tasks:
       - task: open-webui:check
       - task: opencost:check
       - task: airflow:check
+      - task: kubeai:check

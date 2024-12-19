@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: kubeai
+      url: https://www.kubeai.org
+tasks:
+  default:
+    deps:
+      - task: add

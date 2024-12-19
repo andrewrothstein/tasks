@@ -1,0 +1,6 @@
+---
+catalog:
+  qwen2-500m-cpu:
+    enabled: true
+  nomic-embed-text-cpu:
+    enabled: true
