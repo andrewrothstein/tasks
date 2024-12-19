@@ -3,8 +3,8 @@ version: '3'
 includes:
   k8s-network: k8s-network.yml
 
-  capsule: capsule.yml
-#  capsule: pet.yml
+#  capsule: capsule.yml
+  capsule: pet.yml
 
   k8s-digester: k8s-digester.yml
 #  k8s-digester: pet.yml
