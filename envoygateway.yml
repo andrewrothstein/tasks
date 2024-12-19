@@ -13,7 +13,7 @@ includes:
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
       chart: gateway-helm
-      chart_ver: v1.2.1
+      chart_ver: v1.2.4
 tasks:
   default:
     deps:
