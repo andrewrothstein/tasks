@@ -12,3 +12,12 @@ webserver:
     email: andrew.rothstein@gmail.com
     firstName: Drew
     lastName: Rothstein
+dags:
+  persistence:
+    enabled: false
+  gitSync:
+    enabled: true
+    repo: https://github.com/andrewrothstein/airflow-dags.git
+    branch: main
+    rev: HEAD
+
