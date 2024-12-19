@@ -27,6 +27,9 @@ includes:
 
   opencost: opencost.yml
 #  opencost: pet.yml
+
+  airflow: apache-airflow.yml
+#  airflow: pet.yml
 tasks:
   default:
     deps:
@@ -42,8 +45,10 @@ tasks:
       - task: artifacthub:upgrade
       - task: open-webui:upgrade
       - task: opencost:upgrade
+      - task: airflow:upgrade
   delete:
     cmds:
+      - task: airflow:delete
       - task: opencost:delete
       - task: open-webuid:delete
       - task: artifacthub:delete
@@ -62,3 +67,4 @@ tasks:
       - task: artifacthub:check
       - task: open-webui:check
       - task: opencost:check
+      - task: airflow:check

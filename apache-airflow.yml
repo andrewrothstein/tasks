@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: apache-airflow-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: airflow
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -9,7 +14,6 @@ includes:
       chart: airflow
       chart_ver: 1.15.0
       namespace: airflow
-      create_namespace: 'true'
       name: apache-airflow
       helm_args: -f apache-airflow-values.yml
 tasks:
@@ -20,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     cmds:
       - task: helm:check
