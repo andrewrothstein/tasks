@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  K8S_DIGESTER_VERSION: v0.1.14
+  K8S_DIGESTER_VERSION: v0.1.16
   K8S_DIGESTER_MIRROR: https://github.com/google/k8s-digester.git/manifests/
 includes:
   kk:
