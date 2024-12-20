@@ -19,7 +19,7 @@ dags:
     enabled: true
     repo: https://github.com/andrewrothstein/airflow-dags.git
     branch: main
-    rev: HEAD
+    subPath: ""
 workers:
   keda:
     enabled: true
