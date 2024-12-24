@@ -4,8 +4,8 @@ includes:
 #  preprod-vclusters: preprod-vclusters.yml
   preprod-vclusters: pet.yml
 
-  capi-operator: capi-operator.yml
-#  capi-operator: pet.yml
+#  capi-operator: capi-operator.yml
+  capi-operator: pet.yml
 
 #  kubevirt: kubevirt.yml
   kubevirt: pet.yml
