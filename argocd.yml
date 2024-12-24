@@ -37,3 +37,22 @@ tasks:
   check:
     deps:
       - task: argo-release:check
+  login:
+    vars:
+      server: '{{ .server | default "argocd.elephant-frog.ts.net" }}'
+      grpc_web: '{{ .grpc_web | default "true" }}'
+      username: '{{ .username | default "admin" }}'
+      password: '{{ .password | default "${ARGOCD_ADMIN_PASSWORD}" }}'
+    cmds:
+      - |-
+        argocd login \
+          {{ .server | quote }}
+          {{- if eq "true" .grpc_web }} \
+          --grpc-web
+          {{- end }}
+          {{- if .username }} \
+          --username {{ .username | quote }}
+          {{- end }}
+          {{- if .password }} \
+          --password {{ .password | quote }}
+          {{- end }}
