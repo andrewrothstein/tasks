@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  mlflow: mlflow.yml
-#  mlflow: pet.yml
+#  mlflow: mlflow.yml
+  mlflow: pet.yml
 
   open-webui: open-webui.yml
 #  open-webui: pet.yml

@@ -16,8 +16,8 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
   kubevirt-vms: pet.yml
 
-  crossplane: crossplane.yml
-#  crossplane: pet.yml
+#  crossplane: crossplane.yml
+  crossplane: pet.yml
 
 #  crossplane-azure: crossplane-azure.yml
   crossplane-azure: pet.yml
