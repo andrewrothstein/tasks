@@ -19,8 +19,8 @@ includes:
   keda: keda.yml
 #  keda: pet.yml
 
-  eck: eck.yml
-#  eck: pet.yml
+#  eck: eck.yml
+  eck: pet.yml
 
 #  jaeger: jaeger.yml
   jaeger: pet.yml
@@ -28,11 +28,11 @@ includes:
   kiali: kiali.yml
 #  kiali: pet.yml
 
-  grafana: grafana.yml
-#  grafana: pet.yml
+#  grafana: grafana.yml
+  grafana: pet.yml
 
-  datadog: datadog.yml
-#  datadog: pet.yml
+#  datadog: datadog.yml
+  datadog: pet.yml
 
 tasks:
   default:

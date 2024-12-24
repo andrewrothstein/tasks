@@ -4,8 +4,8 @@ includes:
   metallb: metallb.yml
 #  metallb: pet.yml
 
-  ngrok-operator: ngrok-operator.yml
-#  ngrok-operator: pet.yml
+#  ngrok-operator: ngrok-operator.yml
+  ngrok-operator: pet.yml
 
 #  ingress: nginx-ingress.yml
   ingress: pet.yml

@@ -4,14 +4,14 @@ includes:
 #  postgresql: bitnami-postgresql.yml
   postgresql: pet.yml
 
-  cass-operator: cass-operator.yml
-#  cass-operator: pet.yml
+#  cass-operator: cass-operator.yml
+  cass-operator: pet.yml
 
   cnpg: cnpg.yml
 #  cnpg: pet.yml
 
-  redis: redis.yml
-#  redis: pet.yml
+#  redis: redis.yml
+  redis: pet.yml
 
 #  debezium-operator: debezium-operator.yml
   debezium-operator: pet.yml

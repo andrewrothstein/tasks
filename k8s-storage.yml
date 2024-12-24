@@ -30,11 +30,11 @@ includes:
 #  piraeus-operator: piraeus-operator.yml
   piraeus-operator: pet.yml
 
-  strimzi-kafka-operator: strimzi-kafka-operator.yml
-#  strimzi-kafka-operator: pet.yml
+#  strimzi-kafka-operator: strimzi-kafka-operator.yml
+  strimzi-kafka-operator: pet.yml
 
-  dragonfly: dragonfly.yml
-#  dragonfly: pet.yml
+#  dragonfly: dragonfly.yml
+  dragonfly: pet.yml
 
 tasks:
   default:

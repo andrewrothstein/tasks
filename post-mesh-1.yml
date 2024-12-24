@@ -24,11 +24,11 @@ includes:
 #  operator-sdk: operator-sdk.yml
   operator-sdk: pet.yml
 
-  knative: knative.yml
-#  knative: pet.yml
+#  knative: knative.yml
+  knative: pet.yml
 
-  coderv2: coderv2.yml
-#  coderv2: pet.yml
+#  coderv2: coderv2.yml
+  coderv2: pet.yml
 
 tasks:
   default:

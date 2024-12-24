@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  gatekeeper: gatekeeper.yml
-#  gatekeeper: pet.yml
+#  gatekeeper: gatekeeper.yml
+  gatekeeper: pet.yml
 
 #  pinniped-supervisor: pinniped-supervisor.yml
   pinniped-supervisor: pet.yml
@@ -16,8 +16,8 @@ includes:
 #  gitlab: gitlab.yml
   gitlab: pet.yml
 
-  harbor: harbor.yml
-#  harbor: pet.yml
+#  harbor: harbor.yml
+  harbor: pet.yml
 
 #  artifacthub: artifacthub.yml
   artifacthub: pet.yml
@@ -25,14 +25,14 @@ includes:
   open-webui: open-webui.yml
 #  open-webui: pet.yml
 
-  opencost: opencost.yml
-#  opencost: pet.yml
+#  opencost: opencost.yml
+  opencost: pet.yml
 
   airflow: apache-airflow.yml
 #  airflow: pet.yml
 
-  kubeai: kubeai.yml
-#  kubeai: pet.yml
+#  kubeai: kubeai.yml
+  kubeai: pet.yml
 tasks:
   default:
     deps:

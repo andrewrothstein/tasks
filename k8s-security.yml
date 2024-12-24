@@ -1,8 +1,8 @@
 ---
 version: '3'
 includes:
-  spire: spire.yml
-#  spire: pet.yml
+#  spire: spire.yml
+  spire: pet.yml
 
   keycloak-operator: keycloak-operator.yml
 #  keycloak-operator: pet.yml
