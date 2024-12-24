@@ -1,0 +1,30 @@
+---
+version: '3'
+includes:
+  mlflow: mlflow.yml
+#  mlflow: pet.yml
+
+  open-webui: open-webui.yml
+#  open-webui: pet.yml
+
+#  kubeai: kubeai.yml
+  kubeai: pet.yml
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: mlflow:upgrade
+      - task: open-webui:upgrade
+      - task: kubeai:upgrade
+  delete:
+    cmds:
+      - task: kubeai:delete
+      - task: open-webuid:delete
+      - task: mlflow:delete
+  check:
+    cmds:
+      - task: mlflow:check
+      - task: open-webui:check
+      - task: kubeai:check

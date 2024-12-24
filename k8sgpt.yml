@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: k8sgpt
       chart: k8sgpt-operator
-      chart_ver: 0.2.0
+      chart_ver: 0.2.5
       create_namespace: 'true'
       namespace: k8sgpt-operator-system
       name: k8sgpt-operator

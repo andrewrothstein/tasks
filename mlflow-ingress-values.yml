@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: mlflow
+    name: mlflow-web
+    tls: true
+    host: mlflow
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: mlflow
+      port:
+        number: 5000

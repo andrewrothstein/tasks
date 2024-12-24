@@ -20,6 +20,7 @@ includes:
   k8s-cicd: k8s-cicd.yml
   k8s-virtualization: k8s-virtualization.yml
   k8s-database: k8s-database.yml
+  k8s-ai: k8s-ai.yml
 
 #  operator-sdk: operator-sdk.yml
   operator-sdk: pet.yml
@@ -49,12 +50,14 @@ tasks:
       - task: k8s-cicd:up
       - task: k8s-virtualization:up
       - task: k8s-database:up
+      - task: k8s-ai:up
       - task: knative:apply
       - task: coderv2:upgrade
   delete:
     cmds:
       - task: coderv2:delete
       - task: knative:delete
+      - task: k8s-ai:delete
       - task: k8s-database:delete
       - task: k8s-virtualization:delete
       - task: k8s-cicd:delete
@@ -81,4 +84,5 @@ tasks:
       - task: k8s-cicd:check
       - task: k8s-virtualization:check
       - task: k8s-database:check
+      - task: k8s-ai:check
       - task: coderv2:check
