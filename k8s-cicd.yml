@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  drone: drone.yml
+  drone: pet.yml
+
 #  awx: awx-operator.yml
   awx: pet.yml
 
@@ -43,6 +46,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: drone:upgrade
       - task: awx:upgrade
       - task: artifactory:upgrade
       - task: flux:upgrade
@@ -69,8 +73,10 @@ tasks:
       - task: flux:delete
       - task: artifactory:delete
       - task: awx:delete
+      - task: drone:delete
   check:
     cmds:
+      - task: drone:check
       - task: awx:check
       - task: artifactory:check
       - task: flux:check

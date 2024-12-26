@@ -1,7 +1,5 @@
 ---
 version: '3'
-dotenv:
-  - .drone-secrets.env
 includes:
   repo: drone-repo.yml
   helm:
