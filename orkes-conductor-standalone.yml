@@ -1,0 +1,48 @@
+---
+version: '3'
+includes:
+  repo: orkes-helm-charts-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: orkes-conductor-standalone
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: orkes-conductor-standalone
+      name: conductor
+      chart_repo_name: orkes-helm-charts
+      chart: orkes-conductor-standalone
+      chart_ver: 2.6.99
+      helm_args: -f orkes-conductor-standalone-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: orkes-conductor-standalone
+      name: tailscale-ingress
+      helm_args: -f orkes-conductor-standalone-tailscale-ingress-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+      - task: ingress:upgrade
+  delete:
+    cmds:
+      - task: ingress:delete
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

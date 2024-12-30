@@ -1,0 +1,13 @@
+---
+ingresses:
+  - enabled: true
+    namespace: orkes-conductor-standalone
+    name: conductor
+    tls: true
+    host: conductor
+    path: /
+    pathType: ImplementationSpecific
+    service:
+      name: conductor-orkes-conductor-standalone
+      port:
+        name: default-ui-port

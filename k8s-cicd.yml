@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  conductor: orkes-conductor-standalone.yml
+  conductor: pet.yml
+
 #  drone: drone.yml
   drone: pet.yml
 
@@ -46,6 +49,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: conductor:upgrade
       - task: drone:upgrade
       - task: awx:upgrade
       - task: artifactory:upgrade
@@ -74,8 +78,10 @@ tasks:
       - task: artifactory:delete
       - task: awx:delete
       - task: drone:delete
+      - task: conductor:delete
   check:
     cmds:
+      - task: conductor:check
       - task: drone:check
       - task: awx:check
       - task: artifactory:check
