@@ -2,7 +2,7 @@
 ollama:
   enabled: false
 ollamaUrls:
-  - 'http://ubuntu.elephant-frog.ts.net:11434'
+  - 'http://ubuntu-vm.elephant-frog.ts.net:11434'
 ingress:
   enabled: true
   class: tailscale
