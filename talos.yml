@@ -217,6 +217,23 @@ tasks:
           endpoints: '{{ .endpoints }}'
           nodes: '{{ .nodes }}'
           talosconfig: '{{ .talosconfig }}'
+  upgrade-all:
+    cmds:
+      - task: upgrade
+        vars:
+          nodes: 192.168.1.16
+      - task: upgrade
+        vars:
+          nodes: 192.168.1.17
+      - task: upgrade
+        vars:
+          nodes: 192.168.1.18
+      - task: upgrade
+        vars:
+          nodes: 192.168.1.19
+      - task: upgrade
+        vars:
+          nodes: 192.168.1.20
   reboot:
     vars:
       endpoints: '{{ .endpoints | default .cluster_endpoints }}'
