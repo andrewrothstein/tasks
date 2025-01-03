@@ -31,8 +31,8 @@ includes:
 #  tekton-operator: tekton-operator.yml
   tekton-operator: pet.yml
 
-  pulumi-kubernetes-operator: pulumi-kubernetes-operator.yml
-#  pulumi-kubernetes-operator: pet.yaml
+#  pulumi-kubernetes-operator: pulumi-kubernetes-operator.yml
+  pulumi-kubernetes-operator: pet.yaml
 
 #  prefect: prefect.yml
   prefect: pet.yml
