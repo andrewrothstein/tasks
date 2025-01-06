@@ -18,6 +18,7 @@ includes:
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
+  k8s-streaming: k8s-streaming.yml
   k8s-observability: k8s-observability.yml
   k8s-autoscaling: k8s-autoscaling.yml
   k8s-dns: k8s-dns.yml
@@ -50,6 +51,7 @@ tasks:
       - task: k8s-security:up
       - task: k8s-secrets:up
       - task: k8s-storage:up
+      - task: k8s-streaming:up
       - task: k8s-observability:up
       - task: k8s-autoscaling:up
       - task: k8s-dns:up
@@ -70,6 +72,7 @@ tasks:
       - task: k8s-autoscaling:delete
       - task: k8s-observability:delete
       - task: k8s-dns:delete
+      - task: k8s-streaming:delete
       - task: k8s-storage:delete
       - task: k8s-secrets:delete
       - task: k8s-security:delete
@@ -88,6 +91,7 @@ tasks:
       - task: k8s-security:check
       - task: k8s-secrets:check
       - task: k8s-storage:check
+      - task: k8s-streaming:check
       - task: k8s-observability:check
       - task: k8s-autoscaling:check
       - task: k8s-dns:check

@@ -30,9 +30,6 @@ includes:
 #  piraeus-operator: piraeus-operator.yml
   piraeus-operator: pet.yml
 
-#  strimzi-kafka-operator: strimzi-kafka-operator.yml
-  strimzi-kafka-operator: pet.yml
-
 #  dragonfly: dragonfly.yml
   dragonfly: pet.yml
 
@@ -51,12 +48,10 @@ tasks:
       - task: velero:upgrade
       - task: openebs:upgrade
       - task: piraeus-operator:apply
-      - task: strimzi-kafka-operator:upgrade
       - task: dragonfly:upgrade
   delete:
     cmds:
       - task: dragonfly:delete
-      - task: strimzi-kafka-operator:delete
       - task: piraeus-operator:delete
       - task: openebs:delete
       - task: velero:delete
@@ -75,5 +70,4 @@ tasks:
       - task: minio-operator:check
       - task: velero:check
       - task: piraeus-operator:check
-      - task: strimzi-kafka-operator:check
       - task: dragonfly:check

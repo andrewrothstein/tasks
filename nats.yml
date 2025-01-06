@@ -12,10 +12,9 @@ includes:
     vars:
       chart_repo_name: nats
       chart: nats
-      chart_ver: 1.2.6
+      chart_ver: 1.2.8
       namespace: nats
       name: nats
-#      helm_args: -f nats-values.yml
 tasks:
   default:
     deps:

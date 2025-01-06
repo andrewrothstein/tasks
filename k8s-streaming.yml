@@ -1,0 +1,26 @@
+---
+version: '3'
+
+includes:
+  nats: nats.yml
+#  nats: pet.yml
+
+  strimzi-kafka-operator: strimzi-kafka-operator.yml
+#  strimzi-kafka-operator: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: nats:upgrade
+      - task: strimzi-kafka-operator:upgrade
+  delete:
+    cmds:
+      - task: strimzi-kafka-operator:delete
+      - task: nats:delete
+  check:
+    cmds:
+      - task: nats:check
+      - task: strimzi-kafka-operator:check
