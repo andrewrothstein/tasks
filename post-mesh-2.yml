@@ -28,6 +28,9 @@ includes:
   airflow: apache-airflow.yml
 #  airflow: pet.yml
 
+#  sonarqube: sonarqube.yml
+  sonarqube: pet.yml
+
 tasks:
   default:
     deps:
@@ -43,8 +46,10 @@ tasks:
       - task: artifacthub:upgrade
       - task: opencost:upgrade
       - task: airflow:upgrade
+      - task: sonarqube:upgrade
   delete:
     cmds:
+      - task: sonarqube:delete
       - task: airflow:delete
       - task: opencost:delete
       - task: artifacthub:delete
@@ -63,3 +68,4 @@ tasks:
       - task: artifacthub:check
       - task: opencost:check
       - task: airflow:check
+      - task: sonarqube:check

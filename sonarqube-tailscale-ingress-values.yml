@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: sonarqube
+    host: sonarqube
+    service:
+      name: sonarqube-sonarqube
+      port:
+        name: http
