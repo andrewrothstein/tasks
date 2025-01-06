@@ -12,6 +12,9 @@ includes:
 #  eraser: eraser.yml
   eraser: pet.yml
 
+  reloader: reloader.yml
+#  reloader: pet.yml
+
   k8s-security: k8s-security.yml
   k8s-secrets: k8s-secrets.yml
   k8s-storage: k8s-storage.yml
@@ -41,6 +44,7 @@ tasks:
       - task: capsule:upgrade
       - task: k8s-digester:apply
       - task: eraser:upgrade
+      - task: reloader:upgrade
       - task: operator-sdk:install
       - task: k8s-security:up
       - task: k8s-secrets:up
@@ -67,6 +71,7 @@ tasks:
       - task: k8s-secrets:delete
       - task: k8s-security:delete
       - task: operator-sdk:delete
+      - task: reloader:delete
       - task: eraser:delete
       - task: k8s-digester:delete
       - task: capsule:delete
@@ -76,6 +81,7 @@ tasks:
       - task: k8s-network:check
       - task: capsule:check
       - task: eraser:check
+      - task: reloader:check
       - task: k8s-security:check
       - task: k8s-secrets:check
       - task: k8s-storage:check
