@@ -62,6 +62,5 @@ tasks:
       - task: postgresql:check
       - task: cnpg:check
       - task: redis:check
-      - task: debezium-operator:check
       - task: yugabyte:check
       - task: questdb:check

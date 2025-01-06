@@ -2,16 +2,20 @@
 version: '3'
 includes:
   repo: debezium-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: debezium-operator
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: debezium
       chart: debezium-operator
-#      chart_ver: 2.1.0
-      create_namespace: 'true'
+      # curl -sSLf https://charts.debezium.io/index.yaml | less
+      chart_ver: 3.0.4-final
       namespace: debezium-operator
       name: debezium-operator
-#      helm_args: -f debezium-operator-values.yml
 tasks:
   default:
     deps:
@@ -21,12 +25,18 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
-  check:
-    deps:
-      - task: repo
-    cmds:
-      - task: helm:check
+      - task: kk:ns-delete
+# something is fooked in the debezium helm chart repo...
+# this doesn't work...
+#  check:
+#    deps:
+#      - task: repo
+#    cmds:
+#      - task: helm:check
+
