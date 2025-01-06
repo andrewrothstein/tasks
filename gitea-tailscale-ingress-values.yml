@@ -1,12 +1,7 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: gitea
-    name: gitea-http
-    tls: true
+  - name: gitea-http
     host: gitea
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: gitea-http
       port:

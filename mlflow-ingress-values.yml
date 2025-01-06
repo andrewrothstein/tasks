@@ -1,12 +1,7 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: mlflow
-    name: mlflow-web
-    tls: true
+  - name: mlflow-web
     host: mlflow
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: mlflow
       port:

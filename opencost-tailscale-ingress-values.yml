@@ -1,12 +1,7 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: opencost
-    name: opencost-ui
-    tls: true
+  - name: opencost-ui
     host: opencost
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: opencost
       port:

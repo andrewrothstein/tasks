@@ -1,12 +1,7 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: harbor
-    name: harbor-registry
-    tls: true
+  - name: harbor-registry
     host: registry
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: harbor-registry
       port:

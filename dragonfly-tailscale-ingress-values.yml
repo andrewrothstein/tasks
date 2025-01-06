@@ -1,23 +1,13 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: dragonfly-system
-    name: dragonfly-manager
-    tls: true
+  - name: dragonfly-manager
     host: dragonfly-manager
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: dragonfly-manager
       port:
         number: 8080
-  - enabled: true
-    namespace: dragonfly-system
-    name: dragonfly-scheduler
-    tls: true
+  - name: dragonfly-scheduler
     host: dragonfly-scheduler
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: dragonfly-scheduler
       port:

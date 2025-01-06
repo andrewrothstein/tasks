@@ -1,12 +1,7 @@
 ---
 ingresses:
-  - enabled: true
-    namespace: airflow
-    name: airflow-ui
-    tls: true
+  - name: airflow-ui
     host: airflow-ui
-    path: /
-    pathType: ImplementationSpecific
     service:
       name: apache-airflow-webserver
       port:
