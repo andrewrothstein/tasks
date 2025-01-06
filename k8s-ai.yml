@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  milvus: milvus.yml
+  milvus: pet.yml
+
 #  mlflow: mlflow.yml
   mlflow: pet.yml
 
@@ -18,6 +21,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: milvus:upgrade
       - task: mlflow:upgrade
       - task: open-webui:upgrade
       - task: kubeai:upgrade
@@ -28,8 +32,10 @@ tasks:
       - task: kubeai:delete
       - task: open-webuid:delete
       - task: mlflow:delete
+      - task: milvus:delete
   check:
     cmds:
+      - task: milvus:check
       - task: mlflow:check
       - task: open-webui:check
       - task: kubeai:check

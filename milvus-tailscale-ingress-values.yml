@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: milvus
+    host: milvus
+    service:
+      name: milvus
+      port:
+        name: milvus

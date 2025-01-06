@@ -2,6 +2,11 @@
 version: '3'
 includes:
   repo: milvus-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: milvus
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -10,9 +15,14 @@ includes:
       chart_ver: 4.0.31
       namespace: milvus
       name: milvus
-      install: 'true'
-      create_namespace: 'true'
       helm_args: -f milvus-standalone-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: milvus
+      name: tailscale-ingress
+      helm_args: -f milvus-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -21,10 +31,15 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
