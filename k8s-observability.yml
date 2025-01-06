@@ -16,9 +16,6 @@ includes:
 #  elk: elk.yml
   elk: pet.yml
 
-  keda: keda.yml
-#  keda: pet.yml
-
 #  eck: eck.yml
   eck: pet.yml
 
@@ -47,7 +44,6 @@ tasks:
       - task: eck:upgrade
       - task: elk:upgrade
       - task: jaeger:upgrade
-      - task: keda:upgrade
       - task: kiali:upgrade
       - task: grafana:upgrade
       - task: datadog:upgrade
@@ -56,7 +52,6 @@ tasks:
       - task: datadog:delete
       - task: grafana:delete
       - task: kiali:delete
-      - task: keda:delete
       - task: jaeger:delete
       - task: elk:delete
       - task: eck:delete
@@ -73,7 +68,6 @@ tasks:
       - task: eck:check
       - task: elk:check
       - task: jaeger:check
-      - task: keda:check
       - task: kiali:check
       - task: grafana:check
       - task: datadog:check

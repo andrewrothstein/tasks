@@ -2,11 +2,15 @@
 version: '3'
 includes:
   repo: cowboysysop-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: vpa
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       namespace: vpa
-      create_namespace: 'true'
       name: vpa
       chart_repo_name: cowboysysop
       chart: vertical-pod-autoscaler
@@ -19,10 +23,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
        - task: repo
