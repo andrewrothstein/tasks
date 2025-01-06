@@ -1,6 +1,12 @@
 ---
 version: '3'
 includes:
+  pxc-operator: pxc-operator.yml
+#  pxc-operator: pet.yml
+
+#  pxc-db: pxc-db.yml
+  pxc-db: pet.yml
+
 #  postgresql: bitnami-postgresql.yml
   postgresql: pet.yml
 
@@ -28,6 +34,8 @@ tasks:
       - up
   up:
     cmds:
+      - task: pxc-operator:upgrade
+      - task: pxc-db:upgrade
       - task: cass-operator:upgrade
       - task: postgresql:upgrade
       - task: cnpg:upgrade
@@ -44,8 +52,12 @@ tasks:
       - task: cnpg:delete
       - task: cass-operator:delete
       - task: postgresql:delete
+      - task: pxc-db:delete
+      - task: pxc-operator:delete
   check:
     cmds:
+      - task: pxc-operator:check
+      - task: pxc-db:check
       - task: cass-operator:check
       - task: postgresql:check
       - task: cnpg:check
