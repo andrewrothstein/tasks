@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  k8sgpt: k8sgpt.yml
+  k8sgpt: pet.yml
+
 #  milvus: milvus.yml
   milvus: pet.yml
 
@@ -21,6 +24,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: k8sgpt:upgrade
       - task: milvus:upgrade
       - task: mlflow:upgrade
       - task: open-webui:upgrade
@@ -33,8 +37,10 @@ tasks:
       - task: open-webuid:delete
       - task: mlflow:delete
       - task: milvus:delete
+      - task: k8sgpt:delete
   check:
     cmds:
+      - task: k8sgpt:check
       - task: milvus:check
       - task: mlflow:check
       - task: open-webui:check

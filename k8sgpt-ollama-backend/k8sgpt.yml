@@ -1,0 +1,16 @@
+---
+apiVersion: core.k8sgpt.ai/v1alpha1
+kind: K8sGPT
+metadata:
+  name: k8sgpt-ollama
+  namespace: k8sgpt-operator-system
+spec:
+  ai:
+    enabled: true
+    model: llama3.2
+    backend: localai
+    baseUrl: http://ubuntu-vm.elephant-frog.ts.net:11434/v1
+  noCache: false
+  # filters: ["Pod"]
+  repository: ghcr.io/k8sgpt-ai/k8sgpt
+  version: v0.3.48
