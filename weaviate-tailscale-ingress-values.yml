@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: weaviate
+    host: weaviate
+    service:
+      name: weaviate
+      port:
+        name: http

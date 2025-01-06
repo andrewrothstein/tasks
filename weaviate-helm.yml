@@ -2,29 +2,45 @@
 version: '3'
 includes:
   repo: weaviate-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: weaviate
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
-      create_namespace: 'true'
       namespace: weaviate
       name: weaviate
       chart_repo_name: weaviate
       chart: weaviate
-      chart_ver: 17.2.1
-#      helm_args: -f weaviate-values.yml
+      chart_ver: 17.3.3
+      helm_args: -f weaviate-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: weaviate
+      name: tailscale-ingress
+      helm_args: -f weaviate-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
-      - install
-  install:
+      - upgrade
+  upgrade:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo

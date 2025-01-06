@@ -2,7 +2,7 @@
 {{- $labels := include "tailscale-ingress.labels" . }}
 {{- range $i := .Values.ingresses }}
 {{- $name := $i.name }}
-{{- if .enabled }}
+{{- if (.enabled | default true) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -16,7 +16,7 @@ metadata:
   {{- end }}
 spec:
   ingressClassName: {{ .ingressClassName | default "tailscale" }}
-  {{- if .tls }}
+  {{- if (.tls | default true) }}
   tls:
     - hosts:
         - {{ $i.host | quote }}
@@ -25,10 +25,8 @@ spec:
     - host: {{ $i.host | quote }}
       http:
         paths:
-          - path: {{ $i.path }}
-            {{- with $i.pathType }}
-            pathType: {{ . }}
-            {{- end }}
+          - path: {{ $i.path | default "/" }}
+            pathType: {{ $i.pathType | default "ImplementationSpecific" }}
             backend:
               service:
                 {{- toYaml $i.service | nindent 16 }}

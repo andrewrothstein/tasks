@@ -9,6 +9,9 @@ includes:
 
 #  kubeai: kubeai.yml
   kubeai: pet.yml
+
+#  weaviate: weaviate-helm.yml
+  weaviate: pet.yml
 tasks:
   default:
     deps:
@@ -18,8 +21,10 @@ tasks:
       - task: mlflow:upgrade
       - task: open-webui:upgrade
       - task: kubeai:upgrade
+      - task: weaviate:upgrade
   delete:
     cmds:
+      - task: weaviate:delete
       - task: kubeai:delete
       - task: open-webuid:delete
       - task: mlflow:delete
@@ -28,3 +33,4 @@ tasks:
       - task: mlflow:check
       - task: open-webui:check
       - task: kubeai:check
+      - task: weaviate:check
