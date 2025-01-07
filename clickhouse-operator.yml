@@ -2,13 +2,17 @@
 version: '3'
 includes:
   repo: clickhouse-operator-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: clickhouse-operator
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: clickhouse-operator
       chart: altinity-clickhouse-operator
-      chart_ver: 0.23.7
-      create_namespace: 'true'
+      chart_ver: 0.24.2
       namespace: clickhouse-operator
       name: clickhouse-operator
       helm_args: -f clickhouse-operator-values.yml
@@ -20,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo

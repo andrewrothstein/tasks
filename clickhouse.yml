@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+  operator: clickhouse-operator.yml
+#  operator: pet.yml
+
+  instance: clickhouse-instance.yml
+#  instance: pet.yml
+
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    cmds:
+      - task: operator:upgrade
+      - task: instance:upgrade
+  delete:
+    cmds:
+      - task: instance:delete
+      - task: operator:delete
+  check:
+    cmds:
+      - task: operator:check
+      - task: instance:check

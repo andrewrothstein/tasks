@@ -28,6 +28,9 @@ includes:
 #  questdb: questdb.yml
   questdb: pet.yml
 
+  clickhouse: clickhouse.yml
+#  clichouse-operator: pet.yml
+
 tasks:
   default:
     deps:
@@ -43,8 +46,10 @@ tasks:
       - task: debezium-operator:upgrade
       - task: yugabyte:upgrade
       - task: questdb:upgrade
+      - task: clickhouse:upgrade
   delete:
     cmds:
+      - task: clickhouse:delete
       - task: questdb:delete
       - task: yugabyte:delete
       - task: debezium-operator:delete
@@ -64,3 +69,4 @@ tasks:
       - task: redis:check
       - task: yugabyte:check
       - task: questdb:check
+      - task: clickhouse:check
