@@ -5,4 +5,4 @@ ingresses:
     service:
       name: kibana-kb-http
       port:
-        number: 5601
+        name: http
