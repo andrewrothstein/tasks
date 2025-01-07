@@ -5,10 +5,10 @@ ingresses:
     service:
       name: dragonfly-manager
       port:
-        number: 8080
+        name: http-rest
   - name: dragonfly-scheduler
     host: dragonfly-scheduler
     service:
       name: dragonfly-scheduler
       port:
-        number: 8002
+        name: http-grpc
