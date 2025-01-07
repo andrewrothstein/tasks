@@ -11,7 +11,7 @@ coder:
   ingress:
     enable: true
     className: tailscale
-    host: coder.elephant-frog.ts.net
+    host: coder
     tls:
       enable: true
 

@@ -21,7 +21,7 @@ includes:
     vars:
       chart_repo_name: coder-v2
       chart: coder
-      chart_ver: 2.18.1
+      chart_ver: 2.18.2
       name: coder
       namespace: coder
       helm_args: -f coderv2-values.yml
@@ -40,6 +40,8 @@ tasks:
       admin_db: '{{ .admin_db | default "coder" }}'
       admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
       db_size: '{{ .db_size | default "10gi" }}'
+    deps:
+      - task: repo
     cmds:
       - task: test-secrets
         vars:
@@ -52,7 +54,6 @@ tasks:
           admin_password: '{{ .admin_password }}'
           admin_db: '{{ .admin_db }}'
           db_size: '{{ .db_size }}'
-      - task: repo
       - task: coderv2-secret:create
         vars:
           args: >-
@@ -66,6 +67,8 @@ tasks:
       - task: postgresql:delete
       - task: kk:ns-delete
   check:
+    deps:
+      - task: repo
     cmds:
       - task: postgresql:check
       - task: coderv2:check
