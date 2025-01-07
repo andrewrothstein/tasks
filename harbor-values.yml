@@ -5,4 +5,4 @@ expose:
     className: tailscale
     tls: true
     hosts:
-      core: harbor.elephant-frog.ts.net
+      core: harbor
