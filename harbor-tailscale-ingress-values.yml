@@ -5,4 +5,4 @@ ingresses:
     service:
       name: harbor-registry
       port:
-        number: 5000
+        name: http-registry
