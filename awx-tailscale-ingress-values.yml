@@ -5,4 +5,4 @@ ingresses:
     service:
       name: awx-service
       port:
-        number: 80
+        name: http
