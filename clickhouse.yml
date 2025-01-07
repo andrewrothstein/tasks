@@ -4,8 +4,8 @@ includes:
   operator: clickhouse-operator.yml
 #  operator: pet.yml
 
-  instance: clickhouse-instance.yml
-#  instance: pet.yml
+#  instance: clickhouse-instance.yml
+  instance: pet.yml
 
 tasks:
   default:
