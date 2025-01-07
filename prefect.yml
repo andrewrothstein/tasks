@@ -1,5 +1,7 @@
 ---
 version: '3'
+vars:
+  PREFECT_VER: 2025.1.2233807
 includes:
   repo: prefect-repo.yml
   kk:
@@ -13,7 +15,7 @@ includes:
       namespace: prefect
       name: prefect-server
       chart_repo_name: prefect
-      chart_ver: 2024.11.21014951
+      chart_ver: '{{ .PREFECT_VER }}'
       chart: prefect-server
       helm_args: -f prefect-server-values.yml
   worker:
@@ -23,7 +25,7 @@ includes:
       namespace: prefect
       name: prefect-worker
       chart_repo_name: prefect
-      chart_ver: 2024.11.21014951
+      chart_ver: '{{ .PREFECT_VER }}'
       chart: prefect-worker
       helm_args: -f prefect-worker-values.yml
 tasks:
