@@ -4,3 +4,7 @@ ingress:
   className: tailscale
   host:
     hostname: prefect.elephant-frog.ts.net
+server:
+  autoscaling:
+    enabled: true
+    maxReplicas: 3
