@@ -44,7 +44,7 @@ tasks:
     cmds:
       - task: worker:delete
       - task: server:delete
-      - task: kubectl:ns-delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
