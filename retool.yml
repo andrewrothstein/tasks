@@ -1,0 +1,62 @@
+---
+version: '3'
+includes:
+  repo: retool-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: retool
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: retool
+      name: retool
+      chart_repo_name: retool
+      chart: retool
+      chart_ver: 6.3.0
+tasks:
+  default:
+    deps:
+      - upgrade
+  test-secrets:
+    vars:
+      licenseKey: '{{ .licenseKey | default "${RETOOL_LICENSE_KEY}" }}'
+      encryptionKey: '{{ .encryptionKey | default "${RETOOL_ENCRYPTION_KEY}" }}'
+      jwtSecret: '{{ .jwtSecret | default "${RETOOL_JWT_SECRET}" }}'
+    cmds:
+      - test {{ .licenseKey | quote }}
+      - test {{ .encryptionKey | quote }}
+      - test {{ .jwtSecret | quote }}
+  upgrade:
+    deps:
+      - task: repo
+    vars:
+      licenseKey: '{{ .licenseKey | default "${RETOOL_LICENSE_KEY}" }}'
+      encryptionKey: '{{ .encryptionKey | default "${RETOOL_ENCRYPTION_KEY}" }}'
+      jwtSecret: '{{ .jwtSecret | default "${RETOOL_JWT_SECRET}" }}'
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          licenseKey: '{{ .licenseKey }}'
+          encryptionKey: '{{ .encryptionKey }}'
+          jwtSecret: '{{ .jwtSecret }}'
+      - task: helm:upgrade
+        vars:
+          helm_args: >-
+            -f retool-values.yml
+            --set config.licenseKey={{ .licenseKey | quote }}
+            --set config.encryptionKey={{ .encryptionKey | quote }}
+            --set config.jwtSecret={{ .jwtSecret | quote }}
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

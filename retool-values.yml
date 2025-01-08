@@ -1,0 +1,7 @@
+---
+config:
+  useInsecureCookies: true
+image:
+  tag: 3.114.3-stable
+ingress:
+  enabled: false

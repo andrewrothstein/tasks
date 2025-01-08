@@ -31,6 +31,9 @@ includes:
 #  sonarqube: sonarqube.yml
   sonarqube: pet.yml
 
+#  retool: retool.yml
+  retool: pet.yml
+
 tasks:
   default:
     deps:
@@ -47,8 +50,10 @@ tasks:
       - task: opencost:upgrade
       - task: airflow:upgrade
       - task: sonarqube:upgrade
+      - task: retool:upgrade
   delete:
     cmds:
+      - task: retool:upgrade
       - task: sonarqube:delete
       - task: airflow:delete
       - task: opencost:delete
@@ -69,3 +74,4 @@ tasks:
       - task: opencost:check
       - task: airflow:check
       - task: sonarqube:check
+      - task: retool:check
