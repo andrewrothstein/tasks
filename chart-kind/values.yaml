@@ -1,5 +1,5 @@
 # default values for chart-kind
-controlPlaneNodeCount: 1
+controlPlaneNodeCount: 3
 workloadNodeCount: 4
 
 #ipFamily: ipv6
