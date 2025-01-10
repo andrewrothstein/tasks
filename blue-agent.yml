@@ -15,7 +15,7 @@ includes:
       name: blue-agent
       chart_repo_name: blue-agent
       chart: blue-agent
-      chart_ver: 9.0.3
+      chart_ver: 10.0.0
 tasks:
   test-secrets:
     vars:
