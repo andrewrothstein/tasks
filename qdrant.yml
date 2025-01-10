@@ -12,10 +12,17 @@ includes:
     vars:
       chart_repo_name: qdrant
       chart: qdrant
-      chart_ver: 1.11.5
+      chart_ver: 1.12.6
       namespace: qdrant
       name: qdrant
-$      helm_args: -f qdrant-values.yml
+#      helm_args: -f qdrant-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: qdrant
+      name: tailscale-ingress
+      helm_args: -f qdrant-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -27,8 +34,10 @@ tasks:
       - task: kk:ns-create
       - task: kk:ns-label
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

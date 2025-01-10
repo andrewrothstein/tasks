@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  qdrant: qdrant.yml
+  qdrant: pet.yml
+
 #  k8sgpt: k8sgpt.yml
   k8sgpt: pet.yml
 
@@ -24,6 +27,7 @@ tasks:
       - up
   up:
     cmds:
+      - task: qdrant:upgrade
       - task: k8sgpt:upgrade
       - task: milvus:upgrade
       - task: mlflow:upgrade
@@ -38,8 +42,10 @@ tasks:
       - task: mlflow:delete
       - task: milvus:delete
       - task: k8sgpt:delete
+      - task: qdrant:delete
   check:
     cmds:
+      - task: qdrant:check
       - task: k8sgpt:check
       - task: milvus:check
       - task: mlflow:check

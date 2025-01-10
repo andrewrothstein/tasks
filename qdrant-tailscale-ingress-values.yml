@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: qdrant-dashboard
+    host: qdrant-dashboard
+    service:
+      name: qdrant
+      port:
+        name: http
