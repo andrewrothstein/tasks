@@ -5,8 +5,8 @@ includes:
     taskfile: helm-repo.yml
     flatten: true
     vars:
-      n: chaos-mesh
-      url: https://charts.chaos-mesh.org
+      n: litmuschaos
+      url: https://litmuschaos.github.io/litmus-helm/
 tasks:
   default:
     deps:

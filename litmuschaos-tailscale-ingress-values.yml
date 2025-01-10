@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: litmus-frontend
+    host: litmus
+    service:
+      name: litmus-frontend-service
+      port:
+        name: http

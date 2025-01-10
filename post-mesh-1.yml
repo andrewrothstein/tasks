@@ -26,6 +26,7 @@ includes:
   k8s-virtualization: k8s-virtualization.yml
   k8s-database: k8s-database.yml
   k8s-ai: k8s-ai.yml
+  k8s-chaos: k8s-chaos.yml
 
 #  operator-sdk: operator-sdk.yml
   operator-sdk: pet.yml
@@ -59,12 +60,14 @@ tasks:
       - task: k8s-virtualization:up
       - task: k8s-database:up
       - task: k8s-ai:up
+      - task: k8s-chaos:up
       - task: knative:apply
       - task: coderv2:upgrade
   delete:
     cmds:
       - task: coderv2:delete
       - task: knative:delete
+      - task: k8s-chaos:delete
       - task: k8s-ai:delete
       - task: k8s-database:delete
       - task: k8s-virtualization:delete
@@ -99,4 +102,5 @@ tasks:
       - task: k8s-virtualization:check
       - task: k8s-database:check
       - task: k8s-ai:check
+      - task: k8s-chaos:check
       - task: coderv2:check

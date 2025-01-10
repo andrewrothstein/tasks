@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: chaos-mesh-dashboard
+    host: chaos-mesh-dashboard
+    service:
+      name: chaos-dashboard
+      port:
+        name: http

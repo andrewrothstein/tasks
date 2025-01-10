@@ -1,28 +1,28 @@
 ---
 version: '3'
 includes:
-  repo: chaos-mesh-repo.yml
+  repo: litmuschaos-repo.yml
   kk:
     taskfile: kubectl.yml
     vars:
-      n: chaos-mesh
+      n: litmus
       labels: 'istio.io/dataplane-mode=ambient'
   ingress:
     taskfile: helm.yml
     vars:
       chart: chart-tailscale-ingress
-      namespace: chaos-mesh
+      namespace: litmus
       name: tailscale-ingress
-      helm_args: -f chaos-mesh-tailscale-ingress-values.yml
+      helm_args: -f litmuschaos-tailscale-ingress-values.yml
   helm:
     taskfile: helm.yml
     vars:
-      chart_repo_name: chaos-mesh
-      chart: chaos-mesh
-      chart_ver: 2.7.0
-      namespace: chaos-mesh
-      name: chaos-mesh
-#      helm_args: -f chaos-mesh-values.yml
+      chart_repo_name: litmuschaos
+      chart: litmus
+      chart_ver: 3.14.0
+      namespace: litmus
+      name: litmus
+#      helm_args: -f litmus-values.yml
 tasks:
   default:
     deps:

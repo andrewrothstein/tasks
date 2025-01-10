@@ -1,0 +1,26 @@
+---
+version: '3'
+
+includes:
+#  chaos-mesh: chaos-mesh.yml
+  chaos-mesh: pet.yml
+
+#  litmuschaos: litmuschaos.yml
+  litmuschaos: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: chaos-mesh:upgrade
+      - task: litmuschaos:upgrade
+  delete:
+    cmds:
+      - task: litmuschaos:delete
+      - task: chaos-mesh:delete
+  check:
+    cmds:
+      - task: chaos-mesh:check
+      - task: litmuschaos:check
