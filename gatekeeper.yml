@@ -2,16 +2,20 @@
 version: '3'
 includes:
   repo: gatekeeper-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: gatekeeper-system
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
       namespace: gatekeeper-system
-      create_namespace: 'true'
       name: gatekeeper
       chart_repo_name: gatekeeper
       chart: gatekeeper
-      chart_ver: 3.18.1
+      chart_ver: 3.18.2
 tasks:
   default:
     deps:
@@ -20,10 +24,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
