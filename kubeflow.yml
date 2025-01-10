@@ -2,16 +2,19 @@
 version: '3'
 includes:
   repo: kubeflow-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: kubeflow
+      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
       namespace: kubeflow
-      create_namespace: 'true'
-      install: 'true'
       name: kubeflow
       chart_repo_name: kubeflow
       chart: kubeflow
-      chart_ver: 0.2.0
+      chart_ver: 0.4.0
 tasks:
   default:
     deps:
@@ -20,10 +23,13 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:
       - task: helm:delete
+      - task: kk:ns-delete
   check:
     deps:
       - task: repo
