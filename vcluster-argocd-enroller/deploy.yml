@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vcluster-argocd-operator
+  namespace: vcluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vcluster-argocd-operator
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vcluster-argocd-operator
+subjects:
+- kind: ServiceAccount
+  name: vcluster-argocd-operator
+  namespace: vcluster-system
+roleRef:
+  kind: ClusterRole
+  name: vcluster-argocd-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vcluster-argocd-operator
+  namespace: vcluster-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vcluster-argocd-operator
+  template:
+    metadata:
+      labels:
+        app: vcluster-argocd-operator
+    spec:
+      serviceAccountName: vcluster-argocd-operator
+      containers:
+      - name: operator
+        image: python:3.12-slim
+        command:
+        - python
+        - /app/operator.py
+        volumeMounts:
+        - name: operator-code
+          mountPath: /app
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: operator-code
+        configMap:
+          name: vcluster-argocd-operator-code

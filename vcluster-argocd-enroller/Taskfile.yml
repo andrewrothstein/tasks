@@ -1,0 +1,12 @@
+---
+version: '3'
+tasks:
+  build:
+    cmds:
+      - docker build -t vcluster-argocd-enroller .
+  run:
+    cmds:
+      - pipenv run kopf run operator.py
+  default:
+    deps:
+      - task: run
