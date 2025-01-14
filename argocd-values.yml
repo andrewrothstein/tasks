@@ -6,17 +6,13 @@ controller:
   replicas: 1
 
 server:
-  autoscaling:
-    enabled: true
-    minReplicas: 2
+  replicas: 1
 
 repoServer:
-  autoscaling:
-    enabled: true
-    minReplicas: 2
+  replicas: 1
 
 applicationSet:
-  replicas: 2
+  replicas: 1
 
 global:
   domain: argocd.elephant-frog.ts.net
