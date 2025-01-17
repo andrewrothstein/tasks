@@ -75,7 +75,7 @@ def handle_vcluster_enrollment(
                 "data": {
                     "name": encode(vcluster_name),
                     "server": encode(f"https://{vcluster_name}.{namespace}.svc.cluster.local"),
-                    "config": encode(yaml.dump({
+                    "config": encode(json.dumps({
                         "tlsClientConfig": {
                             "caData": vc_secret.data["certificate-authority"],
                             "certData": vc_secret.data["client-certificate"],
