@@ -77,9 +77,9 @@ def handle_vcluster_enrollment(
                     "server": encode(f"https://{vcluster_name}.{namespace}.svc.cluster.local"),
                     "config": encode(yaml.dump({
                         "tlsClientConfig": {
-                            "caData": decode(vc_secret.data["certificate-authority"]),
-                            "certData": decode(vc_secret.data["client-certificate"]),
-                            "keyData": decode(vc_secret.data["client-key"]),
+                            "caData": vc_secret.data["certificate-authority"],
+                            "certData": vc_secret.data["client-certificate"],
+                            "keyData": vc_secret.data["client-key"],
                             "insecure": False
                         }
                     }))
@@ -124,10 +124,10 @@ def vcluster_created(
     """Handle vcluster StatefulSet creation"""
     statefulset_name = name
     logger.info(
-        f"Detected new vcluster StatefulSet: {namespace}/{statefuleset_name}"
+        f"Detected new vcluster StatefulSet: {namespace}/{statefulset_name}"
     )
     return handle_vcluster_enrollment(
-        statefuleset_name,
+        statefulset_name,
         namespace,
         **kwargs
     )
@@ -160,10 +160,10 @@ def vcluster_deleted(
     """Handle vcluster StatefulSet deletion"""
     statefulset_name = name
     logger.info(
-        f"Detected vcluster StatefulSet deletion: {namespace}/{statefuleset_name}"
+        f"Detected vcluster StatefulSet deletion: {namespace}/{statefulset_name}"
     )
 
-    vcluster_name = vc_name(statefuleset_name)
+    vcluster_name = vc_name(statefulset_name)
     argocd_secret_name = ar_secret_name(vcluster_name)
 
     logger.info(f"Deleting ArgoCD cluster secret {argocd_secret_name} for {namespace}/{vcluster_name}")
