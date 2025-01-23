@@ -40,7 +40,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: v0.10.1
+      chart_ver: v0.10.2
       chart: cert-manager-csi-driver
   trust_manager:
     taskfile: helm.yml
