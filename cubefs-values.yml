@@ -1,0 +1,40 @@
+---
+component:
+  master: true
+  datanode: true
+  metanode: true
+  objectnode: true
+  client: false
+  provisioner: false
+  monitor: false
+  ingress: false
+
+path:
+  data: /var/lib/cubefs
+  log: /var/log/cubefs
+
+datanode:
+  # Disks will be used by datanode to storage data
+  # Format: disk_mount_point:reserved_space
+  # disk_mount_point: the mount point of disk in machine
+  # reserved_space: similar to metanode reserved space, if disk available
+  # space less than this number, then the disk will be unwritable
+  disks:
+    - /data0:21474836480
+    - /data1:21474836480
+
+metanode:
+  # Total memory metanode can use, recommended to be configured
+  # as 80% of physical machine memory
+  total_mem: "26843545600"
+
+
+# node labels:
+# kubectl label node <nodename> component.cubefs.io/master=enabled
+# kubectl label node <nodename> component.cubefs.io/metanode=enabled
+# kubectl label node <nodename> component.cubefs.io/datanode=enabled
+# kubectl label node <nodename> component.cubefs.io/objectnode=enabled
+# kubectl label node <nodename> component.cubefs.io/csi=enabled
+
+provisioner:
+  kubelet_path: /var/lib/kubelet

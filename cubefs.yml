@@ -1,0 +1,39 @@
+---
+version: '3'
+includes:
+  repo: cubefs-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: cubefs
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: cubefs
+      name: cubefs
+      chart_repo_name: cubefs
+      chart: cubefs
+      chart_ver: 3.2.0
+#      helm_args: -f cubefs-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
