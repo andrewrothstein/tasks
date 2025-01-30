@@ -28,13 +28,30 @@ includes:
       chart_ver: 0.29.1
       namespace: vault-system
       name: vault
-      helm_args: >-
-        -f vault-values.yml
-        --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"
 tasks:
   test-secrets:
+    vars:
+      root_token: '{{ .root_token | default "${VAULT_ROOT_TOKEN}" }}'
     cmds:
-      - test ${VAULT_ROOT_TOKEN}
+      - test {{ .root_token | quote }}
+  upgrade:
+    vars:
+      root_token: '{{ .root_token | default "${VAULT_ROOT_TOKEN}" }}'
+    deps:
+      - task: ss-csi:upgrade
+    cmds:
+      - task: repo:add
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: vault-secrets-operator:upgrade
+      - task: test-secrets
+        vars:
+          root_token: '{{ .root_token }}'
+      - task: vault:upgrade
+        vars:
+          helm_args: >-
+            -f vault-values.yml
+            --set server.dev.devRootToken={{ .root_token | quote }}
   default:
     deps:
       - upgrade
@@ -43,23 +60,6 @@ tasks:
       - task: ss-csi:check
       - task: vault-secrets-operator:check
       - task: vault:check
-  vault-upgrade:
-    deps:
-      - task: test-secrets
-    cmds:
-      - task: vault:upgrade
-  upgrade:
-    deps:
-      - task: ss-csi:upgrade
-    cmds:
-      - task: repo:add
-      - task: kk:ns-create
-      - task: kk:ns-label
-      - task: vault-secrets-operator:upgrade
-      - task: vault:upgrade
-  vault-delete:
-    cmds:
-      - task: vault:delete
   delete:
     cmds:
       - task: vault:delete
