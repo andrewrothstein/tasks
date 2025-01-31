@@ -14,7 +14,7 @@ includes:
       name: vpa
       chart_repo_name: cowboysysop
       chart: vertical-pod-autoscaler
-      chart_ver: 9.9.1
+      chart_ver: 10.0.0
 tasks:
   default:
     deps:

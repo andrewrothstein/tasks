@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: nats
       chart: nats
-      chart_ver: 1.2.9
+      chart_ver: 1.2.10
       namespace: nats
       name: nats
 tasks:
