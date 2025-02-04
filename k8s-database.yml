@@ -31,6 +31,9 @@ includes:
   clickhouse: clickhouse.yml
 #  clichouse-operator: pet.yml
 
+#  cockroachdb: cockroackdb.yml
+  cockroachdb: pet.yml
+
 tasks:
   default:
     deps:
@@ -47,8 +50,10 @@ tasks:
       - task: yugabyte:upgrade
       - task: questdb:upgrade
       - task: clickhouse:upgrade
+      - task: cockroachdb:upgrade
   delete:
     cmds:
+      - task: cockroachdb:delete
       - task: clickhouse:delete
       - task: questdb:delete
       - task: yugabyte:delete
@@ -70,3 +75,4 @@ tasks:
       - task: yugabyte:check
       - task: questdb:check
       - task: clickhouse:check
+      - task: cockroachdb:check
