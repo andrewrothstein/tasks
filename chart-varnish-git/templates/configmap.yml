@@ -4,6 +4,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "git-cache.fullname" . }}-config
+  annotations:
+    checksum/config: '{{ .Files.Get "config/default.vcl" | sha256sum }}'
 data:
   default.vcl: |
 {{ .Files.Get "config/default.vcl" | indent 4 }}

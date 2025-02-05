@@ -1,15 +1,9 @@
 vcl 4.1;
 
-# Health check backend
+# Main Git backend
 backend default {
     .host = "github.com";
     .port = "443";
-}
-
-# Main Git backend
-backend git_backend {
-    .host = "${GIT_BACKEND_HOST}";
-    .port = "${GIT_BACKEND_PORT}";
     .probe = {
         .url = "/";
         .timeout = 2s;

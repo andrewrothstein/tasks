@@ -18,7 +18,8 @@ spec:
         - name: varnish
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 80
+            - name: http
+              containerPort: 8080
           volumeMounts:
             - name: varnish-config
               mountPath: /etc/varnish
@@ -27,9 +28,11 @@ spec:
           env:
             - name: VARNISH_SIZE
               value: "2G"
-            - name: GIT_BACKEND_HOST
+            - name: VARNISH_HTTP_PORT
+              value: "8080"
+            - name: VARNISH_BACKEND_HOST
               value: {{ .Values.gitBackend.host | quote }}
-            - name: GIT_BACKEND_PORT
+            - name: VARNISH_BACKEND_PORT
               value: {{ .Values.gitBackend.port | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
