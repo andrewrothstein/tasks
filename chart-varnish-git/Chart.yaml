@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: varnish-git
+description: |
+  A Helm chart for deploying Varnish cache to proxy github
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"

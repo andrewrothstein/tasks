@@ -1,0 +1,46 @@
+# templates/deployment.yml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "git-cache.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "git-cache.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "git-cache.name" . }}
+    spec:
+      containers:
+        - name: varnish
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: varnish-config
+              mountPath: /etc/varnish
+            - name: varnish-data
+              mountPath: /var/lib/varnish
+          env:
+            - name: VARNISH_SIZE
+              value: "2G"
+            - name: GIT_BACKEND_HOST
+              value: {{ .Values.gitBackend.host | quote }}
+            - name: GIT_BACKEND_PORT
+              value: {{ .Values.gitBackend.port | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: varnish-config
+          configMap:
+            name: {{ include "git-cache.fullname" . }}-config
+        - name: varnish-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "git-cache.fullname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

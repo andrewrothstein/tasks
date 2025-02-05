@@ -1,0 +1,27 @@
+# values.yaml
+image:
+  repository: varnish
+  tag: 7.3
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+gitBackend:
+  host: "github.com"
+  port: "443"
+
+resources:
+  limits:
+    memory: 4Gi
+    cpu: 2
+  requests:
+    memory: 2Gi
+    cpu: 500m
+
+persistence:
+  enabled: true
+  size: 20Gi
+
+service:
+  type: ClusterIP
+  port: 80

@@ -1,0 +1,9 @@
+# templates/configmap.yml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "git-cache.fullname" . }}-config
+data:
+  default.vcl: |
+{{ .Files.Get "config/default.vcl" | indent 4 }}

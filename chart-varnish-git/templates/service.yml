@@ -1,0 +1,15 @@
+# templates/service.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "git-cache.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "git-cache.name" . }}
