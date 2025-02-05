@@ -3,9 +3,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "git-cache.fullname" . }}-config
+  name: {{ include "git-cache.fullname" . }}-vconfig
   annotations:
     checksum/config: '{{ .Files.Get "config/default.vcl" | sha256sum }}'
 data:
   default.vcl: |
 {{ .Files.Get "config/default.vcl" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "git-cache.fullname" . }}-nconfig
+  annotations:
+    checksum/config: '{{ .Files.Get "config/nginx.conf" | sha256sum }}'
+data:
+  nginx.conf: |
+{{ .Files.Get "config/nginx.conf" | indent 4 }}

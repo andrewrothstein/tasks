@@ -1,22 +1,30 @@
 # values.yaml
-image:
-  repository: varnish
-  tag: 7
-  pullPolicy: IfNotPresent
+varnish:
+  image:
+    repository: varnish
+    tag: 7
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: 4Gi
+      cpu: 2
+    requests:
+      memory: 2Gi
+      cpu: 500m
+nginx:
+  image:
+    repository: nginx
+    tag: 1
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: 1
+    requests:
+      memory: 512Mi
+      cpu: 500m
 
 replicaCount: 1
-
-gitBackend:
-  host: "github.com"
-  port: "443"
-
-resources:
-  limits:
-    memory: 4Gi
-    cpu: 2
-  requests:
-    memory: 2Gi
-    cpu: 500m
 
 persistence:
   enabled: true

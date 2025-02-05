@@ -15,31 +15,36 @@ spec:
         app: {{ include "git-cache.name" . }}
     spec:
       containers:
-        - name: varnish
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: nginx
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           ports:
-            - name: http
-              containerPort: 8080
+            - containerPort: 9090
           volumeMounts:
-            - name: varnish-config
+            - name: varnish-nconfig
+              mountPath: /etc/nginx
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+        - name: varnish
+          image: "{{ .Values.varnish.image.repository }}:{{ .Values.varnish.image.tag }}"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: VARNISH_HTTP_PORT
+              value: "8080"
+          volumeMounts:
+            - name: varnish-vconfig
               mountPath: /etc/varnish
             - name: varnish-data
               mountPath: /var/lib/varnish
-          env:
-            - name: VARNISH_SIZE
-              value: "2G"
-            - name: VARNISH_HTTP_PORT
-              value: "8080"
-            - name: VARNISH_BACKEND_HOST
-              value: {{ .Values.gitBackend.host | quote }}
-            - name: VARNISH_BACKEND_PORT
-              value: {{ .Values.gitBackend.port | quote }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.varnish.resources | nindent 12 }}
       volumes:
-        - name: varnish-config
+        - name: varnish-vconfig
           configMap:
-            name: {{ include "git-cache.fullname" . }}-config
+            name: {{ include "git-cache.fullname" . }}-vconfig
+        - name: varnish-nconfig
+          configMap:
+            name: {{ include "git-cache.fullname" . }}-nconfig
         - name: varnish-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
