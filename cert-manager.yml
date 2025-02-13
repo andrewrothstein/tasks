@@ -22,7 +22,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: v1.17.0
+      chart_ver: v1.17.1
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
   approver_policy:
