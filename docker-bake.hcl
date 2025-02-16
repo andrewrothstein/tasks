@@ -26,7 +26,7 @@ variable "TARGET_IMAGE_TAG" {
 target "both" {
   context = "."
   dockerfile-inline = <<-EOF
-  FROM alpine:latest as downloader
+  FROM alpine:latest AS downloader
   RUN apk --no-cache add ca-certificates curl
   RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /tmp
   RUN chmod +x /tmp/task
