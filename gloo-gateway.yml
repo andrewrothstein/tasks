@@ -13,7 +13,7 @@ includes:
     vars:
       chart_repo_name: gloo
       chart: gloo
-      chart_ver: 1.18.7
+      chart_ver: 1.18.8
       namespace: gloo-system
       name: gloo-gateway
       helm_args: -f gloo-gateway-values.yml
