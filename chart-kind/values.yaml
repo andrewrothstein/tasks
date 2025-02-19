@@ -1,6 +1,6 @@
 # default values for chart-kind
-controlPlaneNodeCount: 3
-workloadNodeCount: 4
+controlPlaneNodeCount: 1
+workloadNodeCount: 3
 
 #ipFamily: ipv6
 #apiServerAddress: 127.0.0.1
@@ -73,7 +73,7 @@ nodeImageSHAs:
     1.29.14: sha256:8703bd94ee24e51b778d5556ae310c6c0fa67d761fae6379c8e0bb480e6fea29
 
 kindVer: 0.27.0
-k8sVer: 1.32.2
+k8sVer: 1.31.6
 
 extraMounts:
   # for fun with docker in containers
