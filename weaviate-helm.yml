@@ -15,7 +15,7 @@ includes:
       name: weaviate
       chart_repo_name: weaviate
       chart: weaviate
-      chart_ver: 17.3.3
+      chart_ver: 17.4.3
       helm_args: -f weaviate-values.yml
   ingress:
     taskfile: helm.yml

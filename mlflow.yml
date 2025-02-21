@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: community-charts
       chart: mlflow
-      chart_ver: 0.9.1
+      chart_ver: 0.13.1
       namespace: mlflow
       name: mlflow
 #      helm_args: -f mlflow-values.yml
