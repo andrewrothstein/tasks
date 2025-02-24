@@ -83,6 +83,9 @@ extraMounts:
   - hostPath: /run/udev
     containerPath: /run/udev
     propagation: HostToContainer
+  # for HTTP(S) proxies
+  - hostPath: ./http-proxy.conf
+    containerPath: /etc/systemd/system/containerd.service.d/http-proxy.conf
 
 #containerdConfigPatches:
 #  - |-
