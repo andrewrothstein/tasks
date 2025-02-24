@@ -1,0 +1,10 @@
+---
+neo4j:
+  name: standalone
+  edition: community
+#  acceptLicenseAgreement: eval
+volumes:
+  data:
+    mode: dynamic
+    dynamic:
+      storageClassName: standard

@@ -34,6 +34,9 @@ includes:
 #  cockroachdb: cockroackdb.yml
   cockroachdb: pet.yml
 
+#  neo4j: neo4j.yml
+  neo4j: pet.yml
+
 tasks:
   default:
     deps:
@@ -51,8 +54,10 @@ tasks:
       - task: questdb:upgrade
       - task: clickhouse:upgrade
       - task: cockroachdb:upgrade
+      - task: neo4j:upgrade
   delete:
     cmds:
+      - task: neo4j:delete
       - task: cockroachdb:delete
       - task: clickhouse:delete
       - task: questdb:delete
@@ -76,3 +81,5 @@ tasks:
       - task: questdb:check
       - task: clickhouse:check
       - task: cockroachdb:check
+      - task: neo4j:check
+  

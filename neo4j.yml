@@ -1,0 +1,60 @@
+---
+version: '3'
+includes:
+  repo: neo4j-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: neo4j
+      labels: 'istio.io/dataplane-mode=ambient'
+  secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: neo4j
+      s: neo4j-secrets
+  helm:
+    taskfile: helm.yml
+    internal: true
+    vars:
+      namespace: neo4j
+      name: neo4j
+      chart_repo_name: neo4j
+      chart: neo4j
+      chart_ver: 5.26.2
+tasks:
+  default:
+    deps:
+      - upgrade
+  test-secrets:
+    vars:
+      neo4j_password: '{{ .neo4j_password | default "${NEO4J_PASSWORD}" }}'
+    cmds:
+      - test {{ .neo4j_password | quote }}
+  upgrade:
+    vars:
+      neo4j_password: '{{ .neo4j_password | default "${NEO4J_PASSWORD}" }}'
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          neo4j_password: '{{ .neo4j_password }}'
+      - task: secrets:create
+        vars:
+          args: --from-literal=NEO4J_AUTH="neo4j/{{ .neo4j_password }}"
+      - task: helm:upgrade
+        vars:
+          helm_args: >-
+            -f neo4j-values.yml
+            --set neo4j.passwordFromSecret=neo4j-secrets
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check

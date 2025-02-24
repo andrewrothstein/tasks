@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: neo4j
+      url: https://helm.neo4j.com/neo4j
+tasks:
+  default:
+    deps:
+      - task: add
