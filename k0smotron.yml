@@ -1,0 +1,19 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      f: https://docs.k0smotron.io/stable/install.yaml
+tasks:
+  default:
+    deps:
+      - task: apply
+  apply:
+    cmds:
+      - task: kk:apply
+        vars:
+          server_side: 'true'
+  delete:
+    cmds:
+      - task: kk:delete

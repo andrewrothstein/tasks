@@ -36,12 +36,16 @@ tasks:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
+      server_side: '{{ .server_side | default "false" }}'
     cmds:
       - |
         kubectl \
           {{ .verb }}
           {{- if .n }} \
           -n {{ .n | quote }}
+          {{- end }}
+          {{- if eq "true" .server_side }} \
+          --server-side
           {{- end }} \
           -f
           {{- if .literal_f }} - <<EOF
@@ -54,6 +58,7 @@ tasks:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
+      server_side: '{{ .server_side | default "false" }}'
     cmds:
       - task: _apply
         vars:
@@ -61,11 +66,13 @@ tasks:
           n: '{{ .n }}'
           f: '{{ .f }}'
           literal_f: '{{ .literal_f }}'
+          server_side: '{{ .server_side }}'
   apply:
     vars:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
+      server_side: '{{ .server_side | default "false" }}'
     cmds:
       - task: _apply
         vars:
@@ -73,6 +80,7 @@ tasks:
           n: '{{ .n }}'
           f: '{{ .f }}'
           literal_f: '{{ .literal_f }}'
+          server_side: '{{ .server_side }}'
   delete:
     vars:
       n: '{{ .n }}'
