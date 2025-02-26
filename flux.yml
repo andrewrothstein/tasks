@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: fluxcd-community
       chart: flux2
-      chart_ver: 2.14.1
+      chart_ver: 2.15.0
       namespace: flux-system
       name: flux
 #      helm_args: -f flux-values.yml
