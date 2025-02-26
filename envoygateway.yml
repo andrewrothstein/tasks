@@ -1,31 +1,49 @@
 ---
 version: '3'
 includes:
-  kk:
+  gwkk:
     taskfile: kubectl.yml
     vars:
       n: envoy-gateway-system
       labels: 'istio.io/dataplane-mode=ambient'
-  helm:
+  gw:
     taskfile: helm.yml
     vars:
       namespace: envoy-gateway-system
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
       chart: gateway-helm
-      chart_ver: v1.2.4
+      chart_ver: v1.3.0
+  aigwkk:
+    taskfile: kubectl.yml
+    vars:
+      n: envoy-ai-gateway-system
+      labels: 'istio.io/dataplane-mode=ambient'
+  aigw:
+    taskfile: helm.yml
+    vars:
+      namespace: envoy-ai-gateway-system
+      name: envoy-ai-gateway
+      chart_repo_name: oci://docker.io/envoyproxy
+      chart: ai-gateway-helm
+      chart_ver: v0.1.0
 tasks:
   default:
     deps:
       - upgrade
   upgrade:
     cmds:
-      - task: kk:ns-create
-      - task: kk:ns-label
-      - task: helm:upgrade
+      - task: gwkk:ns-create
+      - task: gwkk:ns-label
+      - task: gw:upgrade
+      - task: aigwkk:ns-create
+      - task: aigwkk:ns-label
+      - task: aigw:upgrade
   delete:
     cmds:
-      - task: helm:delete
-      - task: kk:ns-delete
+      - task: aigw:delete
+      - task: aigwkk:ns-delete
+      - task: gw:delete
+      - task: gwkk:ns-delete
   check:
     cmds: []
