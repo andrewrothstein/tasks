@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - https://github.com/kubevirt/kubevirt/releases/download/v1.4.0/kubevirt-cr.yaml
+patches:
+  - target:
+      group: kubevirt
+      kind: kubevirt.io
+      name: kubevirt
+    path: enable-nested-virtualization.yml
