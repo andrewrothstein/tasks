@@ -1,66 +1,46 @@
 ---
 version: '3'
-vars:
-  kubevirt_vms_ns: kubevirt-vms
 includes:
-  kubectl:
-    internal: true
+  virtctl:
+    taskfile: virtctl.yml
+    vars:
+      n: kubevirt-vms
+  kk:
     taskfile: kubectl.yml
     vars:
-      n: '{{ .kubevirt_vms_ns }}'
+      n: kubevirt-vms
+      k: kubevirt-vm
 tasks:
-  vm:
-    vars:
-      action: '{{ .action }}'
-      name: '{{ .name }}'
-    cmds:
-      - |
-        virtctl \
-          -n {{ .kubevirt_vms_ns | quote }} \
-          {{ .action | quote }} \
-          {{ .name | quote }}
-  pvc-create:
-    deps:
-      - task: kubectl:ns-create
-    cmds:
-      - task: kubectl:apply
-        vars:
-          f: kubevirt-vm/fedora-pvc.yml
-        sources:
-          - kubevirt-vm/fedora-pvc.yml
   vm-create:
-    deps:
-      - pvc-create
     cmds:
-      - task: kubectl:apply
-        vars:
-          f: kubevirt-vm/vm.yaml
-        sources:
-          - kubevirt-vm/vm.yml
+      - task: kk:kapply
+    sources:
+      - kubevirt-vms/
   vm-start:
-    deps:
-      - vm-create
     cmds:
-      - task: vm
+      - task: virtctl
         vars:
           action: start
           name: jumpstation
+  vm-stop:
+    cmds:
+      - task: virtctl
+        vars:
+          action: stop
+          name: jumpstation
+  vm-delete:
+    cmds:
+      - task: kk:kdelete
   default:
     deps:
       - apply
   apply:
     cmds:
+      - task: kk:ns-create
+      - task: vm-create
       - task: vm-start
   delete:
     cmds:
-      - task: vm
-        vars:
-          action: stop
-          name: jumpstation
-      - task: kubectl:delete
-        vars:
-          f: kubevirt-vm/vm.yaml
-      - task: kubectl:delete
-        vars:
-          f: kubevirt-vm/fedora-pvc.yml
-      - task: kubectl:ns-delete
+      - task: vm-stop
+      - task: vm-delete
+      - task: kk:ns-delete

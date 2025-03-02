@@ -1,0 +1,16 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      n: '{{ .n }}'
+      action: '{{ .action }}'
+      name: '{{ .name }}'
+    cmds:
+      - |
+        virtctl
+          {{- if .n }} \
+          -n {{ .n | quote }}
+          {{- end }} \
+          {{ .action | quote }} \
+          {{ .name | quote }}
