@@ -1,16 +1,20 @@
 ---
 version: '3'
+dotenv: [.env]
 includes:
   stack:
     taskfile: pulumi-stack.yml
-  vars:
-    C: pulumi/aks
+    vars:
+      C: pulumi/aks
+      s: test-aks
+      yes: 'true'
 tasks:
-  test-ls:
+  ls:
     cmds:
       - task: stack:ls
-  test-init:
+  init:
     cmds:
       - task: stack:init
-        vars:
-          s: test-aks
+  rm:
+    cmds:
+      - task: stack:rm

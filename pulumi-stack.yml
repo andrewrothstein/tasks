@@ -35,21 +35,26 @@ tasks:
             {{- if .t }} \
               -t {{ .t | quote }}
             {{- end }}
+  rm:
+    vars:
+      y: '{{ .y | default .yes }}'
+    cmds:
+      - task: pulumi
+        vars:
+          pulumi_command: stack rm
+          pulumi_args: |-
+            {{- if eq "true" .y }} \
+              --yes
+            {{- end }}
   init:
     vars:
-      C: '{{ .C | default .cwd | default .USER_WORKING_DIR }}'
-      s: '{{ .s | default .stack_name }}'
-      org_name: '{{ .org_name }}'
+#      s: '{{ .s | default .stack_name }}'
+#      org_name: '{{ .org_name }}'
       secrets_provider: '{{ .secrets_provider }}'
     cmds:
       - task: pulumi
         vars:
-          pulumi_command: >-
-            stack
-            init
-            {{ if .org_name }}{{ .org_name }}/
-            {{- end }}
-            {{- .s }}
+          pulumi_command: stack init
           pulumi_args: |-
             {{- if .secrets_provider }} \
               --secrets-provider {{ .secrets_provider | quote }}
