@@ -1,0 +1,20 @@
+---
+version: '3'
+tasks:
+  default:
+    vars:
+      js_out: '{{ .js_out | default "import_style=commonjs,binary:./" }}'
+      grpc_out: '{{ .grpc_out | default "./" }}'
+      plugin: '{{ .plugin | default "protoc-gen-grpc=`which grpc_tools_node_protoc_plugin`" }}'
+    cmds:
+      - |-
+        protoc
+        {{- if .js_out }} \
+          --js-out={{ .js_out | quote }}
+        {{- end }}
+        {{- if .grpc_out }} \
+          --grpc-out={{ .grpc_out | quote }}
+        {{- end }}
+        {{- if .plugin }} \
+          --plugin={{ .plugin | quote }}
+        {{- end }}
