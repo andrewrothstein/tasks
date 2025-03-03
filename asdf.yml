@@ -1,0 +1,39 @@
+---
+version: '3'
+vars:
+  NODEJS_VERSION: '23.9.0'
+tasks:
+  default:
+    deps:
+      - task: plugin-add
+      - task: list-all
+  plugin-add:
+    vars:
+      plugin: '{{ .plugin | default "nodejs" }}'
+    cmds:
+      - asdf plugin add {{ .plugin | quote }}
+  list-all:
+    vars:
+      plugin: '{{ .plugin | default "nodejs" }}'
+    cmds:
+      - asdf list all {{ .plugin | quote }}
+  global:
+    vars:
+      plugin: '{{ .plugin | default "nodejs" }}'
+      version: '{{ .version | default .NODEJS_VERSION }}'
+    cmds:
+      - >-
+        asdf
+        global
+        {{ .plugin | quote }}
+        {{ .version | quote }}
+  local:
+    vars:
+      plugin: '{{ .plugin | default "nodejs" }}'
+      version: '{{ .version | default .NODEJS_VERSION }}'
+    cmds:
+      - >-
+        asdf
+        local
+        {{ .plugin | quote }}
+        {{ .version | quote }}
