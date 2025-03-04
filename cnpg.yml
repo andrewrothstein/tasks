@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: cnpg
       chart: cloudnative-pg
-      chart_ver: 0.23.0
+      chart_ver: 0.23.1
       namespace: cnpg-system
       name: cnpg
       helm_args: -f cnpg-values.yml
