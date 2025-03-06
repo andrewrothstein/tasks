@@ -17,7 +17,7 @@ includes:
     vars:
       chart_repo_name: hashicorp
       chart: vault-secrets-operator
-      chart_ver: 0.9.1
+      chart_ver: 0.10.0
       namespace: vault-system
       name: secrets-operator
   vault:
