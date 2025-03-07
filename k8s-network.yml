@@ -7,6 +7,9 @@ includes:
 #  ngrok-operator: ngrok-operator.yml
   ngrok-operator: pet.yml
 
+#  pomerium-zero: pomerium-zero.yml
+  pomerium-zero: pet.yml
+
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
 
@@ -23,6 +26,7 @@ tasks:
     cmds:
       - task: metallb:upgrade
       - task: ngrok-operator:upgrade
+      - task: pomerium-zero:apply
       - task: ingress:upgrade
       - task: envoygateway:upgrade
       - task: gloo-gateway:upgrade
@@ -31,6 +35,7 @@ tasks:
       - task: gloo-gateway:delete
       - task: envoygateway:delete
       - task: ingress:delete
+      - task: pomerium-zero:delete
       - task: ngrok-operator:delete
       - task: metallb:delete
   check:
