@@ -239,3 +239,4 @@
     - role: andrewrothstein.mkcert
       tags:
         - secrets
+    - role: andrewrothstein.pomerium
