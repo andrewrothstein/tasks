@@ -20,7 +20,7 @@ includes:
     vars:
       chart_repo_name: spire
       chart: spire
-      chart_ver: 0.24.1
+      chart_ver: 0.24.2
       namespace: spire-mgmt
       name: spire
 tasks:
