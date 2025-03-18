@@ -21,3 +21,4 @@ logs/
 *.tigerbeetle
 .env
 .*credentials
+.ansible/
