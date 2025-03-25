@@ -8,7 +8,7 @@ includes:
     vars:
       chart_repo_name: csi-driver-nfs
       chart: csi-driver-nfs
-      chart_ver: v4.10.0
+      chart_ver: 4.11.0
       namespace: kube-system
       name: csi-driver-nfs
 tasks:
