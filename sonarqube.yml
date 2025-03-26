@@ -15,8 +15,7 @@ includes:
       chart_repo_name: sonarqube
       chart: sonarqube
       name: sonarqube
-      chart_ver: 10.8.1
-#      helm_args: -f sonarqube-values.yml
+      chart_ver: 2025.1.1
   ingress:
     taskfile: helm.yml
     vars:
@@ -28,13 +27,28 @@ tasks:
   default:
     deps:
       - upgrade
+  test-secrets:
+    vars:
+      monitoringPasscode: '{{ .monitoringPasscode | default "${SONARQUBE_MONITORING_PASSCODE}" }}'
+    cmds:
+      - test {{ .monitoringPasscode | quote }}
   upgrade:
+    vars:
+      monitoringPasscode: '{{ .monitoringPasscode | default "${SONARQUBE_MONITORING_PASSCODE}" }}'
     deps:
       - task: repo
     cmds:
       - task: kk:ns-create
       - task: kk:ns-label
+      - task: test-secrets
+        vars:
+          monitoringPasscode: '{{ .monitoringPasscode }}'
       - task: helm:upgrade
+        vars:
+          helm_args: >-
+            --set edition=developer
+            --set monitoringPasscode={{ .monitoringPasscode | quote }}
+
       - task: ingress:upgrade
   delete:
     cmds:
