@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: apache-airflow
       chart: airflow
-      chart_ver: 1.15.0
+      chart_ver: 1.16.0
       namespace: airflow
       name: apache-airflow
   ingress:
