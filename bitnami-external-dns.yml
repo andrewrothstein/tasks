@@ -5,7 +5,7 @@ includes:
     taskfile: bitnami-chart.yml
     vars:
       chart: external-dns
-      chart_ver: 8.7.5
+      chart_ver: 8.7.10
       name: bitnami-external-dns
       namespace: bitnami-external-dns
       create_namespace: "true"
