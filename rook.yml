@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  rook_ver: v1.16.4
+  rook_ver: v1.16.6
 includes:
   repo: rook-repo.yml
   operator:
