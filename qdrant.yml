@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: qdrant
       chart: qdrant
-      chart_ver: 1.13.4
+      chart_ver: 1.13.6
       namespace: qdrant
       name: qdrant
 #      helm_args: -f qdrant-values.yml
