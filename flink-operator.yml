@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  default_flink_operator_version: 1.9.0
+  default_flink_operator_version: 1.11.0
 includes:
   repo:
     taskfile: helm-repo.yml
