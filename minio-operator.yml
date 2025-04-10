@@ -14,7 +14,7 @@ includes:
     vars:
       chart_repo_name: minio
       chart: operator
-      chart_ver: 7.0.0
+      chart_ver: 7.0.1
       namespace: minio-operator
       name: operator
       helm_args: -f minio-operator-values.yml
