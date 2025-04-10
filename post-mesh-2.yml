@@ -10,26 +10,8 @@ includes:
 #  pinniped-concierge: pinniped-concierge.yml
   pinniped-concierge: pet.yml
 
-#  gitea: gitea.yml
-  gitea: pet.yml
-
-#  gitlab: gitlab.yml
-  gitlab: pet.yml
-
-#  harbor: harbor.yml
-  harbor: pet.yml
-
-#  artifacthub: artifacthub.yml
-  artifacthub: pet.yml
-
-#  opencost: opencost.yml
-  opencost: pet.yml
-
-  airflow: apache-airflow.yml
-#  airflow: pet.yml
-
-#  sonarqube: sonarqube.yml
-  sonarqube: pet.yml
+#  airflow: apache-airflow.yml
+  airflow: pet.yml
 
 #  retool: retool.yml
   retool: pet.yml
@@ -40,38 +22,17 @@ tasks:
       - up
   up:
     cmds:
-      - task: gatekeeper:upgrade
       - task: pinniped-supervisor:install
       - task: pinniped-concierge:install
-      - task: gitea:upgrade
-      - task: gitlab:upgrade
-      - task: harbor:upgrade
-      - task: artifacthub:upgrade
-      - task: opencost:upgrade
       - task: airflow:upgrade
-      - task: sonarqube:upgrade
       - task: retool:upgrade
   delete:
     cmds:
       - task: retool:upgrade
-      - task: sonarqube:delete
       - task: airflow:delete
-      - task: opencost:delete
-      - task: artifacthub:delete
-      - task: harbor:delete
-      - task: gitlab:delete
-      - task: gitea:delete
       - task: pinniped-concierge:delete
       - task: pinniped-supervisor:delete
-      - task: gatekeeper:delete
   check:
     cmds:
-      - task: gatekeeper:check
-      - task: gitea:check
-      - task: gitlab:check
-      - task: harbor:check
-      - task: artifacthub:check
-      - task: opencost:check
       - task: airflow:check
-      - task: sonarqube:check
       - task: retool:check

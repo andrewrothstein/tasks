@@ -1,0 +1,49 @@
+---
+version: '3'
+includes:
+#  gitea: gitea.yml
+  gitea: pet.yml
+
+#  gitlab: gitlab.yml
+  gitlab: pet.yml
+
+#  artifacthub: artifacthub.yml
+  artifacthub: pet.yml
+
+#  sonarqube: sonarqube.yml
+  sonarqube: pet.yml
+
+#  harbor: harbor.yml
+  harbor: pet.yml
+
+#  opencost: opencost.yml
+  opencost: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: gitea:upgrade
+      - task: gitlab:upgrade
+      - task: artifacthub:upgrade
+      - task: sonarqube:upgrade
+      - task: harbor:upgrade
+      - task: opencost:upgrade
+  delete:
+    cmds:
+      - task: opencost:delete
+      - task: harbord:delete
+      - task: sonarqube:delete
+      - task: artifacthub:delete
+      - task: gitlab:delete
+      - task: gitea:delete
+  check:
+    cmds:
+      - task: gitea:check
+      - task: gitlab:check
+      - task: artifacthub:check
+      - task: sonarqube:check
+      - task: harbor:check
+      - task: opencost:check
