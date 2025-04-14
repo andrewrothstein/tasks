@@ -1,0 +1,41 @@
+---
+version: '3'
+vars:
+  KRO_VERSION: 0.2.2
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: kro
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: kro
+      name: kro
+      chart_repo_name: oci://ghcr.io/kro-run/kro
+      chart: kro
+      chart_ver: '{{ .KRO_VERSION }}'
+tasks:
+  check:
+    cmds:
+      - |
+        export kro_version=$(curl -sL \
+          https://api.github.com/repos/kro-run/kro/releases/latest | \
+          jq -r '.tag_name | ltrimstr("v")'
+          )
+        if [ {{ .KRO_VERSION | quote }} != "${kro_version}" ];
+        then
+          echo "please upgrade kro from {{ .KRO_VERSION }} to ${kro_version}"
+        else
+          echo "kro at latest ({{ .KRO_VERSION }})"
+        fi
+  upgrade:
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
