@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: minio
       chart: tenant
-      chart_ver: 7.0.0
+      chart_ver: 7.0.1
 tasks:
   default:
     deps:
