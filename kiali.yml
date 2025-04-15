@@ -1,6 +1,10 @@
 ---
 version: '3'
 includes:
+  jaeger:
+    taskfile: jaeger.yml
+    vars:
+      namespace: istio-system
   repo: kiali-repo.yml
   helm:
     taskfile: helm.yml
@@ -28,6 +32,7 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: jaeger:upgrade
       - task: helm:upgrade
       - task: ingress:upgrade
   delete:
@@ -37,4 +42,5 @@ tasks:
     deps:
       - task: repo
     cmds:
+      - task: jaeger:check
       - task: helm:check

@@ -25,5 +25,6 @@ cr:
           - name: "Istio Wasm Extension Dashboard"
       tracing:
         enabled: true
-        external_url: "jaeger-query.jaeger.svc"
-        grpc_port: 16685
+        provider: jaeger
+        internal_url: "http://jaeger-collector.istio-system.svc:14268"
+        use_grpc: false
