@@ -11,6 +11,8 @@ includes:
       chart_ver: v1.16.0
       namespace: kube-system
       name: csi-driver-smb
+      helm_args: >-
+        -f csi-driver-smb-values.yml
 tasks:
   default:
     deps:
