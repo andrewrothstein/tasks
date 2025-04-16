@@ -13,7 +13,7 @@ includes:
       chart_repo_name: debezium
       chart: debezium-operator
       # curl -sSLf https://charts.debezium.io/index.yaml | less
-      chart_ver: 3.0.4-final
+      chart_ver: 3.1.0-final
       namespace: debezium-operator
       name: debezium-operator
 tasks:
