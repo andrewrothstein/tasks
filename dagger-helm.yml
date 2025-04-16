@@ -8,9 +8,10 @@ includes:
       create_namespace: 'true'
       install: 'true'
       name: dagger
+      # https://github.com/dagger/dagger/pkgs/container/dagger-helm
       chart_repo_name: oci://registry.dagger.io
       chart: dagger-helm
-      chart_ver: 0.1.8
+      chart_ver: 0.18.3
 tasks:
   default:
     deps:
