@@ -72,9 +72,8 @@ tasks:
       current_ver: '{{ .current_ver }}'
     cmds:
       - |
-        export latest_ver=$(curl -sL \
-          https://api.github.com/repos/{{ .org }}/{{ .repo }}/releases/latest | \
-          jq -r '.tag_name | ltrimstr("v")'
+        export latest_ver=$(gh api repos/{{ .org }}/{{ .repo }}/tags | \
+          jq -r '[.[] | select(.name != "nightly")] | first | .name | ltrimstr("v")'
           )
         if [ {{ .current_ver | quote }} != "${latest_ver}" ];
         then

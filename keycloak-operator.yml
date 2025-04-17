@@ -13,6 +13,12 @@ includes:
     vars:
       n: keycloak-operator
       labels: istio.io/dataplane-mode=ambient
+  gh:
+    taskfile: gh.yml
+    vars:
+      org: keycloak
+      repo: keycloak-k8s-resources
+      current_ver: '{{ .KEYCLOAK_OPERATOR_DEFAULT_VER }}'
 tasks:
   default:
     cmds:
@@ -63,4 +69,5 @@ tasks:
           f: '{{ .KEYCLOAK_OPERATOR_CRD1 }}'
       - task: kk:ns-delete
   check:
-    cmds: []
+    cmds:
+      - task: gh:check
