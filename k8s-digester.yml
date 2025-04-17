@@ -4,6 +4,14 @@ vars:
   K8S_DIGESTER_VERSION: v0.1.16
   K8S_DIGESTER_MIRROR: https://github.com/google/k8s-digester.git/manifests/
 includes:
+  gh:
+    internal: true
+    taskfile: gh.yml
+    vars:
+      org: google
+      repo: k8s-digester
+      current_ver: '{{ .K8S_DIGESTER_VERSION }}'
+      strip_v: "false"
   kk:
     internal: true
     taskfile: kubectl.yml
@@ -27,3 +35,6 @@ tasks:
       - task: kk:kdelete
         vars:
           k: '{{ .K8S_DIGESTER_MIRROR }}?ref={{ .version }}'
+  check:
+    cmds:
+      - task: gh:check

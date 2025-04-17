@@ -92,6 +92,7 @@ tasks:
     cmds:
       - task: k8s-network:check
       - task: capsule:check
+      - task: k8s-digester:check
       - task: eraser:check
       - task: reloader:check
       - task: k8s-security:check

@@ -20,6 +20,9 @@ includes:
       chart: kro
       chart_ver: '{{ .KRO_VERSION }}'
 tasks:
+  default:
+    cmds:
+      - task: upgrade
   check:
     cmds:
       - task: gh:check
