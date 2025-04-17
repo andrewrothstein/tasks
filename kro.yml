@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  KRO_VERSION: 0.2.2
+  KRO_VERSION: 0.2.3
 includes:
   kk:
     taskfile: kubectl.yml
