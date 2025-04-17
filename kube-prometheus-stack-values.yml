@@ -1,4 +1,7 @@
 ---
+crds:
+  upgradeJob:
+    enabled: true
 prometheus:
   prometheusSpec:
     serviceMonitorSelector:
@@ -15,6 +18,14 @@ prometheus:
           - targets: ['opencost.opencost:9003']
 
 grafana:
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - grafana
+    tls:
+      - hosts:
+          - grafana
   additionalDataSources:
     - name: prometheus
       type: prometheus
