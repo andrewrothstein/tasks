@@ -5,7 +5,7 @@ includes:
     taskfile: helm.yml
     vars:
       chart: oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
-      chart_ver: 0.8.1
+      chart_ver: 2.0.0
       create_namespace: "true"
       namespace: pulumi-kubernetes-operator
       name: pulumi-kubernetes-operator
