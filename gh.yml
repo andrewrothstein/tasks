@@ -65,3 +65,20 @@ tasks:
         else
           echo "default branch (${dflt}) not {{ .from | quote }} or already {{ .to }}";
         fi
+  check:
+    vars:
+      org: '{{ .org }}'
+      repo: '{{ .repo }}'
+      current_ver: '{{ .current_ver }}'
+    cmds:
+      - |
+        export latest_ver=$(curl -sL \
+          https://api.github.com/repos/{{ .org }}/{{ .repo }}/releases/latest | \
+          jq -r '.tag_name | ltrimstr("v")'
+          )
+        if [ {{ .current_ver | quote }} != "${latest_ver}" ];
+        then
+          echo "please upgrade {{ .repo }} from {{ .current_ver }} to ${latest_ver}"
+        else
+          echo "{{ .repo }} at latest ({{ .current_ver }})"
+        fi

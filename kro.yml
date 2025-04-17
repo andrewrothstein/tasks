@@ -3,6 +3,9 @@ version: '3'
 vars:
   KRO_VERSION: 0.2.3
 includes:
+  gh:
+    internal: true
+    taskfile: gh.yml
   kk:
     taskfile: kubectl.yml
     vars:
@@ -19,17 +22,11 @@ includes:
 tasks:
   check:
     cmds:
-      - |
-        export kro_version=$(curl -sL \
-          https://api.github.com/repos/kro-run/kro/releases/latest | \
-          jq -r '.tag_name | ltrimstr("v")'
-          )
-        if [ {{ .KRO_VERSION | quote }} != "${kro_version}" ];
-        then
-          echo "please upgrade kro from {{ .KRO_VERSION }} to ${kro_version}"
-        else
-          echo "kro at latest ({{ .KRO_VERSION }})"
-        fi
+      - task: gh:check
+        vars:
+          org: kro-run
+          repo: kro
+          current_ver: '{{ .KRO_VERSION }}'
   upgrade:
     cmds:
       - task: kk:ns-create
