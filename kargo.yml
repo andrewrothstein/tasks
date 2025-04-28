@@ -1,0 +1,71 @@
+---
+version: '3'
+vars:
+  version: 1.4.3
+  org: akuity
+  repo: kargo
+  chart_project: kargo-charts
+  chart: kargo
+  n: kargo
+  namespace: kargo
+  name: kargo
+includes:
+  gh:
+    internal: true
+    taskfile: gh.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: '{{ .n }}'
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+      chart_repo_name: "oci://ghcr.io/{{ .org }}/{{ .chart_project }}"
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .version }}'
+tasks:
+  default:
+    cmds:
+      - task: upgrade
+  check:
+    cmds:
+      - task: gh:check
+        vars:
+          org: '{{ .org }}'
+          repo: '{{ .repo }}'
+          current_ver: '{{ .version }}'
+  generate-secrets:
+    cmds:
+      - |-
+        pass=$(openssl rand -base64 48 | tr -d "=+/" | head -c 32)
+        echo "Password: $pass"
+        hashed_pass=$(htpasswd -bnBC 10 "" $pass | tr -d ':\n')
+        echo "Password Hash: $hashed_pass"
+        signing_key=$(openssl rand -base64 48 | tr -d "=+/" | head -c 32)
+        echo "Signing Key: $signing_key "
+  test-secrets:
+    vars:
+      adminPasswordHashed: '{{ .adminPassword | default "${KARGO_ADMIN_PASSWORD_HASHED}" }}'
+      adminSigningKey: '{{ .adminSigningKey | default "${KARGO_ADMIN_SIGNING_KEY}" }}'
+    cmds:
+      - test {{ .adminPasswordHashed | quote }}
+      - test {{ .adminSigningKey | quote }}
+  upgrade:
+    vars:
+      adminPasswordHashed: '{{ .adminPassword | default "${KARGO_ADMIN_PASSWORD_HASHED}" }}'
+      adminSigningKey: '{{ .adminSigningKey | default "${KARGO_ADMIN_SIGNING_KEY}" }}'
+    cmds:
+      - task: kk:ns-create
+      - task: kk:ns-label
+      - task: helm:upgrade
+        vars:
+          helm_args: >-
+            --set api.adminAccount.passwordHash={{ .adminPasswordHashed | quote }}
+            --set api.adminAccount.tokenSigningKey={{ .adminSigningKey | quote }}
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete

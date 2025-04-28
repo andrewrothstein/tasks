@@ -19,6 +19,9 @@ includes:
   argoproj: argoproj.yml
 #  argoproj: pet.yml
 
+  kargo: kargo.yml
+#  kargo: pet.yml
+
   kro: kro.yml
 #  kro: pet.yml
 
@@ -58,6 +61,7 @@ tasks:
       - task: artifactory:upgrade
       - task: flux:upgrade
       - task: argoproj:upgrade
+      - task: kargo:upgrade
       - task: kro:upgrade
       - task: kpack:apply
       - task: tekton-operator:apply
@@ -78,6 +82,7 @@ tasks:
       - task: tekton-operator:delete
       - task: kpack:delete
       - task: kro:delete
+      - task: kargo:delete
       - task: argoproj:delete
       - task: flux:delete
       - task: artifactory:delete
@@ -92,6 +97,7 @@ tasks:
       - task: artifactory:check
       - task: flux:check
       - task: argoproj:check
+      - task: kargo:check
       - task: kro:check
       - task: pulumi-kubernetes-operator:check
       - task: prefect:check
