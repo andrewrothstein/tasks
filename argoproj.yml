@@ -10,8 +10,8 @@ includes:
   argo-events: pet.yml
 #  argo-events: argo-events.yml
 
-  argo-rollouts: pet.yml
-#  argo-rollouts: argo-rollouts.yml
+#  argo-rollouts: pet.yml
+  argo-rollouts: argo-rollouts.yml
 tasks:
   default:
     deps:
