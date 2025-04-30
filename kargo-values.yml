@@ -1,0 +1,4 @@
+---
+api:
+  tls:
+    enabled: false

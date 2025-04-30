@@ -1,42 +1,36 @@
 ---
 version: '3'
 vars:
-  version: 1.4.3
-  org: akuity
-  repo: kargo
-  chart_project: kargo-charts
-  chart: kargo
-  n: kargo
-  namespace: kargo
-  name: kargo
+  KARGO_VER: 1.4.3
 includes:
   gh:
     internal: true
     taskfile: gh.yml
+    vars:
+      org: akuity
+      repo: kargo
+      current_ver: '{{ .KARGO_VER }}'
   kk:
     taskfile: kubectl.yml
     vars:
-      n: '{{ .n }}'
+      n: kargo
       labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
-      namespace: '{{ .namespace }}'
-      name: '{{ .name }}'
-      chart_repo_name: "oci://ghcr.io/{{ .org }}/{{ .chart_project }}"
-      chart: '{{ .chart }}'
-      chart_ver: '{{ .version }}'
+      namespace: kargo
+      chart_repo_name: "oci://ghcr.io/akuity/kargo-charts"
+      chart: kargo
+      chart_ver: '{{ .KARGO_VER }}'
+      name: kargo
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: kargo
+      name: tailscale-ingress
+      helm_args: -f kargo-tailscale-ingress-values.yml
 tasks:
-  default:
-    cmds:
-      - task: upgrade
-  check:
-    cmds:
-      - task: gh:check
-        vars:
-          org: '{{ .org }}'
-          repo: '{{ .repo }}'
-          current_ver: '{{ .version }}'
   generate-secrets:
     cmds:
       - |-
@@ -53,6 +47,12 @@ tasks:
     cmds:
       - test {{ .adminPasswordHashed | quote }}
       - test {{ .adminSigningKey | quote }}
+  default:
+    cmds:
+      - task: upgrade
+  check:
+    cmds:
+      - task: gh:check
   upgrade:
     vars:
       adminPasswordHashed: '{{ .adminPassword | default "${KARGO_ADMIN_PASSWORD_HASHED}" }}'
@@ -63,9 +63,12 @@ tasks:
       - task: helm:upgrade
         vars:
           helm_args: >-
+            -f kargo-values.yml
             --set api.adminAccount.passwordHash={{ .adminPasswordHashed | quote }}
             --set api.adminAccount.tokenSigningKey={{ .adminSigningKey | quote }}
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
