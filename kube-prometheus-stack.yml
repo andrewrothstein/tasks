@@ -14,7 +14,7 @@ includes:
       name: kube-prometheus-stack
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
-      chart_ver: 70.7.0
+      chart_ver: 72.5.1
 tasks:
   default:
     deps:

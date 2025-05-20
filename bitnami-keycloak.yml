@@ -10,7 +10,7 @@ includes:
     taskfile: bitnami-chart.yml
     vars:
       chart: keycloak
-      chart_ver: 24.5.2
+      chart_ver: 24.6.7
       name: bitnami-keycloak
       namespace: bitnami-keycloak
 tasks:
