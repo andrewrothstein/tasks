@@ -1,0 +1,16 @@
+---
+version: '3'
+includes:
+  uv:
+    taskfile: uv.yml
+tasks:
+  init:
+    cmds:
+      - task: uv:init
+        vars:
+          name: uv-ftw
+          path: uv-ftw
+          app: "true"
+          package: "true"
+    status:
+      - test -d uv-ftw

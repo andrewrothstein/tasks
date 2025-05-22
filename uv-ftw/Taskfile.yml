@@ -1,0 +1,11 @@
+---
+version: '3'
+includes:
+  uv:
+    taskfile: ../uv.yml
+tasks:
+  run:
+    cmds:
+      - task: uv:run
+        vars:
+          run_args: uv-ftw
