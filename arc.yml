@@ -1,0 +1,69 @@
+---
+version: '3'
+vars:
+  ARC_VERSION: 0.11.0
+includes:
+  kk-controller:
+    taskfile: kubectl.yml
+    vars:
+      n: arc-systems
+#      labels: 'istio.io/dataplane-mode=ambient'
+  helm-controller:
+    taskfile: helm.yml
+    vars:
+      namespace: arc-systems
+      install: 'true'
+      name: arc
+      chart_repo_name: oci://ghcr.io/actions/actions-runner-controller-charts
+      chart: gha-runner-scale-set-controller
+      version: '{{ .ARC_VERSION }}'
+  kk-runners:
+    taskfile: kubectl.yml
+    vars:
+      n: arc-runners
+#      labels: 'istio.io/dataplane-mode=ambient'
+  helm-runners:
+    taskfile: helm.yml
+    vars:
+      namespace: arc-runners
+      install: 'true'
+      name: arc-runner-set
+      chart_repo_name: oci://ghcr.io/actions/actions-runner-controller-charts
+      chart: gha-runner-scale-set
+      chart_version: '{{ .ARC_VERSION }}'
+tasks:
+  default:
+    deps:
+      - upgrade
+  upgrade-controller:
+    cmds:
+      - task: kk-controller:ns-create
+      - task: kk-controller:ns-label
+      - task: helm-controller:upgrade
+  delete-controller:
+    cmds:
+      - task: helm-controller:delete
+      - task: kk-controller:ns-delete
+  upgrade-runners:
+    vars:
+      gha_runners_pat: '{{ .gha_runners_pat | default "${GHA_RUNNERS_PAT}" }}'
+    cmds:
+      - task: kk-runners:ns-create
+      - task: kk-runners:ns-label
+      - test {{ .gha_runners_pat | quote }}
+      - task: helm-runners:upgrade
+        vars:
+          helm_args: >-
+            -f arc-runners-values.yml
+            --set githubConfigSecret.github_token={{ .gha_runners_pat | quote }}
+  delete-runners:
+    cmds:
+      - task: helm-runners:delete
+      - task: kk-runners:ns-delete
+  upgrade:
+    - task: upgrade-controller
+    - task: upgrade-runners
+  delete:
+    cmds:
+      - task: delete-runners
+      - task: delete-controller

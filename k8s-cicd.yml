@@ -1,6 +1,9 @@
 ---
 version: '3'
 includes:
+#  arc: arc.yml
+  arc: pet.yml
+
 #  conductor: orkes-conductor-standalone.yml
   conductor: pet.yml
 
