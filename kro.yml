@@ -1,9 +1,7 @@
 ---
 version: '3'
 vars:
-  version: 0.2.3
-  org: kro-run
-  repo: kro
+  KRO_VERSION: 0.2.3
 includes:
   gh:
     internal: true
@@ -18,9 +16,9 @@ includes:
     vars:
       namespace: kro
       name: kro
-      chart_repo_name: "oci://ghcr.io/{{ .org }}/{{ .repo }}"
+      chart_repo_name: "oci://ghcr.io/kro-run/kro"
       chart: kro
-      chart_ver: '{{ .version }}'
+      chart_ver: '{{ .KRO_VERSION }}'
 tasks:
   default:
     cmds:
@@ -31,7 +29,7 @@ tasks:
         vars:
           org: kro-run
           repo: kro
-          current_ver: '{{ .version }}'
+          current_ver: '{{ .KRO_VERSION }}'
   upgrade:
     cmds:
       - task: kk:ns-create
