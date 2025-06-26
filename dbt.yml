@@ -35,20 +35,20 @@ tasks:
       exclude: '{{ .exclude }}'
       target: '{{ .target }}'
     cmds:
-      - >-
-        cd {{ .project_dir | quote }}
+      - |-
+        cd {{ .project_dir | quote }} \
         && dbt {{ .dbt_cmd }}
-        {{- if .select }}
-        --select {{ .select | quote }}
+        {{- if .select }} \
+          --select {{ .select | quote }}
         {{ end }}
-        {{- if .exclude }}
-        --exclude {{ .exclude | quote }}
+        {{- if .exclude }} \
+          --exclude {{ .exclude | quote }}
         {{ end }}
-        {{- if .target }}
-        --target {{ .target | quote }}
+        {{- if .target }} \
+          --target {{ .target | quote }}
         {{- end }}
-        {{- if .dbt_args }}
-        {{- .dbt_args }}
+        {{- if .dbt_args }} \
+          {{ .dbt_args }}
         {{- end }}
   version:
     vars:
@@ -68,11 +68,11 @@ tasks:
         vars:
           project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
           dbt_cmd: init
-          dbt_args: >-
-            {{- if eq .interactive "false" }}
-            -s
-            {{- end }}
-            {{- .project_name | quote }}
+          dbt_args: |-
+            {{- if eq .interactive "false" }} \
+              -s
+            {{- end }} \
+              {{ .project_name | quote }}
     status:
       - test -d "{{ .project_dir }}/{{ .project_name }}"
   compile:
@@ -136,11 +136,11 @@ tasks:
           exclude: '{{ .exclude }}'
           target: '{{ .target }}'
   build-all:
-    desc: Composite task: clean, compile, build, test
+    desc: 'Composite task: clean, compile, build, test'
     deps: [clean, compile, build, test]
   test-all:
-    desc: Composite task: compile, test
+    desc: 'Composite task: compile, test'
     deps: [compile, test]
   apply-all:
-    desc: Composite task: snapshot, run
+    desc: 'Composite task: snapshot, run'
     deps: [snapshot, run]
