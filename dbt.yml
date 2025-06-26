@@ -17,8 +17,8 @@
 #   - build-all: Composite task for clean, compile, build, and test
 #
 # Usage:
-#   task build --project_dir=my_project
-#   task run --select=my_model --target=prod
+#   task build project_dir=my_project
+#   task run select=my_model target=prod
 #
 ---
 version: '3'
