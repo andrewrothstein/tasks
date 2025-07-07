@@ -15,6 +15,3 @@ server:
     ingressClassName: tailscale
     hosts:
       - argo
-    tls:
-      - hosts:
-          - argo

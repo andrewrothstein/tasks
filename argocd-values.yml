@@ -24,4 +24,3 @@ server:
   ingress:
     enabled: true
     ingressClassName: tailscale
-    tls: true
