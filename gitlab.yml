@@ -14,7 +14,7 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 8.10.3
+      chart_ver: 9.1.1
       helm_args: -f gitlab-values.yml
   root-password:
     taskfile: k8s-literal-secret.yml
