@@ -1,0 +1,42 @@
+---
+version: '3'
+includes:
+  argocd:
+    taskfile: argocd.yml
+    internal: true
+  argocd-apps:
+    taskfile: argocd-apps.yml
+    internal: true
+tasks:
+  bootstrap:
+    desc: Bootstrap ArgoCD with GitOps applications
+    cmds:
+      - task: argocd:upgrade
+      - task: wait-ready
+      - task: argocd:login
+      - task: apply-bootstrap
+  
+  wait-ready:
+    desc: Wait for ArgoCD to be ready
+    cmds:
+      - kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -n argocd --timeout=300s
+      - kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-repo-server -n argocd --timeout=300s
+      - kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --timeout=300s
+  
+  apply-bootstrap:
+    desc: Apply the app-of-apps pattern
+    cmds:
+      - kubectl apply -f argocd/applications/app-of-apps.yaml
+  
+  full-stack:
+    desc: Deploy full application stack via GitOps
+    deps:
+      - bootstrap
+    cmds:
+      - task: argocd-apps:apply-all
+  
+  cleanup:
+    desc: Remove all ArgoCD applications and ArgoCD itself
+    cmds:
+      - task: argocd-apps:delete-all
+      - task: argocd:delete

@@ -1,0 +1,72 @@
+---
+version: '3'
+includes:
+  external-secrets:
+    taskfile: external-secrets.yml
+  argocd:
+    taskfile: argocd.yml
+tasks:
+  default:
+    desc: Bootstrap Doppler secrets management with External Secrets and ArgoCD
+    deps:
+      - validate-token
+      - external-secrets:upgrade
+      - create-token-secret
+      - apply-clusterstore
+      - argocd:upgrade
+      - apply-appset
+    cmds:
+      - echo "✨ Bootstrap complete! Your secrets will now sync from Doppler automatically."
+      - echo ""
+      - echo "Next steps:"
+      - echo "1. Update argocd/appsets/external-secrets.yaml with your Doppler project/config"
+      - echo "2. Commit and push all changes"
+      - echo "3. ArgoCD will automatically create ExternalSecrets based on the ApplicationSet"
+      - echo "4. Your applications can now reference secrets from 'doppler-secrets' in each namespace"
+
+  validate-token:
+    desc: Validate that DOPPLER_SERVICE_TOKEN is set
+    vars:
+      token: '{{ .DOPPLER_SERVICE_TOKEN | default "" }}'
+    cmds:
+      - |
+        if [ -z "{{ .token }}" ]; then
+          echo "❌ Error: DOPPLER_SERVICE_TOKEN environment variable not set"
+          echo "   Get a service token from: https://dashboard.doppler.com/workplace/YOUR_WORKPLACE/projects/YOUR_PROJECT/configs/YOUR_CONFIG/access"
+          exit 1
+        fi
+        echo "✅ Doppler token found"
+    silent: true
+
+  create-token-secret:
+    desc: Create Doppler token secret in external-secrets namespace
+    vars:
+      token: '{{ .DOPPLER_SERVICE_TOKEN }}'
+    cmds:
+      - echo "🔑 Creating Doppler token secret..."
+      - |
+        kubectl create secret generic doppler-token \
+          -n external-secrets \
+          --from-literal=token="{{ .token }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+  apply-clusterstore:
+    desc: Apply ClusterSecretStore for Doppler
+    cmds:
+      - echo "🏪 Creating ClusterSecretStore..."
+      - kubectl apply -f argocd/bootstrap/external-secrets-doppler.yaml
+
+  apply-appset:
+    desc: Apply External Secrets ApplicationSet
+    cmds:
+      - echo "🚀 Creating External Secrets ApplicationSet..."
+      - kubectl apply -f argocd/appsets/external-secrets.yaml
+
+  check:
+    desc: Check if Doppler secrets are syncing properly
+    cmds:
+      - echo "🔍 Checking ClusterSecretStore status..."
+      - kubectl get clustersecretstore doppler -o jsonpath='{.status.conditions[0].message}'
+      - echo ""
+      - echo "📋 Listing ExternalSecrets across all namespaces..."
+      - kubectl get externalsecrets -A

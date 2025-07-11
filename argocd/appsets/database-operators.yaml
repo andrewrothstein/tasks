@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: database-operators
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - name: cloudnative-pg
+        namespace: cnpg-system
+        chart: cloudnative-pg
+        repoURL: https://cloudnative-pg.github.io/charts
+        targetRevision: 0.23.0
+      - name: redis-operator
+        namespace: redis-operator
+        chart: redis-operator
+        repoURL: https://ot-container-kit.github.io/helm-charts
+        targetRevision: 0.18.3
+      - name: mongodb-operator
+        namespace: mongodb-operator
+        chart: community-operator
+        repoURL: https://mongodb.github.io/helm-charts
+        targetRevision: 0.11.0
+      - name: mysql-operator
+        namespace: mysql-operator
+        chart: mysql-operator
+        repoURL: https://mysql.github.io/mysql-operator
+        targetRevision: 2.2.4
+      - name: cassandra-operator
+        namespace: cassandra-operator
+        chart: cass-operator
+        repoURL: https://helm.k8ssandra.io/stable
+        targetRevision: 0.53.0
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: '{{repoURL}}'
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
+        helm:
+          releaseName: '{{name}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

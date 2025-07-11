@@ -1,0 +1,53 @@
+---
+version: '3'
+includes:
+  kubectl:
+    taskfile: kubectl.yml
+    internal: true
+tasks:
+  apply-apps:
+    desc: Apply individual ArgoCD applications
+    cmds:
+      - kubectl apply -f argocd/applications/
+  
+  apply-appsets:
+    desc: Apply ArgoCD ApplicationSets
+    cmds:
+      - kubectl apply -f argocd/appsets/
+  
+  apply-all:
+    desc: Apply all ArgoCD applications and ApplicationSets
+    cmds:
+      - task: apply-apps
+      - task: apply-appsets
+  
+  sync-all:
+    desc: Sync all ArgoCD applications
+    cmds:
+      - argocd app sync -l argocd.argoproj.io/instance
+  
+  delete-apps:
+    desc: Delete all ArgoCD applications
+    cmds:
+      - kubectl delete -f argocd/applications/ --ignore-not-found=true
+  
+  delete-appsets:
+    desc: Delete all ArgoCD ApplicationSets
+    cmds:
+      - kubectl delete -f argocd/appsets/ --ignore-not-found=true
+  
+  delete-all:
+    desc: Delete all ArgoCD applications and ApplicationSets
+    cmds:
+      - task: delete-appsets
+      - task: delete-apps
+  
+  list:
+    desc: List all ArgoCD applications
+    cmds:
+      - argocd app list
+  
+  status:
+    desc: Get status of all ArgoCD applications
+    cmds:
+      - argocd app list -o wide

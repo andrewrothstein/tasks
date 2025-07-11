@@ -1,0 +1,32 @@
+---
+version: '3'
+includes:
+  argocd-apps:
+    taskfile: argocd-apps.yml
+    internal: true
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    desc: Deploy observability stack via ArgoCD
+    cmds:
+      - kubectl apply -f argocd/appsets/observability-stack.yaml
+      - kubectl apply -f argocd/applications/kube-prometheus-stack.yaml
+  delete:
+    desc: Remove observability stack ArgoCD applications
+    cmds:
+      - kubectl delete -f argocd/applications/kube-prometheus-stack.yaml --ignore-not-found=true
+      - kubectl delete -f argocd/appsets/observability-stack.yaml --ignore-not-found=true
+  sync:
+    desc: Sync all observability applications
+    cmds:
+      - argocd app sync kube-prometheus-stack
+      - argocd app sync grafana
+      - argocd app sync jaeger
+      - argocd app sync kiali
+      - argocd app sync opentelemetry-operator
+  status:
+    desc: Check status of observability applications
+    cmds:
+      - argocd app list | grep -E "(kube-prometheus-stack|grafana|jaeger|kiali|opentelemetry)"

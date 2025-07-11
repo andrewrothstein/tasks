@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: observability-stack
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - name: grafana
+        namespace: monitoring
+        chart: grafana
+        repoURL: https://grafana.github.io/helm-charts
+        targetRevision: 8.8.2
+        values: |
+          adminPassword:
+            valueFrom:
+              secretKeyRef:
+                name: doppler-secrets
+                key: GRAFANA_ADMIN_PASSWORD
+          ingress:
+            enabled: true
+            ingressClassName: tailscale
+            hosts:
+              - grafana.elephant-frog.ts.net
+      - name: jaeger
+        namespace: observability
+        chart: jaeger
+        repoURL: https://jaegertracing.github.io/helm-charts
+        targetRevision: 3.4.0
+        values: |
+          allInOne:
+            enabled: true
+      - name: kiali
+        namespace: istio-system
+        chart: kiali-server
+        repoURL: https://kiali.org/helm-charts
+        targetRevision: 2.2.1
+        values: |
+          auth:
+            strategy: anonymous
+      - name: opentelemetry-operator
+        namespace: opentelemetry
+        chart: opentelemetry-operator
+        repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+        targetRevision: 0.73.0
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: '{{repoURL}}'
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
+        helm:
+          releaseName: '{{name}}'
+          values: '{{values}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

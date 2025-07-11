@@ -9,6 +9,14 @@ This is a DevOps/Infrastructure automation toolkit using [Taskfile](https://task
 1. **Cluster Lifecycle Management**: Tasks for creating and managing ephemeral Kubernetes clusters (Kind, K3d)
 2. **Application Deployment**: Tasks for deploying applications, operators, and services into any Kubernetes cluster
 
+## Documentation Structure
+
+All documentation is organized in the `docs/` folder:
+- `docs/gitops/` - GitOps patterns, ArgoCD guides, and secrets management
+- `docs/migration/` - Migration guides for moving between different approaches
+
+When creating new documentation, place it in the appropriate subfolder and link it from the main README.md
+
 ## Repository Organization
 
 ### Cluster Lifecycle Management (Ephemeral Clusters)
@@ -142,3 +150,4 @@ task apps:apply         # Step 3: Deploy applications
 - Most application deployment tasks work on any K8s cluster
 - Ephemeral cluster tasks are specifically for local development
 - Production deployments should use appropriate cluster provisioning tools (not Kind/K3d)
+- Prefer Taskfiles over bash scripts for cross-platform compatibility (Windows PowerShell support)

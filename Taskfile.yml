@@ -9,6 +9,7 @@ includes:
   doppler: doppler.yml
   tf-gitlab: tf-gitlab.yml
   helm-repo: helm-repo.yml
+  argocd-apps: argocd-apps.yml
 
   k8s: k8s.yml
 #  k8s: pet.yml
@@ -48,7 +49,6 @@ tasks:
       - up
   check:
     cmds:
-      - task: helm-repo:up
       - task: k8s:check
       - task: gateway-api:check
       - task: tailscale:check
