@@ -1,0 +1,17 @@
+---
+version: '3'
+includes:
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: harvester-system
+      name: harvester-ui-tailscale-ingress
+      helm_args: -f harvester-ui-tailscale-ingress-values.yml
+tasks:
+  upgrade:
+    cmds:
+      - task: ingress:upgrade
+  delete:
+    cmds:
+      - task: ingress:delete
