@@ -1,0 +1,7 @@
+{
+  "name": "dagger-py-eg",
+  "engineVersion": "v0.18.14",
+  "sdk": {
+    "source": "python"
+  }
+}

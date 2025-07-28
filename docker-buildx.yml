@@ -79,10 +79,5 @@ tasks:
           {{ .args }}
         {{- end }}
   test:
-    deps:
-      - task: bake
-        vars:
-          f: docker-bake.hcl
-          pull: "true"
-          load: "true"
-          args: only
+    cmds:
+      - echo "docker-bake.hcl has been replaced with Dagger CI. Use 'dagger call' commands instead."
