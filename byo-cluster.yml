@@ -13,8 +13,8 @@ tasks:
     desc: "Show information about the BYO cluster"
     cmds:
       - echo "=== BYO Cluster Information ==="
-      - echo "Cluster Name: {{ .CLUSTER_NAME }}"
-      - echo "Cluster Type: {{ .CLUSTER_TYPE }}"
+      - 'echo "Cluster Name: {{ .CLUSTER_NAME }}"'
+      - 'echo "Cluster Type: {{ .CLUSTER_TYPE }}"'
       - echo ""
       - kubectl cluster-info
       - echo ""

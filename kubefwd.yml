@@ -9,4 +9,3 @@ tasks:
   default:
     deps:
       - up
-

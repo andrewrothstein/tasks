@@ -32,12 +32,12 @@ tasks:
     desc: "Run all tests for the repository"
     cmds:
       - task --taskfile tests/test-all.yml all
-  
+
   test:quick:
     desc: "Run quick tests only (no cluster operations)"
     cmds:
       - task --taskfile tests/test-all.yml quick
-  
+
   test:ci:
     desc: "Run CI-appropriate tests"
     cmds:

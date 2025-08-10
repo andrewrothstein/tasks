@@ -11,9 +11,6 @@ includes:
     vars:
       n: vault
 tasks:
-  init:
-    cmds:
-      - task: kubectl-exec
   status:
     cmds:
       - task: argo:submit

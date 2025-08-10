@@ -42,4 +42,3 @@ tasks:
     deps:
       - task: test-key-pair
       - task: test-extract-pubkey
-

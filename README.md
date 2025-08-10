@@ -84,7 +84,7 @@ task kind:create        # Create Kind cluster
 task k3d:create         # Create K3d cluster
 CLUSTER_PROVIDER=byo-cluster task up  # Use external cluster
 
-# Delete clusters  
+# Delete clusters
 task kind:delete        # Destroy Kind cluster
 task k3d:delete         # Destroy K3d cluster
 

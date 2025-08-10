@@ -17,4 +17,3 @@ service:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9003"
-

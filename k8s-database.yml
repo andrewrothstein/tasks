@@ -82,4 +82,3 @@ tasks:
       - task: clickhouse:check
       - task: cockroachdb:check
       - task: neo4j:check
-  

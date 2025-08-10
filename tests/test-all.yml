@@ -47,7 +47,7 @@ tasks:
     cmds:
       - echo "=== Testing kubectl.yml ==="
       - task --taskfile test-kubectl.yml test-all
-  
+
   test-kubectl-config:
     desc: "Test kubectl-config.yml task definitions"
     cmds:

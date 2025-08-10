@@ -92,7 +92,7 @@ task k8s:current
 
 # Quick switches
 task k8s:use-harvester  # Switch to Harvester
-task k8s:use-k3s        # Switch to K3s  
+task k8s:use-k3s        # Switch to K3s
 task k8s:use-local      # Back to local
 
 # Kubeconfig management
@@ -139,7 +139,7 @@ task apps:apply         # Step 3: Deploy applications
 
 ### Key Directories
 - `/chart-*/` - Custom Helm charts
-- `/crossplane-*/` - Crossplane provider configurations  
+- `/crossplane-*/` - Crossplane provider configurations
 - `/playbooks/` - Ansible playbooks
 - `/pulumi/` - Pulumi infrastructure code
 - `/tf-*/` - Terraform modules
