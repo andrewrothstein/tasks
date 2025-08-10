@@ -1,0 +1,202 @@
+---
+version: '3'
+
+vars:
+  KUBECONFIG_DIR: '{{ .KUBECONFIG_DIR | default "$HOME/.kube" }}'
+  KUBECONFIG_BACKUP: '{{ .KUBECONFIG_BACKUP | default "$HOME/.kube/config.bak" }}'
+
+tasks:
+  list:
+    desc: "List available kubeconfig files"
+    cmds:
+      - |
+        echo "=== Available kubeconfig files ==="
+        cd {{ .KUBECONFIG_DIR }}
+        for file in config.*; do
+          if [ -f "$file" ] && [ "$file" != "config.bak" ]; then
+            cluster=$(echo $file | sed 's/config\.//')
+            if [ -L "config" ] && [ "$(readlink config)" = "$file" ]; then
+              echo "  * $cluster (active)"
+            else
+              echo "    $cluster"
+            fi
+          fi
+        done
+        echo ""
+        echo "Current symlink:"
+        ls -la {{ .KUBECONFIG_DIR }}/config 2>/dev/null || echo "  No config symlink exists"
+
+  switch:
+    desc: "Switch to a different kubeconfig"
+    vars:
+      cluster: '{{ .cluster }}'
+    cmds:
+      - |
+        if [ -z "{{ .cluster }}" ]; then
+          echo "Error: cluster name required"
+          echo "Usage: task kubectl-config:switch cluster=<name>"
+          echo ""
+          task kubectl-config:list
+          exit 1
+        fi
+        
+        CONFIG_FILE="{{ .KUBECONFIG_DIR }}/config.{{ .cluster }}"
+        
+        if [ ! -f "$CONFIG_FILE" ]; then
+          echo "Error: Config file not found: $CONFIG_FILE"
+          echo "Available configs:"
+          task kubectl-config:list
+          exit 1
+        fi
+        
+        # Backup current config if it exists and is not a symlink
+        if [ -f "{{ .KUBECONFIG_DIR }}/config" ] && [ ! -L "{{ .KUBECONFIG_DIR }}/config" ]; then
+          echo "Backing up existing config to {{ .KUBECONFIG_BACKUP }}"
+          cp {{ .KUBECONFIG_DIR }}/config {{ .KUBECONFIG_BACKUP }}
+        fi
+        
+        # Remove existing symlink if it exists
+        if [ -L "{{ .KUBECONFIG_DIR }}/config" ]; then
+          rm {{ .KUBECONFIG_DIR }}/config
+        fi
+        
+        # Create new symlink
+        ln -s "config.{{ .cluster }}" {{ .KUBECONFIG_DIR }}/config
+        echo "✓ Switched to cluster: {{ .cluster }}"
+        
+        # Verify connection
+        kubectl cluster-info 2>/dev/null || echo "⚠️  Unable to connect to cluster"
+
+  current:
+    desc: "Show current kubeconfig and cluster info"
+    cmds:
+      - |
+        echo "=== Current kubeconfig ==="
+        if [ -L "{{ .KUBECONFIG_DIR }}/config" ]; then
+          target=$(readlink {{ .KUBECONFIG_DIR }}/config)
+          cluster=$(echo $target | sed 's/config\.//')
+          echo "Active cluster: $cluster"
+          echo "Symlink target: $target"
+        elif [ -f "{{ .KUBECONFIG_DIR }}/config" ]; then
+          echo "Using static config file (not a symlink)"
+        else
+          echo "No kubeconfig found"
+          exit 1
+        fi
+        echo ""
+        echo "=== Cluster info ==="
+        kubectl cluster-info
+        echo ""
+        echo "=== Current context ==="
+        kubectl config current-context
+
+  backup:
+    desc: "Backup current kubeconfig"
+    vars:
+      name: '{{ .name | default "manual" }}'
+    cmds:
+      - |
+        if [ ! -f "{{ .KUBECONFIG_DIR }}/config" ]; then
+          echo "Error: No config file to backup"
+          exit 1
+        fi
+        
+        BACKUP_FILE="{{ .KUBECONFIG_DIR }}/config.{{ .name }}.$(date +%Y%m%d-%H%M%S)"
+        cp {{ .KUBECONFIG_DIR }}/config "$BACKUP_FILE"
+        echo "✓ Config backed up to: $BACKUP_FILE"
+
+  init:
+    desc: "Initialize kubeconfig symlink setup"
+    vars:
+      cluster: '{{ .cluster }}'
+    cmds:
+      - |
+        if [ -z "{{ .cluster }}" ]; then
+          echo "Error: cluster name required"
+          echo "Usage: task kubectl-config:init cluster=<name>"
+          exit 1
+        fi
+        
+        # If config exists and is not a symlink, move it to named config
+        if [ -f "{{ .KUBECONFIG_DIR }}/config" ] && [ ! -L "{{ .KUBECONFIG_DIR }}/config" ]; then
+          echo "Moving existing config to config.{{ .cluster }}"
+          mv {{ .KUBECONFIG_DIR }}/config {{ .KUBECONFIG_DIR }}/config.{{ .cluster }}
+          ln -s config.{{ .cluster }} {{ .KUBECONFIG_DIR }}/config
+          echo "✓ Initialized config for cluster: {{ .cluster }}"
+        elif [ -L "{{ .KUBECONFIG_DIR }}/config" ]; then
+          echo "Config is already a symlink"
+          task kubectl-config:current
+        else
+          echo "No existing config found. Please create config.{{ .cluster }} first"
+          exit 1
+        fi
+
+  import:
+    desc: "Import a kubeconfig file"
+    vars:
+      file: '{{ .file }}'
+      cluster: '{{ .cluster }}'
+    cmds:
+      - |
+        if [ -z "{{ .file }}" ] || [ -z "{{ .cluster }}" ]; then
+          echo "Error: file and cluster name required"
+          echo "Usage: task kubectl-config:import file=<path> cluster=<name>"
+          exit 1
+        fi
+        
+        if [ ! -f "{{ .file }}" ]; then
+          echo "Error: File not found: {{ .file }}"
+          exit 1
+        fi
+        
+        TARGET="{{ .KUBECONFIG_DIR }}/config.{{ .cluster }}"
+        
+        if [ -f "$TARGET" ]; then
+          echo "Warning: $TARGET already exists"
+          read -p "Overwrite? (y/N): " -n 1 -r
+          echo
+          if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Aborted"
+            exit 1
+          fi
+        fi
+        
+        cp {{ .file }} "$TARGET"
+        echo "✓ Imported config as: {{ .cluster }}"
+        echo ""
+        echo "To switch to this cluster, run:"
+        echo "  task kubectl-config:switch cluster={{ .cluster }}"
+
+  merge:
+    desc: "Merge multiple kubeconfigs into one"
+    vars:
+      clusters: '{{ .clusters }}'
+      output: '{{ .output | default "merged" }}'
+    cmds:
+      - |
+        if [ -z "{{ .clusters }}" ]; then
+          echo "Error: clusters list required"
+          echo "Usage: task kubectl-config:merge clusters='cluster1,cluster2' [output=merged]"
+          exit 1
+        fi
+        
+        IFS=',' read -ra CLUSTER_ARRAY <<< "{{ .clusters }}"
+        KUBECONFIG_LIST=""
+        
+        for cluster in "${CLUSTER_ARRAY[@]}"; do
+          config_file="{{ .KUBECONFIG_DIR }}/config.$cluster"
+          if [ ! -f "$config_file" ]; then
+            echo "Error: Config not found for cluster: $cluster"
+            exit 1
+          fi
+          KUBECONFIG_LIST="$KUBECONFIG_LIST:$config_file"
+        done
+        
+        # Remove leading colon
+        KUBECONFIG_LIST="${KUBECONFIG_LIST:1}"
+        
+        OUTPUT_FILE="{{ .KUBECONFIG_DIR }}/config.{{ .output }}"
+        KUBECONFIG="$KUBECONFIG_LIST" kubectl config view --flatten > "$OUTPUT_FILE"
+        
+        echo "✓ Merged configs into: config.{{ .output }}"
+        echo "Included clusters: {{ .clusters }}"

@@ -1,34 +1,69 @@
 ---
 version: '3'
+
+vars:
+  KUBECTL_TIMEOUT: '{{ .KUBECTL_TIMEOUT | default "300s" }}'
+  KUBECTL_DRY_RUN: '{{ .KUBECTL_DRY_RUN | default "false" }}'
+
 tasks:
   ns-label:
+    desc: "Apply labels to a namespace"
     vars:
       n: '{{ .n }}'
       labels: '{{ .labels }}'
       overwrite: '{{ .overwrite | default "true" }}'
     cmds:
-      - |
+      - |-
         {{- if .labels }}
-        kubectl label namespace {{ .n | quote }} \
+        kubectl label \
+          namespace \
+          {{ .n | quote }} \
           {{ .labels | quote }}
-          {{- if eq .overwrite "true" }} \
+        {{- if eq .overwrite "true" }} \
           --overwrite
-          {{- end }}
-        {{- else }}
-        # no labels to apply to {{ .n | quote }}
         {{- end }}
+        {{- else }}
+        echo "No labels to apply to {{ .n | quote }}"
+        {{- end }}
+
   ns-create:
+    desc: "Create a namespace"
     vars:
       n: '{{ .n }}'
+      labels: '{{ .labels }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
-      - kubectl create namespace {{ .n | quote }}
+      - |-
+        kubectl create \
+          namespace {{ .n | quote }}
+        {{- if eq "true" .dry_run }} \
+          --dry-run=client
+        {{- end }}
+      - task: ns-label
+        vars:
+          n: '{{ .n }}'
+          labels: '{{ .labels }}'
     status:
-      - kubectl get namespace {{ .n | quote }}
+      - >-
+        {{- if ne "true" .dry_run }}
+        kubectl get namespace {{ .n | quote }}
+        {{- else }}
+        false
+        {{- end }}
+
   ns-delete:
+    desc: "Delete a namespace"
     vars:
       n: '{{ .n }}'
+      force: '{{ .force | default "false" }}'
     cmds:
-      - kubectl delete namespace {{ .n | quote }}
+      - |-
+        kubectl delete \
+          namespace {{ .n | quote }}
+        {{- if eq .force "true" }} \
+          --force --grace-period=0
+        {{- end }}
+
   _apply:
     internal: true
     vars:
@@ -37,28 +72,42 @@ tasks:
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
       server_side: '{{ .server_side | default "false" }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
+      force: '{{ .force | default "false" }}'
+      validate: '{{ .validate | default "true" }}'
     cmds:
-      - |
-        kubectl \
-          {{ .verb }}
+      - |-
+          kubectl {{ .verb }}
           {{- if .n }} \
-          -n {{ .n | quote }}
+            -n {{ .n | quote }}
           {{- end }}
           {{- if eq "true" .server_side }} \
-          --server-side
+            --server-side
+          {{- end }}
+          {{- if eq "true" .dry_run }} \
+            --dry-run=client
+          {{- end }}
+          {{- if eq "true" .force }} \
+            --force
+          {{- end }}
+          {{- if eq "false" .validate }} \
+            --validate=false
           {{- end }} \
-          -f
-          {{- if .literal_f }} - <<EOF
-        {{ .literal_f }}
-        EOF
+            -f
+          {{- if .literal_f }} - <<'EOF'
+          {{ .literal_f }}
+          EOF
           {{- else }} {{ .f | quote }}
           {{- end }}
+
   create:
+    desc: "Create resources from file"
     vars:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
       server_side: '{{ .server_side | default "false" }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
       - task: _apply
         vars:
@@ -67,12 +116,17 @@ tasks:
           f: '{{ .f }}'
           literal_f: '{{ .literal_f }}'
           server_side: '{{ .server_side }}'
+          dry_run: '{{ .dry_run }}'
+
   apply:
+    desc: "Apply resources from file"
     vars:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
       server_side: '{{ .server_side | default "false" }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
+      force: '{{ .force | default "false" }}'
     cmds:
       - task: _apply
         vars:
@@ -81,11 +135,17 @@ tasks:
           f: '{{ .f }}'
           literal_f: '{{ .literal_f }}'
           server_side: '{{ .server_side }}'
+          dry_run: '{{ .dry_run }}'
+          force: '{{ .force }}'
+
   delete:
+    desc: "Delete resources from file"
     vars:
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
+      force: '{{ .force | default "false" }}'
+      cascade: '{{ .cascade | default "background" }}'
     cmds:
       - task: _apply
         vars:
@@ -93,74 +153,250 @@ tasks:
           n: '{{ .n }}'
           f: '{{ .f }}'
           literal_f: '{{ .literal_f }}'
+          force: '{{ .force }}'
+
   kapply:
+    desc: "Apply kustomization"
     vars:
       n: '{{ .n }}'
       k: '{{ .k }}'
       server_side: '{{ .server_side | default "false" }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
-      - |-
-        kubectl apply
+      - |
+          kubectl apply
           {{- if .n }} \
-          -n {{ .n | quote }}
+            -n {{ .n | quote }}
           {{- end }}
           {{- if .k }} \
-          -k {{ .k | quote }}
+            -k {{ .k | quote }}
           {{- end }}
           {{- if eq "true" .server_side }} \
-          --server-side
+            --server-side
           {{- end }}
+          {{- if eq "true" .dry_run }} \
+            --dry-run=client
+          {{- end }}
+
   kdelete:
+    desc: "Delete kustomization"
     vars:
       n: '{{ .n }}'
       k: '{{ .k }}'
+      force: '{{ .force | default "false" }}'
     cmds:
       - |
-        kubectl \
-          delete \
-          {{ if .n }} -n {{ .n | quote }}{{ end }} \
-          -k {{ .k | quote }}
+          kubectl delete
+          {{- if .n }} \
+            -n {{ .n | quote }}
+          {{- end }} \
+            -k {{ .k | quote }}
+          {{- if eq .force "true" }} \
+            --force --grace-period=0
+          {{- end }}
+
   patch:
+    desc: "Patch a resource"
     vars:
       n: '{{ .n | default "default" }}'
-      typeofthing: '{{ .typeofthing }}'
-      thingname: '{{ .thingname }}'
-      ty: '{{ .ty }}'
+      resource: '{{ .resource }}{{ .typeofthing }}'  # Support both names
+      name: '{{ .name }}{{ .thingname }}'
+      type: '{{ .type }}{{ .ty | default "strategic" }}'
       patch: '{{ .patch }}'
+      dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
       - |
-        kubectl
+          kubectl patch
           {{- if .n }} \
-          -n {{ .n | quote }}
+            -n {{ .n | quote }}
           {{- end }} \
-          patch \
-          {{ .typeofthing | quote }} \
-          {{ .thingname | quote }} \
-          "--type={{ .ty }}" \
-          --patch {{ .patch | quote }}
-  wait-for-pod:
+            {{ .resource | quote }} \
+            {{ .name | quote }} \
+            --type={{ .type | quote }} \
+            --patch {{ .patch | quote }}
+          {{- if eq "true" .dry_run }} \
+            --dry-run=client
+          {{- end }}
+
+  wait:
+    desc: "Wait for resource condition"
     vars:
-      for: '{{ .for }}'
+      n: '{{ .n }}'
+      resource: '{{ .resource }}'
+      name: '{{ .name }}'
+      selector: '{{ .selector }}'
+      for: '{{ .for | default "condition=ready" }}'
+      timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
+    cmds:
+      - |
+          kubectl wait
+          {{- if .n }} \
+            -n {{ .n | quote }}
+          {{- end }} \
+            {{ .resource | quote }}
+          {{- if .name }} \
+            {{ .name | quote }}
+          {{- end }}
+          {{- if .selector }} \
+            -l {{ .selector | quote }}
+          {{- end }} \
+            --for={{ .for | quote }} \
+            --timeout={{ .timeout | quote }}
+
+  wait-for-pod:
+    desc: "Wait for pod condition"
+    vars:
+      for: '{{ .for | default "condition=ready" }}'
       n: '{{ .n }}'
       k: '{{ .k }}'
       v: '{{ .v }}'
+      timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
     cmds:
-      - |-
-          kubectl \
-            wait --for={{ .for }}
-            {{- if .n }} \
-            -n {{ .n | quote }}
-            {{- end }} \
-            pod \
-            -l '{{ .k }}={{ .v }}'
+      - task: wait
+        vars:
+          n: '{{ .n }}'
+          resource: pod
+          selector: '{{ .k }}={{ .v }}'
+          for: '{{ .for }}'
+          timeout: '{{ .timeout }}'
+
   wait-for-pod-ready:
+    desc: "Wait for pod to be ready"
     vars:
       n: '{{ .n }}'
       k8s_app: '{{ .k8s_app }}'
-    deps:
+      timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
+    cmds:
       - task: wait-for-pod
         vars:
           for: condition=ready
           n: '{{ .n }}'
           k: k8s-app
           v: '{{ .k8s_app }}'
+          timeout: '{{ .timeout }}'
+
+  wait-for-deployment:
+    desc: "Wait for deployment to be ready"
+    vars:
+      n: '{{ .n }}'
+      name: '{{ .name }}'
+      timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
+    cmds:
+      - task: wait
+        vars:
+          n: '{{ .n }}'
+          resource: deployment
+          name: '{{ .name }}'
+          for: condition=available
+          timeout: '{{ .timeout }}'
+
+  rollout-status:
+    desc: "Check rollout status"
+    vars:
+      n: '{{ .n }}'
+      resource: '{{ .resource | default "deployment" }}'
+      name: '{{ .name }}'
+      timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
+    cmds:
+      - |
+          kubectl rollout status
+          {{- if .n }} \
+            -n {{ .n | quote }}
+          {{- end }} \
+            {{ .resource }}/{{ .name }} \
+            --timeout={{ .timeout | quote }}
+
+  rollout-restart:
+    desc: "Restart a rollout"
+    vars:
+      n: '{{ .n }}'
+      resource: '{{ .resource | default "deployment" }}'
+      name: '{{ .name }}'
+    cmds:
+      - |-
+        kubectl rollout restart
+        {{- if .n }} \
+          -n {{ .n | quote }}
+        {{- end }} \
+          {{ .resource }}/{{ .name }}
+
+  scale:
+    desc: "Scale a resource"
+    vars:
+      n: '{{ .n }}'
+      resource: '{{ .resource | default "deployment" }}'
+      name: '{{ .name }}'
+      replicas: '{{ .replicas }}'
+    cmds:
+      - |-
+        kubectl scale
+        {{- if .n }} \
+          -n {{ .n | quote }}
+        {{- end }} \
+          {{ .resource }}/{{ .name }} \
+          --replicas={{ .replicas }}
+  exec:
+    desc: "Execute command in pod"
+    vars:
+      n: '{{ .n }}'
+      pod: '{{ .pod }}'
+      container: '{{ .container }}'
+      cmd: '{{ .cmd | default "sh" }}'
+      interactive: '{{ .interactive | default "true" }}'
+    cmds:
+      - |-
+          kubectl exec
+          {{- if .n }} \
+            -n {{ .n | quote }}
+          {{- end }}
+          {{- if .container }} \
+            -c {{ .container | quote }}
+          {{- end }}
+          {{- if eq .interactive "true" }} \
+            -it
+          {{- end }} \
+            {{ .pod | quote }} -- {{ .cmd }}
+
+  logs:
+    desc: "Get pod logs"
+    vars:
+      n: '{{ .n }}'
+      pod: '{{ .pod }}'
+      container: '{{ .container }}'
+      follow: '{{ .follow | default "false" }}'
+      tail: '{{ .tail }}'
+      since: '{{ .since }}'
+    cmds:
+      - |
+          kubectl logs
+          {{- if .n }} \
+            -n {{ .n | quote }}
+          {{- end }}
+          {{- if .container }} \
+            -c {{ .container | quote }}
+          {{- end }}
+          {{- if eq .follow "true" }} \
+            -f
+          {{- end }}
+          {{- if .tail }} \
+            --tail={{ .tail }}
+          {{- end }}
+          {{- if .since }} \
+            --since={{ .since }}
+          {{- end }} \
+            {{ .pod | quote }}
+
+  port-forward:
+    desc: "Forward ports to a pod"
+    vars:
+      n: '{{ .n }}'
+      resource: '{{ .resource | default "pod" }}'
+      name: '{{ .name }}'
+      ports: '{{ .ports }}'
+    cmds:
+      - kubectl port-forward
+        {{- if .n }} \
+          -n {{ .n | quote }}
+        {{- end }} \
+          {{ .resource }}/{{ .name }} \
+          {{ .ports }}

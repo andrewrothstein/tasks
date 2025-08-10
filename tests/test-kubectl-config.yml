@@ -1,0 +1,276 @@
+---
+version: '3'
+
+vars:
+  TEST_DIR: '/tmp/test-kube-config'
+  KUBECONFIG_DIR: '{{ .TEST_DIR }}'
+
+includes:
+  kubectl-config: ../kubectl-config.yml
+
+tasks:
+  setup:
+    desc: "Set up test environment"
+    cmds:
+      - rm -rf {{ .TEST_DIR }}
+      - mkdir -p {{ .TEST_DIR }}
+      - |
+        # Create mock kubeconfig files
+        cat > {{ .TEST_DIR }}/config.dev <<EOF
+        apiVersion: v1
+        kind: Config
+        current-context: dev-context
+        contexts:
+        - context:
+            cluster: dev-cluster
+            user: dev-user
+          name: dev-context
+        clusters:
+        - cluster:
+            server: https://dev.example.com:6443
+          name: dev-cluster
+        users:
+        - name: dev-user
+          user:
+            token: dev-token
+        EOF
+      - |
+        cat > {{ .TEST_DIR }}/config.prod <<EOF
+        apiVersion: v1
+        kind: Config
+        current-context: prod-context
+        contexts:
+        - context:
+            cluster: prod-cluster
+            user: prod-user
+          name: prod-context
+        clusters:
+        - cluster:
+            server: https://prod.example.com:6443
+          name: prod-cluster
+        users:
+        - name: prod-user
+          user:
+            token: prod-token
+        EOF
+      - |
+        cat > {{ .TEST_DIR }}/config.staging <<EOF
+        apiVersion: v1
+        kind: Config
+        current-context: staging-context
+        contexts:
+        - context:
+            cluster: staging-cluster
+            user: staging-user
+          name: staging-context
+        clusters:
+        - cluster:
+            server: https://staging.example.com:6443
+          name: staging-cluster
+        users:
+        - name: staging-user
+          user:
+            token: staging-token
+        EOF
+      - echo "✓ Test environment created at {{ .TEST_DIR }}"
+
+  cleanup:
+    desc: "Clean up test environment"
+    cmds:
+      - rm -rf {{ .TEST_DIR }}
+      - echo "✓ Test environment cleaned up"
+
+  test-list:
+    desc: "Test listing configs"
+    deps: [setup]
+    cmds:
+      - echo "=== Testing list command ==="
+      - task: kubectl-config:list
+      - |
+        COUNT=$(ls {{ .TEST_DIR }}/config.* 2>/dev/null | wc -l)
+        if [ "$COUNT" -eq "3" ]; then
+          echo "✓ Found all 3 test configs"
+        else
+          echo "✗ Expected 3 configs, found $COUNT"
+          exit 1
+        fi
+
+  test-init:
+    desc: "Test initializing symlink setup"
+    deps: [setup]
+    cmds:
+      - echo "=== Testing init command ==="
+      - cp {{ .TEST_DIR }}/config.dev {{ .TEST_DIR }}/config
+      - task: kubectl-config:init
+        vars:
+          cluster: dev
+      - |
+        if [ -L "{{ .TEST_DIR }}/config" ]; then
+          echo "✓ Config is now a symlink"
+          TARGET=$(readlink {{ .TEST_DIR }}/config)
+          if [ "$TARGET" = "config.dev" ]; then
+            echo "✓ Symlink points to correct target"
+          else
+            echo "✗ Symlink points to wrong target: $TARGET"
+            exit 1
+          fi
+        else
+          echo "✗ Config is not a symlink"
+          exit 1
+        fi
+
+  test-switch:
+    desc: "Test switching between configs"
+    deps: [test-init]
+    cmds:
+      - echo "=== Testing switch command ==="
+      - task: kubectl-config:switch
+        vars:
+          cluster: prod
+      - |
+        TARGET=$(readlink {{ .TEST_DIR }}/config)
+        if [ "$TARGET" = "config.prod" ]; then
+          echo "✓ Successfully switched to prod"
+        else
+          echo "✗ Failed to switch to prod"
+          exit 1
+        fi
+      - task: kubectl-config:switch
+        vars:
+          cluster: staging
+      - |
+        TARGET=$(readlink {{ .TEST_DIR }}/config)
+        if [ "$TARGET" = "config.staging" ]; then
+          echo "✓ Successfully switched to staging"
+        else
+          echo "✗ Failed to switch to staging"
+          exit 1
+        fi
+      - task: kubectl-config:switch
+        vars:
+          cluster: dev
+      - |
+        TARGET=$(readlink {{ .TEST_DIR }}/config)
+        if [ "$TARGET" = "config.dev" ]; then
+          echo "✓ Successfully switched back to dev"
+        else
+          echo "✗ Failed to switch back to dev"
+          exit 1
+        fi
+
+  test-backup:
+    desc: "Test backup functionality"
+    deps: [test-init]
+    cmds:
+      - echo "=== Testing backup command ==="
+      - task: kubectl-config:backup
+        vars:
+          name: test-backup
+      - |
+        BACKUP_COUNT=$(ls {{ .TEST_DIR }}/config.test-backup.* 2>/dev/null | wc -l)
+        if [ "$BACKUP_COUNT" -gt "0" ]; then
+          echo "✓ Backup created successfully"
+        else
+          echo "✗ Backup was not created"
+          exit 1
+        fi
+
+  test-import:
+    desc: "Test importing a new config"
+    deps: [setup]
+    cmds:
+      - echo "=== Testing import command ==="
+      - |
+        cat > /tmp/new-cluster-config <<EOF
+        apiVersion: v1
+        kind: Config
+        current-context: new-context
+        contexts:
+        - context:
+            cluster: new-cluster
+            user: new-user
+          name: new-context
+        EOF
+      - task: kubectl-config:import
+        vars:
+          file: /tmp/new-cluster-config
+          cluster: imported
+      - |
+        if [ -f "{{ .TEST_DIR }}/config.imported" ]; then
+          echo "✓ Config imported successfully"
+        else
+          echo "✗ Config import failed"
+          exit 1
+        fi
+      - rm -f /tmp/new-cluster-config
+
+  test-merge:
+    desc: "Test merging multiple configs"
+    deps: [setup]
+    cmds:
+      - echo "=== Testing merge command ==="
+      - task: kubectl-config:merge
+        vars:
+          clusters: dev,prod
+          output: merged
+      - |
+        if [ -f "{{ .TEST_DIR }}/config.merged" ]; then
+          echo "✓ Merged config created"
+          # Check if both contexts are present
+          export KUBECONFIG={{ .TEST_DIR }}/config.merged
+          CONTEXTS=$(kubectl config get-contexts -o name 2>/dev/null | wc -l)
+          if [ "$CONTEXTS" -eq "2" ]; then
+            echo "✓ Merged config contains both contexts"
+          else
+            echo "✗ Merged config does not contain expected contexts"
+            exit 1
+          fi
+        else
+          echo "✗ Merge failed"
+          exit 1
+        fi
+
+  test-error-handling:
+    desc: "Test error handling"
+    deps: [setup]
+    cmds:
+      - echo "=== Testing error handling ==="
+      - |
+        # Test switching to non-existent cluster
+        echo "Testing switch to non-existent cluster..."
+        if task kubectl-config:switch cluster=nonexistent 2>/dev/null; then
+          echo "✗ Should have failed for non-existent cluster"
+          exit 1
+        else
+          echo "✓ Correctly failed for non-existent cluster"
+        fi
+      - |
+        # Test import with missing file
+        echo "Testing import with missing file..."
+        if task kubectl-config:import file=/tmp/does-not-exist cluster=test 2>/dev/null; then
+          echo "✗ Should have failed for missing file"
+          exit 1
+        else
+          echo "✓ Correctly failed for missing file"
+        fi
+
+  test-all:
+    desc: "Run all kubectl-config tests"
+    cmds:
+      - task: test-list
+      - task: test-switch
+      - task: test-backup
+      - task: test-import
+      - task: test-merge
+      - task: test-error-handling
+      - task: cleanup
+      - echo "=== All kubectl-config tests passed ==="
+
+  quick:
+    desc: "Run quick smoke tests"
+    cmds:
+      - task: setup
+      - task: test-list
+      - task: test-init
+      - task: cleanup
+      - echo "=== Quick tests passed ==="

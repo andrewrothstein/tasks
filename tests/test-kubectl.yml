@@ -1,0 +1,124 @@
+---
+version: '3'
+
+includes:
+  kubectl: ../kubectl.yml
+
+tasks:
+  test-namespace:
+    desc: "Test namespace operations"
+    cmds:
+      - echo "=== Testing namespace creation ==="
+      - task: kubectl:ns-create
+        vars:
+          n: test-kubectl-ops
+      - echo "=== Testing namespace labeling ==="
+      - task: kubectl:ns-label
+        vars:
+          n: test-kubectl-ops
+          labels: "env=test"
+      - task: kubectl:ns-label
+        vars:
+          n: test-kubectl-ops
+          labels: "owner=taskfile"
+      - kubectl get namespace test-kubectl-ops --show-labels
+      - echo "=== Testing namespace deletion ==="
+      - task: kubectl:ns-delete
+        vars:
+          n: test-kubectl-ops
+      - echo "✓ Namespace operations passed"
+
+  test-apply-delete:
+    desc: "Test apply/delete with literal YAML"
+    vars:
+      TEST_NS: test-kubectl-apply
+    cmds:
+      - task: kubectl:ns-create
+        vars:
+          n: '{{ .TEST_NS }}'
+      - echo "=== Testing apply with literal_f ==="
+      - task: kubectl:apply
+        vars:
+          n: '{{ .TEST_NS }}'
+          literal_f: |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: test-config
+            data:
+              key1: value1
+              key2: value2
+      - kubectl get configmap test-config -n {{ .TEST_NS }}
+      - echo "=== Testing delete with literal_f ==="
+      - task: kubectl:delete
+        vars:
+          n: '{{ .TEST_NS }}'
+          literal_f: |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: test-config
+      - task: kubectl:ns-delete
+        vars:
+          n: '{{ .TEST_NS }}'
+      - echo "✓ Apply/Delete operations passed"
+
+  test-dry-run:
+    desc: "Test dry-run functionality"
+    cmds:
+      - echo "=== Testing dry-run mode ==="
+      - task: kubectl:ns-create
+        vars:
+          n: test-dryrun-ns
+          dry_run: "true"
+      - |
+        if kubectl get namespace test-dryrun-ns 2>/dev/null; then
+          echo "✗ Dry-run failed - namespace was created"
+          exit 1
+        else
+          echo "✓ Dry-run passed - namespace not created"
+        fi
+
+  test-backward-compat:
+    desc: "Test backward compatibility with old parameter names"
+    cmds:
+      - echo "=== Testing patch with old parameter names ==="
+      - task: kubectl:ns-create
+        vars:
+          n: test-compat
+      - task: kubectl:apply
+        vars:
+          n: test-compat
+          literal_f: |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: test-patch
+            data:
+              original: value
+      - task: kubectl:patch
+        vars:
+          n: test-compat
+          typeofthing: configmap
+          thingname: test-patch
+          ty: merge
+          patch: "{\"data\":{\"patched\":\"true\"}}"
+      - kubectl get configmap test-patch -n test-compat -o yaml | grep "patched"
+      - task: kubectl:ns-delete
+        vars:
+          n: test-compat
+      - echo "✓ Backward compatibility passed"
+
+  test-all:
+    desc: "Run all kubectl.yml tests"
+    cmds:
+      - task: test-namespace
+      - task: test-apply-delete
+      - task: test-dry-run
+      - task: test-backward-compat
+      - echo "=== All tests passed successfully ==="
+
+  cleanup:
+    desc: "Clean up test resources"
+    cmds:
+      - kubectl delete namespace test-kubectl-ops test-kubectl-apply test-dryrun-ns test-compat --ignore-not-found=true

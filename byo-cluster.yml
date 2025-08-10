@@ -1,0 +1,98 @@
+---
+version: '3'
+
+# BYO (Bring Your Own) Cluster support
+# For externally provisioned clusters like Harvester, Rancher, EKS, GKE, AKS, etc.
+
+vars:
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "byo" }}'
+  CLUSTER_TYPE: '{{ .CLUSTER_TYPE | default "external" }}'
+
+tasks:
+  info:
+    desc: "Show information about the BYO cluster"
+    cmds:
+      - echo "=== BYO Cluster Information ==="
+      - echo "Cluster Name: {{ .CLUSTER_NAME }}"
+      - echo "Cluster Type: {{ .CLUSTER_TYPE }}"
+      - echo ""
+      - kubectl cluster-info
+      - echo ""
+      - echo "=== Nodes ==="
+      - kubectl get nodes
+      - echo ""
+      - echo "=== Namespaces ==="
+      - kubectl get namespaces
+
+  create:
+    desc: "No-op for BYO clusters (already provisioned)"
+    cmds:
+      - echo "ℹ️  BYO cluster '{{ .CLUSTER_NAME }}' is externally managed"
+      - echo "   No creation needed - cluster should already exist"
+      - echo ""
+      - echo "To use this cluster:"
+      - echo "  1. Ensure kubeconfig is in ~/.kube/config.{{ .CLUSTER_NAME }}"
+      - echo "  2. Switch to it: task kubectl-config:switch cluster={{ .CLUSTER_NAME }}"
+
+  up:
+    desc: "Verify BYO cluster is accessible"
+    cmds:
+      - echo "=== Verifying BYO cluster '{{ .CLUSTER_NAME }}' ==="
+      - kubectl cluster-info > /dev/null 2>&1 || (echo "❌ Cannot connect to cluster" && exit 1)
+      - echo "✓ Cluster is accessible"
+      - kubectl get nodes > /dev/null 2>&1 || (echo "❌ Cannot list nodes" && exit 1)
+      - echo "✓ Can list nodes"
+      - echo ""
+      - task: info
+
+  delete:
+    desc: "No-op for BYO clusters (externally managed)"
+    cmds:
+      - echo "ℹ️  BYO cluster '{{ .CLUSTER_NAME }}' is externally managed"
+      - echo "   Deletion must be performed through the cluster's management interface"
+      - echo "   (e.g., Harvester UI, Rancher, cloud provider console)"
+
+  destroy:
+    desc: "Alias for delete (no-op)"
+    cmds:
+      - task: delete
+
+  check:
+    desc: "Health check for BYO cluster"
+    cmds:
+      - echo "=== Checking BYO cluster health ==="
+      - kubectl cluster-info > /dev/null 2>&1 || (echo "❌ Cannot connect to cluster" && exit 1)
+      - echo "✓ API server is responsive"
+      - |
+        NODES=$(kubectl get nodes -o json | jq '.items | length')
+        NOT_READY=$(kubectl get nodes -o json | jq '[.items[] | select(.status.conditions[] | select(.type=="Ready" and .status!="True"))] | length')
+        echo "✓ Nodes: $NODES total, $NOT_READY not ready"
+        if [ "$NOT_READY" -gt 0 ]; then
+          echo "⚠️  Some nodes are not ready:"
+          kubectl get nodes | grep -v " Ready "
+        fi
+      - |
+        PODS=$(kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded -o json | jq '.items | length')
+        if [ "$PODS" -gt 0 ]; then
+          echo "⚠️  $PODS pods are not running:"
+          kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded
+        else
+          echo "✓ All pods are healthy"
+        fi
+
+  ready:
+    desc: "Wait for BYO cluster to be ready"
+    cmds:
+      - echo "=== Waiting for BYO cluster to be ready ==="
+      - |
+        while ! kubectl cluster-info > /dev/null 2>&1; do
+          echo "Waiting for API server..."
+          sleep 5
+        done
+        echo "✓ API server is ready"
+      - |
+        while [ $(kubectl get nodes -o json 2>/dev/null | jq '[.items[] | select(.status.conditions[] | select(.type=="Ready" and .status=="True"))] | length') -eq 0 ]; do
+          echo "Waiting for at least one node to be ready..."
+          sleep 5
+        done
+        echo "✓ Cluster has ready nodes"

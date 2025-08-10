@@ -1,35 +1,91 @@
 ---
 version: '3'
+
+vars:
+  CLUSTER_PROVIDER: '{{ .CLUSTER_PROVIDER | default "kind+cilium" }}'
+
 includes:
   k3d: k3d.yml
   kind: kind.yml
 #  k8s: kind+spegel.yml
 #  k8s: kind+registry.yml
-  k8s: kind+cilium.yml
+  k8s: '{{ .CLUSTER_PROVIDER | default "kind+cilium" }}.yml'
 #  k8s: kind+calico.yml
 #  k8s: kind+antrea.yml
+#  k8s: byo-cluster.yml  # For externally managed clusters
   metrics-server: metrics-server.yml
 #  metrics-server: pet.yml
 #  k8s: k3d.yml
+  kubectl-config: kubectl-config.yml
 tasks:
   kind-up:
     cmds:
       - task: k8s:up
+  
   up:
     cmds:
       - task: k8s:up
       - task: metrics-server:upgrade
+  
   delete:
     cmds:
-      - task: kind:delete
-#      - task: k3d:delete
+      - task: k8s:delete
+  
   destroy:
     cmds:
-      - task: k8s:delete
+      - task: k8s:destroy
+  
   default:
     deps:
       - up
+  
   check:
     cmds:
       - task: k8s:check
       - task: metrics-server:check
+  
+  # Cluster switching helpers
+  switch:
+    desc: "Switch to a different cluster"
+    cmds:
+      - task: kubectl-config:switch
+        vars:
+          cluster: '{{ .cluster }}'
+  
+  list-clusters:
+    desc: "List available cluster configs"
+    cmds:
+      - task: kubectl-config:list
+  
+  current:
+    desc: "Show current cluster"
+    cmds:
+      - task: kubectl-config:current
+  
+  # BYO cluster helpers
+  use-harvester:
+    desc: "Switch to Harvester cluster"
+    cmds:
+      - task: kubectl-config:switch
+        vars:
+          cluster: harvester
+      - echo "Switched to Harvester cluster"
+      - echo "Using BYO cluster mode - create/delete are no-ops"
+  
+  use-k3s:
+    desc: "Switch to K3s cluster"  
+    cmds:
+      - task: kubectl-config:switch
+        vars:
+          cluster: k3s
+      - echo "Switched to K3s cluster"
+      - echo "Using BYO cluster mode - create/delete are no-ops"
+  
+  use-local:
+    desc: "Switch back to local Kind/K3d cluster"
+    cmds:
+      - task: kubectl-config:switch
+        vars:
+          cluster: '{{ .cluster | default "kind" }}'
+      - echo "Switched to local cluster: {{ .cluster | default "kind" }}"
+

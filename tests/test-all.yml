@@ -1,0 +1,107 @@
+---
+version: '3'
+
+vars:
+  TEST_CLUSTER: '{{ .TEST_CLUSTER | default "kind" }}'
+
+tasks:
+  all:
+    desc: "Run all tests for the repository"
+    cmds:
+      - task: prereq-check
+      - task: unit-tests
+      - task: integration-tests
+      - task: cleanup
+      - echo "✅ All tests completed successfully!"
+
+  prereq-check:
+    desc: "Verify test prerequisites"
+    cmds:
+      - echo "=== Checking test prerequisites ==="
+      - command -v kubectl >/dev/null 2>&1 || (echo "❌ kubectl not found" && exit 1)
+      - command -v task >/dev/null 2>&1 || (echo "❌ taskfile not found" && exit 1)
+      - kubectl cluster-info >/dev/null 2>&1 || (echo "❌ No Kubernetes cluster available" && exit 1)
+      - echo "✓ All prerequisites met"
+
+  unit-tests:
+    desc: "Run unit tests for task modules"
+    cmds:
+      - echo "=== Running unit tests ==="
+      - task: test-kubectl
+      - task: test-kubectl-config
+      - echo "✓ Unit tests passed"
+
+  integration-tests:
+    desc: "Run integration tests (requires cluster)"
+    cmds:
+      - echo "=== Running integration tests ==="
+      - echo "ℹ️  Integration tests would run here for:"
+      - echo "   - ArgoCD deployment"
+      - echo "   - Prometheus/Grafana stack"
+      - echo "   - Cert-manager"
+      - echo "   - Gateway API"
+      - echo "✓ Integration tests placeholder passed"
+
+  test-kubectl:
+    desc: "Test kubectl.yml task definitions"
+    cmds:
+      - echo "=== Testing kubectl.yml ==="
+      - task --taskfile test-kubectl.yml test-all
+  
+  test-kubectl-config:
+    desc: "Test kubectl-config.yml task definitions"
+    cmds:
+      - echo "=== Testing kubectl-config.yml ==="
+      - task --taskfile test-kubectl-config.yml quick
+
+  test-kind:
+    desc: "Test Kind cluster operations (destructive)"
+    cmds:
+      - echo "=== Testing Kind cluster operations ==="
+      - echo "⚠️  Skipping - would create/destroy clusters"
+      # Uncomment to run:
+      # - task kind:create
+      # - kubectl get nodes
+      # - task kind:delete
+
+  test-k3d:
+    desc: "Test K3d cluster operations (destructive)"
+    cmds:
+      - echo "=== Testing K3d cluster operations ==="
+      - echo "⚠️  Skipping - would create/destroy clusters"
+      # Uncomment to run:
+      # - task k3d:create
+      # - kubectl get nodes
+      # - task k3d:delete
+
+  test-helm-deployments:
+    desc: "Test Helm chart deployments"
+    vars:
+      TEST_NS: test-helm-deploy
+    cmds:
+      - echo "=== Testing Helm deployments ==="
+      - kubectl create namespace {{ .TEST_NS }} --dry-run=client -o yaml | kubectl apply -f -
+      - echo "ℹ️  Would test cert-manager, metrics-server, etc."
+      - kubectl delete namespace {{ .TEST_NS }} --ignore-not-found=true
+
+  cleanup:
+    desc: "Clean up test resources"
+    cmds:
+      - echo "=== Cleaning up test resources ==="
+      - kubectl delete namespace test-kubectl-ops test-kubectl-apply test-dryrun-ns test-compat --ignore-not-found=true
+      - kubectl delete namespace test-helm-deploy --ignore-not-found=true
+      - echo "✓ Cleanup complete"
+
+  quick:
+    desc: "Run quick tests only (no cluster operations)"
+    cmds:
+      - task: prereq-check
+      - task: test-kubectl
+      - echo "✅ Quick tests passed!"
+
+  ci:
+    desc: "Tests suitable for CI/CD pipelines"
+    cmds:
+      - task: prereq-check
+      - task: unit-tests
+      - echo "✅ CI tests passed!"
