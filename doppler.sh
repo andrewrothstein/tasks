@@ -10,4 +10,3 @@ doppler_template() {
 rootToken: $VAULT_ROOT_TOKEN
 EOF
 }
-

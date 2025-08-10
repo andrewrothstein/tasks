@@ -14,4 +14,3 @@ coder:
     host: coder
     tls:
       enable: true
-

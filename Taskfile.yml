@@ -28,6 +28,21 @@ includes:
 #  post-mesh-2: pet.yml
 
 tasks:
+  test:
+    desc: "Run all tests for the repository"
+    cmds:
+      - task --taskfile tests/test-all.yml all
+
+  test:quick:
+    desc: "Run quick tests only (no cluster operations)"
+    cmds:
+      - task --taskfile tests/test-all.yml quick
+
+  test:ci:
+    desc: "Run CI-appropriate tests"
+    cmds:
+      - task --taskfile tests/test-all.yml ci
+
   up:
     cmds:
       - task: k8s:up
