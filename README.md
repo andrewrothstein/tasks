@@ -24,6 +24,9 @@ cd tasks
 cp .env.sample .env
 # Edit .env with your settings
 
+# (Optional) Set up pre-commit hooks
+uvx pre-commit install  # Auto-run checks on git commit
+
 # Option 1: Create default cluster (Kind + Cilium)
 task up
 
@@ -203,10 +206,46 @@ task --taskfile tests/test-kubectl.yml test-apply-delete
 
 ## Contributing
 
+### Development Setup
+
+1. Install pre-commit hooks (optional but recommended):
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+2. Or use uvx (no installation needed):
+   ```bash
+   uvx pre-commit run --all-files
+   ```
+
+### Before Committing
+
+1. Run pre-commit checks:
+   ```bash
+   # Check all files
+   uvx pre-commit run --all-files
+
+   # Or if pre-commit is installed
+   pre-commit run --all-files
+
+   # Check only staged files (automatic if hooks installed)
+   pre-commit run
+   ```
+
+2. Run tests:
+   ```bash
+   task test:quick
+   ```
+
+### Contribution Guidelines
+
 1. Create tests for new functionality in `tests/`
 2. Follow existing patterns for task organization
 3. Update CLAUDE.md for AI-assisted development
-4. Run `task test` before submitting changes
+4. Ensure all pre-commit checks pass
+5. Run `task test` before submitting changes
+6. Keep documentation (README.md and CLAUDE.md) in sync
 
 ## License
 

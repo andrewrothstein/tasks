@@ -219,10 +219,31 @@ task --taskfile tests/test-all.yml cleanup
 - Application tasks may have inter-dependencies
 - Use `deps` for parallel execution, `cmds` for sequential
 
+### Code Quality & Pre-commit
+
+This repository uses pre-commit hooks to ensure code quality. Before committing:
+
+```bash
+# Run pre-commit checks on all files
+uvx pre-commit run --all-files
+
+# Or if pre-commit is installed locally
+pre-commit run --all-files
+```
+
+Pre-commit checks include:
+- YAML syntax validation
+- Trailing whitespace removal
+- End of file fixes
+- JSON syntax validation
+- Large file detection
+- Merge conflict detection
+
 ### Important Notes
 - Most application deployment tasks work on any K8s cluster
 - Ephemeral cluster tasks are specifically for local development
 - Production deployments should use appropriate cluster provisioning tools (not Kind/K3d)
 - BYO clusters use no-op create/delete operations for safety
 - Always ensure CLAUDE.md and README.md are consistent before committing changes
+- Always run `uvx pre-commit run --all-files` before committing
 - Run `task test` before submitting any changes
