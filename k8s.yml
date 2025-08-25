@@ -7,12 +7,12 @@ vars:
 includes:
   k3d: k3d.yml
   kind: kind.yml
-#  k8s: kind+spegel.yml
-#  k8s: kind+registry.yml
-  k8s: '{{ .CLUSTER_PROVIDER | default "kind+cilium" }}.yml'
-#  k8s: kind+calico.yml
-#  k8s: kind+antrea.yml
-#  k8s: byo-cluster.yml  # For externally managed clusters
+  kind+cilium: kind+cilium.yml
+  kind+spegel: kind+spegel.yml
+  kind+registry: kind+registry.yml
+  kind+calico: kind+calico.yml
+  kind+antrea: kind+antrea.yml
+  byo-cluster: byo-cluster.yml  # For externally managed clusters
   metrics-server: metrics-server.yml
 #  metrics-server: pet.yml
 #  k8s: k3d.yml
@@ -20,20 +20,20 @@ includes:
 tasks:
   kind-up:
     cmds:
-      - task: k8s:up
+      - task: '{{ .CLUSTER_PROVIDER }}:up'
 
   up:
     cmds:
-      - task: k8s:up
+      - task: '{{ .CLUSTER_PROVIDER }}:up'
       - task: metrics-server:upgrade
 
   delete:
     cmds:
-      - task: k8s:delete
+      - task: '{{ .CLUSTER_PROVIDER }}:delete'
 
   destroy:
     cmds:
-      - task: k8s:destroy
+      - task: '{{ .CLUSTER_PROVIDER }}:destroy'
 
   default:
     deps:
@@ -41,7 +41,7 @@ tasks:
 
   check:
     cmds:
-      - task: k8s:check
+      - task: '{{ .CLUSTER_PROVIDER }}:check'
       - task: metrics-server:check
 
   # Cluster switching helpers

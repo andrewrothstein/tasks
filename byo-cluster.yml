@@ -27,12 +27,13 @@ tasks:
   create:
     desc: "No-op for BYO clusters (already provisioned)"
     cmds:
-      - echo "ℹ️  BYO cluster '{{ .CLUSTER_NAME }}' is externally managed"
-      - echo "   No creation needed - cluster should already exist"
-      - echo ""
-      - echo "To use this cluster:"
-      - echo "  1. Ensure kubeconfig is in ~/.kube/config.{{ .CLUSTER_NAME }}"
-      - echo "  2. Switch to it: task kubectl-config:switch cluster={{ .CLUSTER_NAME }}"
+      - |
+        echo "ℹ️  BYO cluster '{{ .CLUSTER_NAME }}' is externally managed"
+        echo "   No creation needed - cluster should already exist"
+        echo ""
+        echo "To use this cluster:"
+        echo "  1. Ensure kubeconfig is in ~/.kube/config.{{ .CLUSTER_NAME }}"
+        echo "  2. Switch to it: task kubectl-config:switch cluster={{ .CLUSTER_NAME }}"
 
   up:
     desc: "Verify BYO cluster is accessible"
