@@ -1,31 +1,32 @@
-# Build stage
-FROM python:3.13-slim AS builder
+# Build stage - build the wheel using uv
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
 
 WORKDIR /app
 
-# Install Pipenv and system dependencies
-RUN pip install pipenv
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copy project files
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
 
-# Copy Pipfile and Pipfile.lock
-COPY Pipfile Pipfile.lock ./
+# Build the wheel
+RUN uv build --wheel --out-dir /dist
 
-# Install project dependencies
-RUN pipenv install --system --deploy
-
-# Runtime stage
-FROM python:3.13-slim
+# Runtime stage - use uv base image
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 WORKDIR /app
 
-# Copy the virtual environment from the builder stage
-COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+# Copy the wheel from builder
+COPY --from=builder /dist/*.whl /tmp/
 
-# Copy the application code
-COPY . .
+# Install the wheel and its dependencies
+RUN uv venv && \
+    uv pip install --no-cache /tmp/*.whl && \
+    rm -rf /tmp/*.whl
 
-# Set the entry point
-CMD ["python", "app.py"]
+# Environment
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Run the operator via the installed console script
+CMD ["vcluster-argocd-enroller"]
