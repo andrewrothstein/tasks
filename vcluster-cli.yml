@@ -1,22 +1,248 @@
 ---
 version: '3'
+
+vars:
+  VCLUSTER_NAMESPACE: '{{ .VCLUSTER_NAMESPACE | default "vcluster-test" }}'
+  VCLUSTER_NAME: '{{ .VCLUSTER_NAME | default "test" }}'
+  VCLUSTER_DISTRO: '{{ .VCLUSTER_DISTRO | default "k3s" }}'
+  VCLUSTER_K8S_VERSION: '{{ .VCLUSTER_K8S_VERSION | default "1.30" }}'
+
 tasks:
   list:
+    desc: "List all vclusters"
     vars:
       vcluster_namespace: '{{ .vcluster_namespace }}'
     cmds:
-      - |-
+      - |
         vcluster list
         {{- if .vcluster_namespace }} \
           --namespace {{ .vcluster_namespace | quote }}
         {{- end }}
-  connect:
+
+  create:
+    desc: "Create a new vcluster for testing"
     vars:
-      vcluster_name: '{{ .vcluster_name }}'
-      vcluster_namespace: '{{ .vcluster_namespace }}'
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+      distro: '{{ .distro | default .VCLUSTER_DISTRO }}'
+      k8s_version: '{{ .k8s_version | default .VCLUSTER_K8S_VERSION }}'
+      expose: '{{ .expose | default "false" }}'
+      values: '{{ .values }}'
     cmds:
-      - |-
+      - |
+        vcluster create {{ .name | quote }} \
+          --namespace {{ .namespace | quote }} \
+          --distro {{ .distro | quote }}
+        {{- if eq .expose "true" }} \
+          --expose
+        {{- end }}
+        {{- if .values }} \
+          --values {{ .values | quote }}
+        {{- end }}
+
+  delete:
+    desc: "Delete a vcluster"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+    cmds:
+      - vcluster delete {{ .name | quote }} --namespace {{ .namespace | quote }}
+
+  connect:
+    desc: "Connect to a vcluster (updates kubeconfig)"
+    vars:
+      vcluster_name: '{{ .vcluster_name | default .VCLUSTER_NAME }}'
+      vcluster_namespace: '{{ .vcluster_namespace | default .VCLUSTER_NAMESPACE }}'
+      update_current: '{{ .update_current | default "true" }}'
+      kube_config: '{{ .kube_config }}'
+    cmds:
+      - |
         vcluster connect {{ .vcluster_name | quote }}
         {{- if .vcluster_namespace }} \
           -n {{ .vcluster_namespace | quote }}
         {{- end }}
+        {{- if eq .update_current "true" }} \
+          --update-current
+        {{- end }}
+        {{- if .kube_config }} \
+          --kube-config {{ .kube_config | quote }}
+        {{- end }}
+
+  disconnect:
+    desc: "Disconnect from a vcluster"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+    cmds:
+      - vcluster disconnect {{ .name | quote }} --namespace {{ .namespace | quote }}
+
+  pause:
+    desc: "Pause a vcluster to save resources"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+    cmds:
+      - vcluster pause {{ .name | quote }} --namespace {{ .namespace | quote }}
+
+  resume:
+    desc: "Resume a paused vcluster"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+    cmds:
+      - vcluster resume {{ .name | quote }} --namespace {{ .namespace | quote }}
+
+  kubeconfig:
+    desc: "Get kubeconfig for a vcluster"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+      output: '{{ .output }}'
+    cmds:
+      - |
+        vcluster connect {{ .name | quote }} \
+          --namespace {{ .namespace | quote }} \
+          --print
+        {{- if .output }} > {{ .output | quote }}
+        {{- end }}
+
+  exec:
+    desc: "Execute command in vcluster context"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+      cmd: '{{ .cmd | default "kubectl get nodes" }}'
+    cmds:
+      - |
+        vcluster connect {{ .name | quote }} \
+          --namespace {{ .namespace | quote }} \
+          -- {{ .cmd }}
+
+  test-quick:
+    desc: "Quick test - create, verify, and delete a test vcluster"
+    vars:
+      name: 'test-{{ now | date "20060102-150405" }}'
+      namespace: 'vcluster-test'
+    cmds:
+      - |
+        echo "Creating test vcluster {{ .name }}..."
+      - task: create
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          distro: k3s
+      - |
+        echo "Verifying vcluster is running..."
+        sleep 10
+      - task: exec
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          cmd: kubectl get nodes
+      - |
+        echo "Testing vcluster connectivity..."
+      - task: exec
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          cmd: kubectl create namespace test-ns
+      - task: exec
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+          cmd: kubectl get namespaces
+      - |
+        echo "Cleaning up test vcluster..."
+      - task: delete
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+      - |
+        echo "Test completed successfully!"
+
+  test-operator:
+    desc: "Test vcluster with ArgoCD enroller operator"
+    vars:
+      name: '{{ .name | default "test-enroll" }}'
+      namespace: '{{ .namespace | default "vcluster-test" }}'
+    cmds:
+      - |
+        echo "=== Testing vcluster ArgoCD enrollment ==="
+        echo "1. Creating namespace {{ .namespace }}..."
+        kubectl create namespace {{ .namespace }} --dry-run=client -o yaml | kubectl apply -f -
+        echo "2. Creating test vcluster {{ .name }}..."
+      - task: create
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+      - |
+        echo "3. Waiting for vcluster to be ready..."
+        sleep 20
+        echo "4. Verifying vcluster StatefulSet..."
+        kubectl get statefulset -n {{ .namespace }} -l app=vcluster
+        echo "5. Verifying vcluster secret..."
+        kubectl get secret -n {{ .namespace }} vc-{{ .name }}
+        echo "6. Starting operator and testing enrollment..."
+        cd vcluster-argocd-enroller && uv run vcluster-argocd-enroller --namespace {{ .namespace }} --verbose &
+        echo "7. Waiting for operator to process..."
+        sleep 15
+        echo "8. Checking ArgoCD secret creation..."
+        kubectl get secret -n argocd vcluster-{{ .name }} && echo "✓ ArgoCD secret created successfully!" || echo "✗ ArgoCD secret not found"
+        echo "9. Testing manual enrollment via CLI..."
+        cd vcluster-argocd-enroller && uv run vcluster-argocd-enroller check
+        echo "10. Cleaning up..."
+        pkill -f "vcluster-argocd-enroller" || true
+      - task: delete
+        vars:
+          name: '{{ .name }}'
+          namespace: '{{ .namespace }}'
+      - |
+        echo "11. Verifying ArgoCD secret removal..."
+        sleep 5
+        kubectl get secret -n argocd vcluster-{{ .name }} 2>/dev/null && echo "✗ Secret still exists" || echo "✓ Secret removed successfully"
+        kubectl delete namespace {{ .namespace }} --ignore-not-found=true
+
+  info:
+    desc: "Show vcluster information"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+    cmds:
+      - |
+        echo "=== vcluster Information ==="
+        echo "Name: {{ .name }}"
+        echo "Namespace: {{ .namespace }}"
+        echo ""
+        echo "=== StatefulSet ==="
+        kubectl get statefulset -n {{ .namespace }} {{ .name }}
+        echo ""
+        echo "=== Pods ==="
+        kubectl get pods -n {{ .namespace }} -l app=vcluster,release={{ .name }}
+        echo ""
+        echo "=== Service ==="
+        kubectl get service -n {{ .namespace }} {{ .name }}
+        echo ""
+        echo "=== Secret ==="
+        kubectl get secret -n {{ .namespace }} vc-{{ .name }}
+
+  logs:
+    desc: "Get vcluster logs"
+    vars:
+      name: '{{ .name | default .VCLUSTER_NAME }}'
+      namespace: '{{ .namespace | default .VCLUSTER_NAMESPACE }}'
+      follow: '{{ .follow | default "false" }}'
+    cmds:
+      - |
+        kubectl logs -n {{ .namespace }} \
+          -l app=vcluster,release={{ .name }}
+        {{- if eq .follow "true" }} \
+          -f
+        {{- end }}
+
+  upgrade:
+    desc: "Upgrade vcluster CLI to latest version"
+    cmds:
+      - curl -L -o vcluster "https://github.com/loft-sh/vcluster/releases/latest/download/vcluster-linux-amd64"
+      - chmod +x vcluster
+      - sudo mv vcluster /usr/local/bin/
+      - vcluster --version
