@@ -1,12 +1,69 @@
 ---
 version: '3'
+
 tasks:
+  install:
+    desc: "Install dependencies"
+    cmds:
+      - uv sync
+
+  install-dev:
+    desc: "Install with dev dependencies"
+    cmds:
+      - uv sync --all-extras
+
   build:
+    desc: "Build Docker image"
     cmds:
       - docker build -t vcluster-argocd-enroller .
-  run:
+
+  dev:
+    desc: "Run in development mode"
     cmds:
-      - pipenv run kopf run operator.py
-  default:
-    deps:
-      - task: run
+      - uv run vcluster-argocd-enroller --dev --verbose
+
+  test:
+    desc: "Run all tests"
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/ -v
+
+  test-quick:
+    desc: "Run quick tests (skip integration)"
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/ -v -m "not integration"
+
+  test-integration:
+    desc: "Run integration tests with real vcluster"
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/test_enrollment.py::TestVClusterEnrollment::test_vcluster_enrollment_lifecycle -v -s
+
+  test-cli:
+    desc: "Test CLI commands"
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/ -v -m "cli or not operator"
+
+  test-single:
+    desc: "Run a single test with vcluster lifecycle"
+    vars:
+      TEST_NAME: '{{ .TEST_NAME | default "test_vcluster_enrollment_lifecycle" }}'
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/ -k {{ .TEST_NAME }} -v -s
+
+  coverage:
+    desc: "Run tests with coverage"
+    deps: [install-dev]
+    cmds:
+      - uv run pytest tests/ --cov=vcluster_argocd_enroller --cov-report=term-missing
+
+  clean:
+    desc: "Clean build artifacts"
+    cmds:
+      - rm -rf dist/ build/ *.egg-info .venv __pycache__
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+      - rm -rf .pytest_cache .coverage htmlcov
+      - rm -f test-enrollment.sh

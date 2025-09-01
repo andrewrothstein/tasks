@@ -27,7 +27,11 @@ core_v1_api = client.CoreV1Api()
 apps_v1_api = client.AppsV1Api()
 
 def vc_name(statefulset_name: str) -> str:
-    return statefulset_name.replace('vcluster-', '').rsplit('-', 1)[0]
+    # StatefulSet name is usually just the vcluster name (e.g., "auto-test")
+    # But sometimes it's prefixed with "vcluster-" (e.g., "vcluster-auto-test")
+    if statefulset_name.startswith('vcluster-'):
+        return statefulset_name.replace('vcluster-', '', 1)
+    return statefulset_name
 
 def ar_secret_name(vcluster_name: str) -> str:
     return f"vcluster-{vcluster_name}"
@@ -187,13 +191,13 @@ def vcluster_deleted(
         else:
             logger.error(
                 f"Failed to delete ArgoCD cluster secret for vcluster {namespace}/{vcluster_name}: {e}")
-            raise kopf.PermanentError(
-                f"Failed to delete ArgoCD cluster secret for vcluster {namespace}/{vcluster_name}: {e}"
-            )
+            # Don't raise PermanentError on deletion - allow finalizer removal
+            # so the StatefulSet can be deleted even if ArgoCD secret cleanup fails
+            return {'status': 'Failed', 'message': str(e)}
     except Exception as e:
         logger.error(
             f"Failed to remove vcluster {namespace}/{vcluster_name} from ArgoCD: {e}"
         )
-        raise kopf.PermanentError(
-            f"Failed to remove vcluster {namespace}/{vcluster_name} from ArgoCD: {e}"
-        )
+        # Don't raise PermanentError on deletion - allow finalizer removal
+        # so the StatefulSet can be deleted even if cleanup fails
+        return {'status': 'Failed', 'message': str(e)}
