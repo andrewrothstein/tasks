@@ -21,57 +21,60 @@ This operator watches for vCluster StatefulSets and automatically:
 ### Installation
 
 ```bash
-# Install dependencies
-task install
+# Install with uv
+uv sync
 
-# Install development dependencies
-task install-dev
+# Or install as editable package
+uv pip install -e .
 ```
 
 ### CLI Usage
 
 ```bash
 # Run the operator
-vcluster-argocd-enroller
+uv run vcluster-argocd-enroller
 
 # Run in development mode with auto-reload
-vcluster-argocd-enroller --dev --verbose
+uv run vcluster-argocd-enroller --dev --verbose
 
 # Check vCluster enrollment status
-vcluster-argocd-enroller check
+uv run vcluster-argocd-enroller check
 
 # Manually enroll a vCluster
-vcluster-argocd-enroller enroll my-vcluster --namespace vcluster-ns
+uv run vcluster-argocd-enroller enroll my-vcluster --namespace vcluster-ns
 
 # Remove a vCluster from ArgoCD
-vcluster-argocd-enroller unenroll my-vcluster --confirm
+uv run vcluster-argocd-enroller unenroll my-vcluster --confirm
 
 # Run with specific namespace watching
-vcluster-argocd-enroller --namespace my-namespace
+uv run vcluster-argocd-enroller --namespace my-namespace
 
 # Get help
-vcluster-argocd-enroller --help
+uv run vcluster-argocd-enroller --help
 ```
 
 ### Quick Development
 
 ```bash
-# Install and run in dev mode
-task install
-task dev
+# Install dependencies and run in dev mode
+uv sync
+uv run vcluster-argocd-enroller --dev --verbose
 ```
 
 ### Testing
 
 ```bash
-# Quick test with a disposable vcluster
-task --taskfile ../vcluster-cli.yml test-operator
+# Run unit tests
+uv run pytest
 
-# Run tests via CLI
-vcluster-argocd-enroller test
+# Run unit tests with coverage
+uv run pytest --cov=vcluster_argocd_enroller
+
+# Run e2e tests (requires real cluster)
+uv run pytest -m e2e
 
 # Check existing vClusters
-vcluster-argocd-enroller check --show-secrets
+uv run vcluster-argocd-enroller check --show-secrets
 ```
 
 ### Building Docker Image
@@ -111,17 +114,22 @@ This project uses:
 
 ```
 vcluster-argocd-enroller/
-├── operator.py          # Main operator logic
-├── pyproject.toml       # Python project configuration
-├── Taskfile.yml         # Task automation
-├── Dockerfile           # Container image definition
-└── README.md            # This file
-```
-
-### Migrating from Pipfile
-
-This project has been migrated from Pipenv to uv. To clean up old files:
-
-```bash
-task clean
+├── src/
+│   └── vcluster_argocd_enroller/
+│       ├── __init__.py       # Package initialization
+│       ├── __main__.py       # Package entry point
+│       ├── cli.py            # Cyclopts CLI implementation
+│       └── operator.py       # Kopf operator logic
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py          # Pytest fixtures
+│   ├── test_operator_integration.py  # Unit tests with mocked K8s
+│   └── test_e2e.py          # End-to-end tests (requires cluster)
+├── pyproject.toml            # Python project configuration (uv)
+├── uv.lock                   # Locked dependencies
+├── pytest.ini                # Pytest configuration
+├── Taskfile.yml              # Task automation
+├── Dockerfile                # Container image definition
+├── .gitignore                # Git ignore rules
+└── README.md                 # This file
 ```
