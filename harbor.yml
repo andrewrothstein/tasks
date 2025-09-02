@@ -15,7 +15,7 @@ includes:
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.16.2
+      chart_ver: 1.17.2
   ingress:
     taskfile: helm.yml
     vars:

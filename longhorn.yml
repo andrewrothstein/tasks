@@ -10,7 +10,7 @@ includes:
       name: longhorn
       chart_repo_name: longhorn
       chart: longhorn
-      chart_ver: 1.8.0
+      chart_ver: 1.9.1
 tasks:
   default:
     deps:

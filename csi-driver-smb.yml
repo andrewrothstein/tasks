@@ -8,7 +8,7 @@ includes:
     vars:
       chart_repo_name: csi-driver-smb
       chart: csi-driver-smb
-      chart_ver: v1.16.0
+      chart_ver: 1.18.0
       namespace: kube-system
       name: csi-driver-smb
       helm_args: >-

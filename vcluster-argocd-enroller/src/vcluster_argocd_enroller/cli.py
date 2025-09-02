@@ -23,7 +23,7 @@ app = cyclopts.App(
 def setup_logging(level: str = "INFO", rich: bool = True) -> None:
     """Configure logging with optional rich output."""
     log_level = getattr(logging, level.upper())
-    
+
     if rich:
         logging.basicConfig(
             level=log_level,
@@ -51,7 +51,7 @@ def run(
     clusterwide: bool = True,
 ) -> None:
     """Run the vCluster ArgoCD enrollment operator.
-    
+
     Parameters
     ----------
     namespace : str, optional
@@ -73,49 +73,49 @@ def run(
     """
     if verbose:
         log_level = "DEBUG"
-    
+
     setup_logging(log_level)
-    
+
     console.print(f"[bold green]vCluster ArgoCD Enroller v{__version__}[/bold green]")
     console.print(f"[dim]Running in {'development' if dev else 'production'} mode[/dim]")
-    
+
     if namespace:
         console.print(f"[yellow]Watching namespace:[/yellow] {namespace}")
         clusterwide = False
     else:
         console.print("[yellow]Watching:[/yellow] all namespaces")
-    
+
     # Import operator module to register handlers
     from . import operator  # noqa: F401
-    
+
     # Build kopf args
     kopf_args = []
-    
+
     if namespace and not clusterwide:
         kopf_args.extend(["--namespace", namespace])
-    
+
     if dev:
         kopf_args.append("--dev")
-    
+
     if verbose:
         kopf_args.append("--verbose")
-    
+
     if standalone:
         kopf_args.append("--standalone")
-    
+
     if priority:
         kopf_args.extend(["--priority", str(priority)])
-    
+
     if peering_name:
         kopf_args.extend(["--peering", peering_name])
-    
+
     # Run kopf
     import kopf.cli
     sys.argv = ["kopf", "run", "-m", "vcluster_argocd_enroller.operator"] + kopf_args
-    
+
     if clusterwide:
         sys.argv.append("--clusterwide")
-    
+
     console.print("[green]Starting operator...[/green]")
     sys.exit(kopf.cli.main())
 
@@ -127,7 +127,7 @@ def check(
     show_secrets: bool = False,
 ) -> None:
     """Check for existing vClusters and their ArgoCD enrollment status.
-    
+
     Parameters
     ----------
     namespace : str, optional
@@ -137,15 +137,15 @@ def check(
     """
     from kubernetes import client, config
     from rich.table import Table
-    
+
     try:
         config.load_incluster_config()
     except config.ConfigException:
         config.load_kube_config()
-    
+
     v1 = client.CoreV1Api()
     apps_v1 = client.AppsV1Api()
-    
+
     # Find vCluster StatefulSets
     if namespace:
         statefulsets = apps_v1.list_namespaced_stateful_set(
@@ -156,11 +156,11 @@ def check(
         statefulsets = apps_v1.list_stateful_set_for_all_namespaces(
             label_selector="app=vcluster"
         )
-    
+
     if not statefulsets.items:
         console.print("[yellow]No vClusters found[/yellow]")
         return
-    
+
     # Create table
     table = Table(title="vCluster Status")
     table.add_column("Namespace", style="cyan")
@@ -168,17 +168,17 @@ def check(
     table.add_column("Ready", style="yellow")
     table.add_column("Secret", style="blue")
     table.add_column("ArgoCD Secret", style="magenta")
-    
+
     for sts in statefulsets.items:
         ns = sts.metadata.namespace
         name = sts.metadata.name
-        
+
         # Extract vcluster name
         vcluster_name = name.replace('vcluster-', '').rsplit('-', 1)[0]
-        
+
         # Check readiness
         ready = f"{sts.status.ready_replicas or 0}/{sts.spec.replicas}"
-        
+
         # Check for vcluster secret
         vc_secret_name = f"vc-{vcluster_name}"
         try:
@@ -186,7 +186,7 @@ def check(
             vc_secret_status = "✓"
         except client.exceptions.ApiException:
             vc_secret_status = "✗"
-        
+
         # Check for ArgoCD secret
         argocd_secret_name = f"vcluster-{vcluster_name}"
         try:
@@ -194,18 +194,18 @@ def check(
             argocd_secret_status = "✓"
         except client.exceptions.ApiException:
             argocd_secret_status = "✗"
-        
+
         table.add_row(ns, vcluster_name, ready, vc_secret_status, argocd_secret_status)
-    
+
     console.print(table)
-    
+
     if show_secrets:
         console.print("\n[bold]Secret Details:[/bold]")
         for sts in statefulsets.items:
             ns = sts.metadata.namespace
             name = sts.metadata.name
             vcluster_name = name.replace('vcluster-', '').rsplit('-', 1)[0]
-            
+
             console.print(f"\n[cyan]{ns}/{vcluster_name}:[/cyan]")
             console.print(f"  vCluster Secret: vc-{vcluster_name}")
             console.print(f"  ArgoCD Secret: vcluster-{vcluster_name}")
@@ -219,7 +219,7 @@ def enroll(
     force: bool = False,
 ) -> None:
     """Manually enroll a vCluster in ArgoCD.
-    
+
     Parameters
     ----------
     vcluster_name : str
@@ -232,17 +232,17 @@ def enroll(
     from kubernetes import client, config
     import json
     import base64
-    
+
     try:
         config.load_incluster_config()
     except config.ConfigException:
         config.load_kube_config()
-    
+
     v1 = client.CoreV1Api()
-    
+
     # Check for existing ArgoCD secret
     argocd_secret_name = f"vcluster-{vcluster_name}"
-    
+
     if not force:
         try:
             v1.read_namespaced_secret(name=argocd_secret_name, namespace="argocd")
@@ -251,7 +251,7 @@ def enroll(
             return
         except client.exceptions.ApiException:
             pass
-    
+
     # Read vCluster secret
     vc_secret_name = f"vc-{vcluster_name}"
     try:
@@ -259,11 +259,11 @@ def enroll(
     except client.exceptions.ApiException as e:
         console.print(f"[red]Failed to read vCluster secret {vc_secret_name}: {e}[/red]")
         sys.exit(1)
-    
+
     # Create ArgoCD secret
     def encode(s):
         return base64.b64encode(s.encode('utf-8')).decode('utf-8')
-    
+
     argocd_secret = {
         "apiVersion": "v1",
         "kind": "Secret",
@@ -288,7 +288,7 @@ def enroll(
             }))
         }
     }
-    
+
     # Create or replace the secret
     if force:
         try:
@@ -296,7 +296,7 @@ def enroll(
             console.print(f"[yellow]Deleted existing ArgoCD secret[/yellow]")
         except client.exceptions.ApiException:
             pass
-    
+
     try:
         v1.create_namespaced_secret(namespace="argocd", body=argocd_secret)
         console.print(f"[green]✓ Successfully enrolled vCluster {vcluster_name} in ArgoCD[/green]")
@@ -312,7 +312,7 @@ def unenroll(
     confirm: bool = False,
 ) -> None:
     """Remove a vCluster from ArgoCD.
-    
+
     Parameters
     ----------
     vcluster_name : str
@@ -321,21 +321,21 @@ def unenroll(
         Skip confirmation prompt
     """
     from kubernetes import client, config
-    
+
     if not confirm:
         response = console.input(f"[yellow]Remove {vcluster_name} from ArgoCD? [y/N]:[/yellow] ")
         if response.lower() != 'y':
             console.print("[dim]Cancelled[/dim]")
             return
-    
+
     try:
         config.load_incluster_config()
     except config.ConfigException:
         config.load_kube_config()
-    
+
     v1 = client.CoreV1Api()
     argocd_secret_name = f"vcluster-{vcluster_name}"
-    
+
     try:
         v1.delete_namespaced_secret(name=argocd_secret_name, namespace="argocd")
         console.print(f"[green]✓ Successfully removed vCluster {vcluster_name} from ArgoCD[/green]")
@@ -351,7 +351,7 @@ def unenroll(
 def test() -> None:
     """Run tests against the operator."""
     import subprocess
-    
+
     console.print("[bold]Running tests...[/bold]")
     result = subprocess.run(["pytest", "tests/", "-v"], capture_output=False)
     sys.exit(result.returncode)

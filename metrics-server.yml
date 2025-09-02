@@ -10,7 +10,7 @@ includes:
       name: metrics-server
       chart_repo_name: metrics-server
       chart: metrics-server
-      chart_ver: 3.12.2
+      chart_ver: 3.13.0
       helm_args: --set args={--kubelet-insecure-tls}
 tasks:
   default:

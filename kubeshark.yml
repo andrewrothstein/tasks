@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: kubeshark
       chart: kubeshark
-      chart_ver: 52.3.82
+      chart_ver: 52.8.1
       create_namespace: 'true'
       namespace: kubeshark
       name: kubeshark

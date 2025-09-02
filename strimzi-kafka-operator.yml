@@ -14,7 +14,7 @@ includes:
       namespace: strimzi-kafka-operator
       chart_repo_name: strimzi
       chart: strimzi-kafka-operator
-      chart_ver: 0.46.1
+      chart_ver: 0.47.0
       name: strimzi-kafka-operator
       helm_args: -f strimzi-kafka-operator-values.yml
   test-cluster:

@@ -87,7 +87,7 @@ task build
 
 The operator monitors StatefulSets with the label `app: vcluster` and:
 
-1. **On Create/Resume**: 
+1. **On Create/Resume**:
    - Extracts kubeconfig from secret `vc-{vcluster-name}`
    - Creates ArgoCD cluster secret in `argocd` namespace
    - Secret contains cluster endpoint and TLS certificates
