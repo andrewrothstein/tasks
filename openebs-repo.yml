@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       n: openebs
-      url: https://openebs.github.io/charts
+      url: https://openebs.github.io/openebs
 tasks:
   default:
     deps:
