@@ -90,22 +90,29 @@ tasks:
     vars:
       OS: '{{ .OS | default "debian" }}'
       OS_VER: '{{ .OS_VER | default "bookworm" }}'
-      TARGET_SLUG:
-        sh: basename {{ .USER_WORKING_DIR | quote }}
+      BAKE_TARGET: '{{ .BAKE_TARGET | default "default" }}'
+      PUSH: '{{ .PUSH | default "false" }}'
+      PROGRESS: '{{ .PROGRESS | default "plain" }}'
+      ROLE_DIR: '{{ .ROLE_DIR | default .USER_WORKING_DIR }}'
       TAG: 0.0.0-{{ .OS }}.{{ .OS_VER }}
       BAKEFILE: https://github.com/andrewrothstein/bake-ansible-images-v1.git#develop
     env:
       UPSTREAM_TAG: '{{ .TAG }}'
-      TARGET_SLUG: '{{ .TARGET_SLUG }}'
       TARGET_TAG: '{{ .TAG }}'
     cmds:
       - |-
-        cd {{ .USER_WORKING_DIR | quote }}
+        cd {{ .ROLE_DIR | quote }};
+        export TARGET_SLUG=$(basename {{ .ROLE_DIR | quote }})
         docker \
           buildx bake \
             {{ .BAKEFILE | quote }} \
-            --load \
-            --progress plain
+            {{ .BAKE_TARGET | quote }}
+            {{- if eq .PUSH "true" }} \
+            --push
+            {{- end }}
+            {{- if .PROGRESS }} \
+            --progress {{ .PROGRESS | quote }}
+            {{- end }}
   checksums:
     internal: true
     vars:
