@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: komodorio
       chart: komodor-agent
-      chart_ver: 2.12.0
+      chart_ver: 2.12.2
       create_namespace: 'true'
       namespace: komodorio
       name: komodor-agent

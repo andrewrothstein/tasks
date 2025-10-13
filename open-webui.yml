@@ -14,7 +14,7 @@ includes:
       name: open-webui
       chart_repo_name: open-webui
       chart: open-webui
-      chart_ver: 7.7.0
+      chart_ver: 8.10.0
       helm_args: -f open-webui-values.yml
 tasks:
   default:

@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-cd
-      chart_ver: 8.3.3
+      chart_ver: 8.6.0
       name: argo-cd
       namespace: argocd
       labels: 'istio.io/dataplane-mode=ambient'
