@@ -1,0 +1,31 @@
+---
+# Simple ArgoCD deployment for ephemeral clusters
+# Uses the official installation manifest with NodePort service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+data:
+  server.insecure: "true"  # For easier local access
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server-nodeport
+  namespace: argocd
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      nodePort: 30080
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 8080
+      nodePort: 30443
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: argocd-server

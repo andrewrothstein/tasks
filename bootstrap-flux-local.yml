@@ -1,0 +1,139 @@
+---
+version: '3'
+
+# Bootstrap with Flux using local GitOps manifests
+# This installs Flux and applies manifests from gitops/ directory
+
+vars:
+  CLUSTER_TYPE: '{{ .CLUSTER_TYPE | default "on-prem" }}'
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "harvester" }}'
+
+tasks:
+  bootstrap:
+    desc: "Bootstrap cluster with Flux from local manifests"
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+    cmds:
+      - |
+        echo "=== Bootstrapping {{ .name }} with Flux (type={{ .type }}) ==="
+
+      # 1. Label cluster
+      - |
+        echo "→ Labeling cluster nodes"
+        kubectl label node --all \
+          cluster-type={{ .type }} \
+          cluster-name={{ .name }} \
+          --overwrite
+        echo "  ✓ Nodes labeled"
+
+      # 2. Install Flux
+      - |
+        echo "→ Installing Flux"
+        if kubectl get namespace flux-system >/dev/null 2>&1; then
+          echo "  ⚠ Flux already installed"
+        else
+          flux install
+          echo "  ✓ Flux installed"
+        fi
+
+      # 3. Create Flux Kustomization to watch local gitops directory
+      - |
+        echo "→ Creating Flux Kustomization for local manifests"
+        cat <<EOF | kubectl apply -f -
+        apiVersion: source.toolkit.fluxcd.io/v1
+        kind: GitRepository
+        metadata:
+          name: local-gitops
+          namespace: flux-system
+        spec:
+          interval: 1m
+          ref:
+            branch: develop
+          url: file:///home/arothste/git/github.com/andrewrothstein/tasks
+        ---
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: cluster-{{ .type }}
+          namespace: flux-system
+        spec:
+          interval: 1m
+          path: ./gitops/clusters/{{ .type }}/base
+          prune: true
+          sourceRef:
+            kind: GitRepository
+            name: local-gitops
+          postBuild:
+            substitute:
+              TAILSCALE_OPERATOR_CLIENT_ID: "${TAILSCALE_OPERATOR_CLIENT_ID}"
+              TAILSCALE_OPERATOR_CLIENT_SECRET: "${TAILSCALE_OPERATOR_CLIENT_SECRET}"
+        EOF
+        echo "  ✓ Kustomization created"
+
+      # 4. Wait for deployments
+      - |
+        echo "→ Waiting for Tailscale operator"
+        kubectl wait --for=condition=available \
+          --timeout=5m \
+          -n tailscale \
+          deployment/tailscale-operator 2>/dev/null || echo "  (Tailscale operator deployment pending...)"
+
+      - |
+        echo "→ Waiting for ArgoCD"
+        kubectl wait --for=condition=available \
+          --timeout=5m \
+          -n argocd \
+          deployment/argocd-server 2>/dev/null || echo "  (ArgoCD deployment pending...)"
+
+      # 5. Show completion
+      - |
+        echo ""
+        echo "=== Bootstrap Complete ==="
+        echo "✓ Flux installed and syncing from local gitops/ directory"
+        echo "✓ Deploying: Tailscale operator, metrics-server, ArgoCD"
+        echo ""
+        echo "Monitor progress:"
+        echo "  flux get kustomizations"
+        echo "  flux get helmreleases -A"
+        echo "  watch kubectl get pods -n argocd"
+        echo ""
+        echo "Access ArgoCD (once ready):"
+        echo "  https://argocd.elephant-frog.ts.net"
+
+  sync:
+    desc: "Trigger Flux reconciliation"
+    cmds:
+      - |
+        echo "=== Syncing Flux ==="
+        flux reconcile source git local-gitops
+        flux reconcile kustomization cluster-{{ .CLUSTER_TYPE }}
+        echo "✓ Flux reconciliation triggered"
+
+  info:
+    desc: "Show cluster and Flux status"
+    cmds:
+      - |
+        echo "=== Cluster Information ==="
+        echo ""
+        echo "Context: $(kubectl config current-context)"
+        echo ""
+        echo "Cluster Classification:"
+        kubectl get nodes -o json 2>/dev/null | jq -r '.items[0].metadata.labels |
+          {"type": .["cluster-type"], "name": .["cluster-name"]} |
+          "  Type: \(.type // "not set")\n  Name: \(.name // "not set")"'
+        echo ""
+        echo "Flux Status:"
+        flux check --quiet && echo "  ✓ Flux healthy" || echo "  ✗ Flux issues"
+        echo ""
+        echo "Flux Kustomizations:"
+        flux get kustomizations
+        echo ""
+        echo "Helm Releases:"
+        flux get helmreleases -A
+
+  clean:
+    desc: "Remove Flux and all deployed resources"
+    cmds:
+      - flux uninstall --silent || true
+      - kubectl delete namespace argocd tailscale || true

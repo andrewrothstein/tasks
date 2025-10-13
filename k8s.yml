@@ -3,6 +3,8 @@ version: '3'
 
 vars:
   CLUSTER_PROVIDER: '{{ .CLUSTER_PROVIDER | default "kind+cilium" }}'
+  CLUSTER_TYPE: '{{ .CLUSTER_TYPE | default "ephemeral" }}'
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "default" }}'
 
 includes:
   k3d: k3d.yml
@@ -14,6 +16,7 @@ includes:
   kind+antrea: kind+antrea.yml
   byo-cluster: byo-cluster.yml  # For externally managed clusters
   metrics-server: metrics-server.yml
+  bootstrap: cluster-bootstrap.yml
 #  metrics-server: pet.yml
 #  k8s: k3d.yml
   kubectl-config: kubectl-config.yml
@@ -23,9 +26,9 @@ tasks:
       - task: '{{ .CLUSTER_PROVIDER }}:up'
 
   up:
+    desc: "Create cluster (GitOps handles app deployment)"
     cmds:
       - task: '{{ .CLUSTER_PROVIDER }}:up'
-      - task: metrics-server:upgrade
 
   delete:
     cmds:
@@ -42,7 +45,6 @@ tasks:
   check:
     cmds:
       - task: '{{ .CLUSTER_PROVIDER }}:check'
-      - task: metrics-server:check
 
   # Cluster switching helpers
   switch:
@@ -88,3 +90,30 @@ tasks:
         vars:
           cluster: '{{ .cluster | default "kind" }}'
       - 'echo "Switched to local cluster: {{ .cluster | default "kind" }}"'
+
+  # GitOps bootstrapping (Flux → ArgoCD → ApplicationSets)
+  bootstrap:
+    desc: "Bootstrap cluster with GitOps (Flux → ArgoCD)"
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+    cmds:
+      - task: bootstrap:bootstrap
+        vars:
+          type: '{{ .type }}'
+          name: '{{ .name }}'
+
+  sync:
+    desc: "Sync cluster with GitOps repo"
+    cmds:
+      - task: bootstrap:sync
+
+  cluster-info:
+    desc: "Show cluster classification and bootstrap status"
+    cmds:
+      - task: bootstrap:info
+
+  argocd-ui:
+    desc: "Open ArgoCD UI"
+    cmds:
+      - task: bootstrap:argocd-ui

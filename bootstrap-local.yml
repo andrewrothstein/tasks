@@ -1,0 +1,118 @@
+---
+version: '3'
+
+# Local bootstrap without Flux (for testing)
+# Deploys ArgoCD directly from local manifests
+
+vars:
+  CLUSTER_TYPE: '{{ .CLUSTER_TYPE | default "ephemeral" }}'
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "default" }}'
+
+tasks:
+  bootstrap:
+    desc: "Bootstrap cluster with local manifests (no Flux required)"
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+    cmds:
+      - |
+        echo "=== Bootstrapping {{ .name }} with local manifests (type={{ .type }}) ==="
+
+      # 1. Label cluster
+      - |
+        echo "→ Labeling cluster nodes"
+        kubectl label node --all \
+          cluster-type={{ .type }} \
+          cluster-name={{ .name }} \
+          --overwrite
+        echo "  ✓ Nodes labeled"
+
+      # 2. Install ArgoCD from official manifest
+      - |
+        echo "→ Installing ArgoCD"
+        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        echo "  ✓ ArgoCD manifest applied"
+
+      # 3. Apply cluster-type specific customizations
+      - |
+        echo "→ Applying cluster-type customizations"
+        kubectl apply -k gitops/clusters/{{ .type }}/base/
+        echo "  ✓ Customizations applied"
+
+      # 4. Wait for ArgoCD
+      - |
+        echo "→ Waiting for ArgoCD to be ready"
+        kubectl wait --for=condition=available \
+          --timeout=5m \
+          -n argocd \
+          deployment/argocd-server
+        echo "  ✓ ArgoCD is ready"
+
+      # 5. Show completion
+      - |
+        echo ""
+        echo "=== Bootstrap Complete ==="
+        echo "✓ ArgoCD deployed and ready"
+        echo ""
+        echo "Access ArgoCD:"
+        echo "  NodePort: http://localhost:30080"
+        echo "  Port-forward: kubectl port-forward -n argocd svc/argocd-server 8080:443"
+        echo ""
+        echo "Get admin password:"
+        echo "  kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
+
+  info:
+    desc: "Show cluster info"
+    cmds:
+      - |
+        echo "=== Cluster Information ==="
+        echo ""
+        echo "Context: $(kubectl config current-context)"
+        echo ""
+        echo "Cluster Classification:"
+        kubectl get nodes -o json 2>/dev/null | jq -r '.items[0].metadata.labels |
+          {"type": .["cluster-type"], "name": .["cluster-name"]} |
+          "  Type: \(.type // "not set")\n  Name: \(.name // "not set")"'
+        echo ""
+        echo "ArgoCD Status:"
+        if kubectl get namespace argocd >/dev/null 2>&1; then
+          echo "  ✓ ArgoCD installed"
+          if kubectl get deployment -n argocd argocd-server >/dev/null 2>&1; then
+            READY=$(kubectl get deployment -n argocd argocd-server -o jsonpath='{.status.readyReplicas}')
+            DESIRED=$(kubectl get deployment -n argocd argocd-server -o jsonpath='{.status.replicas}')
+            echo "    Status: $READY/$DESIRED replicas ready"
+          fi
+        else
+          echo "  ✗ ArgoCD not installed"
+        fi
+
+  password:
+    desc: "Get ArgoCD admin password"
+    cmds:
+      - |
+        if ! kubectl get namespace argocd >/dev/null 2>&1; then
+          echo "ArgoCD not installed"
+          exit 1
+        fi
+        echo "ArgoCD admin password:"
+        kubectl -n argocd get secret argocd-initial-admin-secret \
+          -o jsonpath="{.data.password}" | base64 -d
+        echo ""
+
+  ui:
+    desc: "Port-forward to ArgoCD UI"
+    cmds:
+      - |
+        echo "ArgoCD UI will be available at: https://localhost:8080"
+        echo "Username: admin"
+        echo "Password: (run 'task bootstrap-local:password')"
+        echo ""
+        kubectl port-forward -n argocd svc/argocd-server 8080:443
+
+  clean:
+    desc: "Remove ArgoCD"
+    cmds:
+      - kubectl delete -k gitops/clusters/{{ .CLUSTER_TYPE }}/base/ || true
+      - kubectl delete -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml || true
+      - kubectl delete namespace argocd || true

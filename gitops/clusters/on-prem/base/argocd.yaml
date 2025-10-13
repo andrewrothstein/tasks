@@ -1,0 +1,59 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: argo-cd
+      version: 8.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: argo
+        namespace: flux-system
+  install:
+    createNamespace: true
+  dependsOn:
+    - name: tailscale-operator
+      namespace: tailscale
+  values:
+    # Single replica for simplicity
+    redis-ha:
+      enabled: false
+
+    controller:
+      replicas: 1
+
+    server:
+      replicas: 1
+
+      # Tailscale ingress configuration
+      ingress:
+        enabled: true
+        ingressClassName: tailscale
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+        hosts:
+          - argocd.elephant-frog.ts.net
+        tls:
+          - secretName: argocd-tls
+            hosts:
+              - argocd.elephant-frog.ts.net
+
+    repoServer:
+      replicas: 1
+
+    applicationSet:
+      replicas: 1
+
+    # Global domain for ArgoCD
+    global:
+      domain: argocd.elephant-frog.ts.net
+
+    # Enable certificate management
+    certificate:
+      enabled: true
+      domain: argocd.elephant-frog.ts.net

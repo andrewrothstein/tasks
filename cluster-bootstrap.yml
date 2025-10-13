@@ -1,0 +1,234 @@
+---
+version: '3'
+
+# Flux → ArgoCD Bootstrap Pattern
+# 1. Flux bootstraps the cluster and deploys ArgoCD
+# 2. ArgoCD ApplicationSets handle all other deployments
+# 3. Cluster type (ephemeral/on-prem/cloud) determines which manifests to deploy
+
+vars:
+  # Cluster type: ephemeral (kind/k3d), on-prem (harvester/k3s), cloud (eks/gke/aks)
+  CLUSTER_TYPE: '{{ .CLUSTER_TYPE | default "ephemeral" }}'
+
+  # Cluster name for identification
+  CLUSTER_NAME: '{{ .CLUSTER_NAME | default "default" }}'
+
+  # GitOps repo (override with your repo)
+  GITOPS_REPO: '{{ .GITOPS_REPO | default "github.com/andrewrothstein/gitops-manifests" }}'
+  GITOPS_BRANCH: '{{ .GITOPS_BRANCH | default "main" }}'
+
+tasks:
+  # Main bootstrap task - use this to introduce a new cluster
+  bootstrap:
+    desc: "Bootstrap cluster: Flux → ArgoCD → ApplicationSets"
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+    cmds:
+      - echo "=== Bootstrapping {{ .name }} (type={{ .type }}) ==="
+
+      # 1. Label cluster for selection
+      - task: label-cluster
+        vars:
+          type: '{{ .type }}'
+          name: '{{ .name }}'
+
+      # 2. Bootstrap Flux (installs Flux + deploys ArgoCD)
+      - task: flux-bootstrap
+        vars:
+          type: '{{ .type }}'
+          name: '{{ .name }}'
+
+      # 3. Wait for ArgoCD to be ready
+      - task: wait-for-argocd
+
+      # 4. Verify bootstrap
+      - task: verify
+
+      - |
+        echo ""
+        echo "=== Bootstrap Complete ==="
+        echo "✓ Flux installed and syncing"
+        echo "✓ ArgoCD deployed"
+        echo "✓ ArgoCD ApplicationSets will handle remaining deployments"
+        echo ""
+        echo "View ArgoCD: kubectl port-forward -n argocd svc/argocd-server 8080:443"
+        echo "Or access via ingress if configured for cluster type {{ .type }}"
+
+  # Sync/re-sync cluster with GitOps repo
+  sync:
+    desc: "Trigger Flux reconciliation to sync cluster state"
+    cmds:
+      - |
+        echo "=== Triggering Flux reconciliation ==="
+        flux reconcile source git flux-system
+        flux reconcile kustomization flux-system
+        echo "✓ Flux reconciliation triggered"
+        echo ""
+        echo "To force ArgoCD sync:"
+        echo "  kubectl -n argocd get applications"
+        echo "  argocd app sync <app-name>"
+
+  # Label cluster nodes for GitOps selection
+  label-cluster:
+    internal: true
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+    cmds:
+      - |
+        echo "→ Labeling cluster nodes (type={{ .type }}, name={{ .name }})"
+        kubectl label node --all \
+          cluster-type={{ .type }} \
+          cluster-name={{ .name }} \
+          --overwrite
+        echo "  ✓ Nodes labeled"
+
+  # Bootstrap Flux pointing to cluster-type path
+  flux-bootstrap:
+    internal: true
+    vars:
+      type: '{{ .type | default .CLUSTER_TYPE }}'
+      name: '{{ .name | default .CLUSTER_NAME }}'
+      repo: '{{ .repo | default .GITOPS_REPO }}'
+      branch: '{{ .branch | default .GITOPS_BRANCH }}'
+    cmds:
+      - |
+        echo "→ Bootstrapping Flux (path=clusters/{{ .type }}/{{ .name }})"
+
+        # Check if flux is already bootstrapped
+        if kubectl get namespace flux-system >/dev/null 2>&1; then
+          echo "  ⚠ Flux already installed, reconciling instead"
+          flux reconcile source git flux-system
+          exit 0
+        fi
+
+        # Parse repo URL to get owner/repo
+        REPO_URL="{{ .repo }}"
+        REPO_PATH=$(echo "$REPO_URL" | sed 's|.*github.com/||' | sed 's|\.git$||')
+        OWNER=$(echo "$REPO_PATH" | cut -d'/' -f1)
+        REPO=$(echo "$REPO_PATH" | cut -d'/' -f2)
+
+        # Bootstrap Flux
+        flux bootstrap github \
+          --owner="$OWNER" \
+          --repository="$REPO" \
+          --branch={{ .branch }} \
+          --path=clusters/{{ .type }}/{{ .name }} \
+          --personal \
+          --components-extra=image-reflector-controller,image-automation-controller
+
+        echo "  ✓ Flux bootstrapped"
+
+  # Wait for ArgoCD to be deployed by Flux
+  wait-for-argocd:
+    internal: true
+    cmds:
+      - |
+        echo "→ Waiting for ArgoCD deployment (deployed by Flux)..."
+
+        # Wait for argocd namespace
+        timeout=300
+        elapsed=0
+        while ! kubectl get namespace argocd >/dev/null 2>&1; do
+          if [ $elapsed -ge $timeout ]; then
+            echo "  ✗ Timeout waiting for argocd namespace"
+            exit 1
+          fi
+          echo "  Waiting for argocd namespace... ($elapsed/$timeout)"
+          sleep 5
+          elapsed=$((elapsed + 5))
+        done
+
+        # Wait for ArgoCD server deployment
+        kubectl wait --for=condition=available \
+          --timeout=5m \
+          -n argocd \
+          deployment/argocd-server
+
+        echo "  ✓ ArgoCD is ready"
+
+  # Verify bootstrap completed successfully
+  verify:
+    internal: true
+    cmds:
+      - |
+        echo "→ Verifying bootstrap..."
+        echo ""
+        echo "  Flux status:"
+        flux check --quiet && echo "  ✓ Flux healthy" || echo "  ✗ Flux issues detected"
+
+        echo ""
+        echo "  ArgoCD status:"
+        kubectl get deployment -n argocd argocd-server -o wide
+
+        echo ""
+        echo "  Cluster labels:"
+        kubectl get nodes -o json | jq -r '.items[0].metadata.labels |
+          with_entries(select(.key | startswith("cluster-"))) |
+          to_entries[] | "    \(.key)=\(.value)"'
+
+  # Show current cluster info
+  info:
+    desc: "Show cluster classification and bootstrap status"
+    cmds:
+      - |
+        echo "=== Cluster Information ==="
+        echo ""
+        echo "Context: $(kubectl config current-context)"
+        echo ""
+
+        # Show cluster labels
+        echo "Cluster Classification:"
+        kubectl get nodes -o json 2>/dev/null | jq -r '.items[0].metadata.labels |
+          {"type": .["cluster-type"], "name": .["cluster-name"]} |
+          "  Type: \(.type // "not set")\n  Name: \(.name // "not set")"'
+
+        echo ""
+        echo "Bootstrap Status:"
+
+        # Check Flux
+        if kubectl get namespace flux-system >/dev/null 2>&1; then
+          echo "  ✓ Flux installed"
+          flux check --quiet >/dev/null 2>&1 && echo "    Status: healthy" || echo "    Status: issues detected"
+        else
+          echo "  ✗ Flux not installed"
+        fi
+
+        # Check ArgoCD
+        if kubectl get namespace argocd >/dev/null 2>&1; then
+          echo "  ✓ ArgoCD installed"
+          if kubectl get deployment -n argocd argocd-server >/dev/null 2>&1; then
+            READY=$(kubectl get deployment -n argocd argocd-server -o jsonpath='{.status.readyReplicas}')
+            DESIRED=$(kubectl get deployment -n argocd argocd-server -o jsonpath='{.status.replicas}')
+            echo "    Status: $READY/$DESIRED replicas ready"
+          fi
+        else
+          echo "  ✗ ArgoCD not installed"
+        fi
+
+  # Get ArgoCD admin password
+  argocd-password:
+    desc: "Get ArgoCD admin password"
+    cmds:
+      - |
+        if ! kubectl get namespace argocd >/dev/null 2>&1; then
+          echo "ArgoCD not installed"
+          exit 1
+        fi
+
+        echo "ArgoCD admin password:"
+        kubectl -n argocd get secret argocd-initial-admin-secret \
+          -o jsonpath="{.data.password}" | base64 -d
+        echo ""
+
+  # Port-forward to ArgoCD UI
+  argocd-ui:
+    desc: "Port-forward to ArgoCD UI (http://localhost:8080)"
+    cmds:
+      - |
+        echo "ArgoCD UI will be available at: https://localhost:8080"
+        echo "Username: admin"
+        echo "Password: (run 'task bootstrap:argocd-password')"
+        echo ""
+        kubectl port-forward -n argocd svc/argocd-server 8080:443
