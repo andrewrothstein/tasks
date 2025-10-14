@@ -1,4 +1,9 @@
 ---
+# Note: Create the argocd-admin-password secret before applying:
+# kubectl create namespace argocd
+# kubectl create secret generic argocd-admin-password -n argocd \
+#   --from-literal=password=$(echo -n $ARGOCD_ADMIN_PASSWORD | htpasswd -nbBC 10 "" - | tr -d ':\n' | sed 's/$2y/$2a/')
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -19,6 +24,11 @@ spec:
   dependsOn:
     - name: tailscale-operator
       namespace: tailscale
+  valuesFrom:
+    - kind: Secret
+      name: argocd-admin-password
+      valuesKey: password
+      targetPath: configs.secret.argocdServerAdminPassword
   values:
     # Single replica for simplicity
     redis-ha:
