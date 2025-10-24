@@ -1,0 +1,14 @@
+name: kind-full
+description: Full-featured Kind cluster with complete stack
+cluster:
+  provider: kind+cilium
+  create: true
+components:
+  - metrics-server:upgrade
+  - cert-manager:upgrade
+  - gateway-api:apply
+  - metallb:upgrade
+  - argocd:upgrade
+parallel_components:
+  - kube-prometheus-stack:upgrade
+  - loki:upgrade

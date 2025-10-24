@@ -1,0 +1,11 @@
+name: byo-observability
+description: Install observability stack on existing cluster
+cluster:
+  provider: byo-cluster
+  create: false
+components:
+  - metrics-server:upgrade
+parallel_components:
+  - kube-prometheus-stack:upgrade
+  - grafana:upgrade
+  - kiali:upgrade

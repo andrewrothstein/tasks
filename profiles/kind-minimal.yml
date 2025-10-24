@@ -1,0 +1,8 @@
+name: kind-minimal
+description: Minimal Kind cluster with Cilium and basic monitoring
+cluster:
+  provider: kind+cilium
+  create: true
+components:
+  - metrics-server:upgrade
+  - cert-manager:upgrade

@@ -10,6 +10,33 @@ This is a DevOps/Infrastructure automation toolkit using [Taskfile](https://task
 2. **Application Deployment**: Tasks for deploying applications, operators, and services into any Kubernetes cluster
 3. **External Cluster Support**: BYO (Bring Your Own) cluster integration for production environments (Harvester, EKS, GKE, etc.)
 
+## Bootstrap Tool (Recommended)
+
+For complete cluster bootstrap scenarios, use the **Python-based bootstrap tool** instead of the traditional Task-based approach. Bootstrap scenarios are **1:1 configurations** (one profile = one complete setup), not compositions, making the profile-based approach more intuitive:
+
+```bash
+# Initialize example profiles
+uv run bootstrap init
+
+# List available profiles
+uv run bootstrap list
+
+# Apply a complete bootstrap profile
+uv run bootstrap apply kind-minimal
+
+# Use existing cluster
+uv run bootstrap apply byo-observability --skip-cluster
+```
+
+**Why use the bootstrap tool?**
+- Each profile is independent and explicit (no hidden Task dependencies)
+- Clear execution order (sequential → parallel)
+- Better error handling and logging
+- Python control flow instead of Task DSL magic
+- Better suited for 1:1 bootstrap scenarios
+
+See [BOOTSTRAP.md](BOOTSTRAP.md) for complete documentation.
+
 ## Repository Organization
 
 ### Cluster Lifecycle Management (Ephemeral Clusters)
@@ -120,11 +147,27 @@ task istio:check
 ```
 
 ### Full Environment Setup
+
+**Recommended: Use Bootstrap Profiles**
 ```bash
-# Current approach (mixes concerns)
+# See all available profiles
+uv run bootstrap list
+
+# Apply complete bootstrap profile
+uv run bootstrap apply kind-minimal     # Minimal setup
+uv run bootstrap apply kind-full        # Full-featured
+uv run bootstrap apply k3d-dev          # K3d for development
+
+# Install on existing cluster
+uv run bootstrap apply byo-observability --skip-cluster
+```
+
+**Alternative: Task-based approach**
+```bash
+# Legacy monolithic approach (mixes concerns)
 task up  # Creates cluster + deploys apps
 
-# Recommended approach (clear separation)
+# Manual step-by-step (clear separation)
 task kind:create        # Step 1: Create cluster
 task core:apply         # Step 2: Deploy core services
 task apps:apply         # Step 3: Deploy applications
@@ -138,6 +181,8 @@ task apps:apply         # Step 3: Deploy applications
 - Clear separation between cluster provisioning and app deployment
 
 ### Key Directories
+- `/src/bootstrap/` - Python bootstrap tool source code
+- `/profiles/` - Bootstrap profile definitions (YAML)
 - `/chart-*/` - Custom Helm charts
 - `/crossplane-*/` - Crossplane provider configurations
 - `/playbooks/` - Ansible playbooks

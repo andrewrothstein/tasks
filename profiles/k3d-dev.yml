@@ -1,0 +1,8 @@
+name: k3d-dev
+description: K3d cluster for development
+cluster:
+  provider: k3d
+  create: true
+components:
+  - metrics-server:upgrade
+  - argocd:upgrade
