@@ -5,7 +5,7 @@ includes:
     taskfile: kubectl.yml
     vars:
       # check here: https://github.com/kubernetes-sigs/gateway-api/releases
-      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
+      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
 tasks:
   default:
     deps:
