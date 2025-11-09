@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: clickhouse-operator
       chart: altinity-clickhouse-operator
-      chart_ver: 0.25.4
+      chart_ver: 0.25.5
       namespace: clickhouse-operator
       name: clickhouse-operator
       helm_args: -f clickhouse-operator-values.yml
