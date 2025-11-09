@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  KRO_VERSION: 0.5.0
+  KRO_VERSION: 0.6.0
 includes:
   gh:
     internal: true
@@ -16,7 +16,7 @@ includes:
     vars:
       namespace: kro
       name: kro
-      chart_repo_name: "oci://ghcr.io/kro-run/kro"
+      chart_repo_name: "oci://registry.k8s.io/kro/charts"
       chart: kro
       chart_ver: '{{ .KRO_VERSION }}'
 tasks:
