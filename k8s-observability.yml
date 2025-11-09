@@ -10,8 +10,8 @@ includes:
   open-telemetry-operator: open-telemetry-operator.yml
 #  open-telemetry-operator: pet.yml
 
-#  kube-prometheus-stack: kube-prometheus-stack.yml
-  kube-prometheus-stack: pet.yml
+  kube-prometheus-stack: kube-prometheus-stack.yml
+#  kube-prometheus-stack: pet.yml
 
 #  elk: elk.yml
   elk: pet.yml
