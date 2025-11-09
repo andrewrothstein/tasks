@@ -16,8 +16,8 @@ includes:
 #  envoygateway: envoygateway.yml
   envoygateway: pet.yml
 
-  gloo-gateway: gloo-gateway.yml
-#  gloo-gateway: pet.yml
+#  gloo-gateway: gloo-gateway.yml
+  gloo-gateway: pet.yml
 tasks:
   default:
     deps:
