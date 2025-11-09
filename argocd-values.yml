@@ -17,10 +17,14 @@ applicationSet:
 global:
   domain: argocd.elephant-frog.ts.net
 
-certificate:
-  enabled: true
+configs:
+  params:
+    server.insecure: true
 
 server:
   ingress:
     enabled: true
     ingressClassName: tailscale
+    extraTls:
+      - hosts:
+        - argocd.elephant-frog.ts.net
