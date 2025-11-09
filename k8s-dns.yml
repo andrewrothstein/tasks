@@ -5,7 +5,8 @@ includes:
   coredns: pet.yml
 
 #  external-dns: bitnami-external-dns.yml
-  external-dns: pet.yml
+  external-dns: external-dns.yml
+#  external-dns: pet.yml
 tasks:
   default:
     deps:
