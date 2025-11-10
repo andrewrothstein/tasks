@@ -66,8 +66,10 @@ tasks:
       - task: rook:check
       - task: longhorn:check
       - task: csi-driver-nfs:check
+      - task: csi-driver-smb:check
       - task: trident:check
       - task: minio-operator:check
       - task: velero:check
+      - task: openebs:check
       - task: piraeus-operator:check
       - task: dragonfly:check
