@@ -4,8 +4,8 @@ includes:
   keda: keda.yml
 #  keda: pet.yml
 
-  vpa: vpa.yml
-#  vpa: pet.yml
+#  vpa: vpa.yml
+  vpa: pet.yml
 
 tasks:
   default:
