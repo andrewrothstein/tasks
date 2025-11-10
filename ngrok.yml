@@ -6,7 +6,7 @@ includes:
     flatten: true
     vars:
       n: ngrok
-      url: https://ngrok.github.io/kubernetes-ingress-controller
+      url: https://charts.ngrok.com
 tasks:
   default:
     deps:

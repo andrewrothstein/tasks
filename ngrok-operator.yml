@@ -15,11 +15,12 @@ includes:
       chart: ngrok-operator
       namespace: ngrok-operator
       name: ngrok-operator
-      chart_ver: 0.16.4
+      chart_ver: 0.21.0
       helm_args: >-
         --set credentials.apiKey="${NGROK_API_KEY}"
         --set credentials.authtoken="${NGROK_AUTHTOKEN}"
         --set gateway.enabled=true
+#        --set bindings.enabled=true
 tasks:
   default:
     deps:

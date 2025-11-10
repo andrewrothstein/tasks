@@ -4,8 +4,8 @@ includes:
   metallb: metallb.yml
 #  metallb: pet.yml
 
-#  ngrok-operator: ngrok-operator.yml
-  ngrok-operator: pet.yml
+  ngrok-operator: ngrok-operator.yml
+#  ngrok-operator: pet.yml
 
 #  pomerium-zero: pomerium-zero.yml
   pomerium-zero: pet.yml
