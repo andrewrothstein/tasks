@@ -1,6 +1,12 @@
 ---
 version: '3'
+vars:
+  ENVOY_GATEWAY_VER: 1.5.4
+  ENVOY_AI_GATEWAY_VER: 0.4.0
 includes:
+  gh:
+    internal: true
+    taskfile: gh.yml
   gwkk:
     taskfile: kubectl.yml
     vars:
@@ -13,20 +19,31 @@ includes:
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
       chart: gateway-helm
-      chart_ver: v1.3.2
+      # https://github.com/envoyproxy/gateway/tags
+      chart_ver: '{{ .ENVOY_GATEWAY_VER }}'
   aigwkk:
     taskfile: kubectl.yml
     vars:
       n: envoy-ai-gateway-system
       labels: 'istio.io/dataplane-mode=ambient'
+  aigw-crds:
+    taskfile: helm.yml
+    vars:
+      namespace: envoy-ai-gateway-system
+      name: aieg-crds
+      chart_repo_name: oci://docker.io/envoyproxy
+      chart: ai-gateway-crds-helm
+      # https://github.com/envoyproxy/ai-gateway/tags
+      chart_ver: '{{ .ENVOY_AI_GATEWAY_VER }}'
   aigw:
     taskfile: helm.yml
     vars:
       namespace: envoy-ai-gateway-system
-      name: envoy-ai-gateway
+      name: aieg
       chart_repo_name: oci://docker.io/envoyproxy
       chart: ai-gateway-helm
-      chart_ver: v0.1.5
+      # https://github.com/envoyproxy/ai-gateway/tags
+      chart_ver: '{{ .ENVOY_AI_GATEWAY_VER }}'
 tasks:
   default:
     deps:
@@ -38,12 +55,24 @@ tasks:
       - task: gw:upgrade
       - task: aigwkk:ns-create
       - task: aigwkk:ns-label
+      - task: aigw-crds:upgrade
       - task: aigw:upgrade
   delete:
     cmds:
       - task: aigw:delete
+      - task: aigw-crds:delete
       - task: aigwkk:ns-delete
       - task: gw:delete
       - task: gwkk:ns-delete
   check:
-    cmds: []
+    cmds:
+      - task: gh:check
+        vars:
+          org: envoyproxy
+          repo: gateway
+          current_ver: '{{ .ENVOY_GATEWAY_VER }}'
+      - task: gh:check
+        vars:
+          org: envoyproxy
+          repo: ai-gateway
+          current_ver: '{{ .ENVOY_AI_GATEWAY_VER }}'
