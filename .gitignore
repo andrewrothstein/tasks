@@ -22,3 +22,5 @@ logs/
 .env
 .*credentials
 .ansible/
+**/terraform.tfstate.d/
+**/tfplan

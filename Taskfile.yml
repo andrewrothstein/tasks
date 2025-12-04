@@ -8,6 +8,7 @@ includes:
   ansible-galaxy: ansible-galaxy.yml
   doppler: doppler.yml
   tf-gitlab: tf-gitlab.yml
+  tf-cloudflare-lmgtfy: tf-cloudflare-lmgtfy.yml
   helm-repo: helm-repo.yml
 
   k8s: k8s.yml

@@ -4,6 +4,7 @@ dotenv:
 includes:
   cicd:
     taskfile: terraform-cicd.yml
+    flatten: true
     vars:
       WORKSPACE_NAME: gitlab
       CHDIR: tf-gitlab
@@ -14,16 +15,3 @@ includes:
 #        --backend-config="{{ .USER_WORKING_DIR }}/tf-dex-aad-backend.hcl" \
 #        --backend-config="access_key=${MINIO_ROOT_USER}" \
 #        --backend-config="secret_key=${MINIO_ROOT_PASSWORD}"
-tasks:
-  destroy:
-    deps:
-      - task: cicd:destroy
-  plan:
-    deps:
-      - task: cicd:plan
-  apply:
-    deps:
-      - task: cicd:apply
-  default:
-    cmds:
-      - task: plan
