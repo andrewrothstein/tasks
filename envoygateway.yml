@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  ENVOY_GATEWAY_VER: 1.5.4
+  ENVOY_GATEWAY_VER: 1.6.0
   ENVOY_AI_GATEWAY_VER: 0.4.0
 includes:
   gh:

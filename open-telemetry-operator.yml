@@ -14,7 +14,7 @@ includes:
       name: otel-operator
       chart_repo_name: open-telemetry
       chart: opentelemetry-operator
-      chart_ver: 0.99.0
+      chart_ver: 0.99.2
       helm_args: -f open-telemetry-operator-values.yml
 tasks:
   default:
