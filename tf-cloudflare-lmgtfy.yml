@@ -9,4 +9,4 @@ includes:
       WORKSPACE_NAME: cloudflare-lmgtfy
       CHDIR: tf-cloudflare-lmgtfy
       tfvars: >-
-        -var "api_token=${CLOUDFLARE_DNS_TOKEN}"
+        -var "api_token=${CLOUDFLARE_API_TOKEN}"
