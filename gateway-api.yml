@@ -4,8 +4,9 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      server_side: "true"
       # check here: https://github.com/kubernetes-sigs/gateway-api/releases
-      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+      f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/experimental-install.yaml
 tasks:
   default:
     deps:
