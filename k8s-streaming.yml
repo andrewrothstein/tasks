@@ -5,8 +5,8 @@ includes:
   nats: nats.yml
 #  nats: pet.yml
 
-  strimzi-kafka-operator: strimzi-kafka-operator.yml
-#  strimzi-kafka-operator: pet.yml
+#  strimzi-kafka-operator: strimzi-kafka-operator.yml
+  strimzi-kafka-operator: pet.yml
 
 tasks:
   default:

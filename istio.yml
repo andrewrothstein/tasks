@@ -4,41 +4,16 @@ vars:
   istio_ver: 1.28.1
 includes:
   repo: istio-repo.yml
-  istio-base:
+  helm:
     taskfile: helm.yml
     vars:
       namespace: istio-system
       create_namespace: 'true'
-      name: istio-base
+      name: istio-ambient
       chart_repo_name: istio
-      chart: base
+      chart: ambient
       chart_ver: '{{ .istio_ver }}'
-  cni:
-    taskfile: helm.yml
-    vars:
-      namespace: kube-system
-      name: istio-cni
-      chart_repo_name: istio
-      chart: cni
-      chart_ver: '{{ .istio_ver }}'
-      helm_args: -f istio-profile-values.yml
-  istiod:
-    taskfile: helm.yml
-    vars:
-      namespace: istio-system
-      name: istiod
-      chart_repo_name: istio
-      chart: istiod
-      chart_ver: '{{ .istio_ver }}'
-      helm_args: -f istio-profile-values.yml
-  ztunnel:
-    taskfile: helm.yml
-    vars:
-      namespace: istio-system
-      name: ztunnel
-      chart_repo_name: istio
-      chart: ztunnel
-      chart_ver: '{{ .istio_ver }}'
+      helm_args: -f istio-ambient-values.yml
 tasks:
   default:
     deps:
@@ -50,18 +25,12 @@ tasks:
     deps:
       - repo
     cmds:
-      - task: istio-base:upgrade
-      - task: cni:upgrade
-      - task: istiod:upgrade
-      - task: ztunnel:upgrade
+      - task: helm:upgrade
   delete:
     cmds:
-      - task: ztunnel:delete
-      - task: istiod:delete
-      - task: cni:delete
-      - task: istio-base:delete
+      - task: helm:delete
   check:
     deps:
       - repo
     cmds:
-      - task: istio-base:check
+      - task: helm:check

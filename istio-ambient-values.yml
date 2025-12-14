@@ -1,0 +1,3 @@
+---
+# Istio Ambient umbrella chart values
+# The chart already sets profile: ambient for all components by default
