@@ -53,6 +53,6 @@ tasks:
   delete:
     cmds:
       - task: kind:delete
-      - task: docker-registry:delete
+#      - task: docker-registry:delete
   check:
     cmds: []
