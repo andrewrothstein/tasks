@@ -1,0 +1,12 @@
+---
+version: '3'
+includes:
+  helm-repo:
+    taskfile: helm-repo.yml
+    vars:
+      n: hatchet
+      url: https://hatchet-dev.github.io/hatchet-charts
+tasks:
+  default:
+    deps:
+      - task: helm-repo:add

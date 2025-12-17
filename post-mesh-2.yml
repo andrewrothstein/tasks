@@ -16,6 +16,9 @@ includes:
 #  retool: retool.yml
   retool: pet.yml
 
+#  hatchet: hatchet.yml
+  hatchet: pet.yml
+
 tasks:
   default:
     deps:
@@ -26,9 +29,11 @@ tasks:
       - task: pinniped-concierge:install
       - task: airflow:upgrade
       - task: retool:upgrade
+      - task: hatchet:upgrade
   delete:
     cmds:
-      - task: retool:upgrade
+      - task: hatchet:delete
+      - task: retool:delete
       - task: airflow:delete
       - task: pinniped-concierge:delete
       - task: pinniped-supervisor:delete
@@ -36,3 +41,4 @@ tasks:
     cmds:
       - task: airflow:check
       - task: retool:check
+      - task: hatchet:check

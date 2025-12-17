@@ -1,0 +1,15 @@
+---
+caddy:
+  enabled: true
+api:
+  deploymentEnvFrom:
+    - secretRef:
+        name: hatchet-config
+    - secretRef:
+        name: hatchet-shared-config
+engine:
+  deploymentEnvFrom:
+    - secretRef:
+        name: hatchet-config
+    - secretRef:
+        name: hatchet-shared-config
