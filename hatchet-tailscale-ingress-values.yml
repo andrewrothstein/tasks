@@ -3,6 +3,6 @@ ingresses:
   - name: hatchet-ui
     host: hatchet
     service:
-      name: hatchet-stack-frontend
+      name: hatchet-istio
       port:
-        number: 8080
+        number: 80

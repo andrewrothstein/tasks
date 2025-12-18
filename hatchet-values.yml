@@ -1,6 +1,6 @@
 ---
 caddy:
-  enabled: true
+  enabled: false
 api:
   deploymentEnvFrom:
     - secretRef:

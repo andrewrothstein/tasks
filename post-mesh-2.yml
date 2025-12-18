@@ -16,8 +16,8 @@ includes:
 #  retool: retool.yml
   retool: pet.yml
 
-#  hatchet: hatchet.yml
-  hatchet: pet.yml
+  hatchet: hatchet.yml
+#  hatchet: pet.yml
 
 tasks:
   default:
