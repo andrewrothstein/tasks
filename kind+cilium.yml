@@ -13,8 +13,10 @@ tasks:
       - task: cilium:upgrade
   delete:
     cmds:
-#      - task: cilium:delete
       - task: kind:delete
+  destroy:
+    cmds:
+      - task: kind:destroy
   check:
     cmds:
       - task: cilium:check

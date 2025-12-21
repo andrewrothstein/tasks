@@ -6,7 +6,6 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: hatchet
-      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     vars:
@@ -34,7 +33,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: helm:upgrade
         vars:
           helm_args: |-

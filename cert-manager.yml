@@ -22,7 +22,7 @@ includes:
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
-      chart_ver: v1.19.1
+      chart_ver: v1.19.2
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
   approver_policy:
@@ -31,7 +31,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
-      chart_ver: v0.22.2
+      chart_ver: v0.23.0
       chart: cert-manager-approver-policy
       helm_args: -f cert-manager-approver-policy-values.yml
   csi_driver:
@@ -40,7 +40,7 @@ includes:
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
-      chart_ver: v0.11.1
+      chart_ver: v0.12.0
       chart: cert-manager-csi-driver
   trust_manager:
     taskfile: helm.yml
@@ -48,7 +48,7 @@ includes:
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack
-      chart_ver: v0.20.2
+      chart_ver: v0.20.3
       chart: trust-manager
       helm_args: -f trust-manager-values.yml
 tasks:

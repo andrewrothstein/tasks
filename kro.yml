@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  KRO_VERSION: 0.7.0
+  KRO_VERSION: 0.7.1
 includes:
   gh:
     internal: true

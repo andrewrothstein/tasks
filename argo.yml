@@ -7,7 +7,7 @@ includes:
     internal: true
     vars:
       chart: argo-workflows
-      chart_ver: 0.46.1
+      chart_ver: 0.46.2
       name: argo
       namespace: argo
       helm_args: -f argo-workflows-values.yml
