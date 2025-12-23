@@ -15,6 +15,7 @@ includes:
       chart_ver: 1.18.0
       namespace: pxc-operator
       name: pxc-operator
+      server_side: 'false'
       helm_args: -f pxc-operator-values.yml
 tasks:
   default:

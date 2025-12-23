@@ -28,6 +28,7 @@ includes:
       chart_ver: 0.31.0
       namespace: vault-system
       name: vault
+      server_side: 'false'
 tasks:
   test-secrets:
     vars:
