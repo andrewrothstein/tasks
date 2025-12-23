@@ -59,7 +59,6 @@ tasks:
       adminSigningKey: '{{ .adminSigningKey | default "${KARGO_ADMIN_SIGNING_KEY}" }}'
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: helm:upgrade
         vars:
           helm_args: >-

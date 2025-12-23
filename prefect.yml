@@ -37,7 +37,6 @@ tasks:
        - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: server:upgrade
       - task: worker:upgrade
   delete:

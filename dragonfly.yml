@@ -39,7 +39,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
         vars:
           dragonfly_jwt_key: '{{ .dragonfly_jwt_key }}'

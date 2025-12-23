@@ -38,7 +38,6 @@ tasks:
   upgrade-controller:
     cmds:
       - task: kk-controller:ns-create
-      - task: kk-controller:ns-label
       - task: helm-controller:upgrade
   delete-controller:
     cmds:
@@ -49,7 +48,6 @@ tasks:
       gha_runners_pat: '{{ .gha_runners_pat | default "${GHA_RUNNERS_PAT}" }}'
     cmds:
       - task: kk-runners:ns-create
-      - task: kk-runners:ns-label
       - test {{ .gha_runners_pat | quote }}
       - task: helm-runners:upgrade
         vars:

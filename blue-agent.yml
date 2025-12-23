@@ -32,7 +32,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
         vars:
           ado_path: '{{ .ado_pat }}'

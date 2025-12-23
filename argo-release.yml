@@ -23,9 +23,6 @@ tasks:
       - task: kk:ns-create
         vars:
           n: '{{ .namespace }}'
-      - task: kk:ns-label
-        vars:
-          n: '{{ .namespace }}'
           labels: '{{ .labels }}'
       - task: helm:upgrade
         vars:

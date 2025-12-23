@@ -33,7 +33,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: helm:upgrade
       - task: ingress:upgrade
   delete:

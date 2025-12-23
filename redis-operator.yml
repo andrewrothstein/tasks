@@ -24,7 +24,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: helm:upgrade
 #        vars:
 #          helm_args: -f redis-operator-values.yml

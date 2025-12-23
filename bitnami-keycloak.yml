@@ -31,7 +31,6 @@ tasks:
       pg_password: '{{ .pg_password | default "${KEYCLOAK_POSTGRESQL_PASSWORD}" }}'
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
       - task: bitnami-chart:upgrade
         vars:

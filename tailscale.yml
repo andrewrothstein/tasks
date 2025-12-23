@@ -36,7 +36,6 @@ tasks:
       - task: test-secrets
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: helm:upgrade
   delete:
     cmds:

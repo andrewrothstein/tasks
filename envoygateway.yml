@@ -51,10 +51,8 @@ tasks:
   upgrade:
     cmds:
       - task: gwkk:ns-create
-      - task: gwkk:ns-label
       - task: gw:upgrade
       - task: aigwkk:ns-create
-      - task: aigwkk:ns-label
       - task: aigw-crds:upgrade
       - task: aigw:upgrade
   delete:

@@ -38,7 +38,6 @@ tasks:
       jwtSecret: '{{ .jwtSecret | default "${RETOOL_JWT_SECRET}" }}'
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
         vars:
           licenseKey: '{{ .licenseKey }}'

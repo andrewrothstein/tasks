@@ -31,7 +31,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
         vars:
           grafana_admin_password: '{{ .grafana_admin_password }}'

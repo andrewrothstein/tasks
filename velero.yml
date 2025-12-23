@@ -55,7 +55,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: minio-tenant:upgrade
       - task: create-velero-minio-credentials
       - task: helm:upgrade

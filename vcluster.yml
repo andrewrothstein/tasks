@@ -31,9 +31,6 @@ tasks:
       - task: kk:ns-create
         vars:
           n: '{{ .vcluster_namespace }}'
-      - task: kk:ns-label
-        vars:
-          n: '{{ .vcluster_namespace }}'
       - task: helm:upgrade
         vars:
           namespace: '{{ .vcluster_namespace }}'

@@ -50,7 +50,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: pg:upgrade
       - task: helm:upgrade
       - task: ingress:upgrade

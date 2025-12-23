@@ -56,7 +56,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
 #      - task: create-godaddy-secrets
       - task: create-cloudflare-secrets
       - task: helm:upgrade

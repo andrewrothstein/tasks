@@ -42,7 +42,6 @@ tasks:
     cmds:
       - task: repo:add
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: vault-secrets-operator:upgrade
       - task: test-secrets
         vars:

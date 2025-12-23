@@ -31,7 +31,6 @@ tasks:
   upgrade:
     cmds:
       - task: elk:ns-create
-      - task: elk:ns-label
       - task: elk:kapply
       - task: tailscale-ingress:upgrade
   delete:

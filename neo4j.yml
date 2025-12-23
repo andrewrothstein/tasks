@@ -37,7 +37,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: test-secrets
         vars:
           neo4j_password: '{{ .neo4j_password }}'

@@ -68,7 +68,6 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: ca-secret:create
       - task: cm:upgrade
       - task: approver_policy:upgrade

@@ -47,7 +47,6 @@ tasks:
         vars:
           admin_password: '{{ .admin_password }}'
       - task: kk:ns-create
-      - task: kk:ns-label
       - task: postgresql:upgrade
         vars:
           admin_username: '{{ .admin_username }}'
