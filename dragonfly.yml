@@ -13,7 +13,7 @@ includes:
     vars:
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.4.6
+      chart_ver: 1.5.9
       namespace: dragonfly-system
       name: dragonfly
   tailscale-ingress:

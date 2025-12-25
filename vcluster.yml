@@ -11,7 +11,7 @@ includes:
     vars:
       chart_repo_name: loft-sh
       chart: vcluster
-      chart_ver: 0.30.1
+      chart_ver: 0.30.4
 tasks:
   default:
     cmds:

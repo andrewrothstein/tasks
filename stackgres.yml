@@ -12,7 +12,7 @@ includes:
       chart_repo_name: stackgres-charts
       chart: stackgres-operator
       name: stackgres-operator
-      chart_ver: 1.10.0
+      chart_ver: 1.18.2
 #      helm_args: -f stackgres-values.yml
 tasks:
   default:
@@ -26,3 +26,8 @@ tasks:
   delete:
     cmds:
       - task: helm:delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
