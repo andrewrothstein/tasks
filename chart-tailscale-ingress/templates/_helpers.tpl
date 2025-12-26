@@ -49,3 +49,12 @@ Selector labels
 app.kubernetes.io/name: {{ include "tailscale-ingress.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Construct host with subdomain.
+Usage: {{ include "tailscale-ingress.host" (dict "host" .host "subdomain" $.Values.subdomain) }}
+Result: <host>.<subdomain> (subdomain defaults to "default")
+*/}}
+{{- define "tailscale-ingress.host" -}}
+{{- printf "%s.%s" .host (.subdomain | default "default") -}}
+{{- end -}}

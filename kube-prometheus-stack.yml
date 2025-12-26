@@ -15,6 +15,13 @@ includes:
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
       chart_ver: 80.6.0
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: kube-prometheus-stack
+      name: tailscale-ingress
+      helm_args: -f kube-prometheus-stack-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -39,9 +46,10 @@ tasks:
           helm_args: >-
             -f kube-prometheus-stack-values.yml
             --set grafana.adminPassword={{ .grafana_admin_password | quote }}
-
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

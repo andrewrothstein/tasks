@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: argo
+    host: argo
+    service:
+      name: argo-server
+      port:
+        number: 2746

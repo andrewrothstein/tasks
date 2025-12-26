@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: openbao
+    host: openbao
+    service:
+      name: openbao
+      port:
+        number: 8200

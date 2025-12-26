@@ -13,6 +13,13 @@ includes:
       chart_ver: 25.2.0
       name: bitnami-keycloak
       namespace: bitnami-keycloak
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: bitnami-keycloak
+      name: tailscale-ingress
+      helm_args: -f bitnami-keycloak-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -39,8 +46,10 @@ tasks:
               --set-string auth.adminUser={{ .admin_user | quote }} \
               --set-string auth.adminPassword={{ .admin_password | quote }} \
               --set-string postgresql.auth.password={{ .pg_password | quote }}
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: bitnami-chart:delete
       - task: kk:ns-delete
   check:

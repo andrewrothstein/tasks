@@ -29,6 +29,13 @@ includes:
       namespace: vault-system
       name: vault
       server_side: 'false'
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: vault-system
+      name: tailscale-ingress
+      helm_args: -f vault-tailscale-ingress-values.yml
 tasks:
   test-secrets:
     vars:
@@ -52,6 +59,7 @@ tasks:
           helm_args: >-
             -f vault-values.yml
             --set server.dev.devRootToken={{ .root_token | quote }}
+      - task: ingress:upgrade
   default:
     deps:
       - upgrade
@@ -64,6 +72,7 @@ tasks:
       - task: vault:check
   delete:
     cmds:
+      - task: ingress:delete
       - task: vault:delete
       - task: vault-secrets-operator:delete
       - task: ss-csi:delete

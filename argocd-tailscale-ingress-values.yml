@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: argocd
+    host: argocd
+    service:
+      name: argo-cd-argocd-server
+      port:
+        name: http

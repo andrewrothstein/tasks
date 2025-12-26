@@ -10,6 +10,13 @@ includes:
       name: argo-cd
       namespace: argocd
       labels: 'istio.io/dataplane-mode=ambient'
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: argocd
+      name: tailscale-ingress
+      helm_args: -f argocd-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -31,15 +38,17 @@ tasks:
           helm_args: |-
             -f argocd-values.yml \
               --set configs.secret.argocdServerAdminPassword=$(htpasswd -nbBC 10 "" {{ .adminSecret | quote }} | tr -d ':\n' | sed 's/$2y/$2a/')
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: argo-release:delete
   check:
     deps:
       - task: argo-release:check
   login:
     vars:
-      server: '{{ .server | default "argocd.elephant-frog.ts.net" }}'
+      server: '{{ .server }}'
       grpc_web: '{{ .grpc_web | default "true" }}'
       username: '{{ .username | default "admin" }}'
       password: '{{ .password | default "${ARGOCD_ADMIN_PASSWORD}" }}'

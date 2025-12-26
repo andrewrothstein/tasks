@@ -16,6 +16,13 @@ includes:
       namespace: artifact-hub
       name: artifact-hub
       helm_args: -f artifacthub-values.yml
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: artifact-hub
+      name: tailscale-ingress
+      helm_args: -f artifacthub-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -26,8 +33,10 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

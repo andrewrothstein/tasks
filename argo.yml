@@ -12,6 +12,13 @@ includes:
       namespace: argo
       helm_args: -f argo-workflows-values.yml
       labels: 'istio.io/dataplane-mode=ambient'
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: argo
+      name: tailscale-ingress
+      helm_args: -f argo-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -22,8 +29,10 @@ tasks:
       - task: k:apply
         vars:
           f: argo-templates
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: argo-release:delete
   check:
     cmds:

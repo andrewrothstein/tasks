@@ -1,7 +1,9 @@
 {{- $fullname := include "tailscale-ingress.fullname" . }}
 {{- $labels := include "tailscale-ingress.labels" . }}
+{{- $subdomain := .Values.subdomain }}
 {{- range $i := .Values.ingresses }}
 {{- $name := $i.name }}
+{{- $host := include "tailscale-ingress.host" (dict "host" $i.host "subdomain" $subdomain) }}
 {{- if (.enabled | default true) }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -19,10 +21,10 @@ spec:
   {{- if (.tls | default true) }}
   tls:
     - hosts:
-        - {{ $i.host | quote }}
+        - {{ $host | quote }}
   {{- end }}
   rules:
-    - host: {{ $i.host | quote }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: {{ $i.path | default "/" }}

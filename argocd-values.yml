@@ -14,17 +14,6 @@ repoServer:
 applicationSet:
   replicas: 1
 
-global:
-  domain: argocd.elephant-frog.ts.net
-
 configs:
   params:
     server.insecure: true
-
-server:
-  ingress:
-    enabled: true
-    ingressClassName: tailscale
-    extraTls:
-      - hosts:
-        - argocd.elephant-frog.ts.net

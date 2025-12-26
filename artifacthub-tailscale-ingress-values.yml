@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: artifacthub
+    host: artifacthub
+    service:
+      name: artifact-hub
+      port:
+        number: 80

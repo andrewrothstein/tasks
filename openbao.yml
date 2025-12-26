@@ -19,6 +19,13 @@ includes:
       helm_args: >-
         -f openbao-values.yml
         --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"
+  ingress:
+    taskfile: helm.yml
+    vars:
+      chart: chart-tailscale-ingress
+      namespace: openbao
+      name: tailscale-ingress
+      helm_args: -f openbao-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -29,8 +36,10 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:
