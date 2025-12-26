@@ -40,16 +40,10 @@ tasks:
               -f hatchet-values.yml \
               --set sharedConfig.defaultAdminEmail={{ .admin_email | quote }} \
               --set sharedConfig.defaultAdminPassword={{ .admin_password | quote }}
-      - task: gateway
       - task: ingress:upgrade
-  gateway:
-    desc: Apply Istio Gateway and HTTPRoute for path-based routing
-    cmds:
-      - kubectl apply -f hatchet-gateway.yml
   delete:
     cmds:
       - task: ingress:delete
-      - kubectl delete -f hatchet-gateway.yml --ignore-not-found
       - task: helm:delete
       - task: kk:ns-delete
   check:

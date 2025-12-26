@@ -1,0 +1,35 @@
+{{- $fullname := include "tailscale-ingress.fullname" . }}
+{{- $labels := include "tailscale-ingress.labels" . }}
+{{- range $g := .Values.gateways }}
+{{- if ($g.enabled | default true) }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullname }}-{{ $g.name }}-gw
+  labels:
+    {{- $labels | nindent 4 }}
+  {{- with $g.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ $g.ingressClassName | default "tailscale" }}
+  {{- if ($g.tls | default true) }}
+  tls:
+    - hosts:
+        - {{ $g.host | quote }}
+  {{- end }}
+  rules:
+    - host: {{ $g.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullname }}-{{ $g.name }}-istio
+                port:
+                  number: 80
+{{- end }}
+{{- end }}

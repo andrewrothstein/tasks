@@ -1,8 +1,15 @@
 ---
-ingresses:
-  - name: hatchet-ui
+gateways:
+  - name: hatchet
     host: hatchet
-    service:
-      name: hatchet-istio
-      port:
-        number: 80
+    routes:
+      - path: /api
+        service:
+          name: hatchet-stack-api
+          port:
+            number: 8080
+      - path: /
+        service:
+          name: hatchet-stack-frontend
+          port:
+            number: 8080

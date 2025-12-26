@@ -1,0 +1,22 @@
+{{- $fullname := include "tailscale-ingress.fullname" . }}
+{{- $labels := include "tailscale-ingress.labels" . }}
+{{- range $g := .Values.gateways }}
+{{- if ($g.enabled | default true) }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ $fullname }}-{{ $g.name }}
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  gatewayClassName: {{ $g.gatewayClassName | default "istio" }}
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Same
+{{- end }}
+{{- end }}
