@@ -20,6 +20,7 @@ logs/
 .kubeconfigs/
 *.tigerbeetle
 .env
+.env.local
 .*credentials
 .ansible/
 **/terraform.tfstate.d/
