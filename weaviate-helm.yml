@@ -18,9 +18,8 @@ includes:
       chart_ver: 17.7.0
       helm_args: -f weaviate-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: weaviate
       name: tailscale-ingress
       helm_args: -f weaviate-tailscale-ingress-values.yml

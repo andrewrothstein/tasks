@@ -26,9 +26,8 @@ includes:
         --set instances=1
         --set size=10Gi
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: gitea
       name: gitea
       helm_args: -f gitea-tailscale-ingress-values.yml

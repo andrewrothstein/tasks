@@ -11,9 +11,8 @@ includes:
       namespace: argocd
       labels: 'istio.io/dataplane-mode=ambient'
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: argocd
       name: tailscale-ingress
       helm_args: -f argocd-tailscale-ingress-values.yml

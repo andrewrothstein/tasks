@@ -17,9 +17,8 @@ includes:
       name: sonarqube
       chart_ver: 2025.6.1
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: sonarqube
       name: tailscale-ingress
       helm_args: -f sonarqube-tailscale-ingress-values.yml

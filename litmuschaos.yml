@@ -8,9 +8,8 @@ includes:
       n: litmus
       labels: 'istio.io/dataplane-mode=ambient'
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: litmus
       name: tailscale-ingress
       helm_args: -f litmuschaos-tailscale-ingress-values.yml

@@ -30,9 +30,8 @@ includes:
       name: vault
       server_side: 'false'
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: vault-system
       name: tailscale-ingress
       helm_args: -f vault-tailscale-ingress-values.yml

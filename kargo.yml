@@ -24,9 +24,8 @@ includes:
       chart_ver: '{{ .KARGO_VER }}'
       name: kargo
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: kargo
       name: tailscale-ingress
       helm_args: -f kargo-tailscale-ingress-values.yml

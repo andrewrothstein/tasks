@@ -16,9 +16,8 @@ includes:
       namespace: airflow
       name: apache-airflow
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: airflow
       name: airflow-ui-tailscale-ingress
       helm_args: -f airflow-ui-tailscale-ingress-values.yml

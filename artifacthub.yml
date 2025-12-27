@@ -17,9 +17,8 @@ includes:
       name: artifact-hub
       helm_args: -f artifacthub-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: artifact-hub
       name: tailscale-ingress
       helm_args: -f artifacthub-tailscale-ingress-values.yml

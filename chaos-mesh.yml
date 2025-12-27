@@ -8,9 +8,8 @@ includes:
       n: chaos-mesh
       labels: 'istio.io/dataplane-mode=ambient'
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: chaos-mesh
       name: tailscale-ingress
       helm_args: -f chaos-mesh-tailscale-ingress-values.yml

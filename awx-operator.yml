@@ -16,9 +16,8 @@ includes:
       chart: awx-operator
       chart_ver: 3.0.0
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: awx-operator
       name: tailscale-ingress
       helm_args: -f awx-tailscale-ingress-values.yml

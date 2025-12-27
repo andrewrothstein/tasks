@@ -1,0 +1,29 @@
+---
+version: '3'
+includes:
+  helm:
+    taskfile: helm.yml
+tasks:
+  upgrade:
+    vars:
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+      chart: '{{ .chart | default "chart-tailscale-ingress" }}'
+      subdomain: '{{ .subdomain | default "${TAILSCALE_SUBDOMAIN:-default}" }}'
+      helm_args: '{{ .helm_args }}'
+    cmds:
+      - task: helm:upgrade
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'
+          chart: '{{ .chart }}'
+          helm_args: '{{ .helm_args }} --set subdomain={{ .subdomain }}'
+  delete:
+    vars:
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+    cmds:
+      - task: helm:delete
+        vars:
+          namespace: '{{ .namespace }}'
+          name: '{{ .name }}'

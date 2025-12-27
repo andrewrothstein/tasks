@@ -14,9 +14,8 @@ includes:
       name: bitnami-keycloak
       namespace: bitnami-keycloak
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: bitnami-keycloak
       name: tailscale-ingress
       helm_args: -f bitnami-keycloak-tailscale-ingress-values.yml

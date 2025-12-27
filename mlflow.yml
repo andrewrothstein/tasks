@@ -17,9 +17,8 @@ includes:
       name: mlflow
 #      helm_args: -f mlflow-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: mlflow
       name: tailscale-ingress
       helm_args: -f mlflow-ingress-values.yml

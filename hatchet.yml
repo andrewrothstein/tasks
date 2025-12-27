@@ -15,9 +15,8 @@ includes:
       namespace: hatchet
       name: hatchet-stack
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: hatchet
       name: hatchet-ui-tailscale-ingress
       helm_args: -f hatchet-tailscale-ingress-values.yml

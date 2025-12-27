@@ -17,9 +17,8 @@ includes:
       name: kiali
       helm_args: -f kiali-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: istio-system
       name: tailscale-ingress
       helm_args: -f kiali-tailscale-ingress-values.yml

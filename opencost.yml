@@ -17,9 +17,8 @@ includes:
       name: opencost
       helm_args: -f opencost-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: opencost
       name: tailscale-ingress
       helm_args: -f opencost-tailscale-ingress-values.yml

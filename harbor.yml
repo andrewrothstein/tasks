@@ -17,9 +17,8 @@ includes:
       chart: harbor
       chart_ver: 1.17.2
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: harbor
       name: harbor-registry
       helm_args: -f harbor-tailscale-ingress-values.yml

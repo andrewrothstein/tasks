@@ -20,9 +20,8 @@ includes:
         -f openbao-values.yml
         --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: openbao
       name: tailscale-ingress
       helm_args: -f openbao-tailscale-ingress-values.yml

@@ -18,9 +18,8 @@ includes:
       chart_ver: 2.6.99
       helm_args: -f orkes-conductor-standalone-values.yml
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: orkes-conductor-standalone
       name: tailscale-ingress
       helm_args: -f orkes-conductor-standalone-tailscale-ingress-values.yml

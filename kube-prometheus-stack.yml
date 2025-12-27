@@ -16,9 +16,8 @@ includes:
       chart: kube-prometheus-stack
       chart_ver: 80.6.0
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: kube-prometheus-stack
       name: tailscale-ingress
       helm_args: -f kube-prometheus-stack-tailscale-ingress-values.yml

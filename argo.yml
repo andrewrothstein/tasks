@@ -13,9 +13,8 @@ includes:
       helm_args: -f argo-workflows-values.yml
       labels: 'istio.io/dataplane-mode=ambient'
   ingress:
-    taskfile: helm.yml
+    taskfile: tailscale-ingress.yml
     vars:
-      chart: chart-tailscale-ingress
       namespace: argo
       name: tailscale-ingress
       helm_args: -f argo-tailscale-ingress-values.yml
