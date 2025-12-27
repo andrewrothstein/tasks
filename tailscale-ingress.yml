@@ -3,13 +3,16 @@ version: '3'
 includes:
   helm:
     taskfile: helm.yml
+vars:
+  default_subdomain:
+    sh: hostname
 tasks:
   upgrade:
     vars:
       namespace: '{{ .namespace }}'
       name: '{{ .name }}'
       chart: '{{ .chart | default "chart-tailscale-ingress" }}'
-      subdomain: '{{ .subdomain | default "${TAILSCALE_SUBDOMAIN:-default}" }}'
+      subdomain: '{{ .subdomain | default (env "TAILSCALE_SUBDOMAIN") | default .default_subdomain }}'
       helm_args: '{{ .helm_args }}'
     cmds:
       - task: helm:upgrade

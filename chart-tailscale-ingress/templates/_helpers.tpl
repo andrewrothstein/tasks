@@ -54,6 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Construct host with subdomain.
 Usage: {{ include "tailscale-ingress.host" (dict "host" .host "subdomain" $.Values.subdomain) }}
 Result: <host>.<subdomain>
+Subdomain is passed by tailscale-ingress.yml wrapper, defaulting to hostname.
 */}}
 {{- define "tailscale-ingress.host" -}}
 {{- printf "%s.%s" .host (.subdomain | default "default") -}}
