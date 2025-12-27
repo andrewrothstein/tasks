@@ -3,8 +3,3 @@ ollama:
   enabled: false
 ollamaUrls:
   - 'http://ubuntu-1.elephant-frog.ts.net:11434'
-ingress:
-  enabled: true
-  class: tailscale
-  host: open-webui
-  tls: true

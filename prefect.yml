@@ -28,6 +28,12 @@ includes:
       chart_ver: '{{ .PREFECT_VER }}'
       chart: prefect-worker
       helm_args: -f prefect-worker-values.yml
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: prefect
+      name: tailscale-ingress
+      helm_args: -f prefect-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -39,8 +45,10 @@ tasks:
       - task: kk:ns-create
       - task: server:upgrade
       - task: worker:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: worker:delete
       - task: server:delete
       - task: kk:ns-delete

@@ -14,8 +14,14 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 9.1.1
+      chart_ver: 9.7.0
       helm_args: -f gitlab-values.yml
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: gitlab
+      name: tailscale-ingress
+      helm_args: -f gitlab-tailscale-ingress-values.yml
   root-password:
     taskfile: k8s-literal-secret.yml
     vars:
@@ -43,8 +49,10 @@ tasks:
           args: >-
             --from-literal=password={{ .gitlab_root_password | quote }}
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

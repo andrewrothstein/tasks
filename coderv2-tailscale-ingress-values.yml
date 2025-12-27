@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: coder
+    host: coder
+    service:
+      name: coder
+      port:
+        number: 80

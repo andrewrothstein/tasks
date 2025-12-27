@@ -1,8 +1,3 @@
 ---
-externalURL: https://harbor.elephant-frog.ts.net
 expose:
-  ingress:
-    className: tailscale
-    tls: true
-    hosts:
-      core: harbor
+  type: clusterIP

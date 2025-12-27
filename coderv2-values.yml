@@ -8,9 +8,3 @@ coder:
           key: url
     - name: CODER_AUTO_IMPORT_TEMPLATES
       value: kubernetes
-  ingress:
-    enable: true
-    className: tailscale
-    host: coder
-    tls:
-      enable: true

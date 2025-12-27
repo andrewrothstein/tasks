@@ -15,7 +15,13 @@ includes:
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.104.14
+      chart_ver: 107.125.9
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: artifactory
+      name: tailscale-ingress
+      helm_args: -f artifactory-tailscale-ingress-values.yml
   secrets:
     taskfile: k8s-literal-secret.yml
     vars:
@@ -69,8 +75,10 @@ tasks:
               --set artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
               --set artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
               --set artifactory.artifactory.admin.password={{ .adminPassword | quote }}
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

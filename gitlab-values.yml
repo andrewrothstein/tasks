@@ -2,12 +2,8 @@
 certmanager:
   install: false
 global:
-  hosts:
-    domain: elephant-frog.ts.net
   ingress:
-    class: tailscale
-    provider: tailscale
-    configureCertmanager: false
+    enabled: false
   initialRootPassword:
     secret: gitlab-root-password
     key: password
@@ -19,6 +15,12 @@ gitlab:
   kas:
     ingress:
       enabled: false
+  webservice:
+    ingress:
+      enabled: false
 minio:
+  ingress:
+    enabled: false
+registry:
   ingress:
     enabled: false

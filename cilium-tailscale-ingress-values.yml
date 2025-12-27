@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: hubble
+    host: hubble
+    service:
+      name: hubble-ui
+      port:
+        number: 80

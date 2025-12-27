@@ -14,7 +14,7 @@ includes:
       name: kube-prometheus-stack
       chart_repo_name: prometheus-community
       chart: kube-prometheus-stack
-      chart_ver: 80.6.0
+      chart_ver: 80.8.0
   ingress:
     taskfile: tailscale-ingress.yml
     vars:

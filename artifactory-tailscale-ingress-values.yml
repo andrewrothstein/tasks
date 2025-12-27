@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: artifactory
+    host: artifactory
+    service:
+      name: artifactory
+      port:
+        number: 8082

@@ -25,6 +25,12 @@ includes:
       name: coder
       namespace: coder
       helm_args: -f coderv2-values.yml
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: coder
+      name: tailscale-ingress
+      helm_args: -f coderv2-tailscale-ingress-values.yml
 tasks:
   test-secrets:
     vars:
@@ -58,9 +64,10 @@ tasks:
           args: >-
             --from-literal=url="postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
       - task: coderv2:upgrade
-        vars:
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: coderv2:delete
       - task: coderv2-secret:delete
       - task: postgresql:delete

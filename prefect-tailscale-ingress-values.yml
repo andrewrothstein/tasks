@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: prefect
+    host: prefect
+    service:
+      name: prefect-server
+      port:
+        number: 4200

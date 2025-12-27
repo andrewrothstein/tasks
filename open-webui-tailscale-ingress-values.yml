@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: open-webui
+    host: open-webui
+    service:
+      name: open-webui
+      port:
+        number: 80

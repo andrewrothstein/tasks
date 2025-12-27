@@ -6,15 +6,3 @@ artifactory:
     enabled: true
   nginx:
     enabled: false
-  ingress:
-    enabled: true
-    className: tailscale
-    defaultBackend:
-      enabled: true
-    hosts:
-      - artifactory
-    routerPath: /
-    artifactoryPath: /artifactory/
-    tls:
-      - hosts:
-          - artifactory

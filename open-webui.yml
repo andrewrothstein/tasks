@@ -16,6 +16,12 @@ includes:
       chart: open-webui
       chart_ver: 8.22.0
       helm_args: -f open-webui-values.yml
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: open-webui
+      name: tailscale-ingress
+      helm_args: -f open-webui-tailscale-ingress-values.yml
 tasks:
   default:
     deps:
@@ -26,8 +32,10 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: helm:upgrade
+      - task: ingress:upgrade
   delete:
     cmds:
+      - task: ingress:delete
       - task: helm:delete
       - task: kk:ns-delete
   check:

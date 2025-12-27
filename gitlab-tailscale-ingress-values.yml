@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: gitlab
+    host: gitlab
+    service:
+      name: gitlab-webservice-default
+      port:
+        number: 8181
