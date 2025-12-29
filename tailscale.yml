@@ -19,7 +19,7 @@ includes:
         --set oauth.clientId="${TAILSCALE_OPERATOR_CLIENT_ID}" \
           --set oauth.clientSecret="${TAILSCALE_OPERATOR_CLIENT_SECRET}"
   py-k8s-tools:
-    taskfile: pipenv.yml
+    taskfile: uv.yml
     vars:
       workdir: py-k8s-tools
 tasks:
@@ -52,5 +52,5 @@ tasks:
     cmds:
       - task: py-k8s-tools:run
         vars:
-          run_args: python ingress-cleanup.py
+          run_args: ingress-cleanup
       - sleep {{ .sleep_time }}

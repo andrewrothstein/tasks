@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "py-k8s-tools"
+version = "0.1.0"
+description = "Kubernetes utility tools"
+requires-python = ">=3.12"
+dependencies = [
+    "cyclopts",
+    "kubernetes",
+]
+
+[project.scripts]
+ingress-cleanup = "py_k8s_tools.ingress_cleanup:app"
