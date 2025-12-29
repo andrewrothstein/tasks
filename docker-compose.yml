@@ -8,9 +8,11 @@ tasks:
       f: '{{ .f }}'
       cmd: '{{ .cmd }}'
       args: '{{ .args }}'
+      env_file: '{{ .env_file | default "/dev/null" }}'
     cmds:
       - |
         docker compose \
+          --env-file {{ .env_file | quote }} \
           -p {{ .p | quote }} \
           -f {{ .f | quote }} \
           {{ .cmd | quote -}}
