@@ -24,7 +24,12 @@ tasks:
     cmds:
       - |
         cd {{ .dir | quote }};
-        gengithubactions;
+        dagger call \
+          --mod github.com/andrewrothstein/docker-ansible@develop \
+          gen-role-files \
+          --role-name=$(basename {{ .dir | quote }}) \
+          --role-dir=. \
+          export --path=.;
         if [ -e "requirements.txt" ];
         then
           git rm -f requirements.txt
