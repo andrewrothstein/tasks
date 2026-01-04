@@ -1,0 +1,25 @@
+---
+version: '3'
+includes:
+#  gatekeeper: gatekeeper.yml
+  gatekeeper: pet.yml
+
+  kyverno: kyverno.yml
+#  kyverno: pet.yml
+
+tasks:
+  default:
+    deps:
+      - up
+  up:
+    cmds:
+      - task: gatekeeper:upgrade
+      - task: kyverno:upgrade
+  delete:
+    cmds:
+      - task: kyverno:delete
+      - task: gatekeeper:delete
+  check:
+    cmds:
+      - task: gatekeeper:check
+      - task: kyverno:check

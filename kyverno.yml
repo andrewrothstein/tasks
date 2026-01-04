@@ -1,0 +1,47 @@
+---
+version: '3'
+includes:
+  repo: kyverno-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: kyverno
+  kyverno:
+    taskfile: helm.yml
+    vars:
+      namespace: kyverno
+      name: kyverno
+      chart_repo_name: kyverno
+      chart_ver: 3.6.1
+      chart: kyverno
+      helm_args: -f kyverno-values.yml
+  kyverno_policies:
+    taskfile: helm.yml
+    vars:
+      namespace: kyverno
+      name: kyverno-policies
+      chart_repo_name: kyverno
+      chart_ver: 3.6.1
+      chart: kyverno-policies
+tasks:
+  default:
+    deps:
+      - upgrade
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: kyverno:check
+      - task: kyverno_policies:check
+  upgrade:
+    deps:
+      - task: repo
+    cmds:
+      - task: kk:ns-create
+      - task: kyverno:upgrade
+      - task: kyverno_policies:upgrade
+  delete:
+    cmds:
+      - task: kyverno_policies:delete
+      - task: kyverno:delete
+      - task: kk:ns-delete

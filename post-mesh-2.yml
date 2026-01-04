@@ -1,9 +1,6 @@
 ---
 version: '3'
 includes:
-#  gatekeeper: gatekeeper.yml
-  gatekeeper: pet.yml
-
 #  pinniped-supervisor: pinniped-supervisor.yml
   pinniped-supervisor: pet.yml
 

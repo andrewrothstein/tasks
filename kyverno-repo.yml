@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: kyverno
+      url: https://kyverno.github.io/kyverno/
+tasks:
+  default:
+    deps:
+      - task: add
