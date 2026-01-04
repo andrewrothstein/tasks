@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: jaegertracing
       chart: jaeger
-      chart_ver: 4.2.2
+      chart_ver: 4.2.3
       name: jaeger
 tasks:
   default:
