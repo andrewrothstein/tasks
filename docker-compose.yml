@@ -74,3 +74,12 @@ tasks:
       format: '{{ .format | default "table" }}'
     cmds:
       - docker compose ls --format {{ .format | quote }}
+  default:
+    vars:
+      p: '{{ .p }}'
+      f: '{{ .f }}'
+    cmds:
+      - task: apply
+        vars:
+          p: '{{ .p }}'
+          f: '{{ .f }}'

@@ -1,0 +1,12 @@
+---
+services:
+  netbootxyz:
+    image: ghcr.io/netbootxyz/netbootxyz:latest
+    container_name: netbootxyz
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    volumes:
+      - /opt/netbootxyz/dnsmasq.d:/etc/dnsmasq.d:ro
+      - /opt/netbootxyz:/config:rw

@@ -5,5 +5,5 @@ includes:
     taskfile: docker-compose.yml
     flatten: true
     vars:
-      p: weaviate
-      f: weaviate-compose.yml
+      p: netbootxyz
+      f: netbootxyz-compose.yml
