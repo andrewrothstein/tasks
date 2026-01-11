@@ -1,0 +1,55 @@
+---
+version: '3'
+dotenv:
+  - netbootxyz-harvester.env
+vars:
+  templates_dir: netbootxyz-harvester-templates
+  output_dir: netbootxyz-harvester
+  # First node creates cluster, rest join
+  create_host: harvester-1
+  join_hosts: harvester-2 harvester-3 harvester-4
+  # Default install device (override in env if needed)
+  HARVESTER_INSTALL_DEVICE: '{{.HARVESTER_INSTALL_DEVICE | default "/dev/sda"}}'
+tasks:
+  default:
+    deps:
+      - generate
+  generate:
+    desc: Generate all Harvester configs from templates
+    deps:
+      - generate-create
+      - generate-join
+  generate-create:
+    desc: Generate config for cluster creation (first node)
+    vars:
+      HARVESTER_HOSTNAME: '{{.create_host}}'
+    cmds:
+      - mkdir -p {{.output_dir}}
+      - |
+        export HARVESTER_HOSTNAME={{.HARVESTER_HOSTNAME}}
+        export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+        envsubst < {{.templates_dir}}/config-create.yaml.tmpl > {{.output_dir}}/config-{{.HARVESTER_HOSTNAME}}.yaml
+    sources:
+      - '{{.templates_dir}}/config-create.yaml.tmpl'
+    generates:
+      - '{{.output_dir}}/config-{{.create_host}}.yaml'
+  generate-join:
+    desc: Generate configs for nodes joining the cluster
+    cmds:
+      - mkdir -p {{.output_dir}}
+      - |
+        for host in {{.join_hosts}}; do
+          export HARVESTER_HOSTNAME=$host
+          export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+          envsubst < {{.templates_dir}}/config-join.yaml.tmpl > {{.output_dir}}/config-$host.yaml
+        done
+    sources:
+      - '{{.templates_dir}}/config-join.yaml.tmpl'
+  clean:
+    desc: Remove generated configs
+    cmds:
+      - rm -rf {{.output_dir}}/*.yaml
+  list:
+    desc: List generated configs
+    cmds:
+      - ls -la {{.output_dir}}/*.yaml 2>/dev/null || echo "No configs generated yet"

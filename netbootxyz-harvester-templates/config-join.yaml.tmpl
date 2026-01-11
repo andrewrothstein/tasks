@@ -1,0 +1,15 @@
+scheme_version: 1
+server_url: https://${HARVESTER_VIP}:443
+token: ${HARVESTER_TOKEN}
+os:
+  hostname: ${HARVESTER_HOSTNAME}
+  ssh_authorized_keys:
+    - ${SSH_AUTHORIZED_KEY}
+  password: ${HARVESTER_PASSWORD}
+  ntp_servers:
+    - 0.pool.ntp.org
+    - 1.pool.ntp.org
+install:
+  mode: join
+  device: ${HARVESTER_INSTALL_DEVICE}
+  iso_url: https://releases.rancher.com/harvester/v1.7.0/harvester-v1.7.0-amd64.iso
