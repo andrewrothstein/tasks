@@ -25,3 +25,19 @@ logs/
 .ansible/
 **/terraform.tfstate.d/
 **/tfplan
+
+# netbootxyz - ignore generated/downloaded files, only track customizations
+netbootxyz/log/
+netbootxyz/menus/remote/
+netbootxyz/menus/sigs/
+netbootxyz/menus/*.kpxe
+netbootxyz/menus/*.efi
+netbootxyz/menus/*.ipxe
+netbootxyz/menus/boot.cfg
+netbootxyz/menus/memdisk
+netbootxyz/menus/wimboot
+netbootxyz/menus/index.html
+netbootxyz/menuversion.txt
+netbootxyz/nginx/
+# keep local customizations
+!netbootxyz/menus/local/
