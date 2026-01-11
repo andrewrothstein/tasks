@@ -8,5 +8,5 @@ services:
       - NET_ADMIN
     restart: always
     volumes:
-      - ./netbootxyz/dnsmasq.d:/etc/dnsmasq.d:ro
-      - ./netbootxyz/config:/config:rw
+      - ./netbootxyz-dnsmasq.d:/etc/dnsmasq.d:ro
+      - ./netbootxyz:/config:rw
