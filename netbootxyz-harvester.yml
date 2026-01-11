@@ -1,15 +1,17 @@
 ---
 version: '3'
-dotenv:
-  - netbootxyz-harvester.env
+# Secrets from Doppler: HARVESTER_TOKEN, HARVESTER_PASSWORD
+# Usage: doppler run -- task -t netbootxyz-harvester.yml generate
 vars:
   templates_dir: netbootxyz-harvester-templates
   output_dir: netbootxyz-harvester
   # First node creates cluster, rest join
   create_host: harvester-1
   join_hosts: harvester-2 harvester-3 harvester-4
-  # Default install device (override in env if needed)
-  HARVESTER_INSTALL_DEVICE: '{{.HARVESTER_INSTALL_DEVICE | default "/dev/sda"}}'
+  # Non-secret config
+  SSH_AUTHORIZED_KEY: ssh-rsa CHANGEME
+  HARVESTER_VIP: 192.168.1.200
+  HARVESTER_INSTALL_DEVICE: /dev/sda
 tasks:
   default:
     deps:
@@ -28,6 +30,8 @@ tasks:
       - |
         export HARVESTER_HOSTNAME={{.HARVESTER_HOSTNAME}}
         export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+        export HARVESTER_VIP={{.HARVESTER_VIP}}
+        export SSH_AUTHORIZED_KEY="{{.SSH_AUTHORIZED_KEY}}"
         envsubst < {{.templates_dir}}/config-create.yaml.tmpl > {{.output_dir}}/config-{{.HARVESTER_HOSTNAME}}.yaml
     sources:
       - '{{.templates_dir}}/config-create.yaml.tmpl'
@@ -41,6 +45,8 @@ tasks:
         for host in {{.join_hosts}}; do
           export HARVESTER_HOSTNAME=$host
           export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+          export HARVESTER_VIP={{.HARVESTER_VIP}}
+          export SSH_AUTHORIZED_KEY="{{.SSH_AUTHORIZED_KEY}}"
           envsubst < {{.templates_dir}}/config-join.yaml.tmpl > {{.output_dir}}/config-$host.yaml
         done
     sources:
