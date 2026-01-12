@@ -9,7 +9,8 @@ vars:
   create_host: harvester-1
   join_hosts: harvester-2 harvester-3 harvester-4
   # Non-secret config
-  SSH_AUTHORIZED_KEY: ssh-rsa CHANGEME
+  SSH_AUTHORIZED_KEY:
+    sh: cat ~/.ssh/id_ed25519.pub
   HARVESTER_VIP: 192.168.1.200
   HARVESTER_INSTALL_DEVICE: /dev/sda
 tasks:
