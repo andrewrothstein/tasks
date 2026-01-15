@@ -1,0 +1,102 @@
+---
+version: '3'
+tasks:
+  default:
+    desc: Run npm with arbitrary arguments
+    vars:
+      npm_exe: '{{ .npm_exe | default "npm" }}'
+      npm_args: '{{ .npm_args }}'
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - '{{ .npm_exe }} {{ .npm_args }}'
+
+  install:
+    desc: Install npm dependencies
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      pkg: '{{ .pkg }}'
+      dev: '{{ .dev | default "false" }}'
+      global: '{{ .global | default "false" }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          npm_args: |-
+            install
+            {{- if eq "true" .global }} \
+              --global
+            {{- end }}
+            {{- if eq "true" .dev }} \
+              --save-dev
+            {{- end }}
+            {{- if .pkg }} \
+              {{ .pkg }}
+            {{- end }}
+
+  ci:
+    desc: Clean install from package-lock.json
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          npm_args: ci
+
+  run:
+    desc: Run an npm script
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      script: '{{ .script }}'
+      script_args: '{{ .script_args }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          npm_args: |-
+            run {{ .script }}
+            {{- if .script_args }} \
+              -- {{ .script_args }}
+            {{- end }}
+
+  test:
+    desc: Run npm test
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          npm_args: test
+
+  build:
+    desc: Run npm build script
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: run
+        vars:
+          dir: '{{ .dir }}'
+          script: build
+
+  init:
+    desc: Initialize a new package.json
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      yes: '{{ .yes | default "false" }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          npm_args: |-
+            init
+            {{- if eq "true" .yes }} \
+              --yes
+            {{- end }}
