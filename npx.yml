@@ -1,0 +1,60 @@
+---
+version: '3'
+tasks:
+  default:
+    desc: Run npx with arbitrary arguments
+    vars:
+      npx_exe: '{{ .npx_exe | default "npx" }}'
+      npx_args: '{{ .npx_args }}'
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      pkg: '{{ .pkg }}'
+      yes: '{{ .yes | default "false" }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - |-
+        {{ .npx_exe }}
+        {{- if eq "true" .yes }} \
+          --yes
+        {{- end }}
+        {{- if .pkg }} \
+          {{ .pkg }}
+        {{- end }}
+        {{- if .npx_args }} \
+          {{ .npx_args }}
+        {{- end }}
+
+  run:
+    desc: Run a package with npx
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      pkg: '{{ .pkg }}'
+      pkg_args: '{{ .pkg_args }}'
+      yes: '{{ .yes | default "false" }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          pkg: '{{ .pkg }}'
+          yes: '{{ .yes }}'
+          npx_args: '{{ .pkg_args }}'
+
+  create:
+    desc: Run create-* scaffolding tools (e.g., create-vite, create-react-app)
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      template: '{{ .template }}'
+      project_name: '{{ .project_name }}'
+      template_args: '{{ .template_args }}'
+    dir: '{{ .dir }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          yes: 'true'
+          pkg: '{{ .template }}@latest'
+          npx_args: |-
+            {{ .project_name }}
+            {{- if .template_args }} \
+              {{ .template_args }}
+            {{- end }}

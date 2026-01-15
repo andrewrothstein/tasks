@@ -1,0 +1,130 @@
+---
+version: '3'
+includes:
+  npx:
+    internal: true
+    taskfile: npx.yml
+  npm:
+    internal: true
+    taskfile: npm.yml
+tasks:
+  default:
+    desc: Run playwright with arbitrary arguments
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      playwright_args: '{{ .playwright_args }}'
+    cmds:
+      - task: npx:run
+        vars:
+          dir: '{{ .dir }}'
+          pkg: playwright
+          pkg_args: '{{ .playwright_args }}'
+
+  install:
+    desc: Install Playwright and browsers
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      browsers: '{{ .browsers | default "chromium" }}'
+    cmds:
+      - task: npm:install
+        vars:
+          dir: '{{ .dir }}'
+          pkg: '@playwright/test'
+          dev: 'true'
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: 'install {{ .browsers }}'
+
+  test:
+    desc: Run Playwright tests
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      project: '{{ .project }}'
+      workers: '{{ .workers }}'
+      headed: '{{ .headed | default "false" }}'
+      debug: '{{ .debug | default "false" }}'
+      grep: '{{ .grep }}'
+      test_file: '{{ .test_file }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: |-
+            test
+            {{- if .project }} \
+              --project={{ .project }}
+            {{- end }}
+            {{- if .workers }} \
+              --workers={{ .workers }}
+            {{- end }}
+            {{- if eq "true" .headed }} \
+              --headed
+            {{- end }}
+            {{- if eq "true" .debug }} \
+              --debug
+            {{- end }}
+            {{- if .grep }} \
+              --grep {{ .grep | quote }}
+            {{- end }}
+            {{- if .test_file }} \
+              {{ .test_file }}
+            {{- end }}
+
+  test:ui:
+    desc: Run Playwright tests in UI mode
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: 'test --ui'
+
+  test:headed:
+    desc: Run Playwright tests with visible browser
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      workers: '{{ .workers | default "1" }}'
+    cmds:
+      - task: test
+        vars:
+          dir: '{{ .dir }}'
+          headed: 'true'
+          workers: '{{ .workers }}'
+
+  codegen:
+    desc: Generate tests by recording browser actions
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      url: '{{ .url }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: |-
+            codegen
+            {{- if .url }} \
+              {{ .url }}
+            {{- end }}
+
+  show-report:
+    desc: Open the HTML test report
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: 'show-report'
+
+  trace:
+    desc: Show trace viewer for a trace file
+    vars:
+      dir: '{{ .dir | default .USER_WORKING_DIR }}'
+      trace_file: '{{ .trace_file }}'
+    cmds:
+      - task: default
+        vars:
+          dir: '{{ .dir }}'
+          playwright_args: 'show-trace {{ .trace_file }}'
