@@ -10,3 +10,4 @@ services:
     volumes:
       - ./netbootxyz-dnsmasq.d:/etc/dnsmasq.d:ro
       - ./netbootxyz:/config:rw
+      - ./netbootxyz-assets:/assets:ro

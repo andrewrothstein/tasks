@@ -45,3 +45,6 @@ netbootxyz/menuversion.txt
 netbootxyz/nginx/
 # keep local customizations
 !netbootxyz/menus/local/
+
+# netbootxyz-assets - large binary artifacts served locally
+netbootxyz-assets/

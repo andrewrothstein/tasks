@@ -1,0 +1,4 @@
+#!ipxe
+# Local overrides - use local menus and assets instead of upstream
+set boot_domain ${next-server}
+set live_endpoint http://${next-server}

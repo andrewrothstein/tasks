@@ -1,5 +1,12 @@
 ---
 version: '3'
+
+vars:
+  assets_dir: netbootxyz-assets
+  harvester_version: v1.7.0-fcf0fd7f
+  harvester_base_url: https://github.com/netbootxyz/asset-mirror/releases/download/{{ .harvester_version }}
+  harvester_assets_dir: "{{ .assets_dir }}/asset-mirror/releases/download/{{ .harvester_version }}"
+
 includes:
   docker-compose:
     taskfile: docker-compose.yml
@@ -7,3 +14,23 @@ includes:
     vars:
       p: netbootxyz
       f: netbootxyz-compose.yml
+
+tasks:
+  download-harvester:
+    desc: Download Harvester artifacts for local PXE boot
+    vars:
+      files:
+        - harvester-vmlinuz-amd64
+        - harvester-initrd-amd64
+        - harvester-rootfs-amd64.squashfs
+    cmds:
+      - mkdir -p {{ .harvester_assets_dir }}
+      - for:
+          var: files
+        cmd: |
+          if [ ! -f "{{ .harvester_assets_dir }}/{{ .ITEM }}" ]; then
+            echo "Downloading {{ .ITEM }}..."
+            curl -L -o "{{ .harvester_assets_dir }}/{{ .ITEM }}" "{{ .harvester_base_url }}/{{ .ITEM }}"
+          else
+            echo "{{ .ITEM }} already exists, skipping"
+          fi
