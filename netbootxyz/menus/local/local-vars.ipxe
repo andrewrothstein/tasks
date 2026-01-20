@@ -2,3 +2,9 @@
 # Local overrides - use local menus and assets instead of upstream
 set boot_domain ${next-server}
 set live_endpoint http://${next-server}
+
+# Auto-install: check MAC and chain to host-specific script if matched
+# harvester-1: eno1 (1G), ens4f0 (10G), ens4f1 (10G)
+iseq ${net0/mac} ec:b1:d7:3b:78:d5 && chain local/harvester-1.ipxe ||
+iseq ${net0/mac} 90:e2:ba:cc:62:40 && chain local/harvester-1.ipxe ||
+iseq ${net0/mac} 90:e2:ba:cc:62:41 && chain local/harvester-1.ipxe ||

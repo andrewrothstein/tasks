@@ -11,6 +11,12 @@ os:
 install:
   mode: create
   device: ${HARVESTER_INSTALL_DEVICE}
+  data_disk: ${HARVESTER_DATA_DISKS}
   iso_url: https://releases.rancher.com/harvester/v1.7.0/harvester-v1.7.0-amd64.iso
+  management_interface:
+    interfaces:
+      - name: ${HARVESTER_MGMT_INTERFACE}
+    default_route: true
+    method: dhcp
   vip: ${HARVESTER_VIP}
   vip_mode: static

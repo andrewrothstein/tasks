@@ -1,0 +1,30 @@
+#!ipxe
+# Auto-install script for harvester-1
+# Fully self-contained - no dependencies on other scripts
+
+echo
+echo ========================================
+echo Harvester auto-install for harvester-1
+echo ========================================
+echo
+echo Press Ctrl-C within 5 seconds to abort...
+sleep 5
+
+# Set all required variables
+set harvester_config_url http://${next-server}/harvester/config-harvester-1.yaml
+set harvester_url http://${next-server}/asset-mirror/releases/download/v1.7.0-fcf0fd7f
+set os_arch amd64
+
+# Boot params
+set install_params harvester.install.automatic=true harvester.install.config_url=${harvester_config_url}
+set boot_params ip=dhcp net.ifnames=1 console=ttyS0 console=tty1 rd.cos.disable root=live:${harvester_url}/harvester-rootfs-${os_arch}.squashfs rd.noverifyssl
+
+echo
+echo Loading Harvester v1.7.0...
+echo Config: ${harvester_config_url}
+echo
+
+imgfree
+kernel ${harvester_url}/harvester-vmlinuz-${os_arch} ${install_params} ${boot_params} initrd=initrd.magic
+initrd ${harvester_url}/harvester-initrd-${os_arch}
+boot

@@ -11,8 +11,10 @@ vars:
   # Non-secret config
   SSH_AUTHORIZED_KEY:
     sh: cat ~/.ssh/id_ed25519.pub
-  HARVESTER_VIP: 192.168.1.200
+  HARVESTER_VIP: 192.168.1.2
   HARVESTER_INSTALL_DEVICE: /dev/sda
+  HARVESTER_DATA_DISKS: /dev/sdb,/dev/sdc
+  HARVESTER_MGMT_INTERFACE: eno1
 tasks:
   default:
     deps:
@@ -31,6 +33,8 @@ tasks:
       - |
         export HARVESTER_HOSTNAME={{.HARVESTER_HOSTNAME}}
         export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+        export HARVESTER_DATA_DISKS={{.HARVESTER_DATA_DISKS}}
+        export HARVESTER_MGMT_INTERFACE={{.HARVESTER_MGMT_INTERFACE}}
         export HARVESTER_VIP={{.HARVESTER_VIP}}
         export SSH_AUTHORIZED_KEY="{{.SSH_AUTHORIZED_KEY}}"
         envsubst < {{.templates_dir}}/config-create.yaml.tmpl > {{.output_dir}}/config-{{.HARVESTER_HOSTNAME}}.yaml
@@ -46,6 +50,8 @@ tasks:
         for host in {{.join_hosts}}; do
           export HARVESTER_HOSTNAME=$host
           export HARVESTER_INSTALL_DEVICE={{.HARVESTER_INSTALL_DEVICE}}
+          export HARVESTER_DATA_DISKS={{.HARVESTER_DATA_DISKS}}
+          export HARVESTER_MGMT_INTERFACE={{.HARVESTER_MGMT_INTERFACE}}
           export HARVESTER_VIP={{.HARVESTER_VIP}}
           export SSH_AUTHORIZED_KEY="{{.SSH_AUTHORIZED_KEY}}"
           envsubst < {{.templates_dir}}/config-join.yaml.tmpl > {{.output_dir}}/config-$host.yaml
