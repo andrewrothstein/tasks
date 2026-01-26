@@ -1,0 +1,40 @@
+---
+version: '3'
+vars:
+  LITELLM_OPERATOR_VERSION: 1.0.9
+includes:
+  gh:
+    internal: true
+    taskfile: gh.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: litellm
+      labels: 'istio.io/dataplane-mode=ambient'
+  helm:
+    taskfile: helm.yml
+    vars:
+      namespace: litellm
+      name: litellm-operator
+      chart_repo_name: "oci://ghcr.io/bbdsoftware/charts"
+      chart: litellm-operator
+      chart_ver: '{{ .LITELLM_OPERATOR_VERSION }}'
+tasks:
+  default:
+    cmds:
+      - task: upgrade
+  check:
+    cmds:
+      - task: gh:check
+        vars:
+          org: bbdsoftware
+          repo: litellm-operator
+          current_ver: '{{ .LITELLM_OPERATOR_VERSION }}'
+  upgrade:
+    cmds:
+      - task: kk:ns-create
+      - task: helm:upgrade
+  delete:
+    cmds:
+      - task: helm:delete
+      - task: kk:ns-delete
