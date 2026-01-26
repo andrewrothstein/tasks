@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  repo:
+    taskfile: helm-repo.yml
+    flatten: true
+    vars:
+      n: valkey
+      url: https://valkey.io/valkey-helm
+tasks:
+  default:
+    deps:
+      - task: add
