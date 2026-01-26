@@ -4,8 +4,8 @@ includes:
 #  spire: spire.yml
   spire: pet.yml
 
-#  keycloak-operator: keycloak-operator.yml
-  keycloak-operator: pet.yml
+  keycloak-operator: keycloak-operator.yml
+#  keycloak-operator: pet.yml
 
 #  keycloak: bitnami-keycloak.yml
   keycloak: pet.yml
