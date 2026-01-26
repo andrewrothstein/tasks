@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  KARGO_VER: 1.8.4
+  KARGO_VER: 1.8.6
 includes:
   gh:
     internal: true
