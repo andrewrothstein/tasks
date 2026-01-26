@@ -1,3 +1,159 @@
 ---
-#instances: 1
-#size: 1Gi
+# Number of PostgreSQL instances in the cluster
+instances: 1
+
+# Container image (optional - uses operator default if not set)
+# imageName: "ghcr.io/cloudnative-pg/postgresql:16.4"
+
+# Or reference an ImageCatalog
+# imageCatalogRef:
+#   apiGroup: postgresql.cnpg.io
+#   kind: ImageCatalog
+#   name: postgresql
+#   major: 16
+
+# Cluster description
+# description: "My PostgreSQL cluster"
+
+# Primary storage configuration
+storage:
+  size: 1Gi
+  # storageClass: ""
+  # pvcTemplate:
+  #   accessModes:
+  #     - ReadWriteOnce
+  #   resources:
+  #     requests:
+  #       storage: 1Gi
+  # resizeInUseVolumes: true
+
+# WAL storage (recommended for production)
+# walStorage:
+#   size: 1Gi
+#   storageClass: ""
+
+# Bootstrap configuration (only one method allowed)
+# bootstrap:
+#   # Option 1: Initialize new cluster
+#   initdb:
+#     database: app
+#     owner: app
+#     # secret:
+#     #   name: app-secret
+#     # postInitSQL:
+#     #   - CREATE EXTENSION pg_stat_statements
+#
+#   # Option 2: Restore from backup
+#   # recovery:
+#   #   source: cluster-backup
+#   #   recoveryTarget:
+#   #     targetTime: "2024-01-01 00:00:00.000000+00"
+#
+#   # Option 3: Clone from existing cluster
+#   # pg_basebackup:
+#   #   source: source-cluster
+
+# External clusters for recovery/replica
+# externalClusters:
+#   - name: source-cluster
+#     connectionParameters:
+#       host: source-cluster-rw
+#       user: streaming_replica
+#     password:
+#       name: source-cluster-replica-user
+#       key: password
+
+# Backup configuration
+# backup:
+#   target: prefer-standby
+#   volumeSnapshot:
+#     className: csi-snapclass
+
+# Synchronous replication (for HA)
+# minSyncReplicas: 1
+# maxSyncReplicas: 2
+
+# Monitoring configuration
+# monitoring:
+#   customQueriesConfigMap:
+#     - name: custom-queries
+#       key: queries.yaml
+#   disableDefaultQueries: false
+#   tls:
+#     enabled: true
+
+# PostgreSQL configuration
+# postgresql:
+#   parameters:
+#     shared_buffers: "256MB"
+#     max_connections: "100"
+#   pg_hba:
+#     - host all all 10.0.0.0/8 scram-sha-256
+#   shared_preload_libraries:
+#     - pg_stat_statements
+#   enableAlterSystem: false
+
+# Declarative database/role management
+# managed:
+#   databases:
+#     - name: app
+#       owner: app
+#   roles:
+#     - name: app
+#       login: true
+#       passwordSecret:
+#         name: app-password
+
+# Replication slots
+# replicationSlots:
+#   highAvailability:
+#     enabled: true
+
+# Resource requests/limits
+# resources:
+#   requests:
+#     memory: "512Mi"
+#     cpu: "500m"
+#   limits:
+#     memory: "1Gi"
+#     cpu: "1"
+
+# Pod affinity/anti-affinity
+# affinity:
+#   enablePodAntiAffinity: true
+#   topologyKey: kubernetes.io/hostname
+#   podAntiAffinityType: required
+
+# Topology spread constraints
+# topologySpreadConstraints:
+#   - maxSkew: 1
+#     topologyKey: topology.kubernetes.io/zone
+#     whenUnsatisfiable: DoNotSchedule
+
+# Priority class
+# priorityClassName: high-priority
+
+# Superuser access (default: false)
+# enableSuperuserAccess: false
+# superuserSecret:
+#   name: postgres-superuser
+
+# TLS certificates
+# certificates:
+#   serverTLSSecret: cluster-server-tls
+#   serverCASecret: cluster-ca
+#   clientCASecret: cluster-ca
+
+# Environment variables
+# env:
+#   - name: TZ
+#     value: UTC
+
+# Node maintenance window
+# nodeMaintenanceWindow:
+#   inProgress: false
+#   reusePVC: true
+
+# Helm overrides
+# nameOverride: ""
+# fullnameOverride: ""

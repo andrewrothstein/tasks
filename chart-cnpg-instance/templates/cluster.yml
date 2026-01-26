@@ -1,0 +1,153 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "chart-cnpg-instance.fullname" $ }}
+  labels:
+    {{- include "chart-cnpg-instance.labels" . | nindent 4 }}
+spec:
+  instances: {{ .Values.instances | default 1 }}
+
+  {{- with .Values.imageName }}
+  imageName: {{ . | quote }}
+  {{- end }}
+
+  {{- with .Values.imageCatalogRef }}
+  imageCatalogRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.description }}
+  description: {{ . | quote }}
+  {{- end }}
+
+  storage:
+    size: {{ .Values.storage.size | default "1Gi" | quote }}
+    {{- with .Values.storage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.storage.pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- if hasKey .Values.storage "resizeInUseVolumes" }}
+    resizeInUseVolumes: {{ .Values.storage.resizeInUseVolumes }}
+    {{- end }}
+
+  {{- with .Values.walStorage }}
+  walStorage:
+    size: {{ .size | default "1Gi" | quote }}
+    {{- with .storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+    {{- with .pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- if hasKey . "resizeInUseVolumes" }}
+    resizeInUseVolumes: {{ .resizeInUseVolumes }}
+    {{- end }}
+  {{- end }}
+
+  {{- with .Values.tablespaces }}
+  tablespaces:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.bootstrap }}
+  bootstrap:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.externalClusters }}
+  externalClusters:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.backup }}
+  backup:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.replica }}
+  replica:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- if or .Values.minSyncReplicas .Values.maxSyncReplicas }}
+  minSyncReplicas: {{ .Values.minSyncReplicas | default 0 }}
+  maxSyncReplicas: {{ .Values.maxSyncReplicas | default 0 }}
+  {{- end }}
+
+  {{- with .Values.monitoring }}
+  monitoring:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.postgresql }}
+  postgresql:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.managed }}
+  managed:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.priorityClassName }}
+  priorityClassName: {{ . | quote }}
+  {{- end }}
+
+  {{- if hasKey .Values "enableSuperuserAccess" }}
+  enableSuperuserAccess: {{ .Values.enableSuperuserAccess }}
+  {{- end }}
+
+  {{- with .Values.superuserSecret }}
+  superuserSecret:
+    name: {{ .name | quote }}
+  {{- end }}
+
+  {{- with .Values.certificates }}
+  certificates:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.env }}
+  env:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.envFrom }}
+  envFrom:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.nodeMaintenanceWindow }}
+  nodeMaintenanceWindow:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.serviceAccountTemplate }}
+  serviceAccountTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

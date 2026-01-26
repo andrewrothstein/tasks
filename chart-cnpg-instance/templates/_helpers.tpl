@@ -49,14 +49,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "chart-cnpg-instance.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "chart-cnpg-instance.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "chart-cnpg-instance.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
