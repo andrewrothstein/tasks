@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: coredns
       chart: coredns
-      chart_ver: 1.43.3
+      chart_ver: 1.45.2
       namespace: coredns
       create_namespace: 'true'
       name: coredns

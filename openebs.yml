@@ -10,7 +10,7 @@ includes:
       name: openebs
       chart_repo_name: openebs
       chart: openebs
-      chart_ver: 4.3.3
+      chart_ver: 4.4.0
       helm_args: -f openebs-values.yml
 tasks:
   default:

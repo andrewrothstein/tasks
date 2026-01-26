@@ -6,14 +6,14 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: dragonfly-system
-# failed on 13-DEC-2024
+# failed on 25-JAN-2026
 #      labels: istio.io/dataplane-mode=ambient
   helm:
     taskfile: helm.yml
     vars:
       chart_repo_name: dragonfly
       chart: dragonfly
-      chart_ver: 1.5.9
+      chart_ver: 1.6.8
       namespace: dragonfly-system
       name: dragonfly
   tailscale-ingress:

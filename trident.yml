@@ -14,7 +14,7 @@ includes:
       chart_repo_name: netapp-trident
       chart: trident-operator
       name: trident-operator
-      chart_ver: 100.2410.0
+      chart_ver: 100.2510.0
 tasks:
   default:
     deps:
