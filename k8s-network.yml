@@ -13,8 +13,8 @@ includes:
 #  ingress: nginx-ingress.yml
   ingress: pet.yml
 
-#  envoygateway: envoygateway.yml
-  envoygateway: pet.yml
+  envoygateway: envoygateway.yml
+#  envoygateway: pet.yml
 
 #  gloo-gateway: gloo-gateway.yml
   gloo-gateway: pet.yml
