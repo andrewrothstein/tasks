@@ -21,7 +21,7 @@ includes:
       namespace: kyverno
       name: kyverno-policies
       chart_repo_name: kyverno
-      chart_ver: 3.6.2
+      chart_ver: 3.6.3
       chart: kyverno-policies
 tasks:
   default:
