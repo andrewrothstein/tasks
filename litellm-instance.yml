@@ -1,0 +1,75 @@
+---
+version: '3'
+includes:
+  valkey:
+    taskfile: valkey.yml
+    vars:
+      VALKEY_NAMESPACE: litellm-instance
+      VALKEY_NAME: valkey
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: litellm-instance
+      labels: 'istio.io/dataplane-mode=ambient'
+      k: litellm-instance
+  secrets:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: litellm-instance
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: litellm-instance
+      name: tailscale-ingress
+      helm_args: -f litellm-tailscale-ingress-values.yml
+tasks:
+  default:
+    deps:
+      - upgrade
+  test-secrets:
+    vars:
+      uiUsername: '{{ .uiUsername | default "${LITELLM_UI_USERNAME}" }}'
+      uiPassword: '{{ .uiPassword | default "${LITELLM_UI_PASSWORD}" }}'
+    cmds:
+      - test {{ .uiUsername | quote }}
+      - test {{ .uiPassword | quote }}
+  upgrade:
+    vars:
+      valkeyHost: '{{ .valkeyHost | default "valkey" }}'
+      valkeyPort: '{{ .valkeyPort | default "6379" }}'
+      valkeyPassword: '{{ .valkeyPassword | default "" }}'
+      valkeySecretName: '{{ .valkeySecretName | default "valkey-secret" }}'
+      uiUsername: '{{ .uiUsername | default "${LITELLM_UI_USERNAME}" }}'
+      uiPassword: '{{ .uiPassword | default "${LITELLM_UI_PASSWORD}" }}'
+      adminSecretName: '{{ .adminSecretName | default "litellm-admin-secret" }}'
+    cmds:
+      - task: valkey:upgrade
+      - task: kk:ns-create
+      - task: test-secrets
+        vars:
+          uiUsername: '{{ .uiUsername }}'
+          uiPassword: '{{ .uiPassword }}'
+      - task: secrets:create
+        vars:
+          s: '{{ .valkeySecretName }}'
+          args: >-
+            --from-literal host={{ .valkeyHost | quote }}
+            --from-literal port={{ .valkeyPort | quote }}
+            --from-literal password={{ .valkeyPassword | quote }}
+      - task: secrets:create
+        vars:
+          s: '{{ .adminSecretName }}'
+          args: >-
+            --from-literal ui-username={{ .uiUsername | quote }}
+            --from-literal ui-password={{ .uiPassword | quote }}
+      - task: kk:kapply
+      - task: ingress:upgrade
+  delete:
+    cmds:
+      - task: ingress:delete
+      - task: kk:kdelete
+      - task: kk:ns-delete
+      - task: valkey:delete
+  check:
+    cmds:
+      - task: valkey:check

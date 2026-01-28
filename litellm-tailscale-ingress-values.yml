@@ -1,0 +1,8 @@
+---
+ingresses:
+  - name: litellm
+    host: litellm
+    service:
+      name: litellm-service
+      port:
+        number: 4000

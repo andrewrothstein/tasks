@@ -1,20 +1,15 @@
 ---
 version: '3'
+vars:
+  VALKEY_NAMESPACE: '{{ .VALKEY_NAMESPACE | default "valkey" }}'
+  VALKEY_NAME: '{{ .VALKEY_NAME | default "valkey" }}'
+  VALKEY_VERSION: 0.9.3
 includes:
   repo: valkey-repo.yml
   kk:
     taskfile: kubectl.yml
-    vars:
-      n: valkey
-      labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
-    vars:
-      chart_repo_name: valkey
-      chart: valkey
-      chart_ver: 0.9.3
-      namespace: valkey
-      name: valkey
 tasks:
   default:
     deps:
@@ -24,13 +19,31 @@ tasks:
       - task: repo
     cmds:
       - task: kk:ns-create
+        vars:
+          n: '{{ .VALKEY_NAMESPACE }}'
+          labels: 'istio.io/dataplane-mode=ambient'
       - task: helm:upgrade
+        vars:
+          chart_repo_name: valkey
+          chart: valkey
+          chart_ver: '{{ .VALKEY_VERSION }}'
+          namespace: '{{ .VALKEY_NAMESPACE }}'
+          name: '{{ .VALKEY_NAME }}'
   delete:
     cmds:
       - task: helm:delete
+        vars:
+          namespace: '{{ .VALKEY_NAMESPACE }}'
+          name: '{{ .VALKEY_NAME }}'
       - task: kk:ns-delete
+        vars:
+          n: '{{ .VALKEY_NAMESPACE }}'
   check:
     deps:
       - task: repo
     cmds:
       - task: helm:check
+        vars:
+          chart_repo_name: valkey
+          chart: valkey
+          chart_ver: '{{ .VALKEY_VERSION }}'

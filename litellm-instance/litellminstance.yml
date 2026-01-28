@@ -1,0 +1,39 @@
+---
+apiVersion: litellm.litellm.ai/v1alpha1
+kind: LiteLLMInstance
+metadata:
+  name: litellm
+spec:
+  extraEnvVars:
+    - name: UI_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: litellm-admin-secret
+          key: ui-username
+    - name: UI_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: litellm-admin-secret
+          key: ui-password
+    - name: PROXY_BASE_URL
+      value: https://litellm-omen.elephant-frog.ts.net
+  redisSecretRef:
+    nameRef: valkey-secret
+    keys:
+      hostSecret: host
+      portSecret: port
+      passwordSecret: password
+  databaseSecretRef:
+    nameRef: litellm-db-app
+    keys:
+      hostSecret: host
+      passwordSecret: password
+      usernameSecret: username
+      dbnameSecret: dbname
+  models:
+    - modelName: ollama-qwen3-8b
+      requiresAuth: false
+      identifier: ollama-qwen3-8b
+      liteLLMParams:
+        model: ollama_chat/qwen3:8b
+        apiBase: http://ubuntu-1.elephant-frog.ts.net:11434

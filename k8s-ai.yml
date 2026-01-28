@@ -21,12 +21,20 @@ includes:
 
 #  weaviate: weaviate-helm.yml
   weaviate: pet.yml
+
+  litellm-operator: litellm-operator.yml
+#  litellm-operator: pet.yml
+
+  litellm-instance: litellm-instance.yml
+#  litellm-instance: pet.yml
 tasks:
   default:
     deps:
       - up
   up:
     cmds:
+      - task: litellm-operator:upgrade
+      - task: litellm-instance:upgrade
       - task: qdrant:upgrade
       - task: k8sgpt:upgrade
       - task: milvus:upgrade
@@ -38,13 +46,17 @@ tasks:
     cmds:
       - task: weaviate:delete
       - task: kubeai:delete
-      - task: open-webuid:delete
+      - task: open-webui:delete
       - task: mlflow:delete
       - task: milvus:delete
       - task: k8sgpt:delete
+      - task: litellm-instance:delete
+      - task: litellm-operator:delete
       - task: qdrant:delete
   check:
     cmds:
+      - task: litellm-operator:check
+      - task: litellm-instance:check
       - task: qdrant:check
       - task: k8sgpt:check
       - task: milvus:check
