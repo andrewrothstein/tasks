@@ -5,4 +5,4 @@ metadata:
   name: provider-vault
 spec:
   # https://marketplace.upbound.io/providers/upbound/provider-vault/v1.0.0
-  package: xpkg.upbound.io/upbound/provider-vault:v1.0.0
+  package: xpkg.upbound.io/upbound/provider-vault:v3.0.3

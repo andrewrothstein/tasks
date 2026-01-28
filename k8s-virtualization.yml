@@ -16,11 +16,23 @@ includes:
 #  kubevirt-vms: kubevirt-vm.yml
   kubevirt-vms: pet.yml
 
-#  crossplane: crossplane.yml
-  crossplane: pet.yml
+  crossplane: crossplane.yml
+#  crossplane: pet.yml
 
-#  crossplane-azure: crossplane-azure.yml
-  crossplane-azure: pet.yml
+  crossplane-aws: crossplane-aws.yml
+#  crossplane-aws: pet.yml
+
+  crossplane-azure: crossplane-azure.yml
+#  crossplane-azure: pet.yml
+
+  crossplane-gcp: crossplane-gcp.yml
+#  crossplane-gcp: pet.yml
+
+  crossplane-vault: crossplane-vault.yml
+#  crossplane-vault: pet.yml
+
+  crossplane-terraform: crossplane-terraform.yml
+#  crossplane-terraform: pet.yml
 
 tasks:
   default:
@@ -34,10 +46,18 @@ tasks:
       - task: kubevirt-cdi:apply
       - task: kubevirt-vms:apply
       - task: crossplane:upgrade
+      - task: crossplane-aws:upgrade
       - task: crossplane-azure:upgrade
+      - task: crossplane-gcp:upgrade
+      - task: crossplane-terraform:upgrade
+      - task: crossplane-vault:upgrade
   delete:
     cmds:
+      - task: crossplane-vault:delete
+      - task: crossplane-terraform:delete
+      - task: crossplane-gcp:delete
       - task: crossplane-azure:delete
+      - task: crossplane-aws:delete
       - task: crossplane:delete
       - task: kubevirt-vms:delete
       - task: kubevirt-cdi:delete

@@ -5,4 +5,4 @@ metadata:
   name: provider-aws
 spec:
   # https://marketplace.upbound.io/providers/upbound/provider-family-aws
-  package: xpkg.upbound.io/upbound/provider-family-aws:v1.13.0
+  package: xpkg.upbound.io/upbound/provider-family-aws:v2.3.0

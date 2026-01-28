@@ -15,7 +15,7 @@ includes:
       name: crossplane
       chart_repo_name: crossplane-stable
       chart: crossplane
-      chart_ver: 2.0.2
+      chart_ver: 2.1.3
 tasks:
   default:
     deps:
