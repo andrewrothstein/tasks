@@ -1,0 +1,13 @@
+---
+version: '3'
+includes:
+  kk:
+    flatten: true
+    taskfile: kubectl.yml
+    vars:
+      n: crossplane-system
+      k: crossplane-vault-provider
+tasks:
+  default:
+    deps:
+      - task: kapply
