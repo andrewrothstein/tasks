@@ -4,7 +4,7 @@ coder:
     - name: CODER_PG_CONNECTION_URL
       valueFrom:
         secretKeyRef:
-          name: coder-db-url
-          key: url
+          name: coder-pg-chart-cnpg-instance-app
+          key: uri
     - name: CODER_AUTO_IMPORT_TEMPLATES
       value: kubernetes

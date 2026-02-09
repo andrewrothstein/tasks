@@ -6,22 +6,30 @@ includes:
     vars:
       n: coder
 #      labels: istio.io/dataplane-mode=ambient
-  coderv2-secret:
+  pg-secret:
     taskfile: k8s-literal-secret.yml
     vars:
       n: coder
-      s: coder-db-url
-  postgresql:
-    taskfile: bitnami-postgresql.yml
+      s: coder-pg-user
+  repo: coderv2-repo.yml
+  pg:
+    taskfile: helm.yml
     vars:
       namespace: coder
-  repo: coderv2-repo.yml
+      name: coder-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=coder
+        --set bootstrap.initdb.owner=coder
+        --set bootstrap.initdb.secret.name=coder-pg-user
   coderv2:
     taskfile: helm.yml
     vars:
       chart_repo_name: coder-v2
       chart: coder
-      chart_ver: 2.24.1
+      chart_ver: 2.30.0
       name: coder
       namespace: coder
       helm_args: -f coderv2-values.yml
@@ -43,9 +51,7 @@ tasks:
   upgrade:
     vars:
       admin_username: '{{ .admin_username | default "coder" }}'
-      admin_db: '{{ .admin_db | default "coder" }}'
       admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
-      db_size: '{{ .db_size | default "10gi" }}'
     deps:
       - task: repo
     cmds:
@@ -53,28 +59,23 @@ tasks:
         vars:
           admin_password: '{{ .admin_password }}'
       - task: kk:ns-create
-      - task: postgresql:upgrade
-        vars:
-          admin_username: '{{ .admin_username }}'
-          admin_password: '{{ .admin_password }}'
-          admin_db: '{{ .admin_db }}'
-          db_size: '{{ .db_size }}'
-      - task: coderv2-secret:create
+      - task: pg-secret:create
         vars:
           args: >-
-            --from-literal=url="postgres://{{ .admin_username }}:{{ .admin_password }}@postgresql:5432/{{ .admin_db }}?sslmode=disable"
+            --from-literal=username={{ .admin_username }}
+            --from-literal=password={{ .admin_password }}
+      - task: pg:upgrade
       - task: coderv2:upgrade
       - task: ingress:upgrade
   delete:
     cmds:
       - task: ingress:delete
       - task: coderv2:delete
-      - task: coderv2-secret:delete
-      - task: postgresql:delete
+      - task: pg:delete
+      - task: pg-secret:delete
       - task: kk:ns-delete
   check:
     deps:
       - task: repo
     cmds:
-      - task: postgresql:check
       - task: coderv2:check

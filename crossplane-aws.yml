@@ -10,7 +10,7 @@ tasks:
   default:
     deps:
       - task: kapply
-  kapply:
+  upgrade:
     cmds:
       - task: kk:ns-create
       - task: kk:kapply

@@ -15,7 +15,7 @@ includes:
       name: keda
       chart_repo_name: kedacore
       chart: keda
-      chart_ver: 2.18.3
+      chart_ver: 2.19.0
       helm_args: -f keda-values.yml
 tasks:
   default:

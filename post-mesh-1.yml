@@ -36,8 +36,8 @@ includes:
 #  knative: knative.yml
   knative: pet.yml
 
-#  coderv2: coderv2.yml
-  coderv2: pet.yml
+  coderv2: coderv2.yml
+#  coderv2: pet.yml
 
 tasks:
   default:

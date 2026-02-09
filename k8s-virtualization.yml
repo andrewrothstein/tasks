@@ -22,9 +22,6 @@ includes:
   crossplane-aws-provider: crossplane-aws-provider.yml
 #  crossplane-aws-provider: pet.yml
 
-  crossplane-aws: crossplane-aws.yml
-#  crossplane-aws: pet.yml
-
   crossplane-azure-provider: crossplane-azure-provider.yml
 #  crossplane-azure-provider: pet.yml
 
@@ -34,20 +31,11 @@ includes:
   crossplane-gcp-provider: crossplane-gcp-provider.yml
 #  crossplane-gcp-provider: pet.yml
 
-  crossplane-gcp: crossplane-gcp.yml
-#  crossplane-gcp: pet.yml
-
   crossplane-terraform-provider: crossplane-terraform-provider.yml
 #  crossplane-terraform-provider: pet.yml
 
-  crossplane-terraform: crossplane-terraform.yml
-#  crossplane-terraform: pet.yml
-
   crossplane-vault-provider: crossplane-vault-provider.yml
 #  crossplane-vault-provider: pet.yml
-
-  crossplane-vault: crossplane-vault.yml
-#  crossplane-vault: pet.yml
 
 tasks:
   default:
