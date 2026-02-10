@@ -25,8 +25,8 @@ includes:
   crossplane-azure-provider: crossplane-azure-provider.yml
 #  crossplane-azure-provider: pet.yml
 
-  crossplane-azure: crossplane-azure.yml
-#  crossplane-azure: pet.yml
+#  crossplane-azure: crossplane-azure.yml
+  crossplane-azure: pet.yml
 
   crossplane-gcp-provider: crossplane-gcp-provider.yml
 #  crossplane-gcp-provider: pet.yml
@@ -54,18 +54,10 @@ tasks:
       - task: crossplane-gcp-provider:kapply
       - task: crossplane-terraform-provider:kapply
       - task: crossplane-vault-provider:kapply
-      - task: crossplane-aws:upgrade
       - task: crossplane-azure:upgrade
-      - task: crossplane-gcp:upgrade
-      - task: crossplane-terraform:upgrade
-      - task: crossplane-vault:upgrade
   delete:
     cmds:
-      - task: crossplane-vault:delete
-      - task: crossplane-terraform:delete
-      - task: crossplane-gcp:delete
       - task: crossplane-azure:delete
-      - task: crossplane-aws:delete
       - task: crossplane-vault-provider:delete
       - task: crossplane-terraform-provider:delete
       - task: crossplane-gcp-provider:delete
