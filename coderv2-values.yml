@@ -1,10 +1,18 @@
 ---
 coder:
   env:
-    - name: CODER_PG_CONNECTION_URL
+    - name: PG_USER
       valueFrom:
         secretKeyRef:
-          name: coder-pg-chart-cnpg-instance-app
-          key: uri
+          name: coder-pg-user
+          key: username
+    - name: PG_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: coder-pg-user
+          key: password
+    - name: CODER_PG_CONNECTION_URL
+      value: >-
+        postgresql://$(PG_USER):$(PG_PASSWORD)@coder-pg-chart-cnpg-instance-rw:5432/coder
     - name: CODER_AUTO_IMPORT_TEMPLATES
       value: kubernetes

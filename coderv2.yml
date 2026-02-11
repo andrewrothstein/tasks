@@ -40,6 +40,15 @@ includes:
       name: tailscale-ingress
       helm_args: -f coderv2-tailscale-ingress-values.yml
 tasks:
+  pg-wait:
+    vars:
+      cluster_name: coder-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n coder
+        --for=condition=Ready
+        --timeout=10m
   test-secrets:
     vars:
       admin_password: '{{ .admin_password | default "${CODERV2_POSTGRESQL_PASSWORD}" }}'
@@ -65,6 +74,7 @@ tasks:
             --from-literal=username={{ .admin_username }}
             --from-literal=password={{ .admin_password }}
       - task: pg:upgrade
+      - task: pg-wait
       - task: coderv2:upgrade
       - task: ingress:upgrade
   delete:

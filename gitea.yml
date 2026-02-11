@@ -24,7 +24,7 @@ includes:
       chart: chart-cnpg-instance
       helm_args: >-
         --set instances=1
-        --set size=10Gi
+        --set storage.size=10Gi
   ingress:
     taskfile: tailscale-ingress.yml
     vars:
@@ -41,6 +41,15 @@ tasks:
   pg-secret:
     cmds:
       - task: pg-secret:get
+  pg-wait:
+    vars:
+      cluster_name: gitea-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n gitea
+        --for=condition=Ready
+        --timeout=10m
   default:
     deps:
       - upgrade
@@ -50,6 +59,7 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: pg:upgrade
+      - task: pg-wait
       - task: helm:upgrade
       - task: ingress:upgrade
   delete:
