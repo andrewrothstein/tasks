@@ -33,6 +33,9 @@ includes:
   dragonfly: dragonfly.yml
 #  dragonfly: pet.yml
 
+  cubefs: cubefs.yml
+#  cubefs: pet.yml
+
 tasks:
   default:
     deps:
@@ -49,8 +52,10 @@ tasks:
       - task: openebs:upgrade
       - task: piraeus-operator:apply
       - task: dragonfly:upgrade
+      - task: cubefs:upgrade
   delete:
     cmds:
+      - task: cubefs:delete
       - task: dragonfly:delete
       - task: piraeus-operator:delete
       - task: openebs:delete
@@ -73,3 +78,4 @@ tasks:
       - task: openebs:check
       - task: piraeus-operator:check
       - task: dragonfly:check
+      - task: cubefs:check
