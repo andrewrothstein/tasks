@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  KEYCLOAK_OPERATOR_DEFAULT_VER: 26.5.2
+  KEYCLOAK_OPERATOR_DEFAULT_VER: 26.5.3
   KEYCLOAK_OPERATOR_MIRROR: https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources
   KEYCLOAK_OPERATOR_CRD1: kubernetes/keycloaks.k8s.keycloak.org-v1.yml
   KEYCLOAK_OPERATOR_CRD2: kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
