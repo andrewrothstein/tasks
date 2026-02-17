@@ -15,7 +15,7 @@ includes:
       name: conductor
       chart_repo_name: orkes-helm-charts
       chart: orkes-conductor-standalone
-      chart_ver: 2.6.99
+      chart_ver: 2.7.49
       helm_args: -f orkes-conductor-standalone-values.yml
   ingress:
     taskfile: tailscale-ingress.yml

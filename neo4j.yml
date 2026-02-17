@@ -20,7 +20,7 @@ includes:
       name: neo4j
       chart_repo_name: neo4j
       chart: neo4j
-      chart_ver: 5.26.2
+      chart_ver: 2026.1.4
 tasks:
   default:
     deps:

@@ -20,7 +20,7 @@ includes:
       name: datadog
       chart_repo_name: datadog
       chart: datadog
-      chart_ver: 3.84.2
+      chart_ver: 3.170.1
       helm_args: >-
         -f datadog-values.yml
 tasks:

@@ -18,7 +18,7 @@ includes:
     vars:
       chart_repo_name: chaos-mesh
       chart: chaos-mesh
-      chart_ver: 2.7.1
+      chart_ver: 2.8.1
       namespace: chaos-mesh
       name: chaos-mesh
 #      helm_args: -f chaos-mesh-values.yml

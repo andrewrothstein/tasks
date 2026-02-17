@@ -15,7 +15,7 @@ includes:
       name: conjur-oss
       chart_repo_name: cyberark
       chart: conjur-oss
-      chart_ver: 2.0.7
+      chart_ver: 2.1.1
 tasks:
   default:
     deps:

@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  PREFECT_VER: 2025.1.2233807
+  PREFECT_VER: 2026.2.12200748
 includes:
   repo: prefect-repo.yml
   kk:

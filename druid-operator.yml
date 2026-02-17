@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: datainfra
       chart: druid-operator
-      chart_ver: 0.3.7
+      chart_ver: 0.4.0
       create_namespace: 'true'
       namespace: druid-operator
       name: druid-operator

@@ -14,7 +14,7 @@ includes:
       namespace: hazelcast
       name: operator
       chart_repo_name: hazelcast
-      chart_ver: 5.12.0
+      chart_ver: 5.16.0
       chart: hazelcast-platform-operator
       install: 'true'
       helm_args: -f hazelcast-platform-operator-values.yml

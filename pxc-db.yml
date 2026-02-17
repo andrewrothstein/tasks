@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: percona
       chart: pxc-db
-      chart_ver: 1.16.1
+      chart_ver: 1.19.0
       namespace: pxc-db
       name: pxc-db
 tasks:

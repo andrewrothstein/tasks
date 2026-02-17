@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: projectcalico
       chart: tigera-operator
-      chart_ver: v3.30.3
+      chart_ver: v3.31.3
       create_namespace: 'true'
       namespace: tigera-operator
       name: calico

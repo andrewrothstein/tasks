@@ -14,7 +14,7 @@ includes:
       name: kubeflow
       chart_repo_name: kubeflow
       chart: kubeflow
-      chart_ver: 0.4.0
+      chart_ver: 0.5.1
 tasks:
   default:
     deps:

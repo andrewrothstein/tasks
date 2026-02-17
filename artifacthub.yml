@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: artifact-hub
       chart: artifact-hub
-      chart_ver: 1.20.0
+      chart_ver: 1.22.0
       namespace: artifact-hub
       name: artifact-hub
       helm_args: -f artifacthub-values.yml

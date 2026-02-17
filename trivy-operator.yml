@@ -8,7 +8,7 @@ includes:
     vars:
       chart_repo_name: aqua
       chart: trivy-operator
-      chart_ver: 0.24.1
+      chart_ver: 0.32.0
       create_namespace: 'true'
       namespace: trivy-system
       name: trivy-operator

@@ -13,7 +13,7 @@ includes:
     vars:
       chart_repo_name: taskmedia
       chart: ipsec-vpn-server
-      chart_ver: 2.1.2
+      chart_ver: 2.2.0
       namespace: ipsec-vpn-server
       name: ipsec-vpn-server
 #      helm_args: -f ipsec-vpn-server-values.yml

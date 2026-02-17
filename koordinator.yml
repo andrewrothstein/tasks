@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: koordinator-sh
       chart: koordinator
-      chart_ver: 1.5.0
+      chart_ver: 1.7.0
       name: koordinator
 #      helm_args: -f koordinator-values.yml
 tasks:

@@ -15,7 +15,7 @@ includes:
       name: harbor
       chart_repo_name: harbor
       chart: harbor
-      chart_ver: 1.17.2
+      chart_ver: 1.18.2
   ingress:
     taskfile: tailscale-ingress.yml
     vars:

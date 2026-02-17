@@ -12,7 +12,7 @@ includes:
       name: mysql-operator
       chart_repo_name: mysql-operator
       chart: mysql-operator
-      chart_ver: 2.2.1
+      chart_ver: 2.2.7
 #      helm_args: >-
 #        --values=mysql-operator-values.yml
   kk:

@@ -15,7 +15,7 @@ includes:
       name: wireguard
       chart_repo_name: wireguard
       chart: wireguard
-      chart_ver: 0.26.0
+      chart_ver: 0.31.0
 #      helm_args: -f wireguard-values.yml
 tasks:
   default:

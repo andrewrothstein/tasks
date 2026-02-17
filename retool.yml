@@ -15,7 +15,7 @@ includes:
       name: retool
       chart_repo_name: retool
       chart: retool
-      chart_ver: 6.3.0
+      chart_ver: 6.9.2
 tasks:
   default:
     deps:

@@ -14,7 +14,7 @@ includes:
       name: awx-operator
       chart_repo_name: awx-operator
       chart: awx-operator
-      chart_ver: 3.0.0
+      chart_ver: 3.2.0
   ingress:
     taskfile: tailscale-ingress.yml
     vars:

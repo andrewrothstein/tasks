@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  fleet_ver: 0.11.1
+  fleet_ver: 0.14.2
 includes:
   repo: fleet-repo.yml
   kk:

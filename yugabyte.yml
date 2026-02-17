@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: yugabytedb
       chart: yugabyte
-      chart_ver: 2025.2.0
+      chart_ver: 2025.2.1
       namespace: yugabyte
       name: yugabyte
 #      helm_args: -f yugabyte-values.yml

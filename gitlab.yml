@@ -14,7 +14,7 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 9.7.0
+      chart_ver: 9.8.4
       helm_args: -f gitlab-values.yml
   ingress:
     taskfile: tailscale-ingress.yml

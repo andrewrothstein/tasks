@@ -18,7 +18,7 @@ includes:
     vars:
       chart_repo_name: litmuschaos
       chart: litmus
-      chart_ver: 3.16.0
+      chart_ver: 3.25.0
       namespace: litmus
       name: litmus
 #      helm_args: -f litmus-values.yml

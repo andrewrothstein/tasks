@@ -15,7 +15,7 @@ includes:
       name: questdb
       chart_repo_name: questdb
       chart: questdb
-      chart_ver: 0.42.0
+      chart_ver: 1.0.20
 tasks:
   default:
     deps:

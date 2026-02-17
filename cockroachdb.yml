@@ -16,7 +16,7 @@ includes:
       name: my-cockroachdb
       chart_repo_name: cockroachdb
       chart: cockroachdb
-      chart_ver: 15.0.6
+      chart_ver: 19.0.6
       helm_args: --values cockroachdb-values.yml
 tasks:
   default:
