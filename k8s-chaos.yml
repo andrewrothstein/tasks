@@ -1,12 +1,14 @@
 ---
 version: '3'
-
+vars:
+  chaos_mesh: pet
+  litmuschaos: pet
 includes:
-#  chaos-mesh: chaos-mesh.yml
-  chaos-mesh: pet.yml
+  chaos-mesh:
+    taskfile: '{{ .chaos_mesh }}.yml'
 
-#  litmuschaos: litmuschaos.yml
-  litmuschaos: pet.yml
+  litmuschaos:
+    taskfile: '{{ .litmuschaos }}.yml'
 
 tasks:
   default:

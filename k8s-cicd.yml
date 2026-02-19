@@ -1,56 +1,74 @@
 ---
 version: '3'
+vars:
+  arc: pet
+  conductor: pet
+  drone: pet
+  awx: pet
+  artifactory: pet
+  flux: flux
+  argoproj: argoproj
+  kargo: kargo
+  kro: kro
+  kpack: pet
+  tekton_pipelines: pet
+  tekton_triggers: pet
+  tekton_operator: pet
+  pulumi_kubernetes_operator: pet
+  prefect: pet
+  blue_agent: pet
+  fleet: pet
 includes:
-#  arc: arc.yml
-  arc: pet.yml
+  arc:
+    taskfile: '{{ .arc }}.yml'
 
-#  conductor: orkes-conductor-standalone.yml
-  conductor: pet.yml
+  conductor:
+    taskfile: '{{ .conductor }}.yml'
 
-#  drone: drone.yml
-  drone: pet.yml
+  drone:
+    taskfile: '{{ .drone }}.yml'
 
-#  awx: awx-operator.yml
-  awx: pet.yml
+  awx:
+    taskfile: '{{ .awx }}.yml'
 
-#  artifactory: artifactory-oss.yml
-  artifactory: pet.yml
+  artifactory:
+    taskfile: '{{ .artifactory }}.yml'
 
-  flux: flux.yml
-#  flux: pet.yml
+  flux:
+    taskfile: '{{ .flux }}.yml'
 
-  argoproj: argoproj.yml
-#  argoproj: pet.yml
+  argoproj:
+    taskfile: '{{ .argoproj }}.yml'
 
-  kargo: kargo.yml
-#  kargo: pet.yml
+  kargo:
+    taskfile: '{{ .kargo }}.yml'
 
-  kro: kro.yml
-#  kro: pet.yml
+  kro:
+    taskfile: '{{ .kro }}.yml'
 
-#  kpack: kpack.yml
-  kpack: pet.yml
+  kpack:
+    taskfile: '{{ .kpack }}.yml'
 
-#  tekton-pipelines: tekton-pipelines.yml
-  tekton-pipelines: pet.yml
+  tekton-pipelines:
+    taskfile: '{{ .tekton_pipelines }}.yml'
 
-#  tekton-triggers: tekton-triggers.yml
-  tekton-triggers: pet.yml
+  tekton-triggers:
+    taskfile: '{{ .tekton_triggers }}.yml'
 
-#  tekton-operator: tekton-operator.yml
-  tekton-operator: pet.yml
+  tekton-operator:
+    taskfile: '{{ .tekton_operator }}.yml'
 
-#  pulumi-kubernetes-operator: pulumi-kubernetes-operator.yml
-  pulumi-kubernetes-operator: pet.yml
+  pulumi-kubernetes-operator:
+    taskfile: '{{ .pulumi_kubernetes_operator }}.yml'
 
-#  prefect: prefect.yml
-  prefect: pet.yml
+  prefect:
+    taskfile: '{{ .prefect }}.yml'
 
-#  blue-agent: blue-agent.yml
-  blue-agent: pet.yml
+  blue-agent:
+    taskfile: '{{ .blue_agent }}.yml'
 
-#  fleet: fleet.yml
-  fleet: pet.yml
+  fleet:
+    taskfile: '{{ .fleet }}.yml'
 
 tasks:
   default:

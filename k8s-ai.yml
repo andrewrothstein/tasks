@@ -1,32 +1,42 @@
 ---
 version: '3'
+vars:
+  qdrant: pet
+  k8sgpt: pet
+  milvus: pet
+  mlflow: pet
+  open_webui: open-webui
+  kubeai: pet
+  weaviate: pet
+  litellm_operator: litellm-operator
+  litellm_instance: litellm-instance
 includes:
-#  qdrant: qdrant.yml
-  qdrant: pet.yml
+  qdrant:
+    taskfile: '{{ .qdrant }}.yml'
 
-#  k8sgpt: k8sgpt.yml
-  k8sgpt: pet.yml
+  k8sgpt:
+    taskfile: '{{ .k8sgpt }}.yml'
 
-#  milvus: milvus.yml
-  milvus: pet.yml
+  milvus:
+    taskfile: '{{ .milvus }}.yml'
 
-#  mlflow: mlflow.yml
-  mlflow: pet.yml
+  mlflow:
+    taskfile: '{{ .mlflow }}.yml'
 
-  open-webui: open-webui.yml
-#  open-webui: pet.yml
+  open-webui:
+    taskfile: '{{ .open_webui }}.yml'
 
-#  kubeai: kubeai.yml
-  kubeai: pet.yml
+  kubeai:
+    taskfile: '{{ .kubeai }}.yml'
 
-#  weaviate: weaviate-helm.yml
-  weaviate: pet.yml
+  weaviate:
+    taskfile: '{{ .weaviate }}.yml'
 
-  litellm-operator: litellm-operator.yml
-#  litellm-operator: pet.yml
+  litellm-operator:
+    taskfile: '{{ .litellm_operator }}.yml'
 
-  litellm-instance: litellm-instance.yml
-#  litellm-instance: pet.yml
+  litellm-instance:
+    taskfile: '{{ .litellm_instance }}.yml'
 tasks:
   default:
     deps:

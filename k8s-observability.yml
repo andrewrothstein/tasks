@@ -1,35 +1,46 @@
 ---
 version: '3'
+vars:
+  k8s_dashboard: pet
+  komodor: pet
+  open_telemetry_operator: open-telemetry-operator
+  kube_prometheus_stack: kube-prometheus-stack
+  elk: pet
+  eck: pet
+  jaeger: pet
+  kiali: kiali
+  grafana: pet
+  datadog: pet
 includes:
-#  k8s-dashboard: k8s-dashboard.yml
-  k8s-dashboard: pet.yml
+  k8s-dashboard:
+    taskfile: '{{ .k8s_dashboard }}.yml'
 
-#  komodor: komodor.yml
-  komodor: pet.yml
+  komodor:
+    taskfile: '{{ .komodor }}.yml'
 
-  open-telemetry-operator: open-telemetry-operator.yml
-#  open-telemetry-operator: pet.yml
+  open-telemetry-operator:
+    taskfile: '{{ .open_telemetry_operator }}.yml'
 
-  kube-prometheus-stack: kube-prometheus-stack.yml
-#  kube-prometheus-stack: pet.yml
+  kube-prometheus-stack:
+    taskfile: '{{ .kube_prometheus_stack }}.yml'
 
-#  elk: elk.yml
-  elk: pet.yml
+  elk:
+    taskfile: '{{ .elk }}.yml'
 
-#  eck: eck.yml
-  eck: pet.yml
+  eck:
+    taskfile: '{{ .eck }}.yml'
 
-#  jaeger: jaeger.yml
-  jaeger: pet.yml
+  jaeger:
+    taskfile: '{{ .jaeger }}.yml'
 
-  kiali: kiali.yml
-#  kiali: pet.yml
+  kiali:
+    taskfile: '{{ .kiali }}.yml'
 
-#  grafana: grafana.yml
-  grafana: pet.yml
+  grafana:
+    taskfile: '{{ .grafana }}.yml'
 
-#  datadog: datadog.yml
-  datadog: pet.yml
+  datadog:
+    taskfile: '{{ .datadog }}.yml'
 
 tasks:
   default:

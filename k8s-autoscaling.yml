@@ -1,11 +1,14 @@
 ---
 version: '3'
+vars:
+  keda: keda
+  vpa: pet
 includes:
-  keda: keda.yml
-#  keda: pet.yml
+  keda:
+    taskfile: '{{ .keda }}.yml'
 
-#  vpa: vpa.yml
-  vpa: pet.yml
+  vpa:
+    taskfile: '{{ .vpa }}.yml'
 
 tasks:
   default:

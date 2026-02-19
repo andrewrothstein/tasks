@@ -1,12 +1,14 @@
 ---
 version: '3'
+vars:
+  coredns: pet
+  external_dns: external-dns
 includes:
-#  coredns: coredns.yml
-  coredns: pet.yml
+  coredns:
+    taskfile: '{{ .coredns }}.yml'
 
-#  external-dns: bitnami-external-dns.yml
-  external-dns: external-dns.yml
-#  external-dns: pet.yml
+  external-dns:
+    taskfile: '{{ .external_dns }}.yml'
 tasks:
   default:
     deps:

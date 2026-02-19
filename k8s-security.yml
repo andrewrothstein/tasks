@@ -1,17 +1,22 @@
 ---
 version: '3'
+vars:
+  spire: pet
+  keycloak_operator: keycloak-operator
+  keycloak: pet
+  trivy_operator: pet
 includes:
-#  spire: spire.yml
-  spire: pet.yml
+  spire:
+    taskfile: '{{ .spire }}.yml'
 
-  keycloak-operator: keycloak-operator.yml
-#  keycloak-operator: pet.yml
+  keycloak-operator:
+    taskfile: '{{ .keycloak_operator }}.yml'
 
-#  keycloak: bitnami-keycloak.yml
-  keycloak: pet.yml
+  keycloak:
+    taskfile: '{{ .keycloak }}.yml'
 
-#  trivy-operator: trivy-operator.yml
-  trivy-operator: pet.yml
+  trivy-operator:
+    taskfile: '{{ .trivy_operator }}.yml'
 tasks:
   default:
     deps:

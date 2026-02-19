@@ -1,20 +1,26 @@
 ---
 version: '3'
+vars:
+  pinniped_supervisor: pet
+  pinniped_concierge: pet
+  airflow: pet
+  retool: pet
+  hatchet: hatchet
 includes:
-#  pinniped-supervisor: pinniped-supervisor.yml
-  pinniped-supervisor: pet.yml
+  pinniped-supervisor:
+    taskfile: '{{ .pinniped_supervisor }}.yml'
 
-#  pinniped-concierge: pinniped-concierge.yml
-  pinniped-concierge: pet.yml
+  pinniped-concierge:
+    taskfile: '{{ .pinniped_concierge }}.yml'
 
-#  airflow: apache-airflow.yml
-  airflow: pet.yml
+  airflow:
+    taskfile: '{{ .airflow }}.yml'
 
-#  retool: retool.yml
-  retool: pet.yml
+  retool:
+    taskfile: '{{ .retool }}.yml'
 
-  hatchet: hatchet.yml
-#  hatchet: pet.yml
+  hatchet:
+    taskfile: '{{ .hatchet }}.yml'
 
 tasks:
   default:

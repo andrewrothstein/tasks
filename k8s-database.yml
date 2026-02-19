@@ -1,41 +1,54 @@
 ---
 version: '3'
+vars:
+  pxc_operator: pxc-operator
+  pxc_db: pet
+  postgresql: pet
+  cass_operator: pet
+  cnpg: cnpg
+  redis: pet
+  debezium_operator: pet
+  yugabyte: pet
+  questdb: pet
+  clickhouse: clickhouse
+  cockroachdb: pet
+  neo4j: pet
 includes:
-  pxc-operator: pxc-operator.yml
-#  pxc-operator: pet.yml
+  pxc-operator:
+    taskfile: '{{ .pxc_operator }}.yml'
 
-#  pxc-db: pxc-db.yml
-  pxc-db: pet.yml
+  pxc-db:
+    taskfile: '{{ .pxc_db }}.yml'
 
-#  postgresql: bitnami-postgresql.yml
-  postgresql: pet.yml
+  postgresql:
+    taskfile: '{{ .postgresql }}.yml'
 
-#  cass-operator: cass-operator.yml
-  cass-operator: pet.yml
+  cass-operator:
+    taskfile: '{{ .cass_operator }}.yml'
 
-  cnpg: cnpg.yml
-#  cnpg: pet.yml
+  cnpg:
+    taskfile: '{{ .cnpg }}.yml'
 
-#  redis: redis.yml
-  redis: pet.yml
+  redis:
+    taskfile: '{{ .redis }}.yml'
 
-#  debezium-operator: debezium-operator.yml
-  debezium-operator: pet.yml
+  debezium-operator:
+    taskfile: '{{ .debezium_operator }}.yml'
 
-#  yugabyte: yugabyte.yml
-  yugabyte: pet.yml
+  yugabyte:
+    taskfile: '{{ .yugabyte }}.yml'
 
-#  questdb: questdb.yml
-  questdb: pet.yml
+  questdb:
+    taskfile: '{{ .questdb }}.yml'
 
-  clickhouse: clickhouse.yml
-#  clichouse-operator: pet.yml
+  clickhouse:
+    taskfile: '{{ .clickhouse }}.yml'
 
-#  cockroachdb: cockroackdb.yml
-  cockroachdb: pet.yml
+  cockroachdb:
+    taskfile: '{{ .cockroachdb }}.yml'
 
-#  neo4j: neo4j.yml
-  neo4j: pet.yml
+  neo4j:
+    taskfile: '{{ .neo4j }}.yml'
 
 tasks:
   default:

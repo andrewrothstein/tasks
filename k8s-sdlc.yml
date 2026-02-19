@@ -1,23 +1,30 @@
 ---
 version: '3'
+vars:
+  gitea: pet
+  gitlab: pet
+  artifacthub: pet
+  sonarqube: pet
+  harbor: pet
+  opencost: pet
 includes:
-#  gitea: gitea.yml
-  gitea: pet.yml
+  gitea:
+    taskfile: '{{ .gitea }}.yml'
 
-#  gitlab: gitlab.yml
-  gitlab: pet.yml
+  gitlab:
+    taskfile: '{{ .gitlab }}.yml'
 
-#  artifacthub: artifacthub.yml
-  artifacthub: pet.yml
+  artifacthub:
+    taskfile: '{{ .artifacthub }}.yml'
 
-#  sonarqube: sonarqube.yml
-  sonarqube: pet.yml
+  sonarqube:
+    taskfile: '{{ .sonarqube }}.yml'
 
-#  harbor: harbor.yml
-  harbor: pet.yml
+  harbor:
+    taskfile: '{{ .harbor }}.yml'
 
-#  opencost: opencost.yml
-  opencost: pet.yml
+  opencost:
+    taskfile: '{{ .opencost }}.yml'
 
 tasks:
   default:

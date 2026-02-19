@@ -1,11 +1,14 @@
 ---
 version: '3'
+vars:
+  standalone: pet
+  cluster: pet
 includes:
   operator: redis-operator.yml
-#  standalone: redis-standalone.yml
-  standalone: pet.yml
-#  cluster: redis-cluster.yml
-  cluster: pet.yml
+  standalone:
+    taskfile: '{{ .standalone }}.yml'
+  cluster:
+    taskfile: '{{ .cluster }}.yml'
 tasks:
   default:
     cmds:

@@ -1,12 +1,14 @@
 ---
 version: '3'
-
+vars:
+  nats: nats
+  strimzi_kafka_operator: pet
 includes:
-  nats: nats.yml
-#  nats: pet.yml
+  nats:
+    taskfile: '{{ .nats }}.yml'
 
-#  strimzi-kafka-operator: strimzi-kafka-operator.yml
-  strimzi-kafka-operator: pet.yml
+  strimzi-kafka-operator:
+    taskfile: '{{ .strimzi_kafka_operator }}.yml'
 
 tasks:
   default:

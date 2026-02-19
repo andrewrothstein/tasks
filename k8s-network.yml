@@ -1,23 +1,30 @@
 ---
 version: '3'
+vars:
+  metallb: metallb
+  ngrok_operator: ngrok-operator
+  pomerium_zero: pet
+  ingress: pet
+  envoygateway: envoygateway
+  gloo_gateway: pet
 includes:
-  metallb: metallb.yml
-#  metallb: pet.yml
+  metallb:
+    taskfile: '{{ .metallb }}.yml'
 
-  ngrok-operator: ngrok-operator.yml
-#  ngrok-operator: pet.yml
+  ngrok-operator:
+    taskfile: '{{ .ngrok_operator }}.yml'
 
-#  pomerium-zero: pomerium-zero.yml
-  pomerium-zero: pet.yml
+  pomerium-zero:
+    taskfile: '{{ .pomerium_zero }}.yml'
 
-#  ingress: nginx-ingress.yml
-  ingress: pet.yml
+  ingress:
+    taskfile: '{{ .ingress }}.yml'
 
-  envoygateway: envoygateway.yml
-#  envoygateway: pet.yml
+  envoygateway:
+    taskfile: '{{ .envoygateway }}.yml'
 
-#  gloo-gateway: gloo-gateway.yml
-  gloo-gateway: pet.yml
+  gloo-gateway:
+    taskfile: '{{ .gloo_gateway }}.yml'
 tasks:
   default:
     deps:

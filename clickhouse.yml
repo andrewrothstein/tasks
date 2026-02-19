@@ -1,11 +1,12 @@
 ---
 version: '3'
+vars:
+  instance: pet
 includes:
   operator: clickhouse-operator.yml
-#  operator: pet.yml
 
-#  instance: clickhouse-instance.yml
-  instance: pet.yml
+  instance:
+    taskfile: '{{ .instance }}.yml'
 
 tasks:
   default:

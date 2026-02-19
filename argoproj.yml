@@ -1,17 +1,22 @@
 ---
 version: '3'
+vars:
+  argo: argo
+  argocd: argocd
+  argo_events: pet
+  argo_rollouts: argo-rollouts
 includes:
-#  argo: pet.yml
-  argo: argo.yml
+  argo:
+    taskfile: '{{ .argo }}.yml'
 
-#  argocd: pet.yml
-  argocd: argocd.yml
+  argocd:
+    taskfile: '{{ .argocd }}.yml'
 
-  argo-events: pet.yml
-#  argo-events: argo-events.yml
+  argo-events:
+    taskfile: '{{ .argo_events }}.yml'
 
-#  argo-rollouts: pet.yml
-  argo-rollouts: argo-rollouts.yml
+  argo-rollouts:
+    taskfile: '{{ .argo_rollouts }}.yml'
 tasks:
   default:
     deps:

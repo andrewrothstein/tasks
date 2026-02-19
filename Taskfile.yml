@@ -3,6 +3,12 @@ version: '3'
 dotenv:
   - .env
   - .env.local
+vars:
+  k8s: k8s
+  tailscale: tailscale
+  mesh: istio
+  post_mesh_1: post-mesh-1
+  post_mesh_2: post-mesh-2
 includes:
   # utilities
   ansible-test-role: ansible-test-role.yml
@@ -12,22 +18,22 @@ includes:
   tf-cloudflare-lmgtfy: tf-cloudflare-lmgtfy.yml
   helm-repo: helm-repo.yml
 
-  k8s: k8s.yml
-#  k8s: pet.yml
+  k8s:
+    taskfile: '{{ .k8s }}.yml'
 
-  tailscale: tailscale.yml
-#  tailscale: pet.yml
+  tailscale:
+    taskfile: '{{ .tailscale }}.yml'
 
   gateway-api: gateway-api.yml
 
-  mesh: istio.yml
-#  mesh: pet.yml
+  mesh:
+    taskfile: '{{ .mesh }}.yml'
 
-  post-mesh-1: post-mesh-1.yml
-#  post-mesh-1: pet.yml
+  post-mesh-1:
+    taskfile: '{{ .post_mesh_1 }}.yml'
 
-  post-mesh-2: post-mesh-2.yml
-#  post-mesh-2: pet.yml
+  post-mesh-2:
+    taskfile: '{{ .post_mesh_2 }}.yml'
 
 tasks:
   test:

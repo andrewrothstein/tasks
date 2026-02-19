@@ -1,6 +1,10 @@
 ---
 caddy:
   enabled: false
+postgres:
+  primary:
+    extendedConfiguration: |
+      timezone = 'UTC'
 api:
   deploymentEnvFrom:
     - secretRef:

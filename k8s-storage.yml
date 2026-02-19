@@ -1,40 +1,50 @@
 ---
 version: '3'
-
+vars:
+  rook: pet
+  longhorn: pet
+  csi_driver_nfs: csi-driver-nfs
+  csi_driver_smb: csi-driver-smb
+  trident: pet
+  minio_operator: minio-operator
+  velero: pet
+  openebs: pet
+  piraeus_operator: pet
+  dragonfly: dragonfly
+  cubefs: pet
 includes:
+  rook:
+    taskfile: '{{ .rook }}.yml'
 
-#  rook: rook.yml
-  rook: pet.yml
+  longhorn:
+    taskfile: '{{ .longhorn }}.yml'
 
-#  longhorn: longhorn.yml
-  longhorn: pet.yml
+  csi-driver-nfs:
+    taskfile: '{{ .csi_driver_nfs }}.yml'
 
-  csi-driver-nfs: csi-driver-nfs.yml
-#  csi-driver-nfs: pet.yml
+  csi-driver-smb:
+    taskfile: '{{ .csi_driver_smb }}.yml'
 
-  csi-driver-smb: csi-driver-smb.yml
-#  csi-driver-smb: pet.yml
+  trident:
+    taskfile: '{{ .trident }}.yml'
 
-#  trident: trident.yml
-  trident: pet.yml
+  minio-operator:
+    taskfile: '{{ .minio_operator }}.yml'
 
-  minio-operator: minio-operator.yml
-#  minio-operator: pet.yml
+  velero:
+    taskfile: '{{ .velero }}.yml'
 
-#  velero: velero.yml
-  velero: pet.yml
+  openebs:
+    taskfile: '{{ .openebs }}.yml'
 
-#  openebs: openebs.yml
-  openebs: pet.yml
+  piraeus-operator:
+    taskfile: '{{ .piraeus_operator }}.yml'
 
-#  piraeus-operator: piraeus-operator.yml
-  piraeus-operator: pet.yml
+  dragonfly:
+    taskfile: '{{ .dragonfly }}.yml'
 
-  dragonfly: dragonfly.yml
-#  dragonfly: pet.yml
-
-  cubefs: cubefs.yml
-#  cubefs: pet.yml
+  cubefs:
+    taskfile: '{{ .cubefs }}.yml'
 
 tasks:
   default:

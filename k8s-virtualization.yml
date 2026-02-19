@@ -1,41 +1,54 @@
 ---
 version: '3'
+vars:
+  preprod_vclusters: pet
+  capi_operator: pet
+  kubevirt: pet
+  kubevirt_cdi: pet
+  kubevirt_vms: pet
+  crossplane: crossplane
+  crossplane_aws_provider: crossplane-aws-provider
+  crossplane_azure_provider: crossplane-azure-provider
+  crossplane_azure: pet
+  crossplane_gcp_provider: crossplane-gcp-provider
+  crossplane_terraform_provider: crossplane-terraform-provider
+  crossplane_vault_provider: crossplane-vault-provider
 includes:
-#  preprod-vclusters: preprod-vclusters.yml
-  preprod-vclusters: pet.yml
+  preprod-vclusters:
+    taskfile: '{{ .preprod_vclusters }}.yml'
 
-#  capi-operator: capi-operator.yml
-  capi-operator: pet.yml
+  capi-operator:
+    taskfile: '{{ .capi_operator }}.yml'
 
-#  kubevirt: kubevirt.yml
-  kubevirt: pet.yml
+  kubevirt:
+    taskfile: '{{ .kubevirt }}.yml'
 
-#  kubevirt-cdi: kubevirt-cdi.yml
-  kubevirt-cdi: pet.yml
+  kubevirt-cdi:
+    taskfile: '{{ .kubevirt_cdi }}.yml'
 
-#  kubevirt-vms: kubevirt-vm.yml
-  kubevirt-vms: pet.yml
+  kubevirt-vms:
+    taskfile: '{{ .kubevirt_vms }}.yml'
 
-  crossplane: crossplane.yml
-#  crossplane: pet.yml
+  crossplane:
+    taskfile: '{{ .crossplane }}.yml'
 
-  crossplane-aws-provider: crossplane-aws-provider.yml
-#  crossplane-aws-provider: pet.yml
+  crossplane-aws-provider:
+    taskfile: '{{ .crossplane_aws_provider }}.yml'
 
-  crossplane-azure-provider: crossplane-azure-provider.yml
-#  crossplane-azure-provider: pet.yml
+  crossplane-azure-provider:
+    taskfile: '{{ .crossplane_azure_provider }}.yml'
 
-#  crossplane-azure: crossplane-azure.yml
-  crossplane-azure: pet.yml
+  crossplane-azure:
+    taskfile: '{{ .crossplane_azure }}.yml'
 
-  crossplane-gcp-provider: crossplane-gcp-provider.yml
-#  crossplane-gcp-provider: pet.yml
+  crossplane-gcp-provider:
+    taskfile: '{{ .crossplane_gcp_provider }}.yml'
 
-  crossplane-terraform-provider: crossplane-terraform-provider.yml
-#  crossplane-terraform-provider: pet.yml
+  crossplane-terraform-provider:
+    taskfile: '{{ .crossplane_terraform_provider }}.yml'
 
-  crossplane-vault-provider: crossplane-vault-provider.yml
-#  crossplane-vault-provider: pet.yml
+  crossplane-vault-provider:
+    taskfile: '{{ .crossplane_vault_provider }}.yml'
 
 tasks:
   default:

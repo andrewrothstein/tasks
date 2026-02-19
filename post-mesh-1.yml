@@ -1,19 +1,27 @@
 ---
 version: '3'
+vars:
+  capsule: pet
+  k8s_digester: k8s-digester
+  eraser: eraser
+  reloader: reloader
+  operator_sdk: pet
+  knative: pet
+  coderv2: coderv2
 includes:
   k8s-network: k8s-network.yml
 
-#  capsule: capsule.yml
-  capsule: pet.yml
+  capsule:
+    taskfile: '{{ .capsule }}.yml'
 
-  k8s-digester: k8s-digester.yml
-#  k8s-digester: pet.yml
+  k8s-digester:
+    taskfile: '{{ .k8s_digester }}.yml'
 
-  eraser: eraser.yml
-#  eraser: pet.yml
+  eraser:
+    taskfile: '{{ .eraser }}.yml'
 
-  reloader: reloader.yml
-#  reloader: pet.yml
+  reloader:
+    taskfile: '{{ .reloader }}.yml'
 
   k8s-policy: k8s-policy.yml
   k8s-security: k8s-security.yml
@@ -30,14 +38,14 @@ includes:
   k8s-chaos: k8s-chaos.yml
   k8s-sdlc: k8s-sdlc.yml
 
-#  operator-sdk: operator-sdk.yml
-  operator-sdk: pet.yml
+  operator-sdk:
+    taskfile: '{{ .operator_sdk }}.yml'
 
-#  knative: knative.yml
-  knative: pet.yml
+  knative:
+    taskfile: '{{ .knative }}.yml'
 
-  coderv2: coderv2.yml
-#  coderv2: pet.yml
+  coderv2:
+    taskfile: '{{ .coderv2 }}.yml'
 
 tasks:
   default:

@@ -1,11 +1,14 @@
 ---
 version: '3'
+vars:
+  gatekeeper: pet
+  kyverno: kyverno
 includes:
-#  gatekeeper: gatekeeper.yml
-  gatekeeper: pet.yml
+  gatekeeper:
+    taskfile: '{{ .gatekeeper }}.yml'
 
-  kyverno: kyverno.yml
-#  kyverno: pet.yml
+  kyverno:
+    taskfile: '{{ .kyverno }}.yml'
 
 tasks:
   default:

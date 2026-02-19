@@ -3,6 +3,7 @@ version: '3'
 
 vars:
   CLUSTER_PROVIDER: '{{ .CLUSTER_PROVIDER | default "kind+cilium" }}'
+  metrics_server: metrics-server
 
 includes:
   k3d: k3d.yml
@@ -13,9 +14,8 @@ includes:
   kind+calico: kind+calico.yml
   kind+antrea: kind+antrea.yml
   byo-cluster: byo-cluster.yml  # For externally managed clusters
-  metrics-server: metrics-server.yml
-#  metrics-server: pet.yml
-#  k8s: k3d.yml
+  metrics-server:
+    taskfile: '{{ .metrics_server }}.yml'
   kubectl-config: kubectl-config.yml
 tasks:
   kind-up:
