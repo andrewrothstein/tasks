@@ -32,6 +32,7 @@ tasks:
       wait: '{{ .wait | default "true" }}'
       timeout: '{{ .timeout | default "10m" }}'
       server_side: '{{ .server_side | default "true" }}'
+      skip_crds: '{{ .skip_crds | default "false" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
       - |-
@@ -48,6 +49,9 @@ tasks:
           {{- end }}
           {{- if eq "false" .server_side }} \
           --server-side=false
+          {{- end }}
+          {{- if eq "true" .skip_crds }} \
+          --skip-crds
           {{- end }} \
           {{ .name | quote }} \
           "{{ if .chart_repo_name }}{{ .chart_repo_name }}/

@@ -12,6 +12,16 @@ includes:
     vars:
       n: envoy-gateway-system
       labels: 'istio.io/dataplane-mode=ambient'
+  gw-crds:
+    taskfile: helm.yml
+    vars:
+      namespace: envoy-gateway-system
+      name: envoy-gateway-crds
+      chart_repo_name: oci://docker.io/envoyproxy
+      chart: gateway-crds-helm
+      # https://github.com/envoyproxy/gateway/tags
+      chart_ver: '{{ .ENVOY_GATEWAY_VER }}'
+      helm_args: '--set crds.envoyGateway.enabled=true --set crds.gatewayAPI.enabled=false'
   gw:
     taskfile: helm.yml
     vars:
@@ -21,6 +31,7 @@ includes:
       chart: gateway-helm
       # https://github.com/envoyproxy/gateway/tags
       chart_ver: '{{ .ENVOY_GATEWAY_VER }}'
+      skip_crds: "true"
   aigwkk:
     taskfile: kubectl.yml
     vars:
@@ -51,6 +62,7 @@ tasks:
   upgrade:
     cmds:
       - task: gwkk:ns-create
+      - task: gw-crds:upgrade
       - task: gw:upgrade
       - task: aigwkk:ns-create
       - task: aigw-crds:upgrade
@@ -61,6 +73,7 @@ tasks:
       - task: aigw-crds:delete
       - task: aigwkk:ns-delete
       - task: gw:delete
+      - task: gw-crds:delete
       - task: gwkk:ns-delete
   check:
     cmds:
