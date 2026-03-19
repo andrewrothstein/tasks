@@ -12,7 +12,7 @@ includes:
       namespace: kyverno
       name: kyverno
       chart_repo_name: kyverno
-      chart_ver: 3.7.0
+      chart_ver: 3.7.1
       chart: kyverno
       helm_args: -f kyverno-values.yml
   kyverno_policies:
@@ -21,7 +21,7 @@ includes:
       namespace: kyverno
       name: kyverno-policies
       chart_repo_name: kyverno
-      chart_ver: 3.7.0
+      chart_ver: 3.7.1
       chart: kyverno-policies
 tasks:
   default:

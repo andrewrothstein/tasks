@@ -15,7 +15,7 @@ includes:
       name: openbao
       chart_repo_name: openbao
       chart: openbao
-      chart_ver: 0.25.3
+      chart_ver: 0.26.1
       server_side: 'false'
       helm_args: >-
         -f openbao-values.yml

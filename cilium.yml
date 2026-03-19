@@ -9,7 +9,7 @@ includes:
       name: cilium
       chart_repo_name: cilium
       chart: cilium
-      chart_ver: 1.19.0
+      chart_ver: 1.19.1
       helm_args: -f cilium-values.yml
   ingress:
     taskfile: tailscale-ingress.yml
