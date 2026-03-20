@@ -31,7 +31,7 @@ tasks:
       chart_ver: '{{ .chart_ver }}'
       wait: '{{ .wait | default "true" }}'
       timeout: '{{ .timeout | default "10m" }}'
-      server_side: '{{ .server_side | default "true" }}'
+      force_conflicts: '{{ .force_conflicts | default "false" }}'
       skip_crds: '{{ .skip_crds | default "false" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
@@ -47,8 +47,8 @@ tasks:
           {{- if eq "true" .create_namespace }}  \
           --create-namespace
           {{- end }}
-          {{- if eq "false" .server_side }} \
-          --server-side=false
+          {{- if eq "true" .force_conflicts }} \
+          --force-conflicts
           {{- end }}
           {{- if eq "true" .skip_crds }} \
           --skip-crds
@@ -65,6 +65,58 @@ tasks:
           {{- if .helm_args }} \
           {{ .helm_args }}
           {{- end }}
+  template-apply:
+    desc: "Render chart with helm template and apply via kubectl server-side apply (bypasses release Secret size limit)"
+    vars:
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+      chart_repo_name: '{{ .chart_repo_name }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      helm_args: '{{ .helm_args | default "" }}'
+    cmds:
+      - |-
+        helm \
+          template \
+          {{ .name | quote }} \
+          "{{ if .chart_repo_name }}{{ .chart_repo_name }}/
+          {{- end }}{{ .chart }}"
+          {{- if .chart_ver }} \
+          --version {{ .chart_ver | quote }}
+          {{- end }}
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
+          {{- end }}
+          {{- if .helm_args }} \
+          {{ .helm_args }}
+          {{- end }} \
+          | kubectl apply --server-side --force-conflicts -f -
+  template-delete:
+    desc: "Render chart with helm template and delete via kubectl"
+    vars:
+      namespace: '{{ .namespace }}'
+      name: '{{ .name }}'
+      chart_repo_name: '{{ .chart_repo_name }}'
+      chart: '{{ .chart }}'
+      chart_ver: '{{ .chart_ver }}'
+      helm_args: '{{ .helm_args | default "" }}'
+    cmds:
+      - |-
+        helm \
+          template \
+          {{ .name | quote }} \
+          "{{ if .chart_repo_name }}{{ .chart_repo_name }}/
+          {{- end }}{{ .chart }}"
+          {{- if .chart_ver }} \
+          --version {{ .chart_ver | quote }}
+          {{- end }}
+          {{- if .namespace }} \
+          -n {{ .namespace | quote }}
+          {{- end }}
+          {{- if .helm_args }} \
+          {{ .helm_args }}
+          {{- end }} \
+          | kubectl delete --ignore-not-found -f -
   install:
     vars:
       namespace: '{{ .namespace }}'

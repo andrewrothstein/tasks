@@ -13,7 +13,7 @@ includes:
       chart_repo_name: istio
       chart: ambient
       chart_ver: '{{ .istio_ver }}'
-      server_side: 'false'
+      force_conflicts: 'true'
       helm_args: -f istio-ambient-values.yml
 tasks:
   default:

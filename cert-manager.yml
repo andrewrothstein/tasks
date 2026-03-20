@@ -25,7 +25,7 @@ includes:
       chart_ver: v1.20.0
       chart: cert-manager
       helm_args: -f cert-manager-values.yml
-      server_side: 'false'
+      force_conflicts: 'true'
   approver_policy:
     taskfile: helm.yml
     vars:

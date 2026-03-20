@@ -62,18 +62,18 @@ tasks:
   upgrade:
     cmds:
       - task: gwkk:ns-create
-      - task: gw-crds:upgrade
+      - task: gw-crds:template-apply
       - task: gw:upgrade
       - task: aigwkk:ns-create
-      - task: aigw-crds:upgrade
+      - task: aigw-crds:template-apply
       - task: aigw:upgrade
   delete:
     cmds:
       - task: aigw:delete
-      - task: aigw-crds:delete
+      - task: aigw-crds:template-delete
       - task: aigwkk:ns-delete
       - task: gw:delete
-      - task: gw-crds:delete
+      - task: gw-crds:template-delete
       - task: gwkk:ns-delete
   check:
     cmds:
