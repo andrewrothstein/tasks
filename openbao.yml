@@ -16,7 +16,7 @@ includes:
       chart_repo_name: openbao
       chart: openbao
       chart_ver: 0.26.1
-      server_side: 'false'
+      force_conflicts: 'true'
       helm_args: >-
         -f openbao-values.yml
         --set server.dev.devRootToken="${VAULT_ROOT_TOKEN}"

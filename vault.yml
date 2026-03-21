@@ -28,7 +28,7 @@ includes:
       chart_ver: 0.32.0
       namespace: vault-system
       name: vault
-      server_side: 'false'
+      force_conflicts: 'true'
   ingress:
     taskfile: tailscale-ingress.yml
     vars:
