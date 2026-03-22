@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       chart: argo-rollouts
-      chart_ver: 2.40.6
+      chart_ver: 2.40.8
       name: argo-rollouts
       namespace: argo-rollouts
       labels: 'istio.io/dataplane-mode=ambient'
