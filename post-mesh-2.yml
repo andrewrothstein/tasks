@@ -6,6 +6,7 @@ vars:
   airflow: pet
   retool: pet
   hatchet: hatchet
+  temporal: temporal
 includes:
   pinniped-supervisor:
     taskfile: '{{ .pinniped_supervisor }}.yml'
@@ -22,6 +23,9 @@ includes:
   hatchet:
     taskfile: '{{ .hatchet }}.yml'
 
+  temporal:
+    taskfile: '{{ .temporal }}.yml'
+
 tasks:
   default:
     deps:
@@ -33,8 +37,10 @@ tasks:
       - task: airflow:upgrade
       - task: retool:upgrade
       - task: hatchet:upgrade
+      - task: temporal:upgrade
   delete:
     cmds:
+      - task: temporal:delete
       - task: hatchet:delete
       - task: retool:delete
       - task: airflow:delete
@@ -45,3 +51,4 @@ tasks:
       - task: airflow:check
       - task: retool:check
       - task: hatchet:check
+      - task: temporal:check
