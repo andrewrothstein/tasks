@@ -1,0 +1,10 @@
+---
+gateways:
+  - name: temporal
+    host: temporal
+    routes:
+      - path: /
+        service:
+          name: temporal-web
+          port:
+            number: 8080

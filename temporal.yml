@@ -1,0 +1,92 @@
+---
+version: '3'
+includes:
+  repo: temporal-repo.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: temporal
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: temporal
+      s: temporal-pg-user
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: temporal
+      name: temporal-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=temporal
+        --set bootstrap.initdb.owner=temporal
+        --set bootstrap.initdb.secret.name=temporal-pg-user
+        --set 'bootstrap.initdb.postInitSQL[0]=CREATE DATABASE temporal_visibility OWNER temporal'
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: temporalio
+      chart: temporal
+      chart_ver: 0.73.2
+      namespace: temporal
+      name: temporal
+      timeout: 15m
+      helm_args: -f temporal-values.yml
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: temporal
+      name: temporal-tailscale-ingress
+      helm_args: -f temporal-tailscale-ingress-values.yml
+tasks:
+  pg-wait:
+    vars:
+      cluster_name: temporal-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n temporal
+        --for=condition=Ready
+        --timeout=10m
+  test-secrets:
+    vars:
+      admin_password: '{{ .admin_password | default "${TEMPORAL_POSTGRESQL_PASSWORD}" }}'
+    cmds:
+      - test {{ .admin_password }}
+  default:
+    cmds:
+      - task: upgrade
+  upgrade:
+    vars:
+      admin_username: '{{ .admin_username | default "temporal" }}'
+      admin_password: '{{ .admin_password | default "${TEMPORAL_POSTGRESQL_PASSWORD}" }}'
+    deps:
+      - task: repo
+    cmds:
+      - task: test-secrets
+        vars:
+          admin_password: '{{ .admin_password }}'
+      - task: kk:ns-create
+      - task: pg-secret:create
+        vars:
+          args: >-
+            --from-literal=username={{ .admin_username }}
+            --from-literal=password={{ .admin_password }}
+      - task: pg:upgrade
+      - task: pg-wait
+      - task: helm:upgrade
+      - task: ingress:upgrade
+  delete:
+    cmds:
+      - task: ingress:delete
+      - task: helm:delete
+      - task: pg:delete
+      - task: pg-secret:delete
+      - task: kk:ns-delete
+  check:
+    deps:
+      - task: repo
+    cmds:
+      - task: helm:check
