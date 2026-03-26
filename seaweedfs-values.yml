@@ -1,0 +1,35 @@
+---
+master:
+  replicas: 1
+  data:
+    type: persistentVolumeClaim
+    size: 1Gi
+  logs:
+    type: persistentVolumeClaim
+    size: 1Gi
+
+volume:
+  replicas: 1
+  data:
+    type: persistentVolumeClaim
+    size: 10Gi
+  logs:
+    type: persistentVolumeClaim
+    size: 1Gi
+
+filer:
+  replicas: 1
+  data:
+    type: persistentVolumeClaim
+    size: 1Gi
+  logs:
+    type: persistentVolumeClaim
+    size: 1Gi
+
+s3:
+  enabled: true
+  enableAuth: true
+  existingConfigSecret: seaweedfs-s3-accounts
+  createBuckets:
+    - name: velero
+    - name: cnpg-temporal

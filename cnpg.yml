@@ -16,6 +16,14 @@ includes:
       namespace: cnpg-system
       name: cnpg
       helm_args: -f cnpg-values.yml
+  barman-cloud:
+    taskfile: helm.yml
+    vars:
+      chart_repo_name: cnpg
+      chart: plugin-barman-cloud
+      chart_ver: 0.5.0
+      namespace: cnpg-system
+      name: barman-cloud
   test-instance:
     taskfile: helm.yml
     vars:
@@ -35,6 +43,7 @@ tasks:
     cmds:
       - task: kk:ns-create
       - task: helm:upgrade
+      - task: barman-cloud:upgrade
   test:
     cmds:
       - task: test-instance:create
@@ -44,6 +53,7 @@ tasks:
       - task: test-cluster:ns-delete
   delete:
     cmds:
+      - task: barman-cloud:delete
       - task: helm:delete
       - task: kk:delete
   check:
@@ -51,3 +61,4 @@ tasks:
       - task: repo
     cmds:
       - task: helm:check
+      - task: barman-cloud:check

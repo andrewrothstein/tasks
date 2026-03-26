@@ -154,6 +154,28 @@ storage:
 #   inProgress: false
 #   reusePVC: true
 
+# Barman Cloud Plugin ObjectStore (creates ObjectStore CR)
+# objectStore:
+#   destinationPath: s3://bucket/path/
+#   endpointURL: http://s3.example.com:8333
+#   s3Credentials:
+#     accessKeyId:
+#       name: my-s3-secret
+#       key: ACCESS_KEY_ID
+#     secretAccessKey:
+#       name: my-s3-secret
+#       key: ACCESS_SECRET_KEY
+#   wal:
+#     compression: gzip
+#   retentionPolicy: 7d
+
+# Plugins configuration (CNPG-I plugin system)
+# plugins:
+#   - name: barman-cloud.cloudnative-pg.io
+#     isWALArchiver: true
+#     parameters:
+#       barmanObjectName: my-object-store
+
 # Helm overrides
 # nameOverride: ""
 # fullnameOverride: ""

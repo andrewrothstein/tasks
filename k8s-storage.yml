@@ -6,8 +6,9 @@ vars:
   csi_driver_nfs: csi-driver-nfs
   csi_driver_smb: csi-driver-smb
   trident: pet
-  minio_operator: minio-operator
-  velero: pet
+  minio_operator: pet
+  seaweedfs: seaweedfs
+  velero: velero-seaweedfs
   openebs: pet
   piraeus_operator: pet
   dragonfly: dragonfly
@@ -30,6 +31,9 @@ includes:
 
   minio-operator:
     taskfile: '{{ .minio_operator }}.yml'
+
+  seaweedfs:
+    taskfile: '{{ .seaweedfs }}.yml'
 
   velero:
     taskfile: '{{ .velero }}.yml'
@@ -58,6 +62,7 @@ tasks:
       - task: csi-driver-smb:upgrade
       - task: trident:upgrade
       - task: minio-operator:upgrade
+      - task: seaweedfs:upgrade
       - task: velero:upgrade
       - task: openebs:upgrade
       - task: piraeus-operator:apply
@@ -70,6 +75,7 @@ tasks:
       - task: piraeus-operator:delete
       - task: openebs:delete
       - task: velero:delete
+      - task: seaweedfs:delete
       - task: minio-operator:delete
       - task: trident:delete
       - task: csi-driver-smb:delete
@@ -84,6 +90,7 @@ tasks:
       - task: csi-driver-smb:check
       - task: trident:check
       - task: minio-operator:check
+      - task: seaweedfs:check
       - task: velero:check
       - task: openebs:check
       - task: piraeus-operator:check
