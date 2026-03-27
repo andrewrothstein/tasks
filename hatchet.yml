@@ -93,7 +93,7 @@ tasks:
               -f hatchet-values.yml \
               --set sharedConfig.defaultAdminEmail={{ .admin_email | quote }} \
               --set sharedConfig.defaultAdminPassword={{ .admin_password | quote }} \
-              --set 'sharedConfig.env.DATABASE_URL=postgres://{{ .pg_username }}:{{ .pg_password }}@hatchet-pg-chart-cnpg-instance-rw:5432/hatchet?sslmode=disable'
+              --set sharedConfig.env.DATABASE_URL=postgres://{{ .pg_username }}:{{ .pg_password }}@hatchet-pg-chart-cnpg-instance-rw:5432/hatchet
       - task: ingress:upgrade
   delete:
     cmds:
