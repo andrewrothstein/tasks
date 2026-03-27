@@ -1,0 +1,30 @@
+{{- with .Values.objectStore }}
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "chart-cnpg-instance.fullname" $ }}-backup
+  labels:
+    {{- include "chart-cnpg-instance.labels" $ | nindent 4 }}
+spec:
+  configuration:
+    destinationPath: {{ .destinationPath | quote }}
+    {{- with .endpointURL }}
+    endpointURL: {{ . | quote }}
+    {{- end }}
+    {{- with .s3Credentials }}
+    s3Credentials:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .wal }}
+    wal:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .data }}
+    data:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- with .retentionPolicy }}
+  retentionPolicy: {{ . | quote }}
+  {{- end }}
+{{- end }}

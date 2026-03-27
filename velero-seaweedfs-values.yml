@@ -1,0 +1,26 @@
+---
+configuration:
+  backupStorageLocation:
+    - name: default
+      provider: aws
+      bucket: velero
+      accessMode: ReadWrite
+      default: true
+      config:
+        region: us-east-1
+        s3ForcePathStyle: true
+        s3Url: http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+        publicUrl: http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+  volumeSnapshotLocation:
+    - name: my-volume-snapshot-location
+      provider: aws
+      config:
+        region: us-east-1
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.14.0
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+credentials:
+  existingSecret: velero-seaweedfs-credentials

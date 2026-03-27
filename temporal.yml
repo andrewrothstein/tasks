@@ -11,6 +11,11 @@ includes:
     vars:
       n: temporal
       s: temporal-pg-user
+  pg-barman-s3-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: temporal
+      s: temporal-pg-barman-s3
   pg:
     taskfile: helm.yml
     vars:
@@ -24,6 +29,17 @@ includes:
         --set bootstrap.initdb.owner=temporal
         --set bootstrap.initdb.secret.name=temporal-pg-user
         --set 'bootstrap.initdb.postInitSQL[0]=CREATE DATABASE temporal_visibility OWNER temporal'
+        --set objectStore.destinationPath=s3://cnpg-temporal/
+        --set objectStore.endpointURL=http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+        --set objectStore.s3Credentials.accessKeyId.name=temporal-pg-barman-s3
+        --set objectStore.s3Credentials.accessKeyId.key=ACCESS_KEY_ID
+        --set objectStore.s3Credentials.secretAccessKey.name=temporal-pg-barman-s3
+        --set objectStore.s3Credentials.secretAccessKey.key=ACCESS_SECRET_KEY
+        --set objectStore.wal.compression=gzip
+        --set objectStore.retentionPolicy=7d
+        --set 'plugins[0].name=barman-cloud.cloudnative-pg.io'
+        --set 'plugins[0].isWALArchiver=true'
+        --set 'plugins[0].parameters.barmanObjectName=temporal-pg-chart-cnpg-instance-backup'
   helm:
     taskfile: helm.yml
     vars:
@@ -50,6 +66,18 @@ tasks:
         -n temporal
         --for=condition=Ready
         --timeout=10m
+  create-pg-barman-s3-secret:
+    cmds:
+      - |
+        ACCESS_KEY=$(kubectl get secret seaweedfs-s3-accounts \
+          -n seaweedfs -o jsonpath='{.data.barman_access_key_id}' | base64 -d)
+        SECRET_KEY=$(kubectl get secret seaweedfs-s3-accounts \
+          -n seaweedfs -o jsonpath='{.data.barman_secret_access_key}' | base64 -d)
+        kubectl create secret generic temporal-pg-barman-s3 \
+          -n temporal \
+          --from-literal=ACCESS_KEY_ID="${ACCESS_KEY}" \
+          --from-literal=ACCESS_SECRET_KEY="${SECRET_KEY}" \
+          --dry-run=client -o yaml | kubectl apply -f -
   test-secrets:
     vars:
       admin_password: '{{ .admin_password | default "${TEMPORAL_POSTGRESQL_PASSWORD}" }}'
@@ -74,6 +102,7 @@ tasks:
           args: >-
             --from-literal=username={{ .admin_username }}
             --from-literal=password={{ .admin_password }}
+      - task: create-pg-barman-s3-secret
       - task: pg:upgrade
       - task: pg-wait
       - task: helm:upgrade
@@ -83,6 +112,7 @@ tasks:
       - task: ingress:delete
       - task: helm:delete
       - task: pg:delete
+      - task: pg-barman-s3-secret:delete
       - task: pg-secret:delete
       - task: kk:ns-delete
   check:
