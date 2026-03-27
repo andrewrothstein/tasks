@@ -5,7 +5,23 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: bitnami-keycloak
-#      labels: 'istio.io/dataplane-mode=ambient'
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: bitnami-keycloak
+      s: keycloak-pg-user
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: bitnami-keycloak
+      name: keycloak-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=keycloak
+        --set bootstrap.initdb.owner=keycloak
+        --set bootstrap.initdb.secret.name=keycloak-pg-user
   bitnami-chart:
     taskfile: bitnami-chart.yml
     vars:
@@ -23,6 +39,15 @@ tasks:
   default:
     deps:
       - task: upgrade
+  pg-wait:
+    vars:
+      cluster_name: keycloak-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n bitnami-keycloak
+        --for=condition=Ready
+        --timeout=10m
   test-secrets:
     vars:
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
@@ -34,22 +59,34 @@ tasks:
     vars:
       admin_user: '{{ .admin_user | default "${KEYCLOAK_ADMIN_USER:-admin}" }}'
       admin_password: '{{ .admin_password | default "${KEYCLOAK_ADMIN_PASSWORD}" }}'
+      pg_username: '{{ .pg_username | default "keycloak" }}'
       pg_password: '{{ .pg_password | default "${KEYCLOAK_POSTGRESQL_PASSWORD}" }}'
     cmds:
       - task: kk:ns-create
       - task: test-secrets
+        vars:
+          admin_password: '{{ .admin_password }}'
+          pg_password: '{{ .pg_password }}'
+      - task: pg-secret:create
+        vars:
+          args: >-
+            --from-literal=username={{ .pg_username }}
+            --from-literal=password={{ .pg_password }}
+      - task: pg:upgrade
+      - task: pg-wait
       - task: bitnami-chart:upgrade
         vars:
           helm_args: |
             -f bitnami-keycloak-values.yml \
               --set-string auth.adminUser={{ .admin_user | quote }} \
-              --set-string auth.adminPassword={{ .admin_password | quote }} \
-              --set-string postgresql.auth.password={{ .pg_password | quote }}
+              --set-string auth.adminPassword={{ .admin_password | quote }}
       - task: ingress:upgrade
   delete:
     cmds:
       - task: ingress:delete
       - task: bitnami-chart:delete
+      - task: pg:delete
+      - task: pg-secret:delete
       - task: kk:ns-delete
   check:
     cmds:

@@ -3,6 +3,11 @@ databaseUpgradeReady: true
 unifiedUpgradeAllowed: true
 artifactory:
   postgresql:
-    enabled: true
+    enabled: false
   nginx:
     enabled: false
+  database:
+    type: postgresql
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://artifactory-pg-chart-cnpg-instance-rw:5432/artifactory
+    user: artifactory

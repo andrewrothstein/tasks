@@ -6,6 +6,23 @@ includes:
     vars:
       n: artifactory
       labels: 'istio.io/dataplane-mode=ambient'
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: artifactory
+      s: artifactory-pg-user
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: artifactory
+      name: artifactory-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=artifactory
+        --set bootstrap.initdb.owner=artifactory
+        --set bootstrap.initdb.secret.name=artifactory-pg-user
   repo: jfrog-repo.yml
   helm:
     taskfile: helm.yml
@@ -30,6 +47,15 @@ tasks:
   default:
     deps:
       - upgrade
+  pg-wait:
+    vars:
+      cluster_name: artifactory-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n artifactory
+        --for=condition=Ready
+        --timeout=10m
   test-secrets:
     vars:
       pgAdminPassword: '{{ .pgAdminPassword | default "${ARTIFACTORY_POSTGRESQL_ADMIN_PASSWORD}" }}'
@@ -59,6 +85,13 @@ tasks:
           masterKey: '{{ .masterKey }}'
           joinKey: '{{ .joinKey }}'
           adminPassword: '{{ .adminPassword }}'
+      - task: pg-secret:create
+        vars:
+          args: >-
+            --from-literal=username=artifactory
+            --from-literal=password={{ .pgAdminPassword }}
+      - task: pg:upgrade
+      - task: pg-wait
       - task: secrets:create
         vars:
           s: '{{ .masterKeySecretName }}'
@@ -71,7 +104,7 @@ tasks:
         vars:
           helm_args: |-
             -f artifactory-values.yml \
-              --set artifactory.postgresql.postgresqlPassword={{ .pgAdminPassword | quote }} \
+              --set artifactory.database.password={{ .pgAdminPassword | quote }} \
               --set artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
               --set artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
               --set artifactory.artifactory.admin.password={{ .adminPassword | quote }}
@@ -80,6 +113,8 @@ tasks:
     cmds:
       - task: ingress:delete
       - task: helm:delete
+      - task: pg:delete
+      - task: pg-secret:delete
       - task: kk:ns-delete
   check:
     deps:
