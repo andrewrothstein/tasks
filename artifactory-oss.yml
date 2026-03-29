@@ -32,7 +32,7 @@ includes:
       name: artifactory
       chart_repo_name: jfrog
       chart: artifactory-oss
-      chart_ver: 107.133.8
+      chart_ver: 107.133.15
   ingress:
     taskfile: tailscale-ingress.yml
     vars:
