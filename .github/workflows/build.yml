@@ -52,10 +52,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          module: dagger-ci
+          module: .
           call: >-
             build-and-push
-            --source=..
+            --source=.
             --os=${{ matrix.OS }}
             --os-ver=${{ matrix.OS_VER }}
             --platform=${{ matrix.PLATFORM }}

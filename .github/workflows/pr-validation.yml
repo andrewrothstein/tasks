@@ -40,10 +40,10 @@ jobs:
       - name: Validate build (no push)
         uses: dagger/dagger-for-github@v8.4.1
         with:
-          module: dagger-ci
+          module: .
           call: >-
             validate-matrix-entry
-            --source=..
+            --source=.
             --os=${{ matrix.OS }}
             --os-ver=${{ matrix.OS_VER }}
             --platforms=${{ matrix.PLATFORM }}
