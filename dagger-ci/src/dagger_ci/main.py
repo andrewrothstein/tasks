@@ -102,12 +102,11 @@ class DaggerCi:
         github_token: dagger.Secret,
         os: str,
         os_ver: str,
+        platforms: str = "linux/amd64",
         github_actor: str = "andrewrothstein",
     ) -> list[str]:
         """Build and push images for a single matrix entry."""
-        architectures = ["linux/amd64"]
-        if os in ("alpine", "debian", "ubuntu"):
-            architectures.append("linux/arm64")
+        architectures = [p.strip() for p in platforms.split(",")]
 
         errors = []
         results = []
@@ -136,11 +135,10 @@ class DaggerCi:
         source: dagger.Directory,
         os: str,
         os_ver: str,
+        platforms: str = "linux/amd64",
     ) -> list[str]:
         """Build images for a single matrix entry without pushing (PR validation)."""
-        architectures = ["linux/amd64"]
-        if os in ("alpine", "debian", "ubuntu"):
-            architectures.append("linux/arm64")
+        architectures = [p.strip() for p in platforms.split(",")]
 
         errors = []
         results = []
@@ -172,16 +170,17 @@ class DaggerCi:
     ) -> list[str]:
         """Build and push all platform images from the matrix."""
         matrix_content = await source.file(matrix_file).contents()
-        platforms = json.loads(matrix_content)
+        entries = json.loads(matrix_content)
 
         results = []
-        for platform in platforms:
+        for entry in entries:
             entry_results = await self.build_matrix_entry(
                 source=source,
                 github_token=github_token,
                 github_actor=github_actor,
-                os=platform["OS"],
-                os_ver=platform["OS_VER"],
+                os=entry["OS"],
+                os_ver=entry["OS_VER"],
+                platforms=entry.get("PLATFORMS", "linux/amd64"),
             )
             results.extend(entry_results)
         return results

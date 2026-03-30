@@ -28,7 +28,8 @@ jobs:
           dagger -m dagger-ci call validate-matrix-entry \
             --source=. \
             --os="${{ matrix.dist.OS }}" \
-            --os-ver="${{ matrix.dist.OS_VER }}"
+            --os-ver="${{ matrix.dist.OS_VER }}" \
+            --platforms="${{ matrix.dist.PLATFORMS }}"
     strategy:
       fail-fast: false
       matrix:
