@@ -6,19 +6,13 @@ from dagger import dag, function, object_type
 
 @object_type
 class DaggerCi:
-    def _get_source(self) -> dagger.Directory:
-        """Get the repo root directory from the module's parent."""
-        return dag.current_module().source().directory("..")
-
     @function
     async def build_image(
         self,
+        source: dagger.Directory,
         upstream_registry: str = "ghcr.io",
         upstream_registry_path: str = "andrewrothstein",
         upstream_image_name: str = "docker-ansible",
-        target_registry: str = "ghcr.io",
-        target_registry_path: str = "andrewrothstein",
-        target_image_name: str = "tasks",
         platform: str = "linux/amd64",
         os: str = "ubuntu",
         os_ver: str = "jammy",
@@ -29,8 +23,6 @@ class DaggerCi:
             f"{upstream_registry}/{upstream_registry_path}"
             f"/{upstream_image_name}:{upstream_tag}"
         )
-
-        source = self._get_source()
 
         task_binary = (
             dag.container()
@@ -67,6 +59,7 @@ class DaggerCi:
     @function
     async def build_and_push(
         self,
+        source: dagger.Directory,
         github_token: dagger.Secret,
         github_actor: str = "andrewrothstein",
         target_registry: str = "ghcr.io",
@@ -85,6 +78,7 @@ class DaggerCi:
         )
 
         container = await self.build_image(
+            source=source,
             platform=platform,
             os=os,
             os_ver=os_ver,
@@ -100,40 +94,9 @@ class DaggerCi:
         return f"Published: {published}"
 
     @function
-    async def build_matrix_entry(
-        self,
-        github_token: dagger.Secret,
-        os: str,
-        os_ver: str,
-        platforms: str = "linux/amd64",
-        github_actor: str = "andrewrothstein",
-    ) -> list[str]:
-        """Build and push images for a single matrix entry."""
-        architectures = [p.strip() for p in platforms.split(",")]
-
-        errors = []
-        results = []
-        for arch in architectures:
-            try:
-                result = await self.build_and_push(
-                    github_token=github_token,
-                    github_actor=github_actor,
-                    platform=arch,
-                    os=os,
-                    os_ver=os_ver,
-                )
-                results.append(f"{arch}: {result}")
-            except Exception as e:
-                errors.append(f"{arch}: {e}")
-        if errors:
-            raise RuntimeError(
-                f"Build failed for {os}.{os_ver}: " + "; ".join(errors)
-            )
-        return results
-
-    @function
     async def validate_matrix_entry(
         self,
+        source: dagger.Directory,
         os: str,
         os_ver: str,
         platforms: str = "linux/amd64",
@@ -146,6 +109,7 @@ class DaggerCi:
         for arch in architectures:
             try:
                 container = await self.build_image(
+                    source=source,
                     platform=arch,
                     os=os,
                     os_ver=os_ver,
@@ -158,28 +122,4 @@ class DaggerCi:
             raise RuntimeError(
                 f"Validation failed for {os}.{os_ver}: " + "; ".join(errors)
             )
-        return results
-
-    @function
-    async def build_all(
-        self,
-        github_token: dagger.Secret,
-        github_actor: str = "andrewrothstein",
-        matrix_file: str = "platform-matrix-v1.json",
-    ) -> list[str]:
-        """Build and push all platform images from the matrix."""
-        source = self._get_source()
-        matrix_content = await source.file(matrix_file).contents()
-        entries = json.loads(matrix_content)
-
-        results = []
-        for entry in entries:
-            entry_results = await self.build_matrix_entry(
-                github_token=github_token,
-                github_actor=github_actor,
-                os=entry["OS"],
-                os_ver=entry["OS_VER"],
-                platforms=entry.get("PLATFORMS", "linux/amd64"),
-            )
-            results.extend(entry_results)
         return results

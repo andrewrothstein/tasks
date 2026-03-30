@@ -47,22 +47,22 @@ jobs:
     runs-on: ${{ matrix.RUNNER }}
     steps:
       - uses: actions/checkout@v6
-      - name: publish arch-specific image
-        uses: dagger/dagger-for-github@v8.4.1
+      - name: Install Dagger
+        run: curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo -E sh
+      - name: Publish arch-specific image
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        with:
-          module: dagger-ci
-          call: >-
-            build-and-push
-            --os=${{ matrix.OS }}
-            --os-ver=${{ matrix.OS_VER }}
-            --platform=${{ matrix.PLATFORM }}
-            --github-actor=${{ github.actor }}
-            --github-token=env:GITHUB_TOKEN
-            --target-image-name=tasks
-            --target-registry-path=${{ github.repository_owner }}
-          version: latest
+        run: |
+          dagger call -m dagger-ci \
+            build-and-push \
+            --source=. \
+            --os="${{ matrix.OS }}" \
+            --os-ver="${{ matrix.OS_VER }}" \
+            --platform="${{ matrix.PLATFORM }}" \
+            --github-actor="${{ github.actor }}" \
+            --github-token=env:GITHUB_TOKEN \
+            --target-image-name=tasks \
+            --target-registry-path="${{ github.repository_owner }}"
   merge-manifests:
     needs: [prepare-matrix, publish-arch]
     runs-on: ubuntu-latest

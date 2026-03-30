@@ -37,13 +37,13 @@ jobs:
     runs-on: ${{ matrix.RUNNER }}
     steps:
       - uses: actions/checkout@v6
+      - name: Install Dagger
+        run: curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo -E sh
       - name: Validate build (no push)
-        uses: dagger/dagger-for-github@v8.4.1
-        with:
-          module: dagger-ci
-          call: >-
-            validate-matrix-entry
-            --os=${{ matrix.OS }}
-            --os-ver=${{ matrix.OS_VER }}
-            --platforms=${{ matrix.PLATFORM }}
-          version: latest
+        run: |
+          dagger call -m dagger-ci \
+            validate-matrix-entry \
+            --source=. \
+            --os="${{ matrix.OS }}" \
+            --os-ver="${{ matrix.OS_VER }}" \
+            --platforms="${{ matrix.PLATFORM }}"
