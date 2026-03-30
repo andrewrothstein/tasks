@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Install Dagger
-        run: curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo -E sh
+        run: cd /usr/local && curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
       - name: Publish arch-specific image
         env:
           GITHUB_TOKEN: ${{ github.token }}
