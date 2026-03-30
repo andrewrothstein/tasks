@@ -42,6 +42,12 @@ class DaggerCi:
         return (
             dag.container(platform=dagger.Platform(platform))
             .from_(upstream_image)
+            .with_env_variable(
+                "PATH",
+                "/root/.local/bin:"
+                "/usr/local/sbin:/usr/local/bin:"
+                "/usr/sbin:/usr/bin:/sbin:/bin",
+            )
             .with_file("/tmp/task", task_binary)
             .with_directory("/tasks", source)
             .with_workdir("/tasks")
