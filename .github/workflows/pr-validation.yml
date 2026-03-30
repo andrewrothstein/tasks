@@ -10,7 +10,7 @@ jobs:
     outputs:
       dist: ${{ steps.read-matrix.outputs.dist }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: read platform-matrix-v1.json
         id: read-matrix
         run: echo "dist=$(jq -cr '@json' < platform-matrix-v1.json)" >> $GITHUB_OUTPUT
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare-matrix]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Dagger
         run: |
           cd /usr/local
