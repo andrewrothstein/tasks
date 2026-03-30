@@ -1,11 +1,9 @@
 ---
-name: Build with Dagger
+name: PR Validation
 'on':
-  push:
+  pull_request:
     branches:
       - develop
-  schedule:
-    - cron: '0 0 * * *'
 jobs:
   prepare-matrix:
     runs-on: ubuntu-latest
@@ -16,7 +14,7 @@ jobs:
       - name: read platform-matrix-v1.json
         id: read-matrix
         run: echo "dist=$(jq -cr '@json' < platform-matrix-v1.json)" >> $GITHUB_OUTPUT
-  build:
+  validate-build:
     runs-on: ubuntu-latest
     needs: [prepare-matrix]
     steps:
@@ -25,14 +23,10 @@ jobs:
         run: |
           cd /usr/local
           curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
-      - name: Build and push images
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate build (no push)
         run: |
-          dagger -m dagger-ci call build-matrix-entry \
+          dagger -m dagger-ci call validate-matrix-entry \
             --source=. \
-            --github-token=env:GITHUB_TOKEN \
-            --github-actor="${{ github.actor }}" \
             --os="${{ matrix.dist.OS }}" \
             --os-ver="${{ matrix.dist.OS_VER }}"
     strategy:
