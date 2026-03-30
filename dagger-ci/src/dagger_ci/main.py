@@ -73,7 +73,8 @@ class DaggerCi:
         os_ver: str = "jammy",
     ) -> str:
         """Build and push a single platform image."""
-        target_tag = f"0.0.0-{os}.{os_ver}"
+        arch = platform.split("/")[-1]
+        target_tag = f"0.0.0-{arch}-{os}.{os_ver}"
         target_image = (
             f"{target_registry}/{target_registry_path}"
             f"/{target_image_name}:{target_tag}"

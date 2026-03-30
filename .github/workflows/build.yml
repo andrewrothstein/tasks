@@ -1,5 +1,5 @@
 ---
-name: Build with Dagger
+name: Build and Publish
 'on':
   push:
     branches:
@@ -10,33 +10,95 @@ jobs:
   prepare-matrix:
     runs-on: ubuntu-latest
     outputs:
-      dist: ${{ steps.read-matrix.outputs.dist }}
+      distro: ${{ steps.read-matrix.outputs.distro }}
+      build-matrix: ${{ steps.expand-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
       - name: read platform-matrix-v1.json
         id: read-matrix
-        run: echo "dist=$(jq -cr '@json' < platform-matrix-v1.json)" >> $GITHUB_OUTPUT
-  build:
-    runs-on: ubuntu-latest
+        run: echo "distro=$(jq -cr '@json' < platform-matrix-v1.json)" >> $GITHUB_OUTPUT
+      - name: expand matrix for per-arch builds
+        id: expand-matrix
+        run: |
+          matrix=$(jq -c '
+            [.[] |
+              . as $distro |
+              ($distro.PLATFORMS // "linux/amd64" | split(",")) |
+              .[] |
+              {
+                OS: $distro.OS,
+                OS_VER: $distro.OS_VER,
+                PLATFORM: .,
+                ARCH: (if . == "linux/amd64" then "amd64" else "arm64" end),
+                RUNNER: (if . == "linux/amd64" then "ubuntu-latest" else "ubuntu-24.04-arm" end)
+              }
+            ]
+          ' < platform-matrix-v1.json)
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+  publish-arch:
+    permissions:
+      contents: read
+      packages: write
     needs: [prepare-matrix]
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install Dagger
-        run: |
-          cd /usr/local
-          curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
-      - name: Build and push images
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          dagger -m dagger-ci call build-matrix-entry \
-            --source=. \
-            --github-token=env:GITHUB_TOKEN \
-            --github-actor="${{ github.actor }}" \
-            --os="${{ matrix.dist.OS }}" \
-            --os-ver="${{ matrix.dist.OS_VER }}" \
-            --platforms="${{ matrix.dist.PLATFORMS }}"
     strategy:
       fail-fast: false
       matrix:
-        dist: ${{ fromJSON(needs.prepare-matrix.outputs.dist) }}
+        include: ${{ fromJSON(needs.prepare-matrix.outputs.build-matrix) }}
+    runs-on: ${{ matrix.RUNNER }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: publish arch-specific image
+        uses: dagger/dagger-for-github@v8.4.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          module: dagger-ci
+          call: >-
+            build-and-push
+            --source=..
+            --os=${{ matrix.OS }}
+            --os-ver=${{ matrix.OS_VER }}
+            --platform=${{ matrix.PLATFORM }}
+            --github-actor=${{ github.actor }}
+            --github-token=env:GITHUB_TOKEN
+            --target-image-name=tasks
+            --target-registry-path=${{ github.repository_owner }}
+          version: latest
+  merge-manifests:
+    needs: [prepare-matrix, publish-arch]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: ${{ fromJSON(needs.prepare-matrix.outputs.distro) }}
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Create and push manifest list
+        env:
+          OS: ${{ matrix.distro.OS }}
+          OS_VER: ${{ matrix.distro.OS_VER }}
+          PLATFORMS: ${{ matrix.distro.PLATFORMS || 'linux/amd64' }}
+          GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/tasks
+        run: |
+          TAG="0.0.0-${OS}.${OS_VER}"
+          SOURCE_IMAGES=""
+          if [[ "$PLATFORMS" == *"linux/amd64"* ]]; then
+            SOURCE_IMAGES="${SOURCE_IMAGES} ${GHCR_IMAGE}:0.0.0-amd64-${OS}.${OS_VER}"
+          fi
+          if [[ "$PLATFORMS" == *"linux/arm64"* ]]; then
+            SOURCE_IMAGES="${SOURCE_IMAGES} ${GHCR_IMAGE}:0.0.0-arm64-${OS}.${OS_VER}"
+          fi
+          echo "Creating manifest for ${TAG} from:${SOURCE_IMAGES}"
+          docker buildx imagetools create \
+            -t "${GHCR_IMAGE}:${TAG}" \
+            ${SOURCE_IMAGES}
