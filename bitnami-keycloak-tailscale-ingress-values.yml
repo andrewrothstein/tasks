@@ -1,8 +1,0 @@
----
-ingresses:
-  - name: keycloak
-    host: keycloak
-    service:
-      name: bitnami-keycloak
-      port:
-        number: 8080

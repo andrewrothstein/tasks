@@ -6,6 +6,23 @@ includes:
     taskfile: kubectl.yml
     vars:
       n: hatchet
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: hatchet
+      s: hatchet-pg-user
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: hatchet
+      name: hatchet-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=hatchet
+        --set bootstrap.initdb.owner=hatchet
+        --set bootstrap.initdb.secret.name=hatchet-pg-user
   helm:
     taskfile: helm.yml
     vars:
@@ -20,30 +37,70 @@ includes:
       namespace: hatchet
       name: hatchet-ui-tailscale-ingress
       helm_args: -f hatchet-tailscale-ingress-values.yml
+  shared-config:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: hatchet
+      s: hatchet-shared-config
 tasks:
   default:
     deps:
       - upgrade
+  pg-wait:
+    vars:
+      cluster_name: hatchet-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n hatchet
+        --for=condition=Ready
+        --timeout=10m
+  test-secrets:
+    vars:
+      admin_email: '{{ .admin_email | default "${HATCHET_ADMIN_EMAIL}" }}'
+      admin_password: '{{ .admin_password | default "${HATCHET_ADMIN_PASSWORD}" }}'
+      pg_password: '{{ .pg_password | default "${HATCHET_POSTGRESQL_PASSWORD}" }}'
+    cmds:
+      - test {{ .admin_email | quote }}
+      - test {{ .admin_password | quote }}
+      - test {{ .pg_password | quote }}
   upgrade:
     vars:
       admin_email: '{{ .admin_email | default "${HATCHET_ADMIN_EMAIL}" }}'
       admin_password: '{{ .admin_password | default "${HATCHET_ADMIN_PASSWORD}" }}'
+      pg_username: '{{ .pg_username | default "hatchet" }}'
+      pg_password: '{{ .pg_password | default "${HATCHET_POSTGRESQL_PASSWORD}" }}'
     deps:
       - task: repo
     cmds:
+      - task: test-secrets
+        vars:
+          admin_email: '{{ .admin_email }}'
+          admin_password: '{{ .admin_password }}'
+          pg_password: '{{ .pg_password }}'
       - task: kk:ns-create
+      - task: pg-secret:create
+        vars:
+          args: >-
+            --from-literal=username={{ .pg_username }}
+            --from-literal=password={{ .pg_password }}
+      - task: pg:upgrade
+      - task: pg-wait
       - task: helm:upgrade
         vars:
           helm_args: |-
             \
               -f hatchet-values.yml \
               --set sharedConfig.defaultAdminEmail={{ .admin_email | quote }} \
-              --set sharedConfig.defaultAdminPassword={{ .admin_password | quote }}
+              --set sharedConfig.defaultAdminPassword={{ .admin_password | quote }} \
+              --set sharedConfig.env.DATABASE_URL=postgres://{{ .pg_username }}:{{ .pg_password }}@hatchet-pg-chart-cnpg-instance-rw:5432/hatchet
       - task: ingress:upgrade
   delete:
     cmds:
       - task: ingress:delete
       - task: helm:delete
+      - task: pg:delete
+      - task: pg-secret:delete
       - task: kk:ns-delete
   check:
     deps:

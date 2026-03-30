@@ -7,6 +7,7 @@ vars:
   retool: pet
   hatchet: hatchet
   temporal: temporal
+  gitlab: pet
 includes:
   pinniped-supervisor:
     taskfile: '{{ .pinniped_supervisor }}.yml'
@@ -26,6 +27,9 @@ includes:
   temporal:
     taskfile: '{{ .temporal }}.yml'
 
+  gitlab:
+    taskfile: '{{ .gitlab }}.yml'
+
 tasks:
   default:
     deps:
@@ -38,8 +42,10 @@ tasks:
       - task: retool:upgrade
       - task: hatchet:upgrade
       - task: temporal:upgrade
+      - task: gitlab:upgrade
   delete:
     cmds:
+      - task: gitlab:delete
       - task: temporal:delete
       - task: hatchet:delete
       - task: retool:delete
@@ -52,3 +58,4 @@ tasks:
       - task: retool:check
       - task: hatchet:check
       - task: temporal:check
+      - task: gitlab:check
