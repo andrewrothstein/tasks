@@ -1,16 +1,57 @@
 ---
-certmanager:
-  install: false
 global:
   ingress:
     enabled: false
+    configureCertmanager: false
   initialRootPassword:
     secret: gitlab-root-password
     key: password
   pages:
     enabled: false
+
+  # Use external CNPG PostgreSQL
+  psql:
+    host: gitlab-pg-chart-cnpg-instance-rw
+    port: 5432
+    username: gitlab
+    database: gitlabhq_production
+    password:
+      useSecret: true
+      secret: gitlab-pg-user
+      key: password
+
+  # Use external Valkey instead of bundled bitnami redis
+  redis:
+    auth:
+      enabled: false
+    host: gitlab-valkey
+    port: 6379
+
+  # Use external SeaweedFS for object storage
+  minio:
+    enabled: false
+  appConfig:
+    object_store:
+      enabled: true
+      connection:
+        secret: gitlab-object-storage
+        key: connection
+
+installCertmanager: false
+
 nginx-ingress:
   enabled: false
+
+postgresql:
+  install: false
+
+redis:
+  install: false
+
+registry:
+  ingress:
+    enabled: false
+
 gitlab:
   kas:
     ingress:
@@ -18,9 +59,3 @@ gitlab:
   webservice:
     ingress:
       enabled: false
-minio:
-  ingress:
-    enabled: false
-registry:
-  ingress:
-    enabled: false

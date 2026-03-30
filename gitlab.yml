@@ -7,6 +7,28 @@ includes:
     vars:
       n: gitlab
       labels: 'istio.io/dataplane-mode=ambient'
+  pg-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: gitlab
+      s: gitlab-pg-user
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: gitlab
+      name: gitlab-pg
+      chart: chart-cnpg-instance
+      helm_args: >-
+        --set instances=1
+        --set storage.size=10Gi
+        --set bootstrap.initdb.database=gitlabhq_production
+        --set bootstrap.initdb.owner=gitlab
+        --set bootstrap.initdb.secret.name=gitlab-pg-user
+  valkey:
+    taskfile: valkey.yml
+    vars:
+      VALKEY_NAMESPACE: gitlab
+      VALKEY_NAME: gitlab-valkey
   helm:
     taskfile: helm.yml
     vars:
@@ -14,7 +36,8 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 9.8.4
+      chart_ver: 9.10.1
+      timeout: 15m
       helm_args: -f gitlab-values.yml
   ingress:
     taskfile: tailscale-ingress.yml
@@ -27,33 +50,87 @@ includes:
     vars:
       n: gitlab
       s: gitlab-root-password
+  object-storage:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: gitlab
+      s: gitlab-object-storage
 tasks:
   default:
     deps:
       - upgrade
+  pg-wait:
+    vars:
+      cluster_name: gitlab-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n gitlab
+        --for=condition=Ready
+        --timeout=10m
   test-secrets:
     vars:
       gitlab_root_password: '{{ .gitlab_root_password | default "${GITLAB_ROOT_PASSWORD}" }}'
+      pg_password: '{{ .pg_password | default "${GITLAB_POSTGRESQL_PASSWORD}" }}'
     cmds:
       - test {{ .gitlab_root_password | quote }}
+      - test {{ .pg_password | quote }}
+  create-object-storage-secret:
+    cmds:
+      - |
+        ACCESS_KEY=$(kubectl get secret seaweedfs-s3-accounts \
+          -n seaweedfs -o jsonpath='{.data.admin_access_key_id}' | base64 -d)
+        SECRET_KEY=$(kubectl get secret seaweedfs-s3-accounts \
+          -n seaweedfs -o jsonpath='{.data.admin_secret_access_key}' | base64 -d)
+        kubectl create secret generic gitlab-object-storage \
+          -n gitlab \
+          --from-literal=connection="$(cat <<CONN
+        provider: AWS
+        aws_access_key_id: ${ACCESS_KEY}
+        aws_secret_access_key: ${SECRET_KEY}
+        region: us-east-1
+        endpoint: http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+        path_style: true
+        CONN
+        )" \
+          --dry-run=client -o yaml | kubectl apply -f -
   upgrade:
     vars:
       gitlab_root_password: '{{ .gitlab_root_password | default "${GITLAB_ROOT_PASSWORD}" }}'
+      pg_username: '{{ .pg_username | default "gitlab" }}'
+      pg_password: '{{ .pg_password | default "${GITLAB_POSTGRESQL_PASSWORD}" }}'
     deps:
       - task: repo
     cmds:
-      - task: kk:ns-create
       - task: test-secrets
+        vars:
+          gitlab_root_password: '{{ .gitlab_root_password }}'
+          pg_password: '{{ .pg_password }}'
+      - task: kk:ns-create
+      - task: pg-secret:create
+        vars:
+          args: >-
+            --from-literal=username={{ .pg_username }}
+            --from-literal=password={{ .pg_password }}
+      - task: pg:upgrade
+      - task: pg-wait
       - task: root-password:create
         vars:
           args: >-
             --from-literal=password={{ .gitlab_root_password | quote }}
+      - task: valkey:upgrade
+      - task: create-object-storage-secret
       - task: helm:upgrade
       - task: ingress:upgrade
   delete:
     cmds:
       - task: ingress:delete
       - task: helm:delete
+      - task: valkey:delete
+      - task: pg:delete
+      - task: object-storage:delete
+      - task: root-password:delete
+      - task: pg-secret:delete
       - task: kk:ns-delete
   check:
     deps:
