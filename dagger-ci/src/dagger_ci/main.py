@@ -33,7 +33,7 @@ class DaggerCi:
             .with_exec(["apk", "--no-cache", "add", "ca-certificates", "curl"])
             .with_exec([
                 "sh", "-c",
-                "$(curl --location https://taskfile.dev/install.sh)"
+                "curl --location https://taskfile.dev/install.sh | sh -s"
                 " -- -d -b /tmp",
             ])
             .file("/tmp/task")
@@ -103,6 +103,7 @@ class DaggerCi:
         if os in ("alpine", "debian", "ubuntu"):
             architectures.append("linux/arm64")
 
+        errors = []
         results = []
         for arch in architectures:
             try:
@@ -116,7 +117,11 @@ class DaggerCi:
                 )
                 results.append(f"{arch}: {result}")
             except Exception as e:
-                results.append(f"{arch}: ERROR - {e}")
+                errors.append(f"{arch}: {e}")
+        if errors:
+            raise RuntimeError(
+                f"Build failed for {os}.{os_ver}: " + "; ".join(errors)
+            )
         return results
 
     @function
@@ -131,6 +136,7 @@ class DaggerCi:
         if os in ("alpine", "debian", "ubuntu"):
             architectures.append("linux/arm64")
 
+        errors = []
         results = []
         for arch in architectures:
             try:
@@ -143,7 +149,11 @@ class DaggerCi:
                 await container.sync()
                 results.append(f"{arch}: Build successful for {os}.{os_ver}")
             except Exception as e:
-                results.append(f"{arch}: ERROR - {e}")
+                errors.append(f"{arch}: {e}")
+        if errors:
+            raise RuntimeError(
+                f"Validation failed for {os}.{os_ver}: " + "; ".join(errors)
+            )
         return results
 
     @function
