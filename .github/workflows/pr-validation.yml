@@ -1,0 +1,49 @@
+---
+name: PR Validation
+'on':
+  pull_request:
+    branches:
+      - develop
+jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      build-matrix: ${{ steps.expand-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: expand matrix for per-arch builds
+        id: expand-matrix
+        run: |
+          matrix=$(jq -c '
+            [.[] |
+              . as $distro |
+              ($distro.PLATFORMS // "linux/amd64" | split(",")) |
+              .[] |
+              {
+                OS: $distro.OS,
+                OS_VER: $distro.OS_VER,
+                PLATFORM: .,
+                RUNNER: (if . == "linux/amd64" then "ubuntu-latest" else "ubuntu-24.04-arm" end)
+              }
+            ]
+          ' < platform-matrix-v1.json)
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+  validate-build:
+    needs: [prepare-matrix]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.prepare-matrix.outputs.build-matrix) }}
+    runs-on: ${{ matrix.RUNNER }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Dagger
+        run: cd /usr/local && curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
+      - name: Validate build (no push)
+        run: |
+          dagger call -m dagger-ci \
+            validate-matrix-entry \
+            --source=. \
+            --os="${{ matrix.OS }}" \
+            --os-ver="${{ matrix.OS_VER }}" \
+            --platforms="${{ matrix.PLATFORM }}"
