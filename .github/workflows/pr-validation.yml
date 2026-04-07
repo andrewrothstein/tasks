@@ -10,7 +10,7 @@ jobs:
     outputs:
       build-matrix: ${{ steps.expand-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
       - name: expand matrix for per-arch builds
         id: expand-matrix
         run: |
@@ -36,7 +36,7 @@ jobs:
         include: ${{ fromJSON(needs.prepare-matrix.outputs.build-matrix) }}
     runs-on: ${{ matrix.RUNNER }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
       - name: Install Dagger
         run: cd /usr/local && curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
       - name: Validate build (no push)
