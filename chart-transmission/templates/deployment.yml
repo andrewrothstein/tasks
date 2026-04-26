@@ -1,0 +1,78 @@
+# templates/deployment.yml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "transmission.fullname" . }}
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "transmission.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "transmission.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: transmission
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /usr/local/bin/transmission-daemon
+            - -f
+            - -c
+            - /watch
+            - -w
+            - /downloads
+            - -u
+            - $(TR_USER)
+            - -p
+            - $(TR_PASS)
+          env:
+            - name: TR_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret | default (printf "%s-auth" (include "transmission.fullname" .)) }}
+                  key: {{ .Values.auth.usernameKey | quote }}
+            - name: TR_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret | default (printf "%s-auth" (include "transmission.fullname" .)) }}
+                  key: {{ .Values.auth.passwordKey | quote }}
+          ports:
+            - name: web
+              containerPort: 9091
+              protocol: TCP
+            - name: peer-tcp
+              containerPort: 51413
+              protocol: TCP
+            - name: peer-udp
+              containerPort: 51413
+              protocol: UDP
+          volumeMounts:
+            - name: downloads
+              mountPath: /downloads
+            - name: watch
+              mountPath: /watch
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: downloads
+          {{- if .Values.persistence.downloads.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "transmission.fullname" . }}-downloads
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: watch
+          {{- if .Values.persistence.watch.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "transmission.fullname" . }}-watch
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

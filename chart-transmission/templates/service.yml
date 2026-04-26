@@ -1,0 +1,46 @@
+# templates/service.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "transmission.fullname" . }}-web
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.web.type }}
+  ports:
+    - name: web
+      port: {{ .Values.service.web.port }}
+      targetPort: web
+      protocol: TCP
+  selector:
+    {{- include "transmission.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "transmission.fullname" . }}-peer
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.peer.type }}
+  {{- if and (eq .Values.service.peer.type "LoadBalancer") .Values.service.peer.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.peer.loadBalancerIP }}
+  {{- end }}
+  ports:
+    - name: peer-tcp
+      port: {{ .Values.service.peer.port }}
+      targetPort: peer-tcp
+      protocol: TCP
+      {{- if and (eq .Values.service.peer.type "NodePort") .Values.service.peer.nodePort }}
+      nodePort: {{ .Values.service.peer.nodePort }}
+      {{- end }}
+    - name: peer-udp
+      port: {{ .Values.service.peer.port }}
+      targetPort: peer-udp
+      protocol: UDP
+      {{- if and (eq .Values.service.peer.type "NodePort") .Values.service.peer.nodePort }}
+      nodePort: {{ .Values.service.peer.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "transmission.selectorLabels" . | nindent 4 }}

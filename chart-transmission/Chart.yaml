@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: transmission
+description: |
+  A Helm chart for running the Transmission BitTorrent daemon in Kubernetes.
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"
