@@ -1,0 +1,56 @@
+# values.yaml
+image:
+  repository: ghcr.io/andrewrothstein/ansible-transmission
+  tag: 0.0.0-ubuntu.jammy
+  pullPolicy: IfNotPresent
+
+# Authentication for the WebUI / RPC.
+# Either set username/password inline (chart will create a Secret), or point at
+# an existing Secret with username/password keys via auth.existingSecret.
+auth:
+  username: transmission
+  password: transmission
+  # Name of a pre-existing Secret in the release namespace containing the
+  # credentials. When set, the chart will not render its own Secret and will
+  # mount this one instead.
+  existingSecret: ""
+  usernameKey: username
+  passwordKey: password
+
+resources:
+  limits:
+    memory: 1Gi
+    cpu: 1
+  requests:
+    memory: 256Mi
+    cpu: 100m
+
+# Singleton: transmission writes to RWO volumes, do not scale beyond 1.
+replicaCount: 1
+
+persistence:
+  downloads:
+    enabled: true
+    size: 100Gi
+    storageClass: ""
+    accessMode: ReadWriteOnce
+  watch:
+    enabled: true
+    size: 1Gi
+    storageClass: ""
+    accessMode: ReadWriteOnce
+
+service:
+  # WebUI / RPC service.
+  web:
+    type: ClusterIP
+    port: 9091
+  # BitTorrent peer port. Defaults to ClusterIP — flip to NodePort or
+  # LoadBalancer if inbound peers must reach the daemon directly.
+  peer:
+    type: ClusterIP
+    port: 51413
+    # Optional fixed nodePort when type=NodePort; leave empty to auto-assign.
+    nodePort: ""
+    # Optional fixed loadBalancerIP when type=LoadBalancer.
+    loadBalancerIP: ""

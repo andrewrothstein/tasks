@@ -49,3 +49,7 @@ netbootxyz/nginx/
 
 # netbootxyz-assets - large binary artifacts served locally
 netbootxyz-assets/
+
+# Beads / Dolt files (added by bd init)
+*.db
+.beads-credential-key

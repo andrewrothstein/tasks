@@ -1,0 +1,33 @@
+---
+version: '3'
+includes:
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: transmission
+  helm:
+    taskfile: helm.yml
+    vars:
+      chart: chart-transmission
+      namespace: transmission
+      name: transmission
+  ingress:
+    taskfile: tailscale-ingress.yml
+    vars:
+      namespace: transmission
+      name: tailscale-ingress
+      helm_args: -f transmission-tailscale-ingress-values.yml
+tasks:
+  default:
+    cmds:
+      - task: upgrade
+  upgrade:
+    cmds:
+      - task: kk:ns-create
+      - task: helm:upgrade
+      - task: ingress:upgrade
+  delete:
+    cmds:
+      - task: ingress:delete
+      - task: helm:delete
+      - task: kk:delete
