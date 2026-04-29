@@ -1,21 +1,57 @@
 ---
 version: '3'
 
+# Cluster safety
+# --------------
+# Every task that hits a Kubernetes cluster requires the driver to declare
+# both the kubeconfig file and the context, either by passing
+# kubeconfig=<file> kube_context=<name> on the CLI or by exporting
+# KUBECONFIG and KUBE_CONTEXT in the shell. Missing either is a hard error.
+# The flags --kubeconfig and --context are passed on every kubectl
+# invocation, so current-context drift cannot select the wrong cluster.
+
 vars:
   KUBECTL_TIMEOUT: '{{ .KUBECTL_TIMEOUT | default "300s" }}'
   KUBECTL_DRY_RUN: '{{ .KUBECTL_DRY_RUN | default "false" }}'
 
 tasks:
+  _require-context:
+    internal: true
+    vars:
+      kubeconfig: '{{ .kubeconfig }}'
+      kube_context: '{{ .kube_context }}'
+    cmds:
+      - |-
+        missing=
+        [ -n {{ .kubeconfig | quote }} ]   || missing="${missing}kubeconfig "
+        [ -n {{ .kube_context | quote }} ] || missing="${missing}kube_context "
+        if [ -n "${missing}" ]; then
+          echo "ERROR: kubectl task requires explicit ${missing}declaration." >&2
+          echo "  Pass kubeconfig=<file> kube_context=<name> on the CLI, or" >&2
+          echo "  export KUBECONFIG=<file> KUBE_CONTEXT=<name> in your shell." >&2
+          echo "  This is enforced repo-wide to prevent cross-cluster mishaps." >&2
+          exit 1
+        fi
+
   ns-label:
     desc: "Apply labels to a namespace"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       labels: '{{ .labels }}'
       overwrite: '{{ .overwrite | default "true" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
         {{- if .labels }}
-        kubectl label \
+        kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          label \
           namespace \
           {{ .n | quote }} \
           {{ .labels | quote }}
@@ -29,24 +65,35 @@ tasks:
   ns-create:
     desc: "Create a namespace"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       labels: '{{ .labels }}'
       dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-        kubectl create \
+        kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          create \
           namespace {{ .n | quote }}
         {{- if eq "true" .dry_run }} \
           --dry-run=client
         {{- end }}
       - task: ns-label
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           n: '{{ .n }}'
           labels: '{{ .labels }}'
     status:
       - >-
         {{- if ne "true" .dry_run }}
-        kubectl get namespace {{ .n | quote }}
+        kubectl --kubeconfig {{ .kubeconfig | quote }} --context {{ .kube_context | quote }} get namespace {{ .n | quote }}
         {{- else }}
         false
         {{- end }}
@@ -54,11 +101,20 @@ tasks:
   ns-delete:
     desc: "Delete a namespace"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       force: '{{ .force | default "false" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-        kubectl delete \
+        kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          delete \
           namespace {{ .n | quote }}
         {{- if eq .force "true" }} \
           --force --grace-period=0
@@ -67,6 +123,8 @@ tasks:
   _apply:
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       verb: '{{ .verb }}'
       n: '{{ .n }}'
       f: '{{ .f }}'
@@ -76,8 +134,15 @@ tasks:
       force: '{{ .force | default "false" }}'
       validate: '{{ .validate | default "true" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-          kubectl {{ .verb }}
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            {{ .verb }}
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }}
@@ -103,6 +168,8 @@ tasks:
   create:
     desc: "Create resources from file"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
@@ -111,6 +178,8 @@ tasks:
     cmds:
       - task: _apply
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           verb: create
           n: '{{ .n }}'
           f: '{{ .f }}'
@@ -121,6 +190,8 @@ tasks:
   apply:
     desc: "Apply resources from file"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
@@ -130,6 +201,8 @@ tasks:
     cmds:
       - task: _apply
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           verb: apply
           n: '{{ .n }}'
           f: '{{ .f }}'
@@ -141,6 +214,8 @@ tasks:
   delete:
     desc: "Delete resources from file"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       f: '{{ .f }}'
       literal_f: '{{ .literal_f }}'
@@ -149,6 +224,8 @@ tasks:
     cmds:
       - task: _apply
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           verb: delete
           n: '{{ .n }}'
           f: '{{ .f }}'
@@ -158,13 +235,22 @@ tasks:
   kapply:
     desc: "Apply kustomization"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       k: '{{ .k }}'
       server_side: '{{ .server_side | default "false" }}'
       dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl apply
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            apply
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }}
@@ -181,12 +267,21 @@ tasks:
   kdelete:
     desc: "Delete kustomization"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       k: '{{ .k }}'
       force: '{{ .force | default "false" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl delete
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            delete
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }} \
@@ -198,6 +293,8 @@ tasks:
   patch:
     desc: "Patch a resource"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n | default "default" }}'
       resource: '{{ .resource }}{{ .typeofthing }}'  # Support both names
       name: '{{ .name }}{{ .thingname }}'
@@ -205,8 +302,15 @@ tasks:
       patch: '{{ .patch }}'
       dry_run: '{{ .dry_run | default .KUBECTL_DRY_RUN }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl patch
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            patch
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }} \
@@ -221,6 +325,8 @@ tasks:
   wait:
     desc: "Wait for resource condition"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       resource: '{{ .resource }}'
       name: '{{ .name }}'
@@ -228,8 +334,15 @@ tasks:
       for: '{{ .for | default "condition=ready" }}'
       timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl wait
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            wait
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }} \
@@ -246,6 +359,8 @@ tasks:
   wait-for-pod:
     desc: "Wait for pod condition"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       for: '{{ .for | default "condition=ready" }}'
       n: '{{ .n }}'
       k: '{{ .k }}'
@@ -254,6 +369,8 @@ tasks:
     cmds:
       - task: wait
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           n: '{{ .n }}'
           resource: pod
           selector: '{{ .k }}={{ .v }}'
@@ -263,12 +380,16 @@ tasks:
   wait-for-pod-ready:
     desc: "Wait for pod to be ready"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       k8s_app: '{{ .k8s_app }}'
       timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
     cmds:
       - task: wait-for-pod
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           for: condition=ready
           n: '{{ .n }}'
           k: k8s-app
@@ -278,12 +399,16 @@ tasks:
   wait-for-deployment:
     desc: "Wait for deployment to be ready"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       name: '{{ .name }}'
       timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
     cmds:
       - task: wait
         vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
           n: '{{ .n }}'
           resource: deployment
           name: '{{ .name }}'
@@ -293,13 +418,22 @@ tasks:
   rollout-status:
     desc: "Check rollout status"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       resource: '{{ .resource | default "deployment" }}'
       name: '{{ .name }}'
       timeout: '{{ .timeout | default .KUBECTL_TIMEOUT }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl rollout status
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            rollout status
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }} \
@@ -309,12 +443,21 @@ tasks:
   rollout-restart:
     desc: "Restart a rollout"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       resource: '{{ .resource | default "deployment" }}'
       name: '{{ .name }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-        kubectl rollout restart
+        kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          rollout restart
         {{- if .n }} \
           -n {{ .n | quote }}
         {{- end }} \
@@ -323,13 +466,22 @@ tasks:
   scale:
     desc: "Scale a resource"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       resource: '{{ .resource | default "deployment" }}'
       name: '{{ .name }}'
       replicas: '{{ .replicas }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-        kubectl scale
+        kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          scale
         {{- if .n }} \
           -n {{ .n | quote }}
         {{- end }} \
@@ -338,14 +490,23 @@ tasks:
   exec:
     desc: "Execute command in pod"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       pod: '{{ .pod }}'
       container: '{{ .container }}'
       cmd: '{{ .cmd | default "sh" }}'
       interactive: '{{ .interactive | default "true" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
-          kubectl exec
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            exec
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }}
@@ -360,6 +521,8 @@ tasks:
   logs:
     desc: "Get pod logs"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       pod: '{{ .pod }}'
       container: '{{ .container }}'
@@ -367,8 +530,15 @@ tasks:
       tail: '{{ .tail }}'
       since: '{{ .since }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
-          kubectl logs
+          kubectl \
+            --kubeconfig {{ .kubeconfig | quote }} \
+            --context {{ .kube_context | quote }} \
+            logs
           {{- if .n }} \
             -n {{ .n | quote }}
           {{- end }}
@@ -389,12 +559,21 @@ tasks:
   port-forward:
     desc: "Forward ports to a pod"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: '{{ .n }}'
       resource: '{{ .resource | default "pod" }}'
       name: '{{ .name }}'
       ports: '{{ .ports }}'
     cmds:
-      - kubectl port-forward
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
+      - kubectl \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --context {{ .kube_context | quote }} \
+          port-forward
         {{- if .n }} \
           -n {{ .n | quote }}
         {{- end }} \
