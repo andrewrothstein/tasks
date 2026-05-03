@@ -4,6 +4,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: redis-cluster
       labels: 'istio.io/dataplane-mode=ambient'
       k: redis-cluster

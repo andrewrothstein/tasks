@@ -4,6 +4,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: conjur-oss
       labels: 'istio.io/dataplane-mode=ambient'
   repo: cyberark.yml
@@ -11,6 +13,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: conjur-oss
       name: conjur-oss
       chart_repo_name: cyberark

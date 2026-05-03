@@ -4,6 +4,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       server_side: "true"
       # check here: https://github.com/kubernetes-sigs/gateway-api/releases
       f: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/experimental-install.yaml

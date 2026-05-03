@@ -27,6 +27,8 @@ includes:
   kube-loxilb:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: kube-system
       f: https://raw.githubusercontent.com/loxilb-io/kube-loxilb/v0.8.3/manifest/kube-loxilb.yaml
 tasks:

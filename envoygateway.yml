@@ -10,11 +10,15 @@ includes:
   gwkk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: envoy-gateway-system
       labels: 'istio.io/dataplane-mode=ambient'
   gw-crds:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: envoy-gateway-system
       name: envoy-gateway-crds
       chart_repo_name: oci://docker.io/envoyproxy
@@ -25,6 +29,8 @@ includes:
   gw:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: envoy-gateway-system
       name: envoy-gateway
       chart_repo_name: oci://docker.io/envoyproxy
@@ -35,11 +41,15 @@ includes:
   aigwkk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: envoy-ai-gateway-system
       labels: 'istio.io/dataplane-mode=ambient'
   aigw-crds:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: envoy-ai-gateway-system
       name: aieg-crds
       chart_repo_name: oci://docker.io/envoyproxy
@@ -49,6 +59,8 @@ includes:
   aigw:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: envoy-ai-gateway-system
       name: aieg
       chart_repo_name: oci://docker.io/envoyproxy

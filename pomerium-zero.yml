@@ -5,6 +5,8 @@ includes:
     taskfile: kubectl.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       k: pomerium-zero
   token:
     taskfile: k8s-literal-secret.yml
