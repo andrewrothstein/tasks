@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: percona
       chart: pxc-operator
-      chart_ver: 1.19.0
+      chart_ver: 1.19.1
       namespace: pxc-operator
       name: pxc-operator
       force_conflicts: 'true'

@@ -28,7 +28,7 @@ includes:
     vars:
       chart_repo_name: hatchet
       chart: hatchet-stack
-      chart_ver: 0.10.4
+      chart_ver: 0.10.5
       namespace: hatchet
       name: hatchet-stack
   ingress:

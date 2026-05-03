@@ -3,7 +3,7 @@ version: '3'
 vars:
   VALKEY_NAMESPACE: '{{ .VALKEY_NAMESPACE | default "valkey" }}'
   VALKEY_NAME: '{{ .VALKEY_NAME | default "valkey" }}'
-  VALKEY_VERSION: 0.9.3
+  VALKEY_VERSION: 0.9.4
 includes:
   repo: valkey-repo.yml
   kk:

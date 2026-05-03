@@ -28,7 +28,7 @@ includes:
     vars:
       chart_repo_name: vmware-tanzu
       chart: velero
-      chart_ver: 11.3.2
+      chart_ver: 12.0.1
       namespace: velero
       name: velero
       helm_args: -f velero-values.yml
