@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: tailscale
       chart: tailscale-operator
-      chart_ver: 1.96.5
+      chart_ver: 1.98.4
       namespace: tailscale
       name: tailscale
       helm_args: |-
