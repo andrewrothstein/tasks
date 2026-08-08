@@ -9,6 +9,8 @@ includes:
   hello-world:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       f: tekton-helloworld.yml
 tasks:
   apply:

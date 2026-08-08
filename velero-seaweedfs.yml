@@ -4,6 +4,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: velero
       labels: 'istio.io/dataplane-mode=ambient'
   velero-seaweedfs-credentials:
@@ -15,6 +17,8 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: vmware-tanzu
       chart: velero
       chart_ver: 12.0.0

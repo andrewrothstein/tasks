@@ -4,6 +4,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: coder
 #      labels: istio.io/dataplane-mode=ambient
   pg-secret:
@@ -15,6 +17,8 @@ includes:
   pg:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: coder
       name: coder-pg
       chart: chart-cnpg-instance
@@ -27,6 +31,8 @@ includes:
   coderv2:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: coder-v2
       chart: coder
       chart_ver: 2.32.1

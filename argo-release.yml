@@ -4,9 +4,14 @@ includes:
   repo: argo-repo.yml
   kk:
     taskfile: kubectl.yml
+    vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
   helm:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: argo
 tasks:
   upgrade:

@@ -5,6 +5,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: cert-manager
       labels: 'istio.io/dataplane-mode=ambient'
       k: cert-manager
@@ -19,6 +21,8 @@ includes:
   cm:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: cert-manager
       name: cert-manager
       chart_repo_name: jetstack
@@ -29,6 +33,8 @@ includes:
   approver_policy:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: cert-manager
       name: cert-manager-approver-policy
       chart_repo_name: jetstack
@@ -38,6 +44,8 @@ includes:
   csi_driver:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: cert-manager
       name: cert-manager-csi-driver
       chart_repo_name: jetstack
@@ -46,6 +54,8 @@ includes:
   trust_manager:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: cert-manager
       name: trust-manager
       chart_repo_name: jetstack

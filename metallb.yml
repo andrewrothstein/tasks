@@ -6,12 +6,16 @@ includes:
     taskfile: kubectl.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: metallb-system
       k: metallb-kind
   metallb:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: metallb-system
       name: metallb
       chart_repo_name: metallb

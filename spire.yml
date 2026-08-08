@@ -5,11 +5,15 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: spire-mgmt
       labels: 'istio.io/dataplane-mode=ambient'
   spire-crds:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: spire
       chart: spire-crds
       chart_ver: 0.5.0
@@ -18,6 +22,8 @@ includes:
   spire:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: spire
       chart: spire
       chart_ver: 0.28.3
