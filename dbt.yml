@@ -1,19 +1,146 @@
+# Documentation
+# --------------
+# This module provides tasks for managing a dbt project. All tasks operate from a directory specified by the `project_dir` variable, defaulting to `.USER_WORKING_DIR`.
+#
+# Variables:
+#   project_dir: Directory containing the dbt project (default: .USER_WORKING_DIR)
+#   select: Model selection filter (optional)
+#   exclude: Model exclusion filter (optional)
+#   target: dbt target profile (optional)
+#
+# Workflow tasks:
+#   - build: Build all models (dbt build)
+#   - compile: Compile all models (dbt compile)
+#   - test: Run unit tests (dbt test)
+#   - snapshot: Version control data (dbt snapshot)
+#   - run: Apply models (dbt run) with selection/exclusion/target
+#   - build-all: Composite task for clean, compile, build, and test
+#
+# Usage:
+#   task build project_dir=my_project
+#   task run select=my_model target=prod
+#
 ---
 version: '3'
+vars:
+  DEFAULT_DBT_PROJECT_DIR: '{{ .USER_WORKING_DIR }}'
+  DEFAULT_DBT_PROJECT_NAME: tasks
 tasks:
-  version:
-    cmds:
-      - dbt --version
-  clean:
+  default:
     vars:
-      project_name: '{{ .project_name | default "jaffle_shop" }}'
+      dbt_cmd: '{{ .dbt_cmd }}'
+      dbt_args: '{{ .dbt_args }}'
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      select: '{{ .select }}'
+      exclude: '{{ .exclude }}'
+      target: '{{ .target }}'
     cmds:
-      - rm -rf {{ .project_name | quote }}
+      - |-
+        cd {{ .project_dir | quote }} \
+        && dbt {{ .dbt_cmd }}
+        {{- if .select }} \
+          --select {{ .select | quote }}
+        {{ end }}
+        {{- if .exclude }} \
+          --exclude {{ .exclude | quote }}
+        {{ end }}
+        {{- if .target }} \
+          --target {{ .target | quote }}
+        {{- end }}
+        {{- if .dbt_args }} \
+          {{ .dbt_args }}
+        {{- end }}
+  version:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+          dbt_cmd: version
   init:
     vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      project_name: '{{ .project_name | default .DEFAULT_DBT_PROJECT_NAME }}'
       interactive: '{{ .interactive | default "false" }}'
-      project_name: '{{ .project_name | default "jaffle_shop" }}'
     cmds:
-      - dbt init {{ if eq .interactive "false" }}-s {{ end -}} {{ .project_name | quote }}
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+          dbt_cmd: init
+          dbt_args: |-
+            {{- if eq .interactive "false" }} \
+              -s
+            {{- end }} \
+              {{ .project_name | quote }}
     status:
-      - test -d {{ .project_name | quote }}
+      - test -d "{{ .project_dir }}/{{ .project_name }}"
+  compile:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+          dbt_cmd: compile
+  build:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      select: '{{ .select }}'
+      exclude: '{{ .exclude }}'
+      target: '{{ .target }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir }}'
+          dbt_cmd: build
+          select: '{{ .select }}'
+          exclude: '{{ .exclude }}'
+          target: '{{ .target }}'
+  test:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      select: '{{ .select }}'
+      exclude: '{{ .exclude }}'
+      target: '{{ .target }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir }}'
+          dbt_cmd: test
+          select: '{{ .select }}'
+          exclude: '{{ .exclude }}'
+          target: '{{ .target }}'
+  snapshot:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      target: '{{ .target }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir }}'
+          dbt_cmd: snapshot
+          target: '{{ .target }}'
+  run:
+    vars:
+      project_dir: '{{ .project_dir | default .DEFAULT_DBT_PROJECT_DIR }}'
+      select: '{{ .select }}'
+      exclude: '{{ .exclude }}'
+      target: '{{ .target }}'
+    cmds:
+      - task: default
+        vars:
+          project_dir: '{{ .project_dir }}'
+          dbt_cmd: run
+          select: '{{ .select }}'
+          exclude: '{{ .exclude }}'
+          target: '{{ .target }}'
+  build-all:
+    desc: 'Composite task: clean, compile, build, test'
+    deps: [clean, compile, build, test]
+  test-all:
+    desc: 'Composite task: compile, test'
+    deps: [compile, test]
+  apply-all:
+    desc: 'Composite task: snapshot, run'
+    deps: [snapshot, run]
