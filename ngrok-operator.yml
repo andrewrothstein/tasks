@@ -5,12 +5,16 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: ngrok-operator
       labels: 'istio.io/dataplane-mode=ambient'
   helm:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: ngrok
       chart: ngrok-operator
       namespace: ngrok-operator

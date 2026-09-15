@@ -6,11 +6,15 @@ includes:
     taskfile: kubectl.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: hazelcast
   platform-operator:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: hazelcast
       name: operator
       chart_repo_name: hazelcast

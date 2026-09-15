@@ -5,6 +5,8 @@ includes:
   csi-driver:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: juicefs
       chart: juicefs-csi-driver
       chart_ver: 0.19.8
@@ -14,6 +16,8 @@ includes:
   s3-gateway:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: juicefs
       chart: juicefs-s3-gateway
       chart_ver: 0.11.2

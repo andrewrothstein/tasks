@@ -6,6 +6,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: aqua
       chart: trivy-operator
       chart_ver: 0.32.0

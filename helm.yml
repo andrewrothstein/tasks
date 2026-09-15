@@ -1,6 +1,34 @@
 ---
 version: '3'
+
+# Cluster safety
+# --------------
+# Every task that hits a Kubernetes cluster requires the driver to declare
+# both the kubeconfig file and the context, either by passing
+# kubeconfig=<file> kube_context=<name> on the CLI or by exporting
+# KUBECONFIG and KUBE_CONTEXT in the shell. Missing either is a hard error.
+# The flags --kubeconfig and --kube-context are passed on every helm
+# invocation, so current-context drift cannot select the wrong cluster.
+
 tasks:
+  _require-context:
+    internal: true
+    vars:
+      kubeconfig: '{{ .kubeconfig }}'
+      kube_context: '{{ .kube_context }}'
+    cmds:
+      - |-
+        missing=
+        [ -n {{ .kubeconfig | quote }} ]   || missing="${missing}kubeconfig "
+        [ -n {{ .kube_context | quote }} ] || missing="${missing}kube_context "
+        if [ -n "${missing}" ]; then
+          echo "ERROR: helm task requires explicit ${missing}declaration." >&2
+          echo "  Pass kubeconfig=<file> kube_context=<name> on the CLI, or" >&2
+          echo "  export KUBECONFIG=<file> KUBE_CONTEXT=<name> in your shell." >&2
+          echo "  This is enforced repo-wide to prevent cross-cluster mishaps." >&2
+          exit 1
+        fi
+
   check:
     vars:
       chart_repo_name: '{{ .chart_repo_name }}'
@@ -22,6 +50,8 @@ tasks:
         fi
   upgrade:
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       install: '{{ .install | default "true" }}'
       namespace: '{{ .namespace }}'
       create_namespace: '{{ .create_namespace | default "false" }}'
@@ -35,8 +65,14 @@ tasks:
       skip_crds: '{{ .skip_crds | default "false" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           upgrade
           {{- if .namespace }} \
           -n {{ .namespace | quote }}
@@ -68,6 +104,8 @@ tasks:
   template-apply:
     desc: "Render chart with helm template and apply via kubectl server-side apply (bypasses release Secret size limit)"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: '{{ .namespace }}'
       name: '{{ .name }}'
       chart_repo_name: '{{ .chart_repo_name }}'
@@ -75,8 +113,14 @@ tasks:
       chart_ver: '{{ .chart_ver }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           template \
           {{ .name | quote }} \
           "{{ if .chart_repo_name }}{{ .chart_repo_name }}/
@@ -90,10 +134,15 @@ tasks:
           {{- if .helm_args }} \
           {{ .helm_args }}
           {{- end }} \
-          | kubectl apply --server-side --force-conflicts -f -
+          | kubectl \
+              --kubeconfig {{ .kubeconfig | quote }} \
+              --context {{ .kube_context | quote }} \
+              apply --server-side --force-conflicts -f -
   template-delete:
     desc: "Render chart with helm template and delete via kubectl"
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: '{{ .namespace }}'
       name: '{{ .name }}'
       chart_repo_name: '{{ .chart_repo_name }}'
@@ -101,8 +150,14 @@ tasks:
       chart_ver: '{{ .chart_ver }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           template \
           {{ .name | quote }} \
           "{{ if .chart_repo_name }}{{ .chart_repo_name }}/
@@ -116,9 +171,14 @@ tasks:
           {{- if .helm_args }} \
           {{ .helm_args }}
           {{- end }} \
-          | kubectl delete --ignore-not-found -f -
+          | kubectl \
+              --kubeconfig {{ .kubeconfig | quote }} \
+              --context {{ .kube_context | quote }} \
+              delete --ignore-not-found -f -
   install:
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: '{{ .namespace }}'
       create_namespace: '{{ .create_namespace | default "false" }}'
       name: '{{ .name }}'
@@ -129,8 +189,14 @@ tasks:
       timeout: '{{ .timeout | default "10m" }}'
       helm_args: '{{ .helm_args | default "" }}'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |-
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           install
           {{- if .namespace }} \
           -n {{ .namespace | quote }}
@@ -153,18 +219,24 @@ tasks:
     status:
       - |
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           list \
           -n {{ .namespace | quote }} \
           -o json \
           | jq -e '.[] | select(.name=={{ .name | quote }})'
   delete:
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: '{{ .namespace }}'
       name: '{{ .name }}'
       wait: '{{ .wait | default "true" }}'
     preconditions:
       - |
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           list
           {{- if .namespace }} \
           -n {{ .namespace | quote }}
@@ -172,8 +244,14 @@ tasks:
           -o json \
           | jq -e '.[] | select(.name=={{ .name | quote }})'
     cmds:
+      - task: _require-context
+        vars:
+          kubeconfig: '{{ .kubeconfig }}'
+          kube_context: '{{ .kube_context }}'
       - |
         helm \
+          --kubeconfig {{ .kubeconfig | quote }} \
+          --kube-context {{ .kube_context | quote }} \
           delete
           {{- if .namespace }} \
           -n {{ .namespace | quote }}

@@ -5,6 +5,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: cockroachdb
 #      labels: 'istio.io/dataplane-mode=ambient'
       f: cockroachdb-issuer.yml
@@ -12,6 +14,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: cockroachdb
       name: my-cockroachdb
       chart_repo_name: cockroachdb

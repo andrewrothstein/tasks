@@ -6,6 +6,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: scylla-operator
       create_namespace: 'true'
       install: 'true'
@@ -16,6 +18,8 @@ includes:
   cluster:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: scylla-clusters
       f: scylla-cluster.yml
 tasks:

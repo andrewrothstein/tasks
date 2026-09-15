@@ -6,6 +6,8 @@ includes:
     taskfile: helm.yml
     internal: true
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       create_namespace: 'true'
       install: 'true'
       namespace: kubernetes-dashboard

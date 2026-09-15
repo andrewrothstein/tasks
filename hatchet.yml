@@ -5,6 +5,8 @@ includes:
   kk:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       n: hatchet
   pg-secret:
     taskfile: k8s-literal-secret.yml
@@ -14,6 +16,8 @@ includes:
   pg:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: hatchet
       name: hatchet-pg
       chart: chart-cnpg-instance
@@ -26,6 +30,8 @@ includes:
   helm:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       chart_repo_name: hatchet
       chart: hatchet-stack
       chart_ver: 0.10.5

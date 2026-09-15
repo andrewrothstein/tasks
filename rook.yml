@@ -7,6 +7,8 @@ includes:
   operator:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: rook-ceph
       create_namespace: 'true'
       name: rook-ceph
@@ -16,6 +18,8 @@ includes:
   cluster:
     taskfile: helm.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       namespace: rook-ceph-cluster
       create_namespace: 'true'
       name: rook-ceph-cluster

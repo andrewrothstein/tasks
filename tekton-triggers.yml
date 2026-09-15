@@ -9,10 +9,14 @@ includes:
   release:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       f: '{{ .TEKTON_TRIGGERS_MIRROR }}/release.yaml'
   interceptors:
     taskfile: kubectl.yml
     vars:
+      kubeconfig: '{{ .kubeconfig | default (env "KUBECONFIG") }}'
+      kube_context: '{{ .kube_context | default (env "KUBE_CONTEXT") }}'
       f: '{{ .TEKTON_TRIGGERS_MIRROR }}/interceptors.yaml'
 tasks:
   apply:
