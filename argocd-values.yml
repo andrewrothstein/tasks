@@ -1,4 +1,10 @@
 ---
+global:
+  networkPolicy:
+    # chart 10.x defaults this to true; the policies block kubelet probes to the
+    # repo-server and application-controller when the namespace is in ambient mode
+    create: false
+
 redis-ha:
   enabled: false
 
