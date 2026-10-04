@@ -36,7 +36,7 @@ includes:
       name: gitlab
       chart_repo_name: gitlab
       chart: gitlab
-      chart_ver: 9.10.1
+      chart_ver: 10.4.1
       timeout: 15m
       helm_args: -f gitlab-values.yml
   ingress:

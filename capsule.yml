@@ -15,7 +15,7 @@ includes:
       name: capsule
       chart_repo_name: clastix
       chart: capsule
-      chart_ver: 0.4.6
+      chart_ver: 0.14.6
 tasks:
   default:
     deps:

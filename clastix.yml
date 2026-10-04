@@ -6,7 +6,7 @@ includes:
     flatten: true
     vars:
       n: clastix
-      url:  https://clastix.github.io/charts
+      url: https://projectcapsule.github.io/charts
 tasks:
   default:
     deps:

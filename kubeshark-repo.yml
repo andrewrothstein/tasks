@@ -5,7 +5,7 @@ includes:
     taskfile: helm-repo.yml
     vars:
       n: kubeshark
-      url: https://helm.kubeshark.co
+      url: https://helm.kubeshark.com
 tasks:
   default:
     deps:

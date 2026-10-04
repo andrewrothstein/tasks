@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       n: kubernetes-dashboard
-      url: https://kubernetes.github.io/dashboard/
+      url: https://kubernetes-retired.github.io/dashboard/
 tasks:
   default:
     deps:

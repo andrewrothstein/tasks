@@ -45,7 +45,7 @@ includes:
     vars:
       chart_repo_name: temporalio
       chart: temporal
-      chart_ver: 1.2.0
+      chart_ver: 1.7.0
       namespace: temporal
       name: temporal
       timeout: 15m

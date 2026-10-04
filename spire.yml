@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: spire
       chart: spire-crds
-      chart_ver: 0.5.0
+      chart_ver: 0.6.1
       namespace: spire-mgmt
       name: spire-crds
   spire:
@@ -20,7 +20,7 @@ includes:
     vars:
       chart_repo_name: spire
       chart: spire
-      chart_ver: 0.28.3
+      chart_ver: 0.30.2
       namespace: spire-mgmt
       name: spire
 tasks:

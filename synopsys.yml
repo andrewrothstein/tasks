@@ -6,7 +6,7 @@ includes:
     internal: true
     vars:
       n: synopsys
-      url: https://sig-repo.synopsys.com/artifactory/sig-cloudnative
+      url: https://repo.blackduck.com/artifactory/sig-cloudnative
 tasks:
   default:
     deps:

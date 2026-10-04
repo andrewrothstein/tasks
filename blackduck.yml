@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: synopsys
       chart: blackduck
-      chart_ver: 2024.7.1
+      chart_ver: 2024.10.0
       create_namespace: "true"
       namespace: blackduck
       name: blackduck

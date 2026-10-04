@@ -12,7 +12,7 @@ includes:
       name: jira
       chart_repo_name: atlassian-data-center
       chart: jira
-      chart_ver: '1.18'
+      chart_ver: '2.0.15'
 #      helm_args: -f atlassian-data-center-values.yml
 tasks:
   default:

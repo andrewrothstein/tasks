@@ -7,7 +7,7 @@ includes:
     vars:
       chart_repo_name: juicefs
       chart: juicefs-csi-driver
-      chart_ver: 0.19.8
+      chart_ver: 0.33.0
       namespace: kube-system
       install: 'true'
       name: juicefs-csi-driver
@@ -16,7 +16,7 @@ includes:
     vars:
       chart_repo_name: juicefs
       chart: juicefs-s3-gateway
-      chart_ver: 0.11.2
+      chart_ver: 0.11.4
       namespace: kube-system
       install: 'true'
       name: juicefs-s3-gateway

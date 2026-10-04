@@ -15,7 +15,7 @@ includes:
       name: eraser
       chart_repo_name: eraser
       chart: eraser
-      chart_ver: 1.4.1
+      chart_ver: 1.4.2
       helm_args: -f eraser-values.yml
 tasks:
   default:

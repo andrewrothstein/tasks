@@ -11,7 +11,7 @@ includes:
       name: ingress-nginx
       chart_repo_name: ingress-nginx
       chart: ingress-nginx
-      chart_ver: 4.10.0
+      chart_ver: 4.15.1
 tasks:
   default:
     deps:

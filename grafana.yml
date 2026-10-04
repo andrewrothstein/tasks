@@ -14,7 +14,7 @@ includes:
       name: alloy
       chart_repo_name: grafana
       chart: alloy
-      chart_ver: 1.6.0
+      chart_ver: 1.13.0
   grafana:
     taskfile: helm.yml
     vars:
