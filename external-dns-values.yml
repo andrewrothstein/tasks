@@ -1,5 +1,7 @@
 ---
 txtOwnerId: kind
+# required since chart 1.23.0; upsert-only was the default before and never deletes records
+policy: upsert-only
 
 provider:
   name: cloudflare
