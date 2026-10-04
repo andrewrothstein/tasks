@@ -8,53 +8,37 @@ server:
         - name: default
           retention: 3d
     persistence:
-      default:
-        driver: sql
-        sql:
-          driver: postgres12
-          host: temporal-pg-chart-cnpg-instance-rw
-          port: 5432
-          database: temporal
-          user: temporal
-          password: temporal
-          existingSecret: temporal-pg-user
-          secretName: password
-      visibility:
-        driver: sql
-        sql:
-          driver: postgres12
-          host: temporal-pg-chart-cnpg-instance-rw
-          port: 5432
-          database: temporal_visibility
-          user: temporal
-          password: temporal
-          existingSecret: temporal-pg-user
-          secretName: password
-
-schema:
-  createDatabase:
-    enabled: false
+      defaultStore: default
+      visibilityStore: visibility
+      datastores:
+        default:
+          sql:
+            # the databases are created by the cnpg cluster's initdb
+            createDatabase: false
+            manageSchema: true
+            pluginName: postgres12
+            driverName: postgres12
+            databaseName: temporal
+            connectAddr: temporal-pg-chart-cnpg-instance-rw:5432
+            connectProtocol: tcp
+            user: temporal
+            existingSecret: temporal-pg-user
+            secretKey: password
+        visibility:
+          sql:
+            createDatabase: false
+            manageSchema: true
+            pluginName: postgres12
+            driverName: postgres12
+            databaseName: temporal_visibility
+            connectAddr: temporal-pg-chart-cnpg-instance-rw:5432
+            connectProtocol: tcp
+            user: temporal
+            existingSecret: temporal-pg-user
+            secretKey: password
 
 web:
   enabled: true
 
 admintools:
   enabled: true
-
-cassandra:
-  enabled: false
-
-mysql:
-  enabled: false
-
-postgresql:
-  enabled: false
-
-elasticsearch:
-  enabled: false
-
-prometheus:
-  enabled: false
-
-grafana:
-  enabled: false
