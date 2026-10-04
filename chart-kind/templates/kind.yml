@@ -34,3 +34,7 @@ networking:
 containerdConfigPatches:
 {{- . | toYaml | nindent 2 }}
 {{- end }}
+{{- with $.Values.kubeadmConfigPatches }}
+kubeadmConfigPatches:
+{{- . | toYaml | nindent 2 }}
+{{- end }}

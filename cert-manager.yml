@@ -74,6 +74,12 @@ tasks:
       - task: approver_policy:upgrade
       - task: csi_driver:upgrade
       - task: trust_manager:upgrade
+      # the trust-manager webhook is not routable for a few seconds after its pod is Ready
+      - |
+        for i in $(seq 1 30); do
+          kubectl apply -n cert-manager -k cert-manager --dry-run=server >/dev/null 2>&1 && break
+          sleep 2
+        done
       - task: kk:kapply
   delete:
     cmds:

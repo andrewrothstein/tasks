@@ -5,8 +5,8 @@ includes:
     taskfile: helm-repo.yml
     flatten: true
     vars:
-      n: milvus
-      url: https://zilliztech.github.io/milvus-helm
+      n: grafana-community
+      url: https://grafana-community.github.io/helm-charts
 tasks:
   default:
     deps:

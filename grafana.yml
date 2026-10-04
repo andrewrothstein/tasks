@@ -2,6 +2,7 @@
 version: '3'
 includes:
   repo: grafana-repo.yml
+  community-repo: grafana-community-repo.yml
   kk:
     taskfile: kubectl.yml
     vars:
@@ -20,9 +21,9 @@ includes:
     vars:
       namespace: grafana
       name: grafana
-      chart_repo_name: grafana
+      chart_repo_name: grafana-community
       chart: grafana
-      chart_ver: 10.5.15
+      chart_ver: 13.2.7
 tasks:
   default:
     deps:
@@ -30,6 +31,7 @@ tasks:
   upgrade:
     deps:
       - task: repo
+      - task: community-repo
     cmds:
       - task: kk:ns-create
       - task: alloy:upgrade
