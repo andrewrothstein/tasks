@@ -41,5 +41,7 @@ grafana:
   dashboards:
     opencost:
       opencost-dashboard:
-        url: https://raw.githubusercontent.com/opencost/opencost/develop/grafana/opencost-dashboard.json
+        # https://grafana.com/grafana/dashboards/22208-opencost-overview/
+        gnetId: 22208
+        revision: 8
         datasource: prometheus
