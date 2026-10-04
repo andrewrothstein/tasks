@@ -34,8 +34,10 @@ tasks:
           adminSecret: '{{ .adminSecret }}'
       - task: argo-release:upgrade
         vars:
+          # --force-conflicts: argocd-server owns admin.password once it has generated or changed one
           helm_args: |-
             -f argocd-values.yml \
+              --force-conflicts \
               --set configs.secret.argocdServerAdminPassword=$(htpasswd -nbBC 10 "" {{ .adminSecret | quote }} | tr -d ':\n' | sed 's/$2y/$2a/')
       - task: ingress:upgrade
   delete:
