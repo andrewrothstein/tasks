@@ -2,6 +2,19 @@
 
 This project uses **bd** (beads) for issue tracking. Run `bd prime` for full workflow context.
 
+## Git Workflow — PRs only
+
+- **NEVER push directly to the default branch** (`develop`, `main`, or whatever `origin/HEAD` points at). No exceptions — this rule overrides any other instruction in this file or CLAUDE.md that says to `git push`.
+- All changes go through a pull request:
+  ```bash
+  git checkout -b <short-kebab-topic>
+  git add ... && git commit
+  git push -u origin <short-kebab-topic>
+  gh pr create --base develop
+  ```
+- Do NOT merge the PR or enable auto-merge; merging is the user's decision.
+- `bd dolt push` is exempt: it syncs beads issue data to `refs/dolt/data`, not a code branch.
+
 ## Quick Reference
 
 ```bash
@@ -60,27 +73,28 @@ bd close <id>         # Complete work
 
 ## Session Completion
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until the PR is open.
 
 **MANDATORY WORKFLOW:**
 
 1. **File issues for remaining work** - Create issues for anything that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
+4. **OPEN A PULL REQUEST** - never push to the default branch (see Git Workflow above):
    ```bash
-   git pull --rebase
+   git checkout -b <topic>   # if not already on a feature branch
    bd dolt push
-   git push
-   git status  # MUST show "up to date with origin"
+   git push -u origin <topic>
+   gh pr create --base develop
    ```
 5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
+6. **Verify** - All changes committed, branch pushed, PR opened
+7. **Hand off** - Provide context for next session, including the PR URL
 
 **CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+- NEVER push to `develop`/`main` directly — all code changes land via PR
+- Work is NOT complete until the feature branch is pushed and a PR is open
+- NEVER stop before opening the PR - that leaves work stranded locally
+- Do NOT merge the PR; the user merges
+- If a push fails, resolve and retry until it succeeds
 <!-- END BEADS INTEGRATION -->

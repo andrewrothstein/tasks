@@ -53,3 +53,4 @@ netbootxyz-assets/
 # Beads / Dolt files (added by bd init)
 *.db
 .beads-credential-key
+.beads.gate.lock
