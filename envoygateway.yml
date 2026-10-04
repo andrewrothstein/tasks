@@ -32,6 +32,8 @@ includes:
       # https://github.com/envoyproxy/gateway/tags
       chart_ver: '{{ .ENVOY_GATEWAY_VER }}'
       skip_crds: "true"
+      # CRDs and the Gateway API safe-upgrades policy are owned by gateway-api.yml and gw-crds
+      helm_args: '--set crds.enabled=false'
   aigwkk:
     taskfile: kubectl.yml
     vars:

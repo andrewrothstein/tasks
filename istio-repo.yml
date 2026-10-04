@@ -6,7 +6,7 @@ includes:
     flatten: true
     vars:
       n: istio
-      url: https://istio-release.storage.googleapis.com/charts
+      url: https://blob.istio.io/istio-release/charts
 tasks:
   default:
     deps:

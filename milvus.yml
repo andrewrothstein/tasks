@@ -12,7 +12,7 @@ includes:
     vars:
       chart_repo_name: milvus
       chart: milvus
-      chart_ver: 4.0.31
+      chart_ver: 5.0.30
       namespace: milvus
       name: milvus
       helm_args: -f milvus-standalone-values.yml

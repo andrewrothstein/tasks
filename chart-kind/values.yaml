@@ -122,3 +122,10 @@ extraMounts:
 #  - |-
 #    [plugins."io.containerd.grpc.v1.cri".registry]
 #      config_path = "/etc/containerd/certs.d"
+
+kubeadmConfigPatches:
+  # the kubelet can't stat docker storage that lives on a ZFS dataset; with
+  # isolation on it exits at startup and kubeadm init times out (k8s 1.37)
+  - |-
+    kind: KubeletConfiguration
+    localStorageCapacityIsolation: false
