@@ -105,8 +105,8 @@ tasks:
           helm_args: |-
             -f artifactory-values.yml \
               --set artifactory.database.password={{ .pgAdminPassword | quote }} \
-              --set artifactory.masterKeySecretName={{ .masterKeySecretName | quote }} \
-              --set artifactory.joinKeySecretName={{ .joinKeySecretName | quote }} \
+              --set global.masterKeySecretName={{ .masterKeySecretName | quote }} \
+              --set global.joinKeySecretName={{ .joinKeySecretName | quote }} \
               --set artifactory.artifactory.admin.password={{ .adminPassword | quote }}
       - task: ingress:upgrade
   delete:
