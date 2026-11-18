@@ -119,10 +119,6 @@
         - sdn
         - vpn
         - servicemesh
-    - role: andrewrothstein.minio
-      tags:
-        - s3
-        - minio
     - role: andrewrothstein.vault
       tags:
         - secrets

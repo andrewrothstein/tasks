@@ -36,7 +36,6 @@ roles:
   - andrewrothstein.kubevirt
   - andrewrothstein.flux
   - andrewrothstein.cilium
-  - andrewrothstein.minio
   - andrewrothstein.vault
   - andrewrothstein.velero
   - andrewrothstein.jq
