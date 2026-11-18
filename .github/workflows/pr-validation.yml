@@ -38,7 +38,10 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
       - name: Install Dagger
-        run: cd /usr/local && curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo sh
+        # install the CLI that dagger-ci/dagger.json declares, not whatever is latest
+        run: |
+          ver=$(jq -r .engineVersion dagger-ci/dagger.json)
+          curl -fsSL https://dl.dagger.io/dagger/install.sh | sudo DAGGER_VERSION="$ver" BIN_DIR=/usr/local/bin sh
       - name: Validate build (no push)
         run: |
           dagger call -m dagger-ci \
