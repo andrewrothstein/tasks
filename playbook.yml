@@ -8,6 +8,23 @@
 #      sysctl:
 #        fs.inotify.max_user_watches: 524288
 #        fs.inotify.max_user_instances: 8192
+  pre_tasks:
+    # the base image's package index can be months old and point at package
+    # builds the mirrors no longer carry, so refresh it before any install
+    - name: Refresh the apt package index
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts.pkg_mgr == 'apt'
+      tags:
+        - always
+    # pacman has no safe refresh-only install; sync and upgrade together
+    - name: Refresh the pacman package index and upgrade
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+      when: ansible_facts.pkg_mgr == 'pacman'
+      tags:
+        - always
   roles:
     - role: andrewrothstein.sudoers
       tags:
