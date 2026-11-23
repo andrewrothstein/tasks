@@ -1,0 +1,31 @@
+---
+# values for chart-cnpg-instance, release temporal-pg in namespace temporal;
+# used by temporal.yml and by the Argo CD app in chart-workflow-engines-apps
+instances: 1
+storage:
+  size: 10Gi
+bootstrap:
+  initdb:
+    database: temporal
+    owner: temporal
+    # no secret is named, so cnpg generates temporal-pg-chart-cnpg-instance-app
+    postInitSQL:
+      - CREATE DATABASE temporal_visibility OWNER temporal
+objectStore:
+  destinationPath: s3://cnpg-temporal/
+  endpointURL: http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+  s3Credentials:
+    accessKeyId:
+      name: temporal-pg-barman-s3
+      key: ACCESS_KEY_ID
+    secretAccessKey:
+      name: temporal-pg-barman-s3
+      key: ACCESS_SECRET_KEY
+  wal:
+    compression: gzip
+  retentionPolicy: 7d
+plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: temporal-pg-chart-cnpg-instance-backup

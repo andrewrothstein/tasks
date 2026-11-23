@@ -9,3 +9,23 @@ controller:
   workflowNamespaces:
     - argo
     - vault-system
+  # workflow archive and node status offload, in the cnpg cluster from argo-pg-values.yml
+  persistence:
+    connectionPool:
+      maxIdleConns: 100
+      maxOpenConns: 0
+    nodeStatusOffLoad: true
+    archive: true
+    postgresql:
+      host: argo-pg-chart-cnpg-instance-rw
+      port: 5432
+      database: argo
+      tableName: argo_workflows
+      userNameSecret:
+        name: argo-pg-chart-cnpg-instance-app
+        key: username
+      passwordSecret:
+        name: argo-pg-chart-cnpg-instance-app
+        key: password
+      ssl: true
+      sslMode: require

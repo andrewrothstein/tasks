@@ -1,0 +1,35 @@
+{{- if .Values.argoWorkflows.enabled }}
+---
+{{ include "workflow-engines-apps.pg" (dict "root" $ "name" "argo-pg" "namespace" .Values.argoWorkflows.namespace "valuesFile" "argo-pg-values.yml" "namespaceLabels" .Values.argoWorkflows.namespaceLabels) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.project }}
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-workflows
+      targetRevision: {{ .Values.argoWorkflows.chartVersion }}
+      helm:
+        releaseName: argo
+        valueFiles:
+          - $values/argo-workflows-values.yml
+    - repoURL: {{ .Values.repoURL }}
+      targetRevision: {{ .Values.targetRevision }}
+      ref: values
+  destination:
+    server: {{ .Values.destination.server }}
+    namespace: {{ .Values.argoWorkflows.namespace }}
+  syncPolicy:
+    {{- toYaml .Values.syncPolicy | nindent 4 }}
+    syncOptions:
+      # the workflow CRDs are too large for a client-side apply annotation
+      - ServerSideApply=true
+{{- end }}

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: chart-workflow-engines-apps
+description: Argo CD app-of-apps for Temporal and Argo Workflows, each backed by a CloudNativePG cluster
+type: application
+version: 0.1.0

@@ -1,0 +1,27 @@
+---
+# where the child apps read chart-cnpg-instance and the values files from
+repoURL: https://github.com/andrewrothstein/tasks.git
+targetRevision: develop
+
+project: default
+destination:
+  server: https://kubernetes.default.svc
+
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+
+temporal:
+  enabled: true
+  namespace: temporal
+  # keep in step with chart_ver in temporal.yml
+  chartVersion: 1.8.0
+
+argoWorkflows:
+  enabled: true
+  namespace: argo
+  # keep in step with chart_ver in argo.yml
+  chartVersion: 2.0.18
+  namespaceLabels:
+    istio.io/dataplane-mode: ambient
