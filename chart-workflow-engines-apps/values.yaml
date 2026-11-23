@@ -25,3 +25,7 @@ argoWorkflows:
   chartVersion: 2.0.18
   namespaceLabels:
     istio.io/dataplane-mode: ambient
+  # argo-workflows-values.yml also watches vault-system, which this app does
+  # not create; list only namespaces that exist on the target cluster
+  workflowNamespaces:
+    - argo

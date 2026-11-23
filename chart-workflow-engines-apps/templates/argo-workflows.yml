@@ -21,6 +21,10 @@ spec:
         releaseName: argo
         valueFiles:
           - $values/argo-workflows-values.yml
+        valuesObject:
+          controller:
+            workflowNamespaces:
+              {{- toYaml .Values.argoWorkflows.workflowNamespaces | nindent 14 }}
     - repoURL: {{ .Values.repoURL }}
       targetRevision: {{ .Values.targetRevision }}
       ref: values
