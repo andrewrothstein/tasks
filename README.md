@@ -186,6 +186,24 @@ task kubectl-config:backup name=before-changes
 KUBECTL_DRY_RUN=true task argocd:apply
 ```
 
+### GitOps with an Argo CD App-of-Apps
+
+`chart-workflow-engines-apps` is an app-of-apps that deploys Temporal and Argo
+Workflows, each backed by its own CloudNativePG cluster. It needs Argo CD, the
+cnpg operator and seaweedfs on the cluster first.
+
+```bash
+task --taskfile workflow-engines-apps.yml upgrade   # apply the root Application
+task --taskfile workflow-engines-apps.yml wait      # until all five apps are healthy
+task --taskfile workflow-engines-apps.yml delete
+
+# track a branch other than develop
+task --taskfile workflow-engines-apps.yml upgrade target_revision=my-branch
+```
+
+It manages the same releases as `temporal.yml` and `argo.yml` from the same
+values files, so use one route or the other on a given cluster.
+
 ### Custom Timeouts
 ```bash
 KUBECTL_TIMEOUT=600s task prometheus:apply
