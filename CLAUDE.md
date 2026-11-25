@@ -67,7 +67,6 @@ These tasks deploy applications into any Kubernetes cluster:
 
 **GitOps & CI/CD:**
 - `argocd.yml` - ArgoCD GitOps
-- `workflow-engines-apps.yml` - Argo CD app-of-apps (`chart-workflow-engines-apps`) for Temporal and Argo Workflows, each on a cnpg cluster; an alternative to `temporal.yml` and `argo.yml`
 - `flux.yml` - Flux GitOps
 - `tekton.yml` - Tekton pipelines
 - `drone.yml` - Drone CI

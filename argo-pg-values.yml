@@ -1,6 +1,6 @@
 ---
 # values for chart-cnpg-instance, release argo-pg in namespace argo;
-# used by argo.yml and by the Argo CD app in chart-workflow-engines-apps
+# used by argo.yml
 instances: 1
 storage:
   size: 10Gi

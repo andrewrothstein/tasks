@@ -1,6 +1,6 @@
 ---
 # values for chart-cnpg-instance, release temporal-pg in namespace temporal;
-# used by temporal.yml and by the Argo CD app in chart-workflow-engines-apps
+# used by temporal.yml
 instances: 1
 storage:
   size: 10Gi
