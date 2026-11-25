@@ -1,0 +1,29 @@
+---
+# values for chart-cnpg-instance, release argo-pg in namespace argo;
+# used by argo.yml
+instances: 1
+storage:
+  size: 10Gi
+bootstrap:
+  initdb:
+    database: argo
+    owner: argo
+    # no secret is named, so cnpg generates argo-pg-chart-cnpg-instance-app
+objectStore:
+  destinationPath: s3://cnpg-argo/
+  endpointURL: http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333
+  s3Credentials:
+    accessKeyId:
+      name: argo-pg-barman-s3
+      key: ACCESS_KEY_ID
+    secretAccessKey:
+      name: argo-pg-barman-s3
+      key: ACCESS_SECRET_KEY
+  wal:
+    compression: gzip
+  retentionPolicy: 7d
+plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: argo-pg-chart-cnpg-instance-backup

@@ -67,9 +67,10 @@ tasks:
       - task: k8s-observability:up
       - task: k8s-autoscaling:up
       - task: k8s-dns:up
+      # argo workflows keeps its archive in a cnpg cluster
+      - task: k8s-database:up
       - task: k8s-cicd:up
       - task: k8s-virtualization:up
-      - task: k8s-database:up
       - task: k8s-ai:up
       - task: k8s-chaos:up
       - task: k8s-sdlc:up
@@ -82,9 +83,9 @@ tasks:
       - task: k8s-sdlc:delete
       - task: k8s-chaos:delete
       - task: k8s-ai:delete
-      - task: k8s-database:delete
       - task: k8s-virtualization:delete
       - task: k8s-cicd:delete
+      - task: k8s-database:delete
       - task: k8s-autoscaling:delete
       - task: k8s-observability:delete
       - task: k8s-dns:delete

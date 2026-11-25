@@ -2,6 +2,28 @@
 version: '3'
 includes:
   k: kubectl.yml
+  kk:
+    taskfile: kubectl.yml
+    vars:
+      n: argo
+      labels: 'istio.io/dataplane-mode=ambient'
+  pg-barman-s3-secret:
+    taskfile: k8s-literal-secret.yml
+    vars:
+      n: argo
+      s: argo-pg-barman-s3
+  barman-s3:
+    taskfile: barman-s3-secret.yml
+    vars:
+      n: argo
+      s: argo-pg-barman-s3
+  pg:
+    taskfile: helm.yml
+    vars:
+      namespace: argo
+      name: argo-pg
+      chart: chart-cnpg-instance
+      helm_args: -f argo-pg-values.yml
   argo-release:
     taskfile: argo-release.yml
     internal: true
@@ -22,8 +44,21 @@ tasks:
   default:
     deps:
       - upgrade
+  pg-wait:
+    vars:
+      cluster_name: argo-pg-chart-cnpg-instance
+    cmds:
+      - >-
+        kubectl wait clusters.postgresql.cnpg.io/{{ .cluster_name }}
+        -n argo
+        --for=condition=Ready
+        --timeout=10m
   upgrade:
     cmds:
+      - task: kk:ns-create
+      - task: barman-s3:create
+      - task: pg:upgrade
+      - task: pg-wait
       - task: argo-release:upgrade
       - task: k:apply
         vars:
@@ -32,6 +67,8 @@ tasks:
   delete:
     cmds:
       - task: ingress:delete
+      - task: pg:delete
+      - task: pg-barman-s3-secret:delete
       - task: argo-release:delete
   check:
     cmds:

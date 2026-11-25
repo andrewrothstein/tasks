@@ -13,7 +13,7 @@ server:
       datastores:
         default:
           sql:
-            # the databases are created by the cnpg cluster's initdb
+            # the databases and the -app secret are created by the cnpg cluster's initdb
             createDatabase: false
             manageSchema: true
             pluginName: postgres12
@@ -22,7 +22,7 @@ server:
             connectAddr: temporal-pg-chart-cnpg-instance-rw:5432
             connectProtocol: tcp
             user: temporal
-            existingSecret: temporal-pg-user
+            existingSecret: temporal-pg-chart-cnpg-instance-app
             secretKey: password
         visibility:
           sql:
@@ -34,7 +34,7 @@ server:
             connectAddr: temporal-pg-chart-cnpg-instance-rw:5432
             connectProtocol: tcp
             user: temporal
-            existingSecret: temporal-pg-user
+            existingSecret: temporal-pg-chart-cnpg-instance-app
             secretKey: password
 
 web:

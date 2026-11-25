@@ -33,3 +33,4 @@ s3:
   createBuckets:
     - name: velero
     - name: cnpg-temporal
+    - name: cnpg-argo
